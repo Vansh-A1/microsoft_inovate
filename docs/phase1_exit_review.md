@@ -188,7 +188,7 @@ Other limits: INR ordinary exclusive-tax invoices, goods PO/GRN and fully attrib
 
 ## Git publication
 
-Coherent Phase-1 commits preserve all Phase-0 history. The final verified commit/tree and the one authorized normal `main` push outcome are recorded in progress and the completion report. No force push, credential repair or repeat publication attempt is authorized. Local completion remains independent of an authentication blocker.
+Coherent Phase-1 commits preserve all Phase-0 history. Verified implementation commit: **49efc94a20afcbd633ea183c9548ada493bcb4fd**; clean main confirmed before publication. The **single authorized** normal main push returned **exit 128**, `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. GitHub publication is blocked by local HTTPS authentication; no retry, credential repair, alternate path or force push occurred. Remote SHA/file-set verification is unavailable and not claimed. This documentation-only outcome record leaves the tested application unchanged; its final local HEAD/clean tree are in the completion report. Local Phase-1 completion is independent of the authentication blocker.
 
 ## Next major batch only
 

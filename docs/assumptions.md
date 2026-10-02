@@ -74,3 +74,5 @@ At Phase-0 closure, identity/authenticated scope, effective policy ambiguity han
 - The UI uses a fixed trusted development FINANCE_REVIEWER token injected by the loopback server. It has no role/scope or approval-authority selectors. Enterprise SSO and complete human review/approval workflows remain later work.
 - Minimal guarded capacity reservations prevent over-admission under tested concurrent budget/GRN scenarios. They are screening effects, not a full settlement/commitment transfer ledger.
 - Bounded master/history queries fail explicitly when their configured ceiling is exhausted. There is no silent empty-history or SQLite application fallback. Full legacy/policy-change replay, operational SLAs and a deployed pilot are not claimed.
+
+Phase-1 publication observation: the single authorized normal main push of verified implementation 49efc94a20afcbd633ea183c9548ada493bcb4fd returned exit 128 because Git could not obtain the HTTPS username (`terminal prompts disabled`). Local Phase 1 is complete. No retry/authentication repair occurred, and no remote SHA/file-set verification is claimed. See progress for the full actual outcome.

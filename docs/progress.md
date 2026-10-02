@@ -526,7 +526,7 @@ The browser suite exercises both-branch create/evaluate/persist/reload, vendor/e
 
 See [exit criteria and AC01–AC20 review](phase1_exit_review.md), [current scenario tracker](test_coverage.md), [actual setup/runbook](runbooks/phase1-local.md) and [bounded persistence ADR](adr/0009-phase1-persistence-and-local-runtime.md). This is a local synthetic product, not a production pilot. INR/ordinary/full-receipt rules are bounded; shared/fuzzy/live extraction/ML, full settlement/approval workflow, policy-change replay and production restore/performance gates remain deferred. Phase 0 contracts/source corpora were preserved. No system/GPU/cloud changes or Phase-2 work occurred.
 
-The user authorized exactly one final normal main push after verification; its actual result is recorded below after the attempt. Do not repair credentials or retry. The next major batch is Phase-2 secure original intake/preprocessing behind the existing adapter, only after explicit approval.
+The user authorized exactly one final normal main push after verification; its actual failed-authentication result is recorded below. Do not repair credentials or retry. The next major batch is Phase-2 secure original intake/preprocessing behind the existing adapter, only after explicit approval.
 
 ### Final list-read refinement and documentation audit
 
@@ -535,3 +535,17 @@ The transaction list now reads current canonical facts and latest generation-ord
 `/tmp/audit_phase1.py` returned exit 0: 201 local documentation links/anchors resolve, all 42 original scenario/expectation strings remain exact, the 21/11/10 coverage disposition and all 20 user exit criteria/AC01–AC20 rows are present. Original contracts, extraction, 488 tests, datasets and inference research remain unchanged against Phase-0 HEAD. Saved OpenAPI matches the actual app. Private development directory/files are 0700/0600; generated credentials/passwords are absent from trackable text, common secret-pattern scan is clean, and runtime/build/browser output paths are ignored. These limited scans are not a security certification. Final Alembic drift check, pip check, all checksum sets, specification comparison, generated client/typecheck and preserved ten-case fixture CLI also passed.
 
 The documented clean stop of the owned PostgreSQL cluster and restart through `setup_database.py` returned exit 0. The application supervisor restarted; readiness reported PostgreSQL migration 0003_generation, liveness retained explicit modes, and the production frontend returned HTTP 200. This is process recovery verification, not a backup restore exercise. The local application remains running for review.
+
+## Phase-1 publication outcome — single authorized attempt
+
+The fully verified implementation/closure commit is **49efc94a20afcbd633ea183c9548ada493bcb4fd**, `feat: complete Phase 1 review workspace and verified local exit`. The preceding Phase-1 checkpoints are ffec67a (persistence), 3559922 (persisted finance rules), f21acfa (freshness/bounded execution), e366e29 (unsupported partial receipts) and cd01866 (specification rule catalog/report evidence). Phase-0 history was preserved. The final closure contains 27 reviewed source/documentation files, 2,012 insertions / 106 deletions; staged whitespace and full scope/secret/source/documentation audit passed. `git commit`, HEAD and status checks returned exit 0; main was clean before publication.
+
+A standard-library guard verified the exact authorized origin, main branch and clean tree, then executed **exactly one** `GIT_TERMINAL_PROMPT=0 git -c core.askPass= push origin main`. The Git process returned **exit 128**:
+
+```text
+fatal: could not read Username for 'https://github.com': terminal prompts disabled
+```
+
+**Phase 1 complete locally. GitHub publication blocked by local HTTPS authentication.** No retry, credential/configuration repair, token exposure, alternate publication path or force push was attempted. Remote branch SHA/published file-set verification is unavailable after failure and is not claimed. A documentation-only follow-up records this outcome; its final SHA and clean working tree are reported in the completion message. It does not change the verified application.
+
+The local application remains running on loopback for review. All mandatory local Phase-1 exit criteria are SATISFIED. Phase 2 has not begun. Waiting for approval to begin Phase 2.

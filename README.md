@@ -125,4 +125,4 @@ The harness replays structured responses, compares each critical field, preserve
 
 The root `pytest.ini` supplies test discovery and import paths. Python dependencies and npm packages are locked and installed locally. The original standard-library domain/extraction modules were not rewritten. The [coverage tracker](docs/test_coverage.md) separates implemented supported scenarios from partial and deferred later-phase cases; synthetic tests do not establish visual accuracy, company-policy correctness or production readiness.
 
-Repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate). Phase 1 has one consolidated authorized main push attempt after the exit gate; the actual result is recorded in progress. Authentication failure is recorded without credential repair or push retry. Phase 2 requires new approval.
+Repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate). The single consolidated Phase-1 main push failed HTTPS authentication (exit 128); verified commits remain local and no retry or credential repair was attempted. The actual outcome is recorded in progress. Phase 2 requires new approval.
