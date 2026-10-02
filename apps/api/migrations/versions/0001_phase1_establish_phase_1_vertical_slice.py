@@ -1,7 +1,7 @@
 """establish Phase 1 vertical slice
 
 Revision ID: 0001_phase1
-Revises: 
+Revises:
 """
 from alembic import op
 import sqlalchemy as sa
