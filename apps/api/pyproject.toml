@@ -1,0 +1,6 @@
+[project]
+name = "ap-exception-assistant-api"
+version = "0.1.0"
+description = "Rules-first synthetic accounts-payable vertical slice"
+requires-python = ">=3.11"
+# Runtime/testing packages are exactly pinned in requirements.in / requirements.lock.

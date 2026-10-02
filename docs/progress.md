@@ -3,8 +3,8 @@
 ## Project status
 
 - Session date: 2026-10-02–03 (Asia/Kolkata).
-- Current phase: **PHASE 0 COMPLETE — Contracts and feasibility**, with explicit external-runtime deferral.
-- Current task: **Phase-0 complete locally; publication BLOCKED by Git authentication; waiting for Phase-1 approval**.
+- Current phase: **PHASE 1 IN PROGRESS — Rules-first vertical slice for both branches**; Phase 0 remains complete with external-runtime deferral.
+- Current task: **P1-01–P1-06 continuous approved build; environment/schema foundation first**.
 - P0-01: **COMPLETE LOCALLY**; the single consolidated phase push failed authentication; remote publication remains blocked.
 - P0-02: **COMPLETE**; tested Money/currency, states and evidence foundation.
 - P0-03: **COMPLETE**; reproducible synthetic references and independent golden expectations.
@@ -13,7 +13,7 @@
 - P0-06: **COMPLETE DESIGN DECISIONS**; identity, effective policy, durable jobs, private storage, RULES_ONLY risk and optimized shared inference.
 - Real runtime: **BLOCKED_EXTERNAL_PREREQUISITE**; observed BLOCKED_DRIVER and BLOCKED_DOCKER_ACCESS, ENVIRONMENT_FAILURE, IMAGE_PATH_NOT_RUN.
 - Development extraction: **VERIFIED FIXTURE ADAPTER**; enterprise target **OPTIMIZED SHARED VLM INFERENCE SERVICE**.
-- Phase 1: **NOT STARTED**; separate user approval required.
+- Phase 1: **APPROVED / IN PROGRESS**; no approval stops between P1 tasks, stop before Phase 2.
 
 The [formal exit review](phase0_exit_review.md) records the explicit runtime qualification and full-product acceptance limits. [T01–T42 coverage](test_coverage.md) remains 42 NOT IMPLEMENTED. Historical work records below describe the approval/status at each checkpoint; this current disposition supersedes their prior stop/parent-incomplete statements. No original record or specification is rewritten to suggest a passed real spike.
 
@@ -442,3 +442,39 @@ fatal: could not read Username for 'https://github.com': terminal prompts disabl
 A documentation-only follow-up records this actual outcome in progress, assumptions and the exit review. `PYTHONDONTWRITEBYTECODE=1 python3 /tmp/audit_phase0.py --final --publication-staged`, `git diff --check` and `git diff --cached --check` returned exit 0: all 187 links/anchors resolve, preserved code/fixtures/versions and Phase-0 qualifications pass, exactly three outcome documents staged with no unstaged tracked changes. Its final SHA and clean-tree verification are in the completion report. The external publication gate is distinct from the deferred GPU experiment and does not reopen the approved local Phase-0 exit.
 
 No Phase-1 implementation has begun. Stop here; recommend only P1-01 scaffolding after new approval.
+
+## Phase 1 approved continuous implementation plan — 2026-10-03
+
+The latest user approval authorizes **P1-01 through P1-06 continuously**, dependency setup in isolated project/user scope, coherent internal commits, full exit review and exactly one final main push. No approval stops between batches. Continue independent work if an external component is blocked. No sudo/system changes, GPU/live VLM/ML, cloud provisioning or Phase-2 implementation.
+
+### Intended behavior and bounded architecture
+
+A user creates or previews/commits synthetic structured vendor/employee records; immutable canonical revisions persist; durable jobs run deterministic rules; immutable evaluations, every rule/evidence, audit and JSON/HTML reports persist; UI lists actual cases/counts and REVIEW/HOLD queue. Development identity comes from server-configured credentials/context, never request-body tenant/role/approval assertions. Explicit RULES_ONLY reports model NOT_CONFIGURED with no score. Phase-0 domain/extraction modules, original sources and 488 tests remain intact.
+
+Use FastAPI/Pydantic, SQLAlchemy/Alembic and PostgreSQL; attempt safe user-space PostgreSQL binaries and Node LTS before declaring an environment blocker. SQLAlchemy SQLite is permitted only as test fallback, never the application target. Persist a bounded relational subset: tenant/entities, scoped immutable reference records/links/snapshot membership representing the verified masters/PO/GRN/policies/budgets/history, transactions/versions, trusted approval records, evaluations/rules/evidence, review projections, reports/audit, import batches/rows, durable jobs/outbox/idempotency and minimal guarded capacity records needed for safe PASS. Typed Decimal-safe numeric columns and scoped foreign keys, append-only facts and indexed exact duplicate lookup; no full Phase-3 schema. Record this subset and future limits in an ADR.
+
+Structured canonical schemas retain explicit nullable critical fields and string amounts, reject financial floats and forged scope/authority, and derive submitter on the server. Trusted seed approvals are separately persisted, version-bound records, not ordinary upload claims. Rules are pure over pinned immutable contexts and fixed supplied evaluation time; reference selection/evidence resolution is scoped and versioned. Implement VAL-001/002/003, VEN-001/002, EMP-001, DUP-002, EXP-003, BUD-001, APR-001 and SYS-001 with supporting PO/receipt checks only where required for the supported safe slice. Missing unsupported dependencies stay explicit and cannot PASS. No fuzzy/pHash/shared-receipt engine, advanced delegation/waivers or ML.
+
+### Internal batches and expected files
+
+| Batch | Tasks / output | Verification and checkpoint |
+|---|---|---|
+| A | P1-01: isolated tools/dependency pins/lockfiles, backend configuration and development identity, SQLAlchemy bounded models/Alembic migration, local private storage and queue foundation. | Real PostgreSQL clean migration/constraints where available; storage boundaries, baseline regression; coherent local commit. |
+| B | P1-02/P1-03: validated canonical schemas, fixture-derived reference seeding, transaction/revision/import services, pure deterministic rule catalog and precedence. | Required fields, exact arithmetic, identity/date/policy/budget/approvals/duplicates/uncertainty tests; fixture preservation; local commit. |
+| C | P1-04/API execution: atomic finalization/evidence/audit/report, idempotent async evaluation jobs, scoped endpoints and failure behavior. | Both-branch persisted API E2E, idempotency/auth/stale-write/immutable facts/audit rollback/job recovery tests; local commit. |
+| D | P1-05: Next.js/React/TypeScript real-API workspace, overview/create/import/list/case/rules/evidence/queue/report, status polling and accessible states. | Typecheck/build and actual browser smoke with live API; loading/error/empty/responsive verification; local commit. |
+| E | P1-06/exit: deterministic fixture-derived five-scenario demo, golden behavior integration, setup/migration/seed/run/test commands and formal review. | Full expanded tests, fresh database migration/seed/operations, UI E2E, all checksum sets/copy identity, docs/link/scope/secret/whitespace audit; final commit, one push and actual publication record. |
+
+Frontend design: practical finance workbench with a restrained blue/navy palette (ink #16324F, action #185B8A, canvas #F3F6FA, surface #FFFFFF, warning #8A4B00, hold #A12636), locally available system sans-serif typography, left-aligned factual tables, a compact navigation rail and rule/evidence inspector. Color always accompanied by text. Useful overview counts lead into the actual transaction table; avoid promotional hero, decorative cards and animation. Distinguish submitted canonical facts, trusted references and computed findings. The design is reviewed against the user's functionality-first brief; no visual extravagance or mocked outcomes.
+
+Relevant requirements: specification sections 2, 4.2/4.6, 5–10, 12–15, 17–19, Phase-1 tasks/exit in 21, testing in 22 and applicable AC01–AC14/AC16/AC18–AC19. Prioritize actual supported T01/T02/T03/T11/T13/T14/T15/T16/T26/T32 plus authorization/idempotency/stale/audit/retry boundaries; only promote a scenario after its real behavior is tested. T01–T42 full release coverage remains later-phase work as appropriate.
+
+### Verification and stop boundary
+
+Preserve original spec/inputs and all prior fixture checksums; no fixture churn to fit implementation. Pin actual tested dependencies and commit locks/migrations. Validate fresh migration/upgrade/seed, then both branches from create/import through queued evaluation, persisted evidence/report/queue/UI. Run complete tests and browser checks; inspect live screens and failure/empty/loading states. Document actual commands, environments, counts and any limitations, never claim PostgreSQL/UI/model validation from source alone. Commit internally and continue; after the mandatory exit gate succeeds, attempt one normal push without auth repair/retry. Stop before Phase 2 with the required consolidated report.
+
+### Phase-1 internal checkpoint — persistence foundation
+
+Project-local Node 24.21.0 and PostgreSQL 16.15 are installed without system changes. The application uses PostgreSQL `ap_app` with NOSUPERUSER/NOBYPASSRLS and forced scope policies. Versioned migrations, immutable-fact triggers, strict intake schemas, private storage and pinned Python/npm dependencies are present. The npm peer dependency check required TypeScript 5.9.3 rather than incompatible TypeScript 7; installation and production build then passed.
+
+The first PostgreSQL integration pass was 21 passed / 1 failed (migration table-count expectation changed when the evaluation-input migration was added); corrected against the actual schema. The next integration pass was 28 passed / 0 failed. A subsequent lease deadline guard exposed a cleanup-order bug in finalization; it was moved before lease cleanup. The targeted eight persisted golden-case tests then passed. A complete final regression/browser exit gate remains required before Phase-1 completion. The five combined demo decisions have been computed from actual rules, not copied from expected fixture outcomes. No Phase 2 or inference-runtime work has started.

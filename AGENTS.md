@@ -19,7 +19,7 @@ The supplied team-pack folder and ZIP are preserved original inputs. Use the `do
 - Implement only the current task and its necessary support. Do not add later-phase work, unrelated refactors, or speculative features.
 - After each task, report the result and stop. Do not begin the next task until the user approves it.
 - Before phase completion, review every task and exit criterion, run the phase checks, inspect any relevant UI, confirm documentation, and disclose remaining gaps. Do not enter the next phase without the user's approval.
-- The 2026-10-03 approval authorizes continuous closure of P0-04–P0-06, the optimized enterprise design and the Phase-0 exit review without intermediate approval stops. It accepts the verified external-runtime deferral and authorizes one consolidated end-of-phase main push. Phase 0 is complete locally under that qualification; stop before Phase 1 pending new user approval.
+- The latest 2026-10-03 approval authorizes all P1-01–P1-06 in one continuous build. Use coherent internal batches/commits and continue without per-task approval stops until the Phase-1 exit gate passes or a genuine external blocker prevents dependent work; continue independent work. User/project-scoped stack dependencies are authorized. Stop before Phase 2. Phase 0 remains complete with external-runtime deferral.
 - Do not repeat the failed driver/Docker experiment, download models, install inference, search replacement models, alter host permissions/configuration or provision cloud resources under this closure. Real image smoke/quality/latency/VRAM and full benchmark remain deferred to separately authorized suitable infrastructure. Preserve the recorded research pins and explicit blockers.
 
 Operating loop:
@@ -71,7 +71,7 @@ Operating loop:
 ## Git publication policy
 
 - Target repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate); primary branch: `main`.
-- The verified initial baseline and now the consolidated completed Phase 0 have explicit publication authorization. For this Phase-0 closure, attempt the final main push exactly once after all checks; if authentication fails, do not repair credentials/retry. Record the result locally and leave a clean tree.
+- The completed Phase 0 had one failed authentication push. The latest approval authorizes exactly one consolidated main push after Phase 1 is fully verified. If authentication fails, record it, preserve clean local commits, and do not repair credentials/retry.
 - From P0-02 onward, make appropriate local commits for approved tasks. Do not push every small step. Push consolidated work only after the entire phase is completed, verified, and approved by the user, unless explicitly instructed otherwise.
 - Review staged files, ignore rules, source preservation, and whitespace before committing. Preserve existing history; never force-push without explicit authorization.
 - If identity/authentication/push permission is unavailable, keep safe verified local work, record the safe error, and report the blocker. Do not alter credentials or expose tokens.

@@ -84,3 +84,4 @@ Thumbs.db
 
 # Preserve project Markdown, original team-pack files/ZIP, and intentional
 # synthetic/golden/reference source fixtures; do not add broad document ignores.
+/output/playwright/
