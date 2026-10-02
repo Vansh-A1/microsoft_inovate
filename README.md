@@ -6,7 +6,7 @@ The planned assistant screens vendor invoices and employee expense claims agains
 
 ## Development status
 
-**Implementation in progress: Phase 0 — Contracts and feasibility.** P0-01 established the local repository/documentation baseline; GitHub publication remains blocked by authentication. P0-02 adds tested, framework-independent state, Money/currency, and evidence contracts. No API server, frontend, database, worker, extraction adapter, finance rules, or model exists yet. This is not a production-ready system. No payment execution exists or is in the initial scope.
+**Implementation in progress: Phase 0 — Contracts and feasibility.** P0-01 established the local repository/documentation baseline; GitHub publication remains blocked by authentication. P0-02 adds tested, framework-independent state, Money/currency, and evidence contracts. P0-03 adds 38 synthetic root references and ten golden cases with integrity/operand tests. Their future screening labels are expectations; all T01–T42 behavior remains NOT IMPLEMENTED. No API server, frontend, database, worker, extraction adapter, finance rules, or model exists yet. This is not a production-ready system. No payment execution exists or is in the initial scope.
 
 Screening terminology:
 
@@ -32,7 +32,10 @@ The intended flow is intake → extraction/normalization → validation → bran
 ├── pytest.ini
 ├── apps/api/
 │   ├── app/domain/                 # states, Money/currency, evidence value types
-│   └── tests/unit/domain/          # domain unit and invariant tests
+│   └── tests/                     # domain unit tests and test-only fixture checks
+├── data/
+│   ├── synthetic/                 # reference JSON, README and fixture checksums
+│   └── golden_cases/              # vendor/employee expectations and manifest
 ├── docs/
 │   ├── AP_Exception_Assistant_Codex_Spec.md
 │   ├── progress.md
@@ -59,16 +62,20 @@ The intended flow is intake → extraction/normalization → validation → bran
 - [Repository and specification authority decision](docs/adr/0001-repository-and-specification-authority.md)
 - [Supplied six-person work plan](AP_Exception_Assistant_6_Person_Team_Pack/AP_Exception_Assistant_6_Person_Work_Plan.md)
 - [Original-input checksums](docs/source_inputs.sha256)
+- [Synthetic reference inventory and validation](data/synthetic/README.md)
+- [Golden case inventory and expectations](data/golden_cases/README.md)
 
 The `docs/` specification is the implementation reference, copied byte-for-byte from the preserved source pack. The original folder and ZIP are intentionally version controlled as project inputs. The ADR explains their relationship; do not edit the originals or silently diverge from the specification.
 
 ## Setup status
 
-There is no runnable application, project dependency manifest, startup command, or migration. Domain tests use the existing Python/pytest environment; no dependencies were installed in P0-01 or P0-02. Production modules use only the Python standard library. From the repository root:
+There is no runnable application, project dependency manifest, startup command, or migration. Domain/fixture tests use the existing Python/pytest environment; no dependencies were installed in P0-01–P0-03. Production modules and test-only fixture validation use the Python standard library and existing domain contracts. From the repository root:
 
 ```bash
 python3 -m pytest apps/api/tests/unit/domain -q
+python3 -m pytest apps/api/tests/fixtures -q
 python3 -m pytest -q
+sha256sum -c data/synthetic/fixtures.sha256
 ```
 
 The root `pytest.ini` supplies test discovery and the import path; no shell `PYTHONPATH` override or package installation is required. Tests are verified on Python 3.13.11. The source avoids features newer than Python 3.10, but other interpreter versions have not been runtime-tested. Environment observations and missing prerequisites are recorded in the assumption register. Each next bounded task requires approval; moving to another phase also requires a verified phase exit review.

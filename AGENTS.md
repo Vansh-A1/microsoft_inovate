@@ -19,7 +19,7 @@ The supplied team-pack folder and ZIP are preserved original inputs. Use the `do
 - Implement only the current task and its necessary support. Do not add later-phase work, unrelated refactors, or speculative features.
 - After each task, report the result and stop. Do not begin the next task until the user approves it.
 - Before phase completion, review every task and exit criterion, run the phase checks, inspect any relevant UI, confirm documentation, and disclose remaining gaps. Do not enter the next phase without the user's approval.
-- Respect the scope of the user's latest bounded-task approval. P0-02 approves domain contracts and their tests only; P0-03, application scaffolding, and later work require separate approval.
+- Respect the scope of the user's latest bounded-task approval. P0-03 approves synthetic reference/golden fixtures and their integrity checks only; P0-04, application scaffolding, and later work require separate approval.
 
 Operating loop:
 

@@ -1,0 +1,317 @@
+{
+  "id": "90000000-0000-4000-8000-000000000004",
+  "version": 1,
+  "synthetic": true,
+  "tenant_id": "10000000-0000-4000-8000-000000000001",
+  "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+  "case_id": "GOLDEN-VENDOR-APPROVAL_PENDING",
+  "branch": "VENDOR_INVOICE",
+  "preparation_status": "Fixture prepared; rule not yet implemented.",
+  "evaluation_at": "2026-09-28T10:00:00Z",
+  "decision_mode": "RULES_ONLY",
+  "transaction": {
+    "id": "30000000-0000-4000-8000-000000000004",
+    "version": 1,
+    "synthetic": true,
+    "tenant_id": "10000000-0000-4000-8000-000000000001",
+    "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+    "branch": "VENDOR_INVOICE",
+    "vendor_id": "50000000-0000-4000-8000-000000000001",
+    "submitter_id": "51000000-0000-4000-8000-000000000001",
+    "invoice_number": "DEMO-INV-APPROVAL-001",
+    "invoice_date": "2026-09-25",
+    "submission_date": "2026-09-26",
+    "currency": "INR",
+    "category": "SUPPLIES",
+    "source_document_id": "40000000-0000-4000-8000-000000000004",
+    "payment_account_token": "DEMO-NONPAYABLE-TOKEN-001",
+    "po_id": "60000000-0000-4000-8000-000000000001",
+    "budget_id": "61000000-0000-4000-8000-000000000001",
+    "cost_center_id": "52000000-0000-4000-8000-000000000001",
+    "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+    "subtotal_amount": "20000.00",
+    "tax_amount": "3600.00",
+    "total_amount": "23600.00",
+    "tax_basis": "EXCLUSIVE",
+    "document_discount_amount": "0.00",
+    "shipping_amount": "0.00",
+    "other_charges_amount": "0.00",
+    "history_ids": [
+      "30000000-0000-4000-8000-000000000101",
+      "30000000-0000-4000-8000-000000000102",
+      "30000000-0000-4000-8000-000000000103"
+    ],
+    "required_approval_roles": [
+      "MANAGER",
+      "DEPARTMENT_HEAD"
+    ],
+    "lines": [
+      {
+        "id": "70000000-0000-4000-8000-000000000004",
+        "version": 1,
+        "synthetic": true,
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+        "transaction_id": "30000000-0000-4000-8000-000000000004",
+        "po_id": "60000000-0000-4000-8000-000000000001",
+        "po_line_id": "71000000-0000-4000-8000-000000000001",
+        "grn_line_id": "76100000-0000-4000-8000-000000000001",
+        "quantity": "20.0000",
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "currency": "INR",
+        "net_amount": "20000.00",
+        "tax_rate": "0.18",
+        "tax_amount": "3600.00",
+        "gross_amount": "23600.00"
+      }
+    ],
+    "approvals": [
+      {
+        "id": "79000000-0000-4000-8000-000000000041",
+        "version": 1,
+        "synthetic": true,
+        "tenant_id": "10000000-0000-4000-8000-000000000001",
+        "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+        "transaction_id": "30000000-0000-4000-8000-000000000004",
+        "transaction_version": 1,
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "actor_id": "51000000-0000-4000-8000-000000000003",
+        "role": "MANAGER",
+        "sequence": 1,
+        "state": "APPROVED",
+        "approved_at": "2026-09-27T10:00:00Z"
+      }
+    ]
+  },
+  "reference_ids": [
+    "10000000-0000-4000-8000-000000000001",
+    "20000000-0000-4000-8000-000000000001",
+    "30000000-0000-4000-8000-000000000101",
+    "30000000-0000-4000-8000-000000000102",
+    "30000000-0000-4000-8000-000000000103",
+    "40000000-0000-4000-8000-000000000004",
+    "40000000-0000-4000-8000-000000000101",
+    "40000000-0000-4000-8000-000000000102",
+    "40000000-0000-4000-8000-000000000103",
+    "50000000-0000-4000-8000-000000000001",
+    "51000000-0000-4000-8000-000000000001",
+    "51000000-0000-4000-8000-000000000003",
+    "51000000-0000-4000-8000-000000000004",
+    "52000000-0000-4000-8000-000000000001",
+    "60000000-0000-4000-8000-000000000001",
+    "61000000-0000-4000-8000-000000000001",
+    "63000000-0000-4000-8000-000000000001",
+    "71000000-0000-4000-8000-000000000001",
+    "76000000-0000-4000-8000-000000000001",
+    "76100000-0000-4000-8000-000000000001"
+  ],
+  "reference_snapshot": {
+    "id": "81000000-0000-4000-8000-000000000004",
+    "version": 1,
+    "synthetic": true,
+    "tenant_id": "10000000-0000-4000-8000-000000000001",
+    "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+    "records": [
+      {
+        "record_id": "10000000-0000-4000-8000-000000000001",
+        "record_version": 1
+      },
+      {
+        "record_id": "20000000-0000-4000-8000-000000000001",
+        "record_version": 1
+      },
+      {
+        "record_id": "30000000-0000-4000-8000-000000000101",
+        "record_version": 1
+      },
+      {
+        "record_id": "30000000-0000-4000-8000-000000000102",
+        "record_version": 1
+      },
+      {
+        "record_id": "30000000-0000-4000-8000-000000000103",
+        "record_version": 1
+      },
+      {
+        "record_id": "40000000-0000-4000-8000-000000000004",
+        "record_version": 1
+      },
+      {
+        "record_id": "40000000-0000-4000-8000-000000000101",
+        "record_version": 1
+      },
+      {
+        "record_id": "40000000-0000-4000-8000-000000000102",
+        "record_version": 1
+      },
+      {
+        "record_id": "40000000-0000-4000-8000-000000000103",
+        "record_version": 1
+      },
+      {
+        "record_id": "50000000-0000-4000-8000-000000000001",
+        "record_version": 1
+      },
+      {
+        "record_id": "51000000-0000-4000-8000-000000000001",
+        "record_version": 1
+      },
+      {
+        "record_id": "51000000-0000-4000-8000-000000000003",
+        "record_version": 1
+      },
+      {
+        "record_id": "51000000-0000-4000-8000-000000000004",
+        "record_version": 1
+      },
+      {
+        "record_id": "52000000-0000-4000-8000-000000000001",
+        "record_version": 1
+      },
+      {
+        "record_id": "60000000-0000-4000-8000-000000000001",
+        "record_version": 1
+      },
+      {
+        "record_id": "61000000-0000-4000-8000-000000000001",
+        "record_version": 1
+      },
+      {
+        "record_id": "63000000-0000-4000-8000-000000000001",
+        "record_version": 1
+      },
+      {
+        "record_id": "71000000-0000-4000-8000-000000000001",
+        "record_version": 1
+      },
+      {
+        "record_id": "76000000-0000-4000-8000-000000000001",
+        "record_version": 1
+      },
+      {
+        "record_id": "76100000-0000-4000-8000-000000000001",
+        "record_version": 1
+      }
+    ],
+    "description": "Pinned synthetic reference set; golden cases are independent alternatives."
+  },
+  "expected_facts": {
+    "currency": "INR",
+    "ordered_quantity": "100.0000",
+    "accepted_quantity": "80.0000",
+    "prior_active_quantity": "30.0000",
+    "excluded_cancelled_quantity": "5.0000",
+    "excluded_reversed_quantity": "7.0000",
+    "ordered_remaining_quantity": "70.0000",
+    "received_remaining_quantity": "50.0000",
+    "eligible_new_quantity": "50.0000",
+    "new_billed_quantity": "20.0000",
+    "shortfall_quantity": "0.0000",
+    "invoice_net_amount": "20000.00",
+    "invoice_tax_amount": "3600.00",
+    "invoice_total_amount": "23600.00",
+    "available_budget_amount": "82000.00",
+    "existing_commitment_coverage_amount": "23600.00",
+    "incremental_budget_need_amount": "0.00",
+    "missing_approval_roles": [
+      "DEPARTMENT_HEAD"
+    ]
+  },
+  "expected_decision": "HOLD",
+  "intended_test_ids": [
+    "T26"
+  ],
+  "expected_rule_concepts": [
+    "APR-001"
+  ],
+  "expected_reason_concepts": [
+    "APPROVAL_PENDING"
+  ],
+  "expected_evidence": [
+    {
+      "kind": "TRANSACTION",
+      "record_id": "30000000-0000-4000-8000-000000000004",
+      "record_version": 1,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "field_path": "approvals",
+      "observed_value": "No DEPARTMENT_HEAD action in this synthetic transaction version.",
+      "snapshot_id": "81000000-0000-4000-8000-000000000004"
+    },
+    {
+      "kind": "DOCUMENT_FIELD",
+      "record_id": "40000000-0000-4000-8000-000000000004",
+      "record_version": 1,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "field_path": "facts.total_amount",
+      "observed_value": null,
+      "document_id": "40000000-0000-4000-8000-000000000004"
+    },
+    {
+      "kind": "MASTER_RECORD",
+      "record_id": "50000000-0000-4000-8000-000000000001",
+      "record_version": 1,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "field_path": "status",
+      "observed_value": null
+    },
+    {
+      "kind": "PO_LINE",
+      "record_id": "71000000-0000-4000-8000-000000000001",
+      "record_version": 1,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "field_path": "ordered_quantity",
+      "observed_value": null
+    },
+    {
+      "kind": "GRN_LINE",
+      "record_id": "76100000-0000-4000-8000-000000000001",
+      "record_version": 1,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "field_path": "accepted_quantity",
+      "observed_value": null
+    },
+    {
+      "kind": "HISTORICAL_AGGREGATE",
+      "record_id": "30000000-0000-4000-8000-000000000101",
+      "record_version": 1,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "field_path": "allocations",
+      "observed_value": null
+    },
+    {
+      "kind": "BUDGET_LEDGER",
+      "record_id": "78000000-0000-4000-8000-000000000003",
+      "record_version": 1,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "field_path": "amount",
+      "observed_value": null
+    },
+    {
+      "kind": "POLICY_CLAUSE",
+      "record_id": "63000000-0000-4000-8000-000000000001",
+      "record_version": 1,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "field_path": "bands.1.required_roles",
+      "observed_value": null
+    },
+    {
+      "kind": "APPROVAL",
+      "record_id": "79000000-0000-4000-8000-000000000041",
+      "record_version": 1,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "field_path": "state",
+      "observed_value": null
+    }
+  ],
+  "rationale": "Quantity and budget fit, but the INR 23,600 band requires Manager then Department Head. Only Manager approved this version; the absent step is described without inventing an approval record."
+}

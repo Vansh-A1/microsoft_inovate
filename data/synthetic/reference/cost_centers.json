@@ -1,0 +1,18 @@
+{
+  "fixture_schema_version": "p0-03-v1",
+  "synthetic": true,
+  "source_system": "SYNTHETIC_JSON",
+  "records": [
+    {
+      "id": "52000000-0000-4000-8000-000000000001",
+      "version": 1,
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "effective_from": "2026-01-01",
+      "effective_to": "2027-01-01",
+      "code": "DEMO-CC-WORKSHOP",
+      "department": "DEMO-ENGINEERING"
+    }
+  ]
+}

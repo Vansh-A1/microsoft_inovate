@@ -1,0 +1,50 @@
+{
+  "fixture_schema_version": "p0-03-v1",
+  "synthetic": true,
+  "source_system": "SYNTHETIC_JSON",
+  "records": [
+    {
+      "id": "60000000-0000-4000-8000-000000000001",
+      "version": 1,
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "effective_from": "2026-01-01",
+      "effective_to": "2027-01-01",
+      "display_number": "DEMO-PO-001",
+      "vendor_id": "50000000-0000-4000-8000-000000000001",
+      "currency": "INR",
+      "status": "APPROVED_OPEN",
+      "category": "SUPPLIES",
+      "approved_ceiling_amount": "118000.00",
+      "budget_id": "61000000-0000-4000-8000-000000000001",
+      "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+      "lines": [
+        {
+          "id": "71000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "synthetic": true,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "po_id": "60000000-0000-4000-8000-000000000001",
+          "vendor_id": "50000000-0000-4000-8000-000000000001",
+          "description": "DEMO workshop widgets",
+          "ordered_quantity": "100.0000",
+          "uom": "EA",
+          "unit_price": "1000.00",
+          "currency": "INR",
+          "tax_basis": "EXCLUSIVE",
+          "tax_rate": "0.18",
+          "budget_id": "61000000-0000-4000-8000-000000000001",
+          "tolerance": {
+            "label": "DEMO zero tolerance",
+            "price_absolute_amount": "0.00",
+            "price_relative_rate": "0.00",
+            "quantity_tolerance": "0.0000",
+            "operator": "MAX"
+          }
+        }
+      ]
+    }
+  ]
+}

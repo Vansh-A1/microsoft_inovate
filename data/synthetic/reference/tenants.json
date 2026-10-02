@@ -1,0 +1,19 @@
+{
+  "fixture_schema_version": "p0-03-v1",
+  "synthetic": true,
+  "source_system": "SYNTHETIC_JSON",
+  "records": [
+    {
+      "id": "10000000-0000-4000-8000-000000000001",
+      "version": 1,
+      "synthetic": true,
+      "name": "DEMO Fictional Tenant"
+    },
+    {
+      "id": "10000000-0000-4000-8000-000000000002",
+      "version": 1,
+      "synthetic": true,
+      "name": "DEMO Scope Sentinel Tenant"
+    }
+  ]
+}

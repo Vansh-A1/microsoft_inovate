@@ -1,0 +1,70 @@
+{
+  "fixture_schema_version": "p0-03-v1",
+  "synthetic": true,
+  "source_system": "SYNTHETIC_JSON",
+  "records": [
+    {
+      "id": "63000000-0000-4000-8000-000000000001",
+      "version": 1,
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "effective_from": "2026-01-01",
+      "effective_to": "2027-01-01",
+      "policy_code": "DEMO-APPROVAL-INR",
+      "label": "DEMO / SYNTHETIC POLICY",
+      "currency": "INR",
+      "branches": [
+        "VENDOR_INVOICE",
+        "EMPLOYEE_EXPENSE"
+      ],
+      "department": "DEMO-ENGINEERING",
+      "cost_center_id": "52000000-0000-4000-8000-000000000001",
+      "separation_of_duties": {
+        "claimant_may_approve": false,
+        "submitter_may_approve": false
+      },
+      "bands": [
+        {
+          "lower_bound_amount": "0.00",
+          "lower_inclusive": false,
+          "upper_bound_amount": "10000.00",
+          "upper_inclusive": false,
+          "required_roles": [
+            "MANAGER"
+          ]
+        },
+        {
+          "lower_bound_amount": "10000.00",
+          "lower_inclusive": true,
+          "upper_bound_amount": "100000.00",
+          "upper_inclusive": false,
+          "required_roles": [
+            "MANAGER",
+            "DEPARTMENT_HEAD"
+          ]
+        },
+        {
+          "lower_bound_amount": "100000.00",
+          "lower_inclusive": true,
+          "upper_bound_amount": "500000.00",
+          "upper_inclusive": false,
+          "required_roles": [
+            "MANAGER",
+            "DIRECTOR"
+          ]
+        },
+        {
+          "lower_bound_amount": "500000.00",
+          "lower_inclusive": true,
+          "upper_bound_amount": null,
+          "upper_inclusive": false,
+          "required_roles": [
+            "MANAGER",
+            "CFO"
+          ]
+        }
+      ]
+    }
+  ]
+}

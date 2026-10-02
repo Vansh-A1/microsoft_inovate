@@ -87,3 +87,26 @@ These references validate structure and keep facts immutable; they do not prove 
 ### Missing evidence without invented records
 
 A missing-approval finding can carry a TRANSACTION reference to the actual current transaction/version, a POLICY_CLAUSE reference to the actual requirement/version, and the search snapshot on the transaction reference. Its observed text can state that approval was absent. It does not create an APPROVAL reference or guess an approval UUID. No standalone missing-approval rule, evaluation, or policy engine is implemented here.
+
+## P0-03 fixture terminology
+
+These are implemented JSON fixture conventions described in the [reference README](../data/synthetic/README.md) and [golden README](../data/golden_cases/README.md), not implemented database/API schemas. All records are synthetic and versioned; references use scoped UUIDs. Monetary and quantity fields are decimal strings. Effective intervals are half-open local dates.
+
+| Fixture term | Represented fields and meaning |
+|---|---|
+| Vendor master | Legal name, aliases, DEMO-NONREG tax identifier, ACTIVE_APPROVED status, approved categories, validity period, DEMO-NONPAYABLE token and account-version tag. No real banking or tax registration. |
+| Employee master | Separate employee number/name, employment dates/status, department, cost-center UUID, nullable manager UUID, grade, country and declared demo roles. Manager links are acyclic. |
+| Cost center | Scoped UUID, demo code and department, shared consistently by employees, budgets and approval policy. |
+| Purchase order | Display number, vendor, INR, APPROVED_OPEN status, gross approved ceiling, category, budget and approval-policy links; contains independently identified PO lines. |
+| PO line | Parent PO/vendor/budget, description, ordered quantity, EA unit, unit price, EXCLUSIVE tax basis, synthetic tax rate, explicit zero absolute/relative/quantity tolerances with MAX operator. |
+| Goods receipt / GRN line | Parent PO/PO-line and receipt UUIDs, display GRN, local received date/source/version; received/accepted/returned/reversed quantities. Net accepted is accepted minus returned minus reversed. |
+| Expense policy | UUID, policy code/version/period, DEMO label, category, grade/country/location dimensions, INR allowance and unit, itemized-receipt requirement, timezone and submission-window days. |
+| Approval policy / action | Policy carries scoped INR bands, ordered role chains and separation-of-duties configuration. Case actions carry UUID, actor/role/sequence, state and UTC time bound to transaction/policy/version; these are declared synthetic data, not authorization. |
+| Budget / ledger row | Entity/fiscal period/department/cost center/project/category/currency, covered categories and GROSS basis. UUID ledger rows represent ALLOCATION, CONSUMPTION, PO_COMMITMENT or CLAIM_RESERVATION with amount and owner where needed. No mutable balance or reservation service exists. |
+| Historical transaction / allocation | Versioned canonical obligation facts, source link, lifecycle and settlement status. Vendor allocation states CONSUMED, RELEASED and REVERSED differ; employee paid consumption and ACTIVE/PENDING reservation differ. Cancelled/reversed rows remain evidence, not active capacity. |
+| Synthetic source document | JSON-only invoice/receipt facts labeled SYNTHETIC_JSON_FACTS_ONLY and ADJUDICATED_SYNTHETIC_FACTS. UUIDs resolve within fixtures; no document bytes, actual receipt verification, extraction, page or box coordinates exist. |
+| Golden case | UUID plus display case_id, branch, synthetic transaction, pinned reference IDs/versions, expected facts/decision/concepts/evidence, rationale and intended T IDs. Screening labels are future expectations, never executed results. |
+| Golden receipt allocation | Authorized demo peer share and separate PROPOSED claimant share; cases are independent alternatives. A proposal exceeding eligible value is exception data, not a committed over-allocation. |
+| Fixture snapshot / digest | Case snapshot pins dependency roots and explicit selected children with matching versions; evidence paths resolve. Canonical repeated loads and the 23-file SHA-256 manifest verify deterministic data integrity, not evaluation replay or audit security. |
+
+No FX, contracts/service acceptances, importer, full training/performance dataset, or financial evaluator is represented. Missing hotel nights and per-night amounts stay null; category status expectation UNKNOWN stays distinct from them and from PASS.

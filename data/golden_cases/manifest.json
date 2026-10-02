@@ -1,0 +1,97 @@
+{
+  "fixture_schema_version": "p0-03-v1",
+  "synthetic": true,
+  "cases": [
+    {
+      "case_id": "GOLDEN-VENDOR-CLEAN",
+      "path": "vendor/clean.json",
+      "branch": "VENDOR_INVOICE",
+      "expected_decision": "PASS",
+      "intended_test_ids": [
+        "T01",
+        "T24"
+      ]
+    },
+    {
+      "case_id": "GOLDEN-VENDOR-PAID_DUPLICATE",
+      "path": "vendor/paid_duplicate.json",
+      "branch": "VENDOR_INVOICE",
+      "expected_decision": "HOLD",
+      "intended_test_ids": [
+        "T03"
+      ]
+    },
+    {
+      "case_id": "GOLDEN-VENDOR-PARTIAL_GRN",
+      "path": "vendor/partial_grn.json",
+      "branch": "VENDOR_INVOICE",
+      "expected_decision": "HOLD",
+      "intended_test_ids": [
+        "T08"
+      ]
+    },
+    {
+      "case_id": "GOLDEN-VENDOR-APPROVAL_PENDING",
+      "path": "vendor/approval_pending.json",
+      "branch": "VENDOR_INVOICE",
+      "expected_decision": "HOLD",
+      "intended_test_ids": [
+        "T26"
+      ]
+    },
+    {
+      "case_id": "GOLDEN-EMPLOYEE-CLEAN_TAXI",
+      "path": "employee/clean_taxi.json",
+      "branch": "EMPLOYEE_EXPENSE",
+      "expected_decision": "PASS",
+      "intended_test_ids": [
+        "T13"
+      ]
+    },
+    {
+      "case_id": "GOLDEN-EMPLOYEE-HOTEL_TWO_NIGHTS",
+      "path": "employee/hotel_two_nights.json",
+      "branch": "EMPLOYEE_EXPENSE",
+      "expected_decision": "PASS",
+      "intended_test_ids": [
+        "T14"
+      ]
+    },
+    {
+      "case_id": "GOLDEN-EMPLOYEE-HOTEL_UNKNOWN_NIGHTS",
+      "path": "employee/hotel_unknown_nights.json",
+      "branch": "EMPLOYEE_EXPENSE",
+      "expected_decision": "REVIEW",
+      "intended_test_ids": [
+        "T15"
+      ]
+    },
+    {
+      "case_id": "GOLDEN-EMPLOYEE-DAILY_MEALS",
+      "path": "employee/daily_meals.json",
+      "branch": "EMPLOYEE_EXPENSE",
+      "expected_decision": "REVIEW",
+      "intended_test_ids": [
+        "T16"
+      ]
+    },
+    {
+      "case_id": "GOLDEN-EMPLOYEE-SHARED_WITHIN",
+      "path": "employee/shared_within.json",
+      "branch": "EMPLOYEE_EXPENSE",
+      "expected_decision": "PASS",
+      "intended_test_ids": [
+        "T19"
+      ]
+    },
+    {
+      "case_id": "GOLDEN-EMPLOYEE-SHARED_EXCEEDED",
+      "path": "employee/shared_exceeded.json",
+      "branch": "EMPLOYEE_EXPENSE",
+      "expected_decision": "HOLD",
+      "intended_test_ids": [
+        "T20"
+      ]
+    }
+  ]
+}

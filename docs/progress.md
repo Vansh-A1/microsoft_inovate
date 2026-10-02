@@ -4,17 +4,18 @@
 
 - Session date: 2026-10-02 (Asia/Kolkata).
 - Current phase: **Phase 0 — Contracts and feasibility**.
-- Current task: **P0-02 — Domain contracts and financial invariants**.
+- Current task: **P0-03 — Reproducible synthetic reference fixtures and golden finance cases**.
 - Project status before this baseline: **application implementation not started**.
 - P0-01 status: **P0-01 implementation complete locally — remote publication blocked**.
 - P0-02 status: **COMPLETE — locally verified domain foundation**.
-- P0-03 and subsequent tasks: **not started; awaiting separate approval**.
+- P0-03 status: **COMPLETE — locally verified synthetic fixtures and golden expectations**.
+- P0-04 and subsequent tasks: **not started; awaiting separate approval**.
 
 The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gates. A completed documentation task does not complete Phase 0. [T01–T42 coverage](test_coverage.md) tracks implementation separately from documentation checks.
 
 ## Phase checklist
 
-- [ ] Phase 0 — Contracts and feasibility (P0-02 verified locally; P0-01 remote publication blocked; P0-03–P0-06 not started).
+- [ ] Phase 0 — Contracts and feasibility (P0-01–P0-03 complete locally; publication blocked; P0-04–P0-06 not started).
 - [ ] Phase 1 — Rules-first vertical slice for both branches.
 - [ ] Phase 2 — Real document ingestion and extraction.
 - [ ] Phase 3 — Complete finance matching and controls.
@@ -26,7 +27,7 @@ The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gat
 
 - [ ] P0-01 — Repository inspection and documentation baseline (complete locally; publication blocked).
 - [x] P0-02 — Domain glossary, state enums, Decimal/currency conventions, evidence schema, unknown-data semantics (verified locally).
-- [ ] P0-03 — Synthetic references and adjudicated golden fixtures.
+- [x] P0-03 — Synthetic references and adjudicated golden fixtures (verified locally; data expectations only).
 - [ ] P0-04 — ExtractionAdapter and varied-document TypeLLM/VLM spike.
 - [ ] P0-05 — Runtime compatibility, quality/latency/license/hardware notes and version pins; fixture fallback if blocked.
 - [ ] P0-06 — Initial architecture decisions for identity, policies, queues/storage, and decision mode.
@@ -160,3 +161,56 @@ The pytest setup is configuration only. No dependency was installed, package ver
 The verified task is committed locally with `feat: establish core finance domain contracts`. No push or authentication attempt is part of P0-02; the P0-01 publication blocker remains recorded. Verify the local working tree is clean after the commit. Phase 0 remains incomplete.
 
 Next recommended task: **P0-03 — Create reproducible synthetic reference fixtures and golden finance cases**, only after explicit user approval. P0-03 has not started.
+
+## P0-03 work record
+
+### Approved scope and plan
+
+Phase 0, P0-03 creates a small, hand-auditable INR-only synthetic reference set and ten independent golden scenarios. Expected files: `data/synthetic/reference/*.json`, synthetic/golden READMEs, `data/golden_cases/{vendor,employee}/*.json`, a case manifest, a fixture checksum manifest, test-only standard-library validation support and pytest integrity tests under `apps/api/tests/fixtures/`, plus existing documentation updates. No domain contract changes, dependencies, finance evaluators, extraction, application scaffolding, authentication workarounds, or push are authorized.
+
+Relevant requirements: specification sections 2, 5–10, 14, 16, 21–23; exact decimal strings, scoped UUID identities, versioned temporal references, explicit missing facts, reproducible arithmetic, and truthful evidence expectations. Proposed fixture support: T01, T03, T08, T13–T16, T19–T20, T24, T26. All 42 business scenarios remain NOT IMPLEMENTED.
+
+Verification plan: validate required fields, UUID uniqueness, references, tenant/entity/manager/cost-center relationships, currencies, decimal strings, temporal/policy consistency, pinned evidence and manifest mappings. Test malformed mutations as well as actual relationships and expected operands; compare repeated normalized loads/digests. Run existing domain tests, new fixture tests, the full suite, original-input SHA-256 and byte-copy checks, fixture checksums, documentation/scope audit, and working/staged whitespace checks. Self-review and update exact results before one local commit; stop before P0-04.
+
+### What was built
+
+Twelve JSON reference envelopes contain 38 root records: two tenants, three entities, one cost center, one vendor, four employees, one PO with one line, one GRN with one line, three expense policies, one approval policy, two budgets, five historical transactions and fourteen JSON-only source documents. Embedded lines, three prior matching allocations and six ledger rows bring reference UUID records to 49. All finance activity is in one entity; other scopes are isolation-test sentinels.
+
+Ten independently adjudicated golden cases: vendor clean/paid duplicate/partial GRN/missing approval; employee taxi/two-night hotel/unknown-night hotel/daily meals/shared within/shared exceeded. Their transactions, source/reference links, version pins, expected facts, future decisions, concepts, rationale and evidence relationships are data only. The total dataset has 108 distinct UUID records. The 23 JSON files are covered by `data/synthetic/fixtures.sha256`; fixture/golden READMEs explain intentional updates and limits.
+
+Test-only `apps/api/tests/fixtures/fixture_support.py` loads deterministic JSON, reuses Money/state/evidence contracts, and validates required fields, UUID identity/uniqueness, typed and scoped links, manager/cost-center consistency, currencies and decimal strings, nested float/constants/duplicate-key rejection, effective dates, applicable policy overlaps, demo bands, declared policy bindings, allocation lifecycle/ledger-owner consistency, human approval vocabulary, snapshot dependency closure and evidence kind/version/field paths. Tests corrupt independent copies and derive exact operands from the baseline records. No validator returns a screening decision.
+
+Fixture support is exactly T01, T03, T08, T13, T14, T15, T16, T19, T20, T24 and T26. All 42 coverage rows remain NOT IMPLEMENTED. The remaining 31 IDs have no dedicated golden preparation. No claim of behavior PASS or end-to-end coverage is made.
+
+### Exact verification results
+
+| Command/check | Exit/result |
+|---|---|
+| `python3 -m pytest apps/api/tests/unit/domain -q` | Exit 0; 241 passed in 0.08s, 0 failed, 0 skipped. |
+| `python3 -m pytest apps/api/tests/fixtures -q` | Exit 0; final fixture run: 123 passed in 0.28s, 0 failed, 0 skipped. |
+| `python3 -m pytest -q` | Exit 0; 364 passed in 0.34s, 0 failed, 0 skipped. This is 241 existing + 123 new distinct tests, not a sum of repeated runs. |
+| `sha256sum -c docs/source_inputs.sha256` | Exit 0; all nine original project files, including ZIP, unchanged. |
+| `cmp AP_Exception_Assistant_6_Person_Team_Pack/AP_Exception_Assistant_Codex_Spec.md docs/AP_Exception_Assistant_Codex_Spec.md` | Exit 0; specification copy byte-identical. |
+| `sha256sum -c data/synthetic/fixtures.sha256` | Exit 0; all 23 JSON files report OK. |
+| `git diff --check` | Exit 0; no working-tree whitespace errors. |
+| `python3 /tmp/audit_p003.py` (ad hoc standard-library documentation/scope audit) | Exit 0; 79 local Markdown references including heading anchors resolve; all 42 scenario/expectation rows match the specification and remain NOT IMPLEMENTED; 13 Python files parse with Python 3.10 grammar and import only stdlib/existing domain/pytest support. Runtime tested only on Python 3.13.11. |
+| Same audit: scope and limited credential patterns | Exit 0; exactly 37 authorized files, no domain/source changes, no application/extraction/rules/dependency files and no common private-key/AWS/GitHub signatures in changed text. This is not a security certification. |
+| Same audit and repeat-load fixture tests | Exit 0; 108 unique scoped UUID records, ten independent cases. Repeated canonical content/digest agree: `1fdd167453d530ad286dbb633ed1e0abb5051f61b38b08bfd3b13a6ba52550b6`. |
+| `git diff --cached --check` | Exit 0; no staged whitespace errors. |
+| `python3 /tmp/audit_p003.py --staged` | Exit 0; all documentation/scope/fixture checks above plus exactly 37 intended files staged, no unstaged tracked changes. |
+
+### Self-review and limitations
+
+Reviewed scoped references and parent versions, effective periods and policy dimensions, exact decimal fields, pinned dependency closure and evidence paths. PO/GRN operands give 100 ordered, 85 accepted minus 5 returns = 80, prior consumed 30, available 50, new 70 and shortfall 20; cancelled/reversed allocations remain distinct. Supplies budget is 200,000 − 35,400 − 82,600 = 82,000; covered invoice incremental need is zero. Travel budget is 50,000 − 600 − 600 = 48,800. Hotel 15,000 / 2 = 7,500 versus 8,000; missing nights stay null. Meals total 1,800 versus 1,500. Shared receipt alternatives total 1,200 or 1,400 against 1,200, with proposed shares explicitly uncommitted. Missing approval does not invent an action UUID.
+
+All people, organizations, tax identifiers and account tokens are visibly fictional. JSON source facts do not include document bytes or real bank/payment instructions. Demo approval roles and source verification tags are declarations, not authentication, actual receipt validation, or policy authority. The first two INR approval bands have actors/actions; higher bands are configuration only. One currency/cost center and three expense categories are represented. No FX, contract/service acceptance, UOM conversion, image transformation, import freshness, concurrency, training/performance dataset or full 200/10k construction is delivered.
+
+No production domain code was changed and no dependency installed. No database/API schema, finance rule, evaluator, application scaffold, extraction adapter, TypeLLM, ML or cloud component was introduced. The validator is test support for this data shape. Python 3.10 grammar inspection is not runtime compatibility verification. No new ADR is needed because fixture conventions follow the approved specification without a new production architecture decision. Phase 0 remains incomplete and P0-04 has not started.
+
+### Documentation and local commit
+
+Updated root README and the bounded-task notice in AGENTS, this progress tracker, assumptions, fixture dictionary and fixture support coverage. Added synthetic and golden READMEs. Original documents/specification/ZIP and prior domain contracts are unchanged.
+
+One verified local commit uses `test: add synthetic finance fixtures and golden cases`. No push or authentication workaround is attempted; P0-01 publication remains separately blocked. Staged scope/whitespace and post-commit cleanliness are checked locally.
+
+Next recommended task: **P0-04 — Define the ExtractionAdapter contract and run a TypeLLM/VLM compatibility spike on varied synthetic documents**, only after explicit user approval. Stop here.

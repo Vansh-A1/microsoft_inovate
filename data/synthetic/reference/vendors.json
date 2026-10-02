@@ -1,0 +1,27 @@
+{
+  "fixture_schema_version": "p0-03-v1",
+  "synthetic": true,
+  "source_system": "SYNTHETIC_JSON",
+  "records": [
+    {
+      "id": "50000000-0000-4000-8000-000000000001",
+      "version": 1,
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "effective_from": "2026-01-01",
+      "effective_to": "2027-01-01",
+      "legal_name": "DEMO Fictional Widget Supplier",
+      "aliases": [
+        "DEMO Widget Supplier"
+      ],
+      "tax_identifier": "DEMO-NONREG-TAX-001",
+      "status": "ACTIVE_APPROVED",
+      "approved_categories": [
+        "SUPPLIES"
+      ],
+      "payment_account_token": "DEMO-NONPAYABLE-TOKEN-001",
+      "payment_account_version": "demo-account-v1"
+    }
+  ]
+}

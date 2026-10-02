@@ -1,14 +1,14 @@
 # Assumptions and external inputs
 
-This register separates proposed development defaults, currently missing inputs, and observed environment facts. None establishes a live company's finance policy or a production capability. Basis: [specification](AP_Exception_Assistant_Codex_Spec.md), repository reconnaissance, and the user's P0-01 approval on 2026-10-02.
+This register separates proposed development defaults, currently missing inputs, and observed environment facts. None establishes a live company's finance policy or a production capability. Basis: [specification](AP_Exception_Assistant_Codex_Spec.md), repository reconnaissance, and the user's bounded P0-01–P0-03 approvals on 2026-10-02.
 
 ## Business defaults and missing inputs
 
 | Item | Current basis/status | Required before live use |
 |---|---|---|
-| Data | Synthetic-only development is the approved default. No synthetic application fixtures or real confidential documents have been added in P0-01. | Authorized representative documents/data and permitted uses. |
-| Company/entity scope | Proposed synthetic single entity, with tenant/entity isolation required once implemented. No organization-specific scope was supplied. | Actual entities, visibility, and policy owners. |
-| Currency/tax | INR is the proposed demo primary currency; tax, FX, limits, and approval bands in the spec are development examples. | Approved currencies, jurisdiction/tax/rounding/FX policies. |
+| Data | P0-03 adds 38 fictional root references and ten independently adjudicated golden alternatives. Source documents are JSON facts only, with no real documents or extraction claims. | Authorized representative documents/data and permitted uses. |
+| Company/entity scope | All fixture finance activity uses one fictional entity/cost center. A second entity and second tenant's entity are sentinel scopes for malformed-link tests. This does not implement access control. | Actual entities, visibility, and policy owners. |
+| Currency/tax | P0-03 is explicitly INR-only; its 18% tax, hotel/meals/taxi limits and half-open approval bands are labeled demo arithmetic/configuration. No FX was needed or invented. | Approved currencies, jurisdiction/tax/rounding/FX policies. |
 | Finance policy | No real company policy or approved authority matrix is supplied. | Signed-off control, approval, waiver, and separation-of-duties rules. |
 | Payment execution | Outside the initial scope; none exists. | Separate explicit design and authorization for any future integration. |
 
@@ -20,6 +20,7 @@ This register separates proposed development defaults, currently missing inputs,
 | Extraction | Fixture extraction is the safe planned default until a provider/runtime is verified. No extraction adapter exists yet. |
 | TypeLLM/VLM | Compatibility, null handling, line strategy, evidence granularity, latency, license, and hardware needs are not verified. No provider was selected. |
 | Deterministic controls | P0-02 implements immutable standard-library state, exact-decimal Money/currency, and evidence contracts. Finance rules, screening, and finalization remain unimplemented. |
+| Fixture conventions | P0-03 uses fixed UUIDs, version 1, half-open reference dates, fixed UTC evaluation time, exact decimal strings including night quantities, and independent case snapshots. Test-only validation and operand assertions are not production transaction schemas or evaluators. |
 | ML | No adjudicated training dataset or trained model is supplied or created. Synthetic tests will not establish real-world generalization. |
 | Operational readiness | No latency, extraction-quality, availability, backup, or restore target has been measured. Targets in the specification are proposals. |
 
@@ -41,7 +42,7 @@ Observed in the checked shell/Python environment on 2026-10-02. These are not pr
 | PostgreSQL tools | `psql` not available on the checked PATH; no project database exists. |
 | uv / GitHub CLI | Not available on the checked PATH. |
 
-No dependencies were installed or selected in P0-01/P0-02. Production domain modules use the standard library; pytest uses the preexisting environment. P0-02 avoids syntax/API features newer than Python 3.10, but execution is verified only on Python 3.13.11. No package metadata or broader compatibility claim is introduced. Subsequent runtime setup must be a separately approved task.
+No dependencies were installed or selected in P0-01–P0-03. Production domain modules and fixture support use the standard library and existing contracts; pytest uses the preexisting environment. Source syntax targets Python 3.10, but execution is verified only on Python 3.13.11. No package metadata or broader compatibility claim is introduced. Subsequent runtime setup must be a separately approved task.
 
 ## External dependencies
 

@@ -2,7 +2,7 @@
 
 This is the implementation coverage tracker for T01–T42 in [specification section 22.2](AP_Exception_Assistant_Codex_Spec.md#222-mandatory-test-cases). Scenarios and expected results are copied from that table; they describe required behavior, not executed tests.
 
-**T01–T42 status: 42 NOT IMPLEMENTED; 0 completed end-to-end finance cases.** P0-02 adds automated domain unit/invariant tests; those do not implement complete transaction workflows or satisfy these business scenarios.
+**T01–T42 status: 42 NOT IMPLEMENTED; 0 completed end-to-end finance cases.** P0-02 adds automated domain unit/invariant tests; P0-03 adds synthetic fixture integrity/operand tests and data support for eleven scenario IDs. These do not implement complete transaction workflows or satisfy these business scenarios.
 
 Target phases are provisional planning assignments derived from the implementation plan. A test spanning phases is not complete until all its required behavior is implemented and verified. Update this matrix with actual automated test paths and results after approved work; do not mark PASS because an expectation is documented.
 
@@ -62,3 +62,22 @@ Core deterministic, concurrency, and security cases remain mandatory. Optional l
 | [test_evidence.py](../apps/api/tests/unit/domain/test_evidence.py) | UUID/scope/version/page/bounds validation, optional page-only evidence, full import-cell locators, immutable references, truthful missing-data context. |
 
 These tests support later evidence, arithmetic, and uncertainty controls. No T01–T42 row is marked implemented solely because these supporting contracts exist. Exact executed results are recorded in [progress](progress.md).
+
+## P0-03 fixture preparation
+
+**Fixture prepared; rule not yet implemented.** The main matrix above remains unchanged. This support table maps ten independent golden cases to exactly eleven T IDs. Labels are adjudicated future expectations; fixture-integrity tests do not count as executed business scenarios.
+
+| T ID(s) | Fixture support | Data prepared |
+|---|---|---|
+| T01, T24 | [clean vendor](../data/golden_cases/vendor/clean.json) | Approved party, PO/GRN quantities, budget commitment coverage, synthetic completed approval actions. Commitment transfer and full-control PASS remain future behavior. |
+| T03 | [paid duplicate](../data/golden_cases/vendor/paid_duplicate.json) | Separate UUID obligation with exact paid historical business facts and cited history. |
+| T08 | [partial GRN](../data/golden_cases/vendor/partial_grn.json) | 100 ordered, 80 accepted, 30 prior consumed, 70 new, 50 remaining, 20 shortfall; excluded cancelled/reversed allocations. |
+| T13 | [clean taxi](../data/golden_cases/employee/clean_taxi.json) | Employee, synthetic receipt facts, policy, budget, Manager action and INR 2,400/day operands. |
+| T14 | [two-night hotel](../data/golden_cases/employee/hotel_two_nights.json) | INR 15,000 / 2 nights = 7,500 versus 8,000; matched policy/context. |
+| T15 | [unknown hotel nights](../data/golden_cases/employee/hotel_unknown_nights.json) | Explicit null nights/stay dates/per-night amount; UNKNOWN expectation, no guessed denominator. |
+| T16 | [daily meals](../data/golden_cases/employee/daily_meals.json) | Paid, pending reserved and current claim IDs: 600 + 600 + 600 = 1,800 versus 1,500. |
+| T19 | [shared within](../data/golden_cases/employee/shared_within.json) | Authorized peer 600 + proposed claimant 600 within eligible receipt 1,200. |
+| T20 | [shared exceeded](../data/golden_cases/employee/shared_exceeded.json) | Same reference receipt; independent proposal 600 + 800 = 1,400, excess 200. |
+| T26 | [approval pending](../data/golden_cases/vendor/approval_pending.json) | Exact absent Department Head step; transaction/policy/snapshot evidence and only the existing Manager action. |
+
+Supporting integrity tests: [reference integrity](../apps/api/tests/fixtures/test_reference_integrity.py), [golden cases](../apps/api/tests/fixtures/test_golden_cases.py), [financial representation](../apps/api/tests/fixtures/test_no_financial_floats.py). They test declared links, dimensions/dates, malformed mutations, evidence pins, deterministic content/checksums and exact operands. No duplicate detector, policy/approval/budget engine, authorization service, or extraction exists. Source records are JSON facts only. The [dataset READMEs](../data/synthetic/README.md) describe scope and limitations. The other 31 T IDs have no dedicated golden case preparation in P0-03.

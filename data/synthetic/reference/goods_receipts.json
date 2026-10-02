@@ -1,0 +1,38 @@
+{
+  "fixture_schema_version": "p0-03-v1",
+  "synthetic": true,
+  "source_system": "SYNTHETIC_JSON",
+  "records": [
+    {
+      "id": "76000000-0000-4000-8000-000000000001",
+      "version": 1,
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "effective_from": "2026-01-01",
+      "effective_to": "2027-01-01",
+      "display_number": "DEMO-GRN-001",
+      "po_id": "60000000-0000-4000-8000-000000000001",
+      "received_date": "2026-09-08",
+      "source_system": "SYNTHETIC_JSON",
+      "source_version": "demo-grn-v1",
+      "lines": [
+        {
+          "id": "76100000-0000-4000-8000-000000000001",
+          "version": 1,
+          "synthetic": true,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+          "po_id": "60000000-0000-4000-8000-000000000001",
+          "po_line_id": "71000000-0000-4000-8000-000000000001",
+          "received_quantity": "85.0000",
+          "accepted_quantity": "85.0000",
+          "returned_quantity": "5.0000",
+          "reversed_quantity": "0.0000",
+          "uom": "EA"
+        }
+      ]
+    }
+  ]
+}

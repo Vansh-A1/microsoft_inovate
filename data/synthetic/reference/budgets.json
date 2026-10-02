@@ -1,0 +1,117 @@
+{
+  "fixture_schema_version": "p0-03-v1",
+  "synthetic": true,
+  "source_system": "SYNTHETIC_JSON",
+  "records": [
+    {
+      "id": "61000000-0000-4000-8000-000000000001",
+      "version": 1,
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "effective_from": "2026-01-01",
+      "effective_to": "2027-01-01",
+      "code": "DEMO-BUDGET-SUPPLIES",
+      "fiscal_period": "2026",
+      "department": "DEMO-ENGINEERING",
+      "cost_center_id": "52000000-0000-4000-8000-000000000001",
+      "project": "DEMO-WORKSHOP",
+      "category": "SUPPLIES",
+      "covered_categories": [
+        "SUPPLIES"
+      ],
+      "currency": "INR",
+      "basis": "GROSS",
+      "ledger": [
+        {
+          "id": "78000000-0000-4000-8000-000000000001",
+          "version": 1,
+          "synthetic": true,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "entry_type": "ALLOCATION",
+          "amount": "200000.00",
+          "currency": "INR"
+        },
+        {
+          "id": "78000000-0000-4000-8000-000000000002",
+          "version": 1,
+          "synthetic": true,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "entry_type": "CONSUMPTION",
+          "amount": "35400.00",
+          "currency": "INR",
+          "owner_id": "30000000-0000-4000-8000-000000000101"
+        },
+        {
+          "id": "78000000-0000-4000-8000-000000000003",
+          "version": 1,
+          "synthetic": true,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "entry_type": "PO_COMMITMENT",
+          "amount": "82600.00",
+          "currency": "INR",
+          "owner_id": "60000000-0000-4000-8000-000000000001"
+        }
+      ]
+    },
+    {
+      "id": "61000000-0000-4000-8000-000000000002",
+      "version": 1,
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "effective_from": "2026-01-01",
+      "effective_to": "2027-01-01",
+      "code": "DEMO-BUDGET-TRAVEL",
+      "fiscal_period": "2026",
+      "department": "DEMO-ENGINEERING",
+      "cost_center_id": "52000000-0000-4000-8000-000000000001",
+      "project": "DEMO-WORKSHOP",
+      "category": "TRAVEL",
+      "covered_categories": [
+        "HOTEL",
+        "MEAL",
+        "TAXI"
+      ],
+      "currency": "INR",
+      "basis": "GROSS",
+      "ledger": [
+        {
+          "id": "78000000-0000-4000-8000-000000000004",
+          "version": 1,
+          "synthetic": true,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "entry_type": "ALLOCATION",
+          "amount": "50000.00",
+          "currency": "INR"
+        },
+        {
+          "id": "78000000-0000-4000-8000-000000000005",
+          "version": 1,
+          "synthetic": true,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "entry_type": "CONSUMPTION",
+          "amount": "600.00",
+          "currency": "INR",
+          "owner_id": "30000000-0000-4000-8000-000000000201"
+        },
+        {
+          "id": "78000000-0000-4000-8000-000000000006",
+          "version": 1,
+          "synthetic": true,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "entry_type": "CLAIM_RESERVATION",
+          "amount": "600.00",
+          "currency": "INR",
+          "owner_id": "30000000-0000-4000-8000-000000000202"
+        }
+      ]
+    }
+  ]
+}

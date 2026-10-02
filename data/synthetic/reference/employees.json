@@ -1,0 +1,95 @@
+{
+  "fixture_schema_version": "p0-03-v1",
+  "synthetic": true,
+  "source_system": "SYNTHETIC_JSON",
+  "records": [
+    {
+      "id": "51000000-0000-4000-8000-000000000001",
+      "version": 1,
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "effective_from": "2026-01-01",
+      "effective_to": "2027-01-01",
+      "employee_number": "DEMO-EMP-001",
+      "name": "DEMO Claimant One",
+      "status": "ACTIVE",
+      "employment_from": "2025-01-01",
+      "employment_to": null,
+      "department": "DEMO-ENGINEERING",
+      "cost_center_id": "52000000-0000-4000-8000-000000000001",
+      "manager_id": "51000000-0000-4000-8000-000000000003",
+      "grade": "G1",
+      "country": "IN",
+      "roles": [
+        "EMPLOYEE"
+      ]
+    },
+    {
+      "id": "51000000-0000-4000-8000-000000000002",
+      "version": 1,
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "effective_from": "2026-01-01",
+      "effective_to": "2027-01-01",
+      "employee_number": "DEMO-EMP-002",
+      "name": "DEMO Claimant Two",
+      "status": "ACTIVE",
+      "employment_from": "2025-01-01",
+      "employment_to": null,
+      "department": "DEMO-ENGINEERING",
+      "cost_center_id": "52000000-0000-4000-8000-000000000001",
+      "manager_id": "51000000-0000-4000-8000-000000000003",
+      "grade": "G1",
+      "country": "IN",
+      "roles": [
+        "EMPLOYEE"
+      ]
+    },
+    {
+      "id": "51000000-0000-4000-8000-000000000003",
+      "version": 1,
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "effective_from": "2026-01-01",
+      "effective_to": "2027-01-01",
+      "employee_number": "DEMO-EMP-003",
+      "name": "DEMO Manager",
+      "status": "ACTIVE",
+      "employment_from": "2025-01-01",
+      "employment_to": null,
+      "department": "DEMO-ENGINEERING",
+      "cost_center_id": "52000000-0000-4000-8000-000000000001",
+      "manager_id": "51000000-0000-4000-8000-000000000004",
+      "grade": "G1",
+      "country": "IN",
+      "roles": [
+        "MANAGER"
+      ]
+    },
+    {
+      "id": "51000000-0000-4000-8000-000000000004",
+      "version": 1,
+      "synthetic": true,
+      "tenant_id": "10000000-0000-4000-8000-000000000001",
+      "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+      "effective_from": "2026-01-01",
+      "effective_to": "2027-01-01",
+      "employee_number": "DEMO-EMP-004",
+      "name": "DEMO Department Head",
+      "status": "ACTIVE",
+      "employment_from": "2025-01-01",
+      "employment_to": null,
+      "department": "DEMO-ENGINEERING",
+      "cost_center_id": "52000000-0000-4000-8000-000000000001",
+      "manager_id": null,
+      "grade": "G1",
+      "country": "IN",
+      "roles": [
+        "DEPARTMENT_HEAD"
+      ]
+    }
+  ]
+}
