@@ -59,6 +59,8 @@ def test_auth_scope_and_database_rls(environment):
     db,ctx,other,client,cfg=environment
     r=seed(db,ctx,['vendor/clean'])[0];rid=r['id'];eid=r['latest_evaluation_id']
     rules=client.get('/api/v1/evaluations/'+eid).json()['rules'];evidence=rules[0]['evidence'][0]['id']
+    document_evidence=next(e['id'] for r in rules for e in r['evidence'] if e['reference']['kind']=='DOCUMENT_FIELD')
+    assert client.get('/api/v1/evidence/'+document_evidence,headers={'Authorization':'Bearer test-second'}).status_code==404
     for route in [f'/transactions/{rid}',f'/evaluations/{eid}',f'/evidence/{evidence}',f'/evaluations/{eid}/report']:
         assert client.get('/api/v1'+route,headers={'Authorization':'Bearer test-second'}).status_code==404
     assert client.get('/api/v1/transactions',headers={'Authorization':'Bearer test-second'}).json()['items']==[]
@@ -87,6 +89,7 @@ def test_idempotent_create_revision_and_evaluate(environment):
     assert client.post(f'/api/v1/transactions/{rid}/revisions',json=revision,headers=headers()).status_code==409
     current=client.get('/api/v1/transactions/'+rid).json();assert len(current['versions'])==2 and current['versions'][0]['payload']['invoice_number']!=current['versions'][1]['payload']['invoice_number']
     assert current['eligible'] is False and current['decision'] is None
+    assert client.post(f'/api/v1/transactions/{rid}/evaluate',json={'expected_version':1,'reason':'Stale screening request'},headers=headers()).status_code==409
     with db.session(ctx) as s:assert s.scalar(select(func.count()).select_from(Transaction))==1
 
 
@@ -100,6 +103,7 @@ def test_re_evaluation_supersedes_immutable_reports_and_reservations(environment
     with db.session(ctx) as s:
         reservations=list(s.scalars(select(CapacityReservation).where(CapacityReservation.state=='ACTIVE')))
         assert len(reservations)==3 and sum(r.quantity for r in reservations if r.kind=='GRN_LINE')==Decimal('20')
+        assert next(r for r in reservations if r.kind=='BUDGET').amount==Decimal('0')
         assert s.scalar(select(func.count()).select_from(Evaluation))==2
 
 

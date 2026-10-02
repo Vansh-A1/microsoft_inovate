@@ -79,3 +79,19 @@ def test_credit_currency_and_scope_incomplete_abstain():
         changed=data|{'transaction':data['transaction']|patch}
         assert not evaluate(RuleContext.pin(**changed)).eligible
     assert not evaluate(RuleContext.pin(**(data|{'context_complete':False}))).eligible
+
+
+@pytest.mark.parametrize('amount,roles',[('9999.99',['MANAGER']),('10000.00',['MANAGER','DEPARTMENT_HEAD']),('100000.00',['MANAGER','DIRECTOR']),('500000.00',['MANAGER','CFO'])])
+def test_approval_amount_band_boundaries(amount,roles):
+    data=json.loads(context('vendor/clean').encoded);data['transaction']['total_amount']=amount
+    approval=next(r for r in evaluate(RuleContext.pin(**data)).results if r.rule_id=='APR-001')
+    assert approval.observed['required_roles']==roles
+
+
+def test_partial_receipt_allocation_is_explicitly_unsupported():
+    data=json.loads(context('employee/hotel_two_nights').encoded)
+    item=data['transaction']['items'][0];item['receipt_total_amount']='18000.00'
+    data['references'][item['source_document_id']]['facts']['receipt_total_amount']='18000.00'
+    result=evaluate(RuleContext.pin(**data))
+    assert result.decision=='REVIEW' and not result.eligible
+    assert next(r for r in result.results if r.rule_id=='SYS-001').status=='UNKNOWN'

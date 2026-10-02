@@ -9,7 +9,7 @@ from app.domain.money import Money
 from app.domain.states import RuleStatus, DecisionEffect, ScreeningDecision
 from app.domain.evidence import EvidenceReference, EvidenceKind, ImportCellLocator
 
-RULESET = 'rules-p1-v4'
+RULESET = 'rules-p1-v5'
 DECISION_POLICY = 'hold-first-p1-v1'
 RULE_IDS = ('VAL-001','VAL-002','VAL-003','VEN-001','VEN-002','DUP-002','PO-001','PO-002','GRN-001','EMP-001','DOC-001','EXP-003','BUD-001','APR-001','SYS-001')
 D = Decimal
@@ -89,7 +89,7 @@ def _evaluate(c):
         return bool(r and day and (not r.get('effective_from') or r['effective_from']<=day) and (not r.get('effective_to') or day<r['effective_to']))
     def result(rid,status,reason,observed=None,expected=None,evidence=(),effect=None,tolerance=None):
         effect=effect or ('NONE' if status in ('PASS','NOT_APPLICABLE') else 'REVIEW')
-        results.append(RuleResult(rid,'1.0.3',status,effect,reason,projection(observed),projection(expected),tolerance,tuple([ev()]+list(evidence))))
+        results.append(RuleResult(rid,'1.0.4',status,effect,reason,projection(observed),projection(expected),tolerance,tuple([ev()]+list(evidence))))
     def check(rid,ok,reason,observed=None,expected=None,evidence=(),failure='REVIEW',tolerance=None):
         result(rid,'PASS' if ok else 'FAIL',reason,observed,expected,evidence,'NONE' if ok else failure,tolerance)
     def na(rid):result(rid,'NOT_APPLICABLE','Control does not apply to this transaction branch.',p['branch'],'Applicable branch only')
@@ -228,8 +228,9 @@ def _evaluate(c):
     if approvals:
         authority=[ev(refs[a['actor_id']],'roles','MASTER_RECORD') for a in approvals if a['actor_id'] in refs]
         r=results[-1];results[-1]=RuleResult(r.rule_id,r.version,r.status,r.decision_effect,r.reason,r.observed,r.expected,r.tolerance,r.evidence+tuple(ev(a,None,'APPROVAL') for a in approvals)+tuple(authority))
-    supported=p.get('document_type')=='ORDINARY' and p.get('currency')=='INR' and c.get('context_complete') is True
-    result('SYS-001','PASS' if supported else 'UNKNOWN','Rules-only context is complete; risk model NOT_CONFIGURED.' if supported else 'Unsupported currency/type or incomplete context requires review.',{'mode':'RULES_ONLY','model_status':'NOT_CONFIGURED','extraction':'STRUCTURED_SYNTHETIC','currency':p.get('currency')},'Complete supported deterministic context')
+    full_receipts=vendor or all(i.get('claimed_amount') is not None and i.get('receipt_total_amount') is not None and D(i['claimed_amount'])==D(i['receipt_total_amount']) for i in p['items'])
+    supported=p.get('document_type')=='ORDINARY' and p.get('currency')=='INR' and c.get('context_complete') is True and full_receipts
+    result('SYS-001','PASS' if supported else 'UNKNOWN','Rules-only context is complete; risk model NOT_CONFIGURED.' if supported else 'Unsupported currency/type, partial receipt allocation or incomplete context requires review.',{'mode':'RULES_ONLY','model_status':'NOT_CONFIGURED','extraction':'STRUCTURED_SYNTHETIC','currency':p.get('currency')},'Complete supported deterministic context')
     # Original import-cell provenance accompanies every finding on imported records.
     if c.get('import_source'):
         source=c['import_source'];cell=ImportCellLocator(UUID(source['batch_id']),source['sheet'],source['row_number'],'transaction_json')
