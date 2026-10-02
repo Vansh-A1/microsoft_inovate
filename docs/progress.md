@@ -6,14 +6,14 @@
 - Current phase: **Phase 0 — Contracts and feasibility**.
 - Current task: **P0-01 — Establish repository and documentation baseline**.
 - Project status before this baseline: **application implementation not started**.
-- P0-01 status: **implementation complete locally — initial publication pending**.
+- P0-01 status: **P0-01 implementation complete locally — remote publication blocked**.
 - P0-02 and every application implementation task: **not started; awaiting separate approval**.
 
 The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gates. A completed documentation task does not complete Phase 0. [T01–T42 coverage](test_coverage.md) tracks implementation separately from documentation checks.
 
 ## Phase checklist
 
-- [ ] Phase 0 — Contracts and feasibility (P0-01 locally verified; publication pending).
+- [ ] Phase 0 — Contracts and feasibility (P0-01 locally verified; remote publication blocked).
 - [ ] Phase 1 — Rules-first vertical slice for both branches.
 - [ ] Phase 2 — Real document ingestion and extraction.
 - [ ] Phase 3 — Complete finance matching and controls.
@@ -23,7 +23,7 @@ The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gat
 
 ### Phase 0 tasks
 
-- [ ] P0-01 — Repository inspection and documentation baseline.
+- [ ] P0-01 — Repository inspection and documentation baseline (complete locally; publication blocked).
 - [ ] P0-02 — Domain glossary, state enums, Decimal/currency conventions, evidence schema, unknown-data semantics.
 - [ ] P0-03 — Synthetic references and adjudicated golden fixtures.
 - [ ] P0-04 — ExtractionAdapter and varied-document TypeLLM/VLM spike.
@@ -83,11 +83,23 @@ Reviewed authored documentation, staged scope, and preserved source additions. R
 
 ### Publication
 
-Local verification is complete. Initial commit, push, and independent remote verification are pending. P0-01 remains unchecked until remote publication is verified. If progress changes after the first push, publish an additive documentation-only completion record; do not rewrite or force-push the initial history.
+Local verification is complete. The clean initial baseline commit is `0e55422f596f470b5ea39ba491ef90532f59fc68`, message `chore: establish project documentation baseline` (`git commit` and `git rev-parse HEAD`: exit 0). It contains exactly the 19 intended baseline/source files.
+
+`GIT_TERMINAL_PROMPT=0 git push -u origin main` returned **exit 128**:
+
+```text
+fatal: could not read Username for 'https://github.com': terminal prompts disabled
+```
+
+Git HTTPS authentication is unavailable to the checked noninteractive environment. No credentials, identity, or authentication configuration were changed; no workaround or force-push was attempted. The verified local baseline commit remains intact.
+
+After the failed push, `GIT_TERMINAL_PROMPT=0 git ls-remote origin` returned **exit 0 with no refs**. Remote `main` does not exist; no baseline files were published, so remote SHA/file verification cannot succeed yet. `git status --short --branch` returned exit 0 with a clean local `main` before recording this blocker.
+
+An additive documentation-only follow-up records this actual publication result and environment limitation locally, as required by the P0-01 approval. The working tree and committed progress must remain consistent. P0-01 remains unchecked because its remote publication acceptance condition is not satisfied. Once the user configures GitHub authentication, retry the existing commits with a normal push and verify the remote SHA and exact file set before completing P0-01. Do not begin P0-02 without separate approval.
 
 ### Limitations and next task
 
-No application code, project dependencies, runtime setup, database, migrations, APIs, finance rules, extraction, fixtures, ML, or Azure resources were created. Application tests do not exist. Phase 0 exit criteria remain unmet. Environment prerequisites are recorded, not installed.
+No application code, project dependencies, runtime setup, database, migrations, APIs, finance rules, extraction, fixtures, ML, or Azure resources were created. Application tests do not exist. Phase 0 exit criteria remain unmet. Environment prerequisites are recorded, not installed. **Active P0-01 blocker: GitHub HTTPS authentication is required to publish and verify the baseline.**
 
 Next recommended task: **P0-02 — Domain contracts, state enums, Decimal/currency conventions, evidence schema, and unknown-data semantics**, only after user approval. This task stops after P0-01.
 

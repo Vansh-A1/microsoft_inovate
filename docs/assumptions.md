@@ -31,6 +31,7 @@ Observed in the checked shell/Python environment on 2026-10-02. These are not pr
 |---|---|
 | Python | 3.13.11 (`/opt/conda/bin/python3`). |
 | Git | 2.43.0; an existing author/committer identity is configured. |
+| GitHub publication | Anonymous remote read succeeds, but the initial HTTPS push returned exit 128: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. Authentication is unavailable to this noninteractive Git operation; no credentials/configuration were changed. |
 | pytest | Installed, version 9.1.1 in the checked Python environment; workspace collection found no tests. |
 | FastAPI / Pydantic | Installed environment distributions: 0.137.1 / 2.12.4. No project dependency manifest or compatibility test exists. |
 | Node / npm | Not available on the checked PATH. |
