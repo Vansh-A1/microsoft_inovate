@@ -4,14 +4,15 @@
 
 - Session date: 2026-10-02–03 (Asia/Kolkata).
 - Current phase: **Phase 0 — Contracts and feasibility**.
-- Current task: **P0-04B — Compatibility verification and exact runtime plan (complete)**.
+- Current task: **P0-04C1 — Runtime prerequisite gate and minimal real image smoke (BLOCKED_DRIVER; Docker access also blocked)**.
 - Project status before this baseline: **application implementation not started**.
 - P0-01 status: **P0-01 implementation complete locally — remote publication blocked**.
 - P0-02 status: **COMPLETE — locally verified domain foundation**.
 - P0-03 status: **COMPLETE — locally verified synthetic fixtures and golden expectations**.
 - P0-04 status: **P0-04 IN PROGRESS — P0-04A/P0-04B COMPLETE**.
 - P0-04B: **research complete; local inference blocked; no provider installed/executed**.
-- P0-04C and subsequent tasks: **not started; awaiting separate approval and prerequisites**.
+- P0-04C1: **gate attempted; ENVIRONMENT_FAILURE before downloads; text/image smoke NOT RUN**.
+- P0-04C2 and subsequent tasks: **not started; separate approval required**.
 
 The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gates. A completed documentation task does not complete Phase 0. [T01–T42 coverage](test_coverage.md) tracks implementation separately from documentation checks.
 
@@ -33,7 +34,9 @@ The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gat
 - [ ] P0-04 — ExtractionAdapter and varied-document TypeLLM/VLM spike.
 - [x] P0-04A — Extraction contract, fixture adapter and structured synthetic spike harness (verified locally; no real provider).
 - [x] P0-04B — Verify current TypeLLM/SGLang/model sources and produce the exact gated runtime plan (research complete; runtime not verified).
-- [ ] P0-04C — Isolated real provider image spike (not started; local prerequisites blocked; separate approval required).
+- [ ] P0-04C — Isolated real provider image spike (incomplete).
+- [ ] P0-04C1 — Prerequisite gate + minimal real image smoke (BLOCKED_DRIVER / Docker access denial; smoke not run).
+- [ ] P0-04C2 — Full ten-case real provider benchmark (not started; separate approval required).
 - [ ] P0-05 — Runtime compatibility, quality/latency/license/hardware notes and version pins; fixture fallback if blocked.
 - [ ] P0-06 — Initial architecture decisions for identity, policies, queues/storage, and decision mode.
 
@@ -321,3 +324,48 @@ Runtime mutation: TypeLLM installed NO; SGLang installed NO; model weights downl
 Publication policy: one local documentation commit `docs: verify TypeLLM spike compatibility plan`; no push attempted. `PYTHONDONTWRITEBYTECODE=1 python3 /tmp/audit_p004b.py --staged` and `git diff --cached --check` both returned exit 0: exactly nine authorized documentation files staged, no unstaged tracked changes, no whitespace errors. Final commit SHA and post-commit clean-tree state are reported in the checkpoint completion message. No Git authentication/configuration was changed. Stop before P0-04C.
 
 Next recommended step: supply supported CUDA 13 runtime and owner-approved GPU Docker access, then explicitly approve the pinned Qwen3.5-4B experimental image smoke and gated ten-case P0-04C spike. Keep the fixture adapter operational; no automatic dependency/model/hardware/hosted-provider substitution. Await approval.
+
+## P0-04C1 work record — blocked prerequisite gate
+
+### Approved scope and stop decision
+
+Phase 0 / parent P0-04 / P0-04C1 authorizes a fresh prerequisite gate, then only the approved pinned runtime and one text/one synthetic image smoke if every mandatory prerequisite passes. The latest approval explicitly forbids driver/system/Docker configuration changes, workarounds, the full ten-case benchmark and P0-04C2. The gate was checked before any download/install. It failed; runtime work stopped immediately. Necessary support is documentation only in AGENTS, README, this record, extraction_compatibility and an appended observed-results section in typellm_spike_plan. No application, adapter, dataset, dependency or ADR change is needed. Verification: existing regression suite, three checksum sets, byte-identical spec, documentation/scope and staged whitespace checks; one local documentation commit, no push, stop.
+
+### Observed gate, 2026-10-03 01:11:59 IST
+
+Primary classification **BLOCKED_DRIVER**; additional independent failure **BLOCKED_DOCKER_ACCESS**. Failure stage **ENVIRONMENT_FAILURE**, before image pull or model/client setup. The approved SGLang 0.5.21 digest remains unchanged and uses CUDA 13.0.3 with a supported >=580 driver requirement from the P0-04B plan. No alternate stack was selected.
+
+| Exact command/check | Exit / actual result |
+|---|---|
+| `nvidia-smi` | Exit 0; driver 550.120, advertised CUDA driver capability 12.4; 1,417 MiB / 16,380 MiB used before any experiment. No model load or inference occurred. |
+| `nvidia-smi --query-gpu=name,driver_version,memory.total,compute_cap --format=csv` | Exit 0; one RTX 2000 Ada Generation, 550.120, 16,380 MiB, capability 8.9. Driver gate fails. |
+| `docker --version` | Exit 0; CLI 29.1.3. |
+| `docker info` | Exit 1; permission denied while connecting to Docker API at unix:///var/run/docker.sock. Daemon/GPU/container state not verified. |
+| `docker info --format '{{json .Runtimes}} {{json .DockerRootDir}}'` | Exit 1; same permission denial. Empty/null formatted values are not evidence that no runtime/storage exists. |
+| Python command discovery for `nvidia-container-cli` | /usr/bin/nvidia-container-cli found; no tool installed. |
+| `nvidia-container-cli --version` | Exit 0; CLI/library 1.20.0. This does not establish GPU passthrough. |
+| `python3 --version` | Exit 0; existing project Python 3.13.11. No inference environment created. |
+| `free -h` | Exit 0; 62 GiB total, 42 GiB available, 8 GiB swap. |
+| `df -h /data` and `df -h` | Both exit 0; ~790 GiB /data, ~238 GiB root/home/tmp free. Byte-level disk inspection: /data 848,253,620,224 bytes; root/home/tmp 255,498,735,616 bytes. |
+
+GPU passthrough **NOT VERIFIED** because Docker access failed; no container was pulled/run to test it. Storage capacity on the observed filesystems is sufficient for the planned reservation, but actual DockerRootDir remains **NOT VERIFIED**, so the complete storage prerequisite cannot pass. Required budget unchanged: model weights 9,319,828,096 bytes/full listed repo 9,342,907,469 bytes, container compressed 15,164,770,325 bytes; /data temporary downloads 10 GiB, cache/possible copy 9 GiB, overlay/artifacts/reports/kernel cache 4 GiB, plus safety reserve. Reserve 65 GiB /data and 120 GiB at actual DockerRootDir, including extraction temporary space and 30 GiB safety per location. Conditional remaining free space would be ~725 GiB /data and ~118 GiB root if Docker storage is on root. No storage was allocated for inference.
+
+### Smoke, runtime, privacy and cleanup
+
+Text smoke **NOT RUN**; image smoke classification **IMAGE_PATH_NOT_RUN**. Actual container/dependency matrix, model load, schema/null/enum/money-string behavior, thinking suppression, health, OOM, image stability and latency remain **NOT VERIFIED**. Model-loaded/text/image peak VRAM and latency are unavailable, not zero. No extraction result or finance decision was fabricated. Existing string-only money/Decimal boundary is unchanged.
+
+No container/image/model/client package downloaded or installed; no runtime/p004c directory, synthetic image, adapter, model server, named container or network created. No host driver/CUDA/OS package/group/socket/service/Docker configuration changed; no sudo used. No real finance documents, credentials or reasoning processed. Nothing required container/network cleanup; shared resources/caches were not queried destructively or removed. Only gate documentation and a temporary local read-only inventory record exist from this step; no inference artifacts occupy disk. Full ten-case provider benchmark and P0-04C2 **NOT RUN / NOT STARTED**.
+
+### Regression and preservation
+
+| Exact command | Exit/result |
+|---|---|
+| `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider` | Exit 0; **488 passed, 0 failed, 0 skipped**, 0.43s. Existing test/environment baseline preserved. |
+| `sha256sum -c docs/source_inputs.sha256` | Exit 0; nine original inputs OK. |
+| `sha256sum -c data/synthetic/fixtures.sha256` | Exit 0; 23 prior finance fixtures OK. |
+| `sha256sum -c data/extraction_spike/fixtures.sha256` | Exit 0; 11 prior structured extraction JSON files OK. |
+| `cmp docs/AP_Exception_Assistant_Codex_Spec.md AP_Exception_Assistant_6_Person_Team_Pack/AP_Exception_Assistant_Codex_Spec.md` | Exit 0; 123,229-byte specification copy unchanged. |
+
+Next external action: machine owner/administrator supplies a host driver supported by the approved CUDA 13 runtime (>=580 baseline) and authorized Docker daemon access with NVIDIA GPU passthrough. These system changes are outside this task and were not attempted. Then reapprove/recheck P0-04C1 using the same pins; do not jump to P0-04C2. Parent P0-04 remains incomplete. A documentation-only local commit records the fresh failed gate; no push authorized.
+
+Documentation self-review: `PYTHONDONTWRITEBYTECODE=1 python3 /tmp/audit_p004c1.py` returned exit 0: exactly five documentation files, 125 local links/anchors resolve, original P0-04B plan/pins preserved byte-for-byte as a prefix, all 20 provider statuses unchanged, all 42 business scenarios unimplemented, no experiment directory, and all 16 recorded host package states unchanged. Limited credential-pattern scan found no common key/token signatures; this is not a security certification. `git diff --check` returned exit 0. The temporary audit/inventory files are outside Git. Final local commit SHA, staged-check result and clean-tree status are reported in the checkpoint completion message; push not attempted.

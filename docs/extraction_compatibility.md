@@ -1,6 +1,6 @@
 # P0-04B compatibility checklist
 
-Research completed on 2026-10-02–03 (Asia/Kolkata). This is source verification and local inspection, not an executed provider compatibility test. P0-04C has not started; parent P0-04 remains incomplete. The exact sources, immutable revisions, machine observations, commands, storage calculations and release gates are in the [spike plan](typellm_spike_plan.md).
+Research completed on 2026-10-02–03 (Asia/Kolkata). This is source verification and local inspection, not an executed provider compatibility test. P0-04C1 rechecked the gate on 2026-10-03 and stopped before downloads; no provider smoke ran. P0-04C2 has not started; parent P0-04 remains incomplete. The exact sources, immutable revisions, machine observations, commands, storage calculations and release gates are in the [spike plan](typellm_spike_plan.md).
 
 Status meanings: **VERIFIED FROM OFFICIAL SOURCE** establishes the stated upstream behavior; **VERIFIED LOCALLY** requires an executed local check; **NOT VERIFIED** identifies an unanswered compatibility/measurement question; **BLOCKED** identifies an observed prerequisite that prevents the selected experiment; **UNSUPPORTED** identifies a rejected interface feature. Source verification does not establish end-to-end compatibility. Each row has one primary status; its evidence column preserves qualifications.
 
@@ -30,3 +30,9 @@ Status meanings: **VERIFIED FROM OFFICIAL SOURCE** establishes the stated upstre
 Counts for these **20 checklist rows**: VERIFIED FROM OFFICIAL SOURCE **11**; VERIFIED LOCALLY **0**; NOT VERIFIED **5**; BLOCKED **3**; UNSUPPORTED **1**. The separately executed hardware/package/fixture checks are VERIFIED LOCALLY in the plan and progress record; they do not promote provider rows to end-to-end compatibility.
 
 Release gates: [string-only money boundary](adr/0002-extraction-money-and-provider-boundary.md), explicit uncertainty, reasoning suppression, truthful source locators, bounded rows, sanitized failures, pinned runtime and measured image checks. The current [fixture harness](../data/extraction_spike/README.md) remains operational and unchanged. No NOT CHECKED topics remain; no installation or next-task approval is implied.
+
+## P0-04C1 observed prerequisite gate — 2026-10-03
+
+Primary runtime classification **BLOCKED_DRIVER**; independent **BLOCKED_DOCKER_ACCESS**; failure stage **ENVIRONMENT_FAILURE**. Fresh local checks found driver 550.120 (approved CUDA 13.0.3 path requires supported >=580), Docker CLI 29.1.3 but docker info exit 1 with socket permission denial. Container tooling 1.20.0 is present; actual GPU passthrough and DockerRootDir remain NOT VERIFIED. Filesystem capacity meets the numerical reservations; complete Docker storage validation remains unresolved. These host observations are VERIFIED LOCALLY, not passing provider compatibility checks.
+
+Image classification **IMAGE_PATH_NOT_RUN**; text smoke NOT RUN. No container/client/model download/install, environment/adapter/artifact setup, provider request, measured model latency/VRAM, reasoning validation or ten-case provider benchmark occurred. All 20 provider topic statuses/counts above remain unchanged; none is promoted to VERIFIED LOCALLY. The [observed-results appendix](typellm_spike_plan.md#p0-04c1-observed-prerequisite-gate) and [progress](progress.md) record exact commands and preservation checks. P0-04C2 is not approved or started.

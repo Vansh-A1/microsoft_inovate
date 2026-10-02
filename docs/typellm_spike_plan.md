@@ -363,3 +363,25 @@ No named resource exists from P0-04B. Review experiment-directory contents befor
 See [progress](progress.md) for exact executed read-only inventory and regression checks. The [20-row checklist](extraction_compatibility.md) has 11 official-source, 0 local-provider, 5 unverified, 3 blocked and 1 unsupported primary statuses. Hardware/source inventory does not measure model latency/accuracy. Existing business coverage remains unchanged.
 
 Next recommended bounded approval: supply a CUDA 13-capable host/runtime and owner-approved GPU Docker access, then explicitly authorize the **4B experimental image smoke before the ten-case P0-04C spike**, with failure gates above. Alternatively approve a separate cu129 compatibility probe; it is not a verified fallback. Keep the fixture adapter operational until a real measured provider clears the gates. No installation or P0-04C work has begun.
+
+## P0-04C1 observed prerequisite gate
+
+**Observed 2026-10-03 01:11:59 IST. Primary result: BLOCKED_DRIVER. Additional blocker: BLOCKED_DOCKER_ACCESS. Failure stage: ENVIRONMENT_FAILURE.** This appendix adds actual findings; the original P0-04B plan and pins above are preserved unchanged. The P0-04C1 approval permits only a prerequisite gate and one text/one image smoke after all prerequisites pass; the planned ten-case commands above are not authorized by it.
+
+| Prerequisite | Observed | Outcome |
+|---|---|---|
+| Driver | nvidia-smi: 550.120, CUDA driver capability 12.4; approved image CUDA 13.0.3 requires supported >=580 | BLOCKED_DRIVER |
+| Docker access | CLI 29.1.3; docker info / formatted runtime-storage query exit 1, permission denied at /var/run/docker.sock | BLOCKED_DOCKER_ACCESS |
+| GPU / passthrough | One RTX 2000 Ada, SM8.9, 16,380 MiB; 1,417 MiB in use. NVIDIA container CLI/library 1.20.0. No container ran. | GPU passthrough NOT VERIFIED |
+| Storage | /data 848,253,620,224 bytes (~790 GiB) free; root/home/tmp 255,498,735,616 (~238 GiB). Planned 65/120 GiB reservation would leave ~725/~118 GiB if Docker uses root. | Observed capacity sufficient; actual DockerRootDir NOT VERIFIED |
+| Host test environment | Python 3.13.11; 62 GiB RAM, 42 GiB available | Existing project environment only; inference environment not created |
+
+Downloads/installations stopped at the failed gate. Expected weights 9,319,828,096 bytes/full repo 9,342,907,469; image compressed 15,164,770,325; temporary download/cache/environment/safety budgets remain as documented above. No partial artifacts downloaded. Actual container Python/SGLang/torch/transformers/tokenizers/FlashInfer/kernel/CUDA version comparison is **NOT VERIFIED** because the image was not pulled/run. Do not compare host package versions as if they were the selected container's matrix.
+
+Text smoke **NOT RUN**. Image classification **IMAGE_PATH_NOT_RUN**. Model-loaded/text/image VRAM, latency, schema/null/enum/money-string behavior, thinking suppression, bbox/source behavior, OOM and stability are unavailable/unverified. Known host idle usage is not an inference measurement. No extraction result or finance PASS was created; Money remains unchanged.
+
+No TypeLLM/SGLang install, container image pull, model download, client environment, runtime/p004c directory, synthetic image, adapter, server, named container or network was created. No real finance input, credentials or reasoning processed. No cleanup of runtime resources needed; shared resources and caches untouched. Original synthetic fixtures remain intact. P0-04C2/full provider benchmark not run.
+
+The existing suite passed **488 tests, 0 failed, 0 skipped**; all 9 original-input, 23 finance-fixture and 11 extraction-fixture checksums passed, and the specification copy is byte-identical. Exact commands/results are in [progress](progress.md). No ADR change: the observed host blockers persist and the approved architecture/pins were not replaced.
+
+External prerequisite: machine owner/administrator provides a host supported by CUDA 13 (>=580 driver baseline) and authorized Docker daemon access with usable NVIDIA GPU passthrough; no system changes are part of this task. Recheck/reapprove P0-04C1 after those prerequisites are supplied. Keep the fixture adapter operational and parent P0-04 incomplete. Do not start P0-04C2.

@@ -19,7 +19,7 @@ The supplied team-pack folder and ZIP are preserved original inputs. Use the `do
 - Implement only the current task and its necessary support. Do not add later-phase work, unrelated refactors, or speculative features.
 - After each task, report the result and stop. Do not begin the next task until the user approves it.
 - Before phase completion, review every task and exit criterion, run the phase checks, inspect any relevant UI, confirm documentation, and disclose remaining gaps. Do not enter the next phase without the user's approval.
-- Respect the scope of the user's latest bounded-task approval. P0-04B approves official-source compatibility research, read-only local inspection and documentation of the runtime plan only. P0-04C, real provider installation/execution, model/image downloads, application scaffolding and later work require separate approval; no system/driver/Docker permission changes are authorized.
+- Respect the scope of the user's latest bounded-task approval. P0-04C1 approves a runtime prerequisite gate and, only if every mandatory gate passes, the exact pinned isolated runtime plus one text/one synthetic image smoke. A failed gate stops downloads, installs and runtime work. No host driver/CUDA/system/Docker permission/configuration changes are authorized. The full ten-case benchmark, P0-04C2, production adapter and later work require separate approval.
 
 Operating loop:
 
