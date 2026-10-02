@@ -110,3 +110,25 @@ These are implemented JSON fixture conventions described in the [reference READM
 | Fixture snapshot / digest | Case snapshot pins dependency roots and explicit selected children with matching versions; evidence paths resolve. Canonical repeated loads and the 23-file SHA-256 manifest verify deterministic data integrity, not evaluation replay or audit security. |
 
 No FX, contracts/service acceptances, importer, full training/performance dataset, or financial evaluator is represented. Missing hotel nights and per-night amounts stay null; category status expectation UNKNOWN stays distinct from them and from PASS.
+
+## P0-04A extraction terminology
+
+Implementation: [extraction contract](../apps/api/app/domain/extraction.py), [adapter Protocol](../apps/api/app/extraction/base.py), [fixture adapter](../apps/api/app/extraction/fixture.py) and [comparison harness](../apps/api/app/extraction/spike.py). These are in-memory immutable contracts and structured replay, not a document ingestion, OCR, normalization, finance evaluator or persistence service.
+
+| Term | Implemented meaning |
+|---|---|
+| DocumentBundle / DocumentPage | Scoped UUID document/version, source type, ordered one-based pages, optional available text/future artifact references, declared rotation metadata and named version tags. No PDF/image access or preprocessing. |
+| ExtractionAdapter | Replaceable Protocol exposing typed metadata/capabilities and `extract(document_bundle, schema_version) -> ExtractionResult`; no provider/framework dependency. |
+| ExtractionResult | Frozen run/document/version/scope/schema identity, AdapterMetadata, ExtractionStatus, header observations, flat repeated rows, optional Decimal adapter elapsed time and raw artifact reference. No private reasoning or finance outcome. |
+| ExtractionRun | A result's required run UUID and version metadata identify one extraction observation run. Fixture IDs repeat deterministically. No database/run history, audit service, retry lifecycle or production run-ID generation exists. |
+| AdapterMetadata / VersionMetadata | Required adapter ID/version/provider ID plus optional model ID, prompt/template version and unique runtime name/version pairs. Unknown metadata stays absent. |
+| AdapterCapabilities | Explicit page-locator, bounding-box, line-item and visual-input support flags. Undeclared result locators/rows are errors; a flag is not independent runtime compatibility evidence. |
+| FieldObservation | Named scalar path, raw text, optional unverified candidate text, state, optional document EvidenceReference and uncalibrated diagnostic note. Page/bbox derive from existing evidence; no invented coordinates or required confidence. |
+| ExtractionObservationState | PRESENT requires raw text; MISSING requires null raw/candidate; ILLEGIBLE represents unreadable content; AMBIGUOUS preserves uncertain raw text; NOT_APPLICABLE is an extraction-schema annotation. Every non-PRESENT state forbids chosen candidates. None never silently becomes zero or a clean result. Boolean coercion is rejected. |
+| ExtractionStatus | COMPLETED, PARTIAL, FAILED, UNSUPPORTED. Execution status stays distinct from RuleStatus, screening and review states; COMPLETED may contain unreadable fields. Boolean coercion is rejected. |
+| LineItemObservation | Ordered positive row index, unique named scalar fields; at most 200 rows, 16 fields per row, 64 header fields. No recursive nested tables or general alignment. |
+| FixtureExtractionAdapter | Deterministic replay of independent synthetic response files by canonical input SHA-256 and schema; validates binding and does not consult golden finance outcomes. |
+| SpikeCase / SpikeDataset | Ten structured-only synthetic inputs, expected field/row facts/states and separate replay paths; version `extraction-spike-v1`, schema `extraction-v1`, canonical manifest digest and separate 11-file byte checksums. |
+| Spike report | Per-case statuses/comparisons plus independent critical-field, state/abstention, row count/coverage/value, locator availability, optional latency and version metadata. Empty/unavailable metrics are null. Generated runtime reports are separate from source annotations. |
+
+Parsed candidates remain text, including amount strings; they are neither authoritative Money nor verified normalization. Page references are synthetic declarations in this set and do not prove extraction localization. See the [extraction README](../data/extraction_spike/README.md) for limits and metric denominators. Provider compatibility topics remain [NOT CHECKED](extraction_compatibility.md); parent P0-04 is incomplete.

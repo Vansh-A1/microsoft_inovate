@@ -80,7 +80,9 @@ def test_repeated_loads_and_checked_in_digests(baseline):
     assert baseline.normalized() == again.normalized()
     assert baseline.digest() == again.digest()
     entries = [line.split("  ", 1) for line in (ROOT / "data/synthetic/fixtures.sha256").read_text().splitlines()]
-    files = {p.relative_to(ROOT).as_posix() for p in (ROOT / "data").rglob("*.json")}
+    # The P0-03 manifest owns these documented directories, not later datasets.
+    files = {p.relative_to(ROOT).as_posix() for p in (ROOT / "data/synthetic/reference").glob("*.json")}
+    files |= {p.relative_to(ROOT).as_posix() for p in (ROOT / "data/golden_cases").rglob("*.json")}
     assert len(entries) == len(files) == 23
     assert {path for _, path in entries} == files
     for digest, path in entries:

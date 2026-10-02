@@ -2,7 +2,7 @@
 
 This is the implementation coverage tracker for T01–T42 in [specification section 22.2](AP_Exception_Assistant_Codex_Spec.md#222-mandatory-test-cases). Scenarios and expected results are copied from that table; they describe required behavior, not executed tests.
 
-**T01–T42 status: 42 NOT IMPLEMENTED; 0 completed end-to-end finance cases.** P0-02 adds automated domain unit/invariant tests; P0-03 adds synthetic fixture integrity/operand tests and data support for eleven scenario IDs. These do not implement complete transaction workflows or satisfy these business scenarios.
+**T01–T42 status: 42 NOT IMPLEMENTED; 0 completed end-to-end finance cases.** P0-02 adds automated domain unit/invariant tests; P0-03 adds synthetic fixture integrity/operand tests and data support for eleven scenario IDs. P0-04A adds extraction contract/replay/harness tests. These do not implement complete transaction workflows or satisfy these business scenarios.
 
 Target phases are provisional planning assignments derived from the implementation plan. A test spanning phases is not complete until all its required behavior is implemented and verified. Update this matrix with actual automated test paths and results after approved work; do not mark PASS because an expectation is documented.
 
@@ -80,4 +80,14 @@ These tests support later evidence, arithmetic, and uncertainty controls. No T01
 | T20 | [shared exceeded](../data/golden_cases/employee/shared_exceeded.json) | Same reference receipt; independent proposal 600 + 800 = 1,400, excess 200. |
 | T26 | [approval pending](../data/golden_cases/vendor/approval_pending.json) | Exact absent Department Head step; transaction/policy/snapshot evidence and only the existing Manager action. |
 
-Supporting integrity tests: [reference integrity](../apps/api/tests/fixtures/test_reference_integrity.py), [golden cases](../apps/api/tests/fixtures/test_golden_cases.py), [financial representation](../apps/api/tests/fixtures/test_no_financial_floats.py). They test declared links, dimensions/dates, malformed mutations, evidence pins, deterministic content/checksums and exact operands. No duplicate detector, policy/approval/budget engine, authorization service, or extraction exists. Source records are JSON facts only. The [dataset READMEs](../data/synthetic/README.md) describe scope and limitations. The other 31 T IDs have no dedicated golden case preparation in P0-03.
+Supporting integrity tests: [reference integrity](../apps/api/tests/fixtures/test_reference_integrity.py), [golden cases](../apps/api/tests/fixtures/test_golden_cases.py), [financial representation](../apps/api/tests/fixtures/test_no_financial_floats.py). They test declared links, dimensions/dates, malformed mutations, evidence pins, deterministic content/checksums and exact operands. No duplicate detector, policy/approval/budget engine or authorization service exists. P0-03 source records are JSON facts only and are not used as extraction responses. The [dataset READMEs](../data/synthetic/README.md) describe scope and limitations. The other 31 T IDs have no dedicated golden case preparation in P0-03.
+
+## P0-04A extraction foundation
+
+| Test file | Verified foundation behavior |
+|---|---|
+| [test_contract.py](../apps/api/tests/unit/extraction/test_contract.py) | Immutable inputs/results/nested observations, typed metadata, explicit uncertainty, no guessed candidates, no required confidence, reused one-based EvidenceReference/BoundingBox, document/version/scope/page binding, bounded rows, separate extraction and financial states. |
+| [test_fixture_adapter.py](../apps/api/tests/unit/extraction/test_fixture_adapter.py) | Deterministic replay, exact input digest/schema binding, separate response data unaffected by altered ground truth, no runtime file reads or finance outputs, embedded instructions retained as text, truthful capabilities. |
+| [test_spike_harness.py](../apps/api/tests/unit/extraction/test_spike_harness.py) | All ten cases, independent critical metrics, guesses and missing observations/rows detected, extra rows and wrong item amounts, state/status/error reporting, unavailable metrics null, optional latency/version metadata, checksum scope and malformed inputs. |
+
+These tests support the future T29 uncertainty boundary and T41 untrusted-text boundary only. They do not implement REVIEW routing, provider disagreements, real VLM prompt behavior, or finance controls. All 42 main matrix rows remain NOT IMPLEMENTED. The ten [extraction cases](../data/extraction_spike/README.md) are separate from the ten P0-03 golden finance cases. Exact executed results appear in [progress](progress.md).

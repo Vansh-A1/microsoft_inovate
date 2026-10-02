@@ -1,0 +1,243 @@
+{
+  "synthetic": true,
+  "input_digest": "839600cdb1e8e26c44804fd9ef7426ed88db6c0b2dee5040961dd95b2beee941",
+  "result": {
+    "run_id": "44000000-0000-4000-8000-000000000004",
+    "document_id": "43000000-0000-4000-8000-000000000004",
+    "document_version": 1,
+    "tenant_id": "10000000-0000-4000-8000-000000000001",
+    "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+    "schema_version": "extraction-v1",
+    "metadata": {
+      "adapter_id": "fixture-extraction",
+      "adapter_version": "fixture-v1",
+      "provider_id": "synthetic-response-replay",
+      "model_id": null,
+      "prompt_template_version": null,
+      "runtime_versions": []
+    },
+    "status": "COMPLETED",
+    "header_fields": [
+      {
+        "field_path": "party_name",
+        "state": "PRESENT",
+        "raw_value": "DEMO Fictional Taxi Merchant",
+        "parsed_candidate": null,
+        "source": {
+          "kind": "DOCUMENT_FIELD",
+          "record_id": "43000000-0000-4000-8000-000000000004",
+          "record_version": 1,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "field_path": "party_name",
+          "document_id": "43000000-0000-4000-8000-000000000004",
+          "page": 1,
+          "bbox": null,
+          "snapshot_id": null,
+          "observed_value": "DEMO Fictional Taxi Merchant",
+          "import_cell": null
+        },
+        "diagnostic_note": null
+      },
+      {
+        "field_path": "document_number",
+        "state": "PRESENT",
+        "raw_value": "DEMO-R-EX-004",
+        "parsed_candidate": null,
+        "source": {
+          "kind": "DOCUMENT_FIELD",
+          "record_id": "43000000-0000-4000-8000-000000000004",
+          "record_version": 1,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "field_path": "document_number",
+          "document_id": "43000000-0000-4000-8000-000000000004",
+          "page": 1,
+          "bbox": null,
+          "snapshot_id": null,
+          "observed_value": "DEMO-R-EX-004",
+          "import_cell": null
+        },
+        "diagnostic_note": null
+      },
+      {
+        "field_path": "document_date",
+        "state": "PRESENT",
+        "raw_value": "24 Sep 2026",
+        "parsed_candidate": "2026-09-24",
+        "source": {
+          "kind": "DOCUMENT_FIELD",
+          "record_id": "43000000-0000-4000-8000-000000000004",
+          "record_version": 1,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "field_path": "document_date",
+          "document_id": "43000000-0000-4000-8000-000000000004",
+          "page": 1,
+          "bbox": null,
+          "snapshot_id": null,
+          "observed_value": "24 Sep 2026",
+          "import_cell": null
+        },
+        "diagnostic_note": null
+      },
+      {
+        "field_path": "currency",
+        "state": "PRESENT",
+        "raw_value": "INR",
+        "parsed_candidate": "INR",
+        "source": {
+          "kind": "DOCUMENT_FIELD",
+          "record_id": "43000000-0000-4000-8000-000000000004",
+          "record_version": 1,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "field_path": "currency",
+          "document_id": "43000000-0000-4000-8000-000000000004",
+          "page": 1,
+          "bbox": null,
+          "snapshot_id": null,
+          "observed_value": "INR",
+          "import_cell": null
+        },
+        "diagnostic_note": null
+      },
+      {
+        "field_path": "total",
+        "state": "ILLEGIBLE",
+        "raw_value": "[small text unreadable]",
+        "parsed_candidate": null,
+        "source": {
+          "kind": "DOCUMENT_FIELD",
+          "record_id": "43000000-0000-4000-8000-000000000004",
+          "record_version": 1,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "field_path": "total",
+          "document_id": "43000000-0000-4000-8000-000000000004",
+          "page": 1,
+          "bbox": null,
+          "snapshot_id": null,
+          "observed_value": "[small text unreadable]",
+          "import_cell": null
+        },
+        "diagnostic_note": null
+      },
+      {
+        "field_path": "po_reference",
+        "state": "NOT_APPLICABLE",
+        "raw_value": null,
+        "parsed_candidate": null,
+        "source": {
+          "kind": "DOCUMENT_FIELD",
+          "record_id": "43000000-0000-4000-8000-000000000004",
+          "record_version": 1,
+          "tenant_id": "10000000-0000-4000-8000-000000000001",
+          "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+          "field_path": "po_reference",
+          "document_id": "43000000-0000-4000-8000-000000000004",
+          "page": 1,
+          "bbox": null,
+          "snapshot_id": null,
+          "observed_value": null,
+          "import_cell": null
+        },
+        "diagnostic_note": null
+      }
+    ],
+    "line_items": [
+      {
+        "row_index": 1,
+        "fields": [
+          {
+            "field_path": "description",
+            "state": "PRESENT",
+            "raw_value": "DEMO Taxi ride",
+            "parsed_candidate": null,
+            "source": {
+              "kind": "DOCUMENT_FIELD",
+              "record_id": "43000000-0000-4000-8000-000000000004",
+              "record_version": 1,
+              "tenant_id": "10000000-0000-4000-8000-000000000001",
+              "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+              "field_path": "lines.1.description",
+              "document_id": "43000000-0000-4000-8000-000000000004",
+              "page": 1,
+              "bbox": null,
+              "snapshot_id": null,
+              "observed_value": "DEMO Taxi ride",
+              "import_cell": null
+            },
+            "diagnostic_note": null
+          },
+          {
+            "field_path": "quantity",
+            "state": "PRESENT",
+            "raw_value": "1",
+            "parsed_candidate": "1.0000",
+            "source": {
+              "kind": "DOCUMENT_FIELD",
+              "record_id": "43000000-0000-4000-8000-000000000004",
+              "record_version": 1,
+              "tenant_id": "10000000-0000-4000-8000-000000000001",
+              "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+              "field_path": "lines.1.quantity",
+              "document_id": "43000000-0000-4000-8000-000000000004",
+              "page": 1,
+              "bbox": null,
+              "snapshot_id": null,
+              "observed_value": "1",
+              "import_cell": null
+            },
+            "diagnostic_note": null
+          },
+          {
+            "field_path": "unit_price",
+            "state": "PRESENT",
+            "raw_value": "INR 600.00",
+            "parsed_candidate": "600.00",
+            "source": {
+              "kind": "DOCUMENT_FIELD",
+              "record_id": "43000000-0000-4000-8000-000000000004",
+              "record_version": 1,
+              "tenant_id": "10000000-0000-4000-8000-000000000001",
+              "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+              "field_path": "lines.1.unit_price",
+              "document_id": "43000000-0000-4000-8000-000000000004",
+              "page": 1,
+              "bbox": null,
+              "snapshot_id": null,
+              "observed_value": "INR 600.00",
+              "import_cell": null
+            },
+            "diagnostic_note": null
+          },
+          {
+            "field_path": "amount",
+            "state": "PRESENT",
+            "raw_value": "INR 600.00",
+            "parsed_candidate": "600.00",
+            "source": {
+              "kind": "DOCUMENT_FIELD",
+              "record_id": "43000000-0000-4000-8000-000000000004",
+              "record_version": 1,
+              "tenant_id": "10000000-0000-4000-8000-000000000001",
+              "legal_entity_id": "20000000-0000-4000-8000-000000000001",
+              "field_path": "lines.1.amount",
+              "document_id": "43000000-0000-4000-8000-000000000004",
+              "page": 1,
+              "bbox": null,
+              "snapshot_id": null,
+              "observed_value": "INR 600.00",
+              "import_cell": null
+            },
+            "diagnostic_note": null
+          }
+        ]
+      }
+    ],
+    "elapsed_ms": null,
+    "raw_artifact_ref": "synthetic-response:responses/poor_small_text.json",
+    "failure_code": null
+  }
+}

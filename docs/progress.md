@@ -4,18 +4,19 @@
 
 - Session date: 2026-10-02 (Asia/Kolkata).
 - Current phase: **Phase 0 — Contracts and feasibility**.
-- Current task: **P0-03 — Reproducible synthetic reference fixtures and golden finance cases**.
+- Current task: **P0-04A — Extraction contract, fixture adapter and spike harness**.
 - Project status before this baseline: **application implementation not started**.
 - P0-01 status: **P0-01 implementation complete locally — remote publication blocked**.
 - P0-02 status: **COMPLETE — locally verified domain foundation**.
 - P0-03 status: **COMPLETE — locally verified synthetic fixtures and golden expectations**.
-- P0-04 and subsequent tasks: **not started; awaiting separate approval**.
+- P0-04 status: **P0-04 IN PROGRESS — P0-04A COMPLETE**.
+- P0-04B and subsequent tasks: **not started; awaiting separate approval**.
 
 The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gates. A completed documentation task does not complete Phase 0. [T01–T42 coverage](test_coverage.md) tracks implementation separately from documentation checks.
 
 ## Phase checklist
 
-- [ ] Phase 0 — Contracts and feasibility (P0-01–P0-03 complete locally; publication blocked; P0-04–P0-06 not started).
+- [ ] Phase 0 — Contracts and feasibility (P0-01–P0-03 and P0-04A complete locally; parent P0-04 incomplete; publication blocked; later work not started).
 - [ ] Phase 1 — Rules-first vertical slice for both branches.
 - [ ] Phase 2 — Real document ingestion and extraction.
 - [ ] Phase 3 — Complete finance matching and controls.
@@ -29,6 +30,8 @@ The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gat
 - [x] P0-02 — Domain glossary, state enums, Decimal/currency conventions, evidence schema, unknown-data semantics (verified locally).
 - [x] P0-03 — Synthetic references and adjudicated golden fixtures (verified locally; data expectations only).
 - [ ] P0-04 — ExtractionAdapter and varied-document TypeLLM/VLM spike.
+- [x] P0-04A — Extraction contract, fixture adapter and structured synthetic spike harness (verified locally; no real provider).
+- [ ] P0-04B — Verify current TypeLLM/SGLang/model compatibility and produce the exact dependency/runtime plan (not started).
 - [ ] P0-05 — Runtime compatibility, quality/latency/license/hardware notes and version pins; fixture fallback if blocked.
 - [ ] P0-06 — Initial architecture decisions for identity, policies, queues/storage, and decision mode.
 
@@ -214,3 +217,62 @@ Updated root README and the bounded-task notice in AGENTS, this progress tracker
 One verified local commit uses `test: add synthetic finance fixtures and golden cases`. No push or authentication workaround is attempted; P0-01 publication remains separately blocked. Staged scope/whitespace and post-commit cleanliness are checked locally.
 
 Next recommended task: **P0-04 — Define the ExtractionAdapter contract and run a TypeLLM/VLM compatibility spike on varied synthetic documents**, only after explicit user approval. Stop here.
+
+## P0-04A work record
+
+### Approved design and verification plan
+
+Phase 0, bounded P0-04A establishes an immutable, provider-independent DocumentBundle/FieldObservation/ExtractionResult boundary, a small ExtractionAdapter Protocol, deterministic fixture responses and a reusable comparison harness. Expected files: `apps/api/app/domain/extraction.py`, `apps/api/app/extraction/{base,fixture,spike}.py` and package marker, `apps/api/tests/unit/extraction/`, `data/extraction_spike/` manifest/response JSON/README/checksums, a document-only compatibility checklist, and existing tracking documentation. Specification basis: sections 3.3, 4.1, 4.3–4.6, 13.1, 20–22. No finance decisions, real TypeLLM/SGLang/VLM/OCR/preprocessing, dependency installation, model downloads, credentials or push are authorized.
+
+Design: raw text and optional unverified candidate text stay distinct; PRESENT/MISSING/ILLEGIBLE/AMBIGUOUS/NOT_APPLICABLE are separate extraction states. A bounded header plus flat indexed rows supports line items. Source references reuse P0-02 EvidenceReference/BoundingBox, with optional page-only provenance and no invented boxes. Result metadata identifies adapter/provider/schema/document/version and optional model/runtime/template/timing/artifact data. Ten structured synthetic cases have future visual artifact slots; fixture responses are separate from benchmark ground truth. Critical-field, state/abstention, line coverage/value, locator availability and optional latency metrics are reported independently; unavailable/empty metrics remain null.
+
+Validation plan: contract type/immutability/uncertainty/evidence and financial-status separation tests; deterministic fixture behavior, scope/version/input-digest binding and no golden finance dependency; harness wrong-value, guessed-abstention, missing-row, unsupported-locator and unavailable-metric tests. Run existing domain and P0-03 fixture tests, new extraction tests, full suite, source/spec-copy checks, unchanged P0-03 checksums, new spike checksums, documentation/import/scope audits and working/staged whitespace checks. Keep the original 23-file finance checksum set unchanged; narrowly scope its test inventory to its documented directories so the new extraction dataset has its own manifest. One local commit, then stop before P0-04B; parent P0-04 remains incomplete.
+
+### What was built
+
+The standard-library extraction contract defines frozen DocumentBundle/DocumentPage, FieldObservation, LineItemObservation, AdapterMetadata/VersionMetadata/AdapterCapabilities and ExtractionResult. Header/row/page resource limits are explicit. Raw observed text and unverified candidate strings are separate. Non-PRESENT states reject chosen candidates; MISSING rejects invented raw text. No confidence number is required or supplied. Optional diagnostic notes are uncalibrated. ExtractionStatus is separate from screening/rule status; COMPLETED can still contain illegible fields. Evidence reuses P0-02 normalized optional BoundingBox/one-based page semantics and validates result/input document/version/scope/page binding. No source box is fabricated.
+
+ExtractionAdapter is a small runtime-checkable Protocol. FixtureExtractionAdapter replays immutable separate responses by full canonical input SHA-256 and schema, requires synthetic inputs, and verifies binding. It reads no files during extract, consults no golden finance outcomes, parses no text and executes no rules. Fixed synthetic run IDs repeat deterministically; production run history/identity generation is not implemented.
+
+Ten future spike cases are prepared in `data/extraction_spike/`: clean vendor, multi-page/multiple rows, clean receipt, small/poor text, declared rotation, ambiguous numeric date, inclusive-tax variation, missing PO, obscured total and repeated header/footer. These contain structured text/metadata and explicit raw/candidate/state/row ground truth, separate from response JSON. Available text and page evidence are authored synthetic declarations; artifact slots and all boxes are null. There are no actual image/PDF/OCR/VLM artifacts or visual tests. The repeated footer's policy-override instruction remains observed text. Receipt NOT_APPLICABLE PO is a schema annotation, not a policy waiver.
+
+The provider-independent harness records each status/run/failure, version metadata, independent total/currency/document-number/date/party metrics, exact state/abstention comparisons, indexed row count/coverage/value agreement, missing/extra rows, locator availability and optional adapter timing. Missing results count as disagreements; empty denominators and unsupported locators are null, never perfect. Exception messages are excluded; exception class is recorded. Runtime reports are separate, ignored output, with a CLI-only current execution timestamp. Comparison without a timestamp is deterministic. The separate checksum manifest pins exactly 11 new JSON files; the prior 23-file manifest and all old JSON are unchanged.
+
+The generated fixture report attempts/completes all ten cases: each critical observation agrees 10/10, states 130/130, explicit abstentions 7/7, rows 12/12 and row values 48/48. Page availability is 130/130; boxes are unsupported/null and adapter latency is absent/null. These are expected replay/annotation agreements by construction, not independent extraction-quality, visual, real-world or production-accuracy results.
+
+### Exact verification results
+
+| Command/check | Exit/result |
+|---|---|
+| `python3 -m pytest apps/api/tests/unit/domain -q` | Exit 0; 241 passed in 0.08s, 0 failed, 0 skipped. |
+| `python3 -m pytest apps/api/tests/fixtures -q` | Exit 0; 123 passed in 0.27s, 0 failed, 0 skipped. |
+| `python3 -m pytest apps/api/tests/unit/extraction -q` | Exit 0; final required run: 124 passed in 0.09s, 0 failed, 0 skipped. |
+| `python3 -m pytest -q` | Exit 0; 488 passed in 0.43s, 0 failed, 0 skipped. These are 364 existing + 124 new distinct tests, not repeated-run totals. |
+| `sha256sum -c docs/source_inputs.sha256` | Exit 0; all nine original files including ZIP report OK. |
+| `sha256sum -c data/synthetic/fixtures.sha256` | Exit 0; all 23 prior finance JSON files report OK; manifest unchanged. |
+| `sha256sum -c data/extraction_spike/fixtures.sha256` | Exit 0; all 11 separately pinned extraction JSON files report OK. |
+| `cmp AP_Exception_Assistant_6_Person_Team_Pack/AP_Exception_Assistant_Codex_Spec.md docs/AP_Exception_Assistant_Codex_Spec.md` | Exit 0; byte-identical specification. |
+| `python3 scripts/benchmark/extraction_spike.py --dataset data/extraction_spike --output generated/reports/extraction-fixture.json` | Exit 0; generated ten-case structured replay/comparison report with truthful unsupported/absent metrics. |
+| `git check-ignore generated/reports/extraction-fixture.json` | Exit 0; runtime report ignored by existing rules and excluded from commit. |
+| `git diff --check` | Exit 0; no working-tree whitespace errors. |
+| `python3 /tmp/audit_p004a.py` (adapted ad hoc documentation/scope audit) | Exit 0; 102 local Markdown references including heading anchors resolve; all 42 scenario/expectation rows match the specification and remain NOT IMPLEMENTED; 23 Python files parse using Python 3.10 grammar, stdlib/existing contracts/pytest only. Execution verified only on Python 3.13.11. |
+| Same audit: scope, boundaries and limited credential patterns | Exit 0; exactly 31 approved files; prior domain/source/finance JSON/checksums unchanged; no provider/OCR/API/database dependency or later-phase files; no common private-key/AWS/GitHub signatures. This is not a security certification. |
+| Same audit: repeat loads/status | Exit 0; old finance normalized SHA-256 unchanged (`1fdd167453d530ad286dbb633ed1e0abb5051f61b38b08bfd3b13a6ba52550b6`); ten deterministic extraction comparisons; manifest digest `db00315130436eb572065cad35b1b00edcb2c8058dad84ea862de5975387bd0a`; all 20 future compatibility topics NOT CHECKED; parent P0-04 incomplete. |
+| `git diff --cached --check` | Exit 0; no staged whitespace errors. |
+| `python3 /tmp/audit_p004a.py --staged` | Exit 0; all preceding documentation/scope/boundary checks plus exactly 31 intended files staged and no unstaged tracked changes. |
+
+The first extraction-only run had 122 passing tests and two failing test assertions: the item mutation targeted the wrong field name, and a capability declaration applied to all cases rather than one. Corrected the test setups; no failure was suppressed. Final specific and full suites pass as recorded above.
+
+### Self-review, documentation and limits
+
+Reviewed type/immutability, raw/candidate separation, all five observation states, financial-status isolation, document/source scope/version/page consistency, bounded rows, deterministic input binding and comparisons, missing/extra rows, optional locators/timing and error privacy. Negative tests demonstrate that guessed illegible/ambiguous/missing fields, wrong critical/item values, omitted observations and incomplete row sets cannot score as correct. Other adapter implementations and real runtimes remain unverified. There is no general table alignment, normalization, localization-correctness metric, authoritative Money conversion, real document ingestion, authorization or audit/persistence service.
+
+No TypeLLM or SGLang was installed, no model downloaded or VLM executed, no OCR integrated, no preprocessing or finance rule implemented, and no dependency/environment/credentials changed. The document-only compatibility checklist records 20 NOT CHECKED topics for later official-source/runtime verification; it makes no current provider capability claims. P0-04B/P0-04C have not started, parent P0-04 is not complete, and Phase 0 exit gates remain unmet.
+
+Updated root README, bounded approval notice in AGENTS, this tracker, assumptions, dictionary and test coverage. Added extraction dataset README and compatibility checklist. The existing P0-03 integrity test's inventory is narrowly limited to its original documented directories; it still verifies all 23 prior files, independently of the new checksum set. No original fixture/source/specification or earlier production domain contract changed. No ADR is added because the provider-independent boundary, uncertainty and source semantics are already mandated by the approved specification; no consequential new service/dependency/persistence architecture was selected.
+
+### Local commit and next task
+
+Commit checkpoint: one local commit, `feat: define extraction contract and spike harness`, after staged scope/whitespace review. No push or authentication attempt is authorized or attempted; the prior P0-01 publication blocker remains recorded separately. Post-commit SHA and clean working-tree verification are reported in the completion response.
+
+Next recommended task: **P0-04B — Verify current TypeLLM/SGLang/model compatibility and produce an exact dependency/runtime plan before installation**, only after explicit user approval. Stop here.

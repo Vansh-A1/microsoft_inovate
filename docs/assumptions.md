@@ -1,6 +1,6 @@
 # Assumptions and external inputs
 
-This register separates proposed development defaults, currently missing inputs, and observed environment facts. None establishes a live company's finance policy or a production capability. Basis: [specification](AP_Exception_Assistant_Codex_Spec.md), repository reconnaissance, and the user's bounded P0-01–P0-03 approvals on 2026-10-02.
+This register separates proposed development defaults, currently missing inputs, and observed environment facts. None establishes a live company's finance policy or a production capability. Basis: [specification](AP_Exception_Assistant_Codex_Spec.md), repository reconnaissance, and the user's bounded P0-01–P0-04A approvals on 2026-10-02.
 
 ## Business defaults and missing inputs
 
@@ -17,7 +17,9 @@ This register separates proposed development defaults, currently missing inputs,
 | Item | Current basis/status |
 |---|---|
 | Architecture | The specification proposes Next.js/TypeScript, FastAPI/Pydantic, PostgreSQL, shared Python finance logic, local storage/jobs initially, and Azure later. These components have not been scaffolded. |
-| Extraction | Fixture extraction is the safe planned default until a provider/runtime is verified. No extraction adapter exists yet. |
+| Extraction | P0-04A implements provider-independent contracts and deterministic fixture response replay. It observes no actual document pixels and does not normalize or decide financial eligibility. |
+| Extraction spike data | Ten structured synthetic cases declare raw/candidate/state/row ground truth separately from replay responses. Poor text, rotation, obstruction and repeated headers are annotations/metadata, not generated or processed visual artifacts. Page references are synthetic declarations; all bbox/artifact slots are null. |
+| Spike metrics | Fixture agreement is expected by construction, not an independently measured extractor's accuracy. Absent candidates, abstention denominators, locators and adapter timings produce null metrics where unavailable. Locators measure availability only, not factual correctness. |
 | TypeLLM/VLM | Compatibility, null handling, line strategy, evidence granularity, latency, license, and hardware needs are not verified. No provider was selected. |
 | Deterministic controls | P0-02 implements immutable standard-library state, exact-decimal Money/currency, and evidence contracts. Finance rules, screening, and finalization remain unimplemented. |
 | Fixture conventions | P0-03 uses fixed UUIDs, version 1, half-open reference dates, fixed UTC evaluation time, exact decimal strings including night quantities, and independent case snapshots. Test-only validation and operand assertions are not production transaction schemas or evaluators. |
@@ -42,7 +44,7 @@ Observed in the checked shell/Python environment on 2026-10-02. These are not pr
 | PostgreSQL tools | `psql` not available on the checked PATH; no project database exists. |
 | uv / GitHub CLI | Not available on the checked PATH. |
 
-No dependencies were installed or selected in P0-01–P0-03. Production domain modules and fixture support use the standard library and existing contracts; pytest uses the preexisting environment. Source syntax targets Python 3.10, but execution is verified only on Python 3.13.11. No package metadata or broader compatibility claim is introduced. Subsequent runtime setup must be a separately approved task.
+No dependencies were installed or selected in P0-01–P0-04A. Production domain/extraction modules and fixture support use the standard library and existing contracts; pytest uses the preexisting environment. Source syntax targets Python 3.10, but execution is verified only on Python 3.13.11. No package metadata or broader compatibility claim is introduced. Subsequent runtime setup must be a separately approved task. The [compatibility checklist](extraction_compatibility.md) is document-only; P0-04B has not started and all provider/runtime topics are NOT CHECKED.
 
 ## External dependencies
 

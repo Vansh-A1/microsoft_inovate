@@ -6,7 +6,7 @@ The planned assistant screens vendor invoices and employee expense claims agains
 
 ## Development status
 
-**Implementation in progress: Phase 0 — Contracts and feasibility.** P0-01 established the local repository/documentation baseline; GitHub publication remains blocked by authentication. P0-02 adds tested, framework-independent state, Money/currency, and evidence contracts. P0-03 adds 38 synthetic root references and ten golden cases with integrity/operand tests. Their future screening labels are expectations; all T01–T42 behavior remains NOT IMPLEMENTED. No API server, frontend, database, worker, extraction adapter, finance rules, or model exists yet. This is not a production-ready system. No payment execution exists or is in the initial scope.
+**Implementation in progress: Phase 0 — Contracts and feasibility.** P0-01 established the local repository/documentation baseline; GitHub publication remains blocked by authentication. P0-02 adds tested, framework-independent state, Money/currency, and evidence contracts. P0-03 adds 38 synthetic root references and ten golden finance cases. P0-04A adds extraction contracts, deterministic fixture response replay, ten separately annotated structured extraction cases, and a comparison harness. Parent P0-04 remains IN PROGRESS; real provider compatibility and execution have not started. All T01–T42 business behavior remains NOT IMPLEMENTED. No API server, frontend, database, worker, finance rules, or model exists yet. No payment execution exists or is in the initial scope.
 
 Screening terminology:
 
@@ -31,17 +31,21 @@ The intended flow is intake → extraction/normalization → validation → bran
 ├── .gitignore
 ├── pytest.ini
 ├── apps/api/
-│   ├── app/domain/                 # states, Money/currency, evidence value types
-│   └── tests/                     # domain unit tests and test-only fixture checks
+│   ├── app/domain/                 # states, Money/currency, evidence, extraction contracts
+│   ├── app/extraction/             # Protocol, fixture adapter, synthetic comparison
+│   └── tests/                      # domain, fixture integrity, extraction tests
 ├── data/
 │   ├── synthetic/                 # reference JSON, README and fixture checksums
-│   └── golden_cases/              # vendor/employee expectations and manifest
+│   ├── golden_cases/              # vendor/employee finance expectations and manifest
+│   └── extraction_spike/          # structured inputs/annotations, responses, own checksums
+├── scripts/benchmark/extraction_spike.py
 ├── docs/
 │   ├── AP_Exception_Assistant_Codex_Spec.md
 │   ├── progress.md
 │   ├── assumptions.md
 │   ├── data_dictionary.md
 │   ├── test_coverage.md
+│   ├── extraction_compatibility.md
 │   ├── source_inputs.sha256
 │   └── adr/0001-repository-and-specification-authority.md
 ├── AP_Exception_Assistant_6_Person_Team_Pack/
@@ -64,19 +68,26 @@ The intended flow is intake → extraction/normalization → validation → bran
 - [Original-input checksums](docs/source_inputs.sha256)
 - [Synthetic reference inventory and validation](data/synthetic/README.md)
 - [Golden case inventory and expectations](data/golden_cases/README.md)
+- [Extraction cases and harness](data/extraction_spike/README.md)
+- [Future provider compatibility checklist](docs/extraction_compatibility.md)
 
 The `docs/` specification is the implementation reference, copied byte-for-byte from the preserved source pack. The original folder and ZIP are intentionally version controlled as project inputs. The ADR explains their relationship; do not edit the originals or silently diverge from the specification.
 
 ## Setup status
 
-There is no runnable application, project dependency manifest, startup command, or migration. Domain/fixture tests use the existing Python/pytest environment; no dependencies were installed in P0-01–P0-03. Production modules and test-only fixture validation use the Python standard library and existing domain contracts. From the repository root:
+There is no runnable application, project dependency manifest, startup command, or migration. Tests use the existing Python/pytest environment; no dependencies were installed in P0-01–P0-04A. Production modules and fixture validation use the Python standard library and existing domain contracts. From the repository root:
 
 ```bash
 python3 -m pytest apps/api/tests/unit/domain -q
 python3 -m pytest apps/api/tests/fixtures -q
+python3 -m pytest apps/api/tests/unit/extraction -q
 python3 -m pytest -q
 sha256sum -c data/synthetic/fixtures.sha256
+sha256sum -c data/extraction_spike/fixtures.sha256
+python3 scripts/benchmark/extraction_spike.py --dataset data/extraction_spike --output generated/reports/extraction-fixture.json
 ```
+
+The harness replays structured responses, compares each critical field, preserves abstentions, and measures row coverage/value agreement and source-locator availability. Its generated report is ignored by Git. Perfect fixture agreement is expected by construction and says nothing about visual extraction or production accuracy; absent boxes/latency remain unavailable. See the extraction dataset README for denominators and limitations.
 
 The root `pytest.ini` supplies test discovery and the import path; no shell `PYTHONPATH` override or package installation is required. Tests are verified on Python 3.13.11. The source avoids features newer than Python 3.10, but other interpreter versions have not been runtime-tested. Environment observations and missing prerequisites are recorded in the assumption register. Each next bounded task requires approval; moving to another phase also requires a verified phase exit review.
 
