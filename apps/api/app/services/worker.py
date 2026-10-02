@@ -5,6 +5,7 @@ from sqlalchemy import select, or_, and_
 from app.core.serialization import utcnow
 from app.core.identity import Identity
 from app.domain.states import ProcessingState
+from app.rules.engine import RULESET
 from app.db.models import Job, OutboxEvent, Transaction
 from app.db.session import scope_query
 from app.services.finance import get, finalize, audit
@@ -13,7 +14,7 @@ from app.services.finance import get, finalize, audit
 def claim(database,identity,now=None):
     now=now or utcnow()
     with database.session(identity) as session:
-        q=scope_query(select(Job),Job,identity).where(or_(and_(Job.state.in_(['QUEUED','RETRYABLE']),Job.available_at<=now),and_(Job.state=='RUNNING',Job.lease_until<=now))).order_by(Job.created_at).with_for_update(skip_locked=True).limit(1)
+        q=scope_query(select(Job),Job,identity).where(Job.stage=='EVALUATE',Job.stage_version==RULESET,or_(and_(Job.state.in_(['QUEUED','RETRYABLE']),Job.available_at<=now),and_(Job.state=='RUNNING',Job.lease_until<=now))).order_by(Job.created_at).with_for_update(skip_locked=True).limit(1)
         job=session.scalar(q)
         if not job:return None
         if job.attempts>=job.maximum_attempts:

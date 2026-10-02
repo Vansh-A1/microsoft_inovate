@@ -13,6 +13,7 @@ from app.db.models import *
 from app.db.session import Database
 from app.schemas.canonical import fixture_canonical
 from app.services import finance
+from app.rules.engine import RULE_IDS
 from app.services.worker import run_once,claim
 from app.services.imports import parse_file
 from app.integrations.storage import LocalStorage
@@ -43,7 +44,7 @@ def test_real_postgres_golden_end_to_end(environment,name,expected):
     db,ctx,other,client,cfg=environment
     records=seed(db,ctx,[name]);r=records[0];assert r['decision']==expected,r
     report=client.get('/api/v1/evaluations/'+r['latest_evaluation_id']).json()
-    assert report['decision']==expected and len(report['rules'])==15
+    assert report['decision']==expected and len(report['rules'])==len(RULE_IDS)
     assert report['model_status']=='NOT_CONFIGURED' and 'risk_score' not in report
     assert report['current_eligible']==(expected=='PASS')
     for rule in report['rules']:
@@ -51,7 +52,7 @@ def test_real_postgres_golden_end_to_end(environment,name,expected):
             resolved=client.get('/api/v1/evidence/'+evidence['id']);assert resolved.status_code==200,resolved.text
             assert resolved.json()['bbox'] is None
     html=client.get(f"/api/v1/evaluations/{r['latest_evaluation_id']}/report?format=html")
-    assert html.status_code==200 and 'NOT_CONFIGURED' in html.text and 'VAL-002' in html.text
+    assert html.status_code==200 and 'NOT_CONFIGURED' in html.text and 'VAL-003' in html.text
     queue=client.get('/api/v1/reviews').json()['items'];assert bool(queue)==(expected!='PASS')
 
 
@@ -68,6 +69,9 @@ def test_auth_scope_and_database_rls(environment):
     assert client.post('/api/v1/transactions',json=payload(),headers=headers()|{'Authorization':'Bearer test-reader'}).status_code==403
     assert client.post('/api/v1/transactions',json=payload()|{'tenant_id':str(other.tenant_id)},headers=headers()).status_code==422
     with db.session(other) as s:assert list(s.scalars(select(Transaction)))==[]  # raw query still isolated by RLS
+    from dataclasses import replace
+    same_tenant_other_entity=replace(ctx,legal_entity_id=UUID('20000000-0000-4000-8000-000000000002'))
+    with db.session(same_tenant_other_entity) as s:assert list(s.scalars(select(Transaction)))==[]
     with db.engine.connect() as conn:
         assert conn.scalar(text('SELECT rolsuper OR rolbypassrls FROM pg_roles WHERE rolname=current_user')) is False
         assert conn.scalar(text('SELECT count(*) FROM transactions'))==0
@@ -369,7 +373,7 @@ def test_insufficient_approver_authority_is_persisted_hold(environment):
     with db.session(ctx) as s:
         for seq,actor,role in [(1,'51000000-0000-4000-8000-000000000002','MANAGER'),(2,'51000000-0000-4000-8000-000000000004','DEPARTMENT_HEAD')]:
             s.add(ApprovalRecord(**ctx.scope(),transaction_id=rid,transaction_version=1,policy_id=UUID(payload()['approval_policy_id']),policy_version=1,actor_id=UUID(actor),role=role,sequence=seq,state='APPROVED',approved_at=utcnow()-timedelta(seconds=10)))
-    report=evaluate_case(client,db,ctx,str(rid));approval=next(r for r in report['rules'] if r['rule_id']=='APR-001')
+    report=evaluate_case(client,db,ctx,str(rid));approval=next(r for r in report['rules'] if r['rule_id']=='APR-002')
     assert report['decision']=='HOLD' and approval['status']=='FAIL' and approval['observed']['steps'][0]['actor_has_role'] is False
 
 
@@ -377,7 +381,7 @@ def test_arithmetic_and_bank_failures_have_persisted_evidence(environment):
     db,ctx,other,client,cfg=environment;original=payload();rid=create(client,original|{'total_amount':'23601.00','payment_account_token':'DEMO-UNAPPROVED-ACCOUNT'})
     report=evaluate_case(client,db,ctx,rid)
     assert report['decision']=='HOLD'
-    for rule_id in ['VAL-002','VEN-002']:
+    for rule_id in ['VAL-003','VEN-003']:
         rule=next(r for r in report['rules'] if r['rule_id']==rule_id);assert rule['status']=='FAIL' and rule['evidence']
     with db.session(ctx) as s:assert s.scalar(select(ReferenceRecord).where(ReferenceRecord.id==UUID(original['vendor_id']))).payload['payment_account_token']==original['payment_account_token']
 
@@ -387,3 +391,13 @@ def test_http_envelope_and_request_size_limit(environment):
     assert client.get('/api/v1/unknown-route').json()['error']['code']=='HTTP_404'
     result=client.post('/api/v1/transactions',content=b' ' * 2300001,headers=headers()|{'Content-Type':'application/json'})
     assert result.status_code==413 and result.json()['error']['code']=='REQUEST_TOO_LARGE'
+
+
+def test_incompatible_worker_stage_never_executes(environment):
+    db,ctx,other,client,cfg=environment;rid=create(client);body={'expected_version':1,'reason':'Compatibility guard'}
+    reply=client.post(f'/api/v1/transactions/{rid}/evaluate',json=body,headers=headers()).json()
+    with db.session(ctx) as s:finance.get(s,Job,ctx,UUID(reply['job_id'])).stage_version='unavailable-rule-version'
+    assert claim(db,ctx) is None
+    with db.session(ctx) as s:
+        assert not finance.get(s,Transaction,ctx,UUID(rid)).eligible
+        assert s.scalar(select(func.count()).select_from(Evaluation))==0

@@ -151,9 +151,13 @@ def _build_context(session,identity,job,version):
 
 
 def report_html(content):
-    esc=lambda v:html.escape(str(v))
-    rows=''.join('<tr><td>'+esc(r['rule_id'])+'</td><td>'+esc(r['status'])+'</td><td>'+esc(r['decision_effect'])+'</td><td>'+esc(r['reason'])+'</td><td><pre>'+esc(canonical_json(r['observed']))+'</pre></td></tr>' for r in content['rules'])
-    return '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Screening report</title><style>body{font:15px system-ui;margin:2rem;color:#16324f}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccd5df;padding:10px;text-align:left}pre{white-space:pre-wrap;overflow-wrap:anywhere}h1{font-size:24px}</style><h1>'+esc(content['decision'])+' — Synthetic screening report</h1><p>Transaction '+esc(content['transaction_id'])+' · version '+esc(content['transaction_version'])+'</p><p>Eligibility at evaluation: '+esc(content['eligible'])+'. No payment execution.</p><p>RULES_ONLY · risk model NOT_CONFIGURED · STRUCTURED_SYNTHETIC. No source images or bounding boxes.</p><p>Evaluation '+esc(content['evaluation_id'])+' · '+esc(content['evaluated_at'])+'</p><table><thead><tr><th>Rule</th><th>Status</th><th>Effect</th><th>Reason</th><th>Observed</th></tr></thead><tbody>'+rows+'</tbody></table><h2>Next actions</h2><ul>'+''.join('<li>'+esc(a)+'</li>' for a in content['next_actions'])+'</ul></html>'
+    esc=lambda value:html.escape(str(value),quote=True)
+    sections=[]
+    for rule in content['rules']:
+        links=''.join('<li><a href="../../evidence/'+esc(e['id'])+'">'+esc(e['reference']['kind'])+' / '+esc(e['reference']['record_id'])+' / version '+esc(e['reference']['record_version'])+'</a></li>' for e in rule['evidence'])
+        sections.append('<section><h2>'+esc(rule['rule_id'])+' · '+esc(rule['status'])+'</h2><p>Rule version '+esc(rule['version'])+' · effect '+esc(rule['decision_effect'])+'</p><p>'+esc(rule['reason'])+'</p><h3>Observed</h3><pre>'+esc(canonical_json(rule['observed']))+'</pre><h3>Expected / tolerance</h3><pre>'+esc(canonical_json({'expected':rule['expected'],'tolerance':rule['tolerance']}))+'</pre><h3>Evidence references</h3><ul>'+links+'</ul></section>')
+    metadata={key:content.get(key) for key in ['schema_version','evaluation_id','evaluation_version','transaction_id','transaction_version','reference_snapshot_id','ruleset_version','decision_policy_version','completeness','input_digest','evaluated_at','supersedes_id','reason_codes']}
+    return '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Screening report</title><style>body{font:15px/1.5 system-ui;margin:2rem;color:#16324f}section{border-top:1px solid #ccd5df;margin-top:2rem;padding-top:1rem}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f6fa;padding:12px;font-size:12px}h1{font-size:24px}h2{font-size:18px}h3{font-size:14px}a{color:#185b8a;overflow-wrap:anywhere}</style><h1>'+esc(content['decision'])+' — Synthetic screening report</h1><p>Transaction '+esc(content['transaction_id'])+' · version '+esc(content['transaction_version'])+'</p><p>Eligibility at evaluation: '+esc(content['eligible'])+'. No payment execution.</p><p>RULES_ONLY · risk model NOT_CONFIGURED · STRUCTURED_SYNTHETIC. No source images or bounding boxes.</p><h2>Pinned evaluation metadata</h2><pre>'+esc(canonical_json(metadata))+'</pre><h2>Next actions</h2><ul>'+''.join('<li>'+esc(action)+'</li>' for action in content['next_actions'])+'</ul>'+''.join(sections)+'</html>'
 
 
 def finalize(session,identity,job_id,lease_owner):
@@ -161,6 +165,7 @@ def finalize(session,identity,job_id,lease_owner):
     job=session.scalar(scope_query(select(Job),Job,identity).where(Job.id==job_id).with_for_update())
     if job is None:raise unavailable()
     if job.state=='SUCCEEDED':return job.result_evaluation_id
+    if job.stage!='EVALUATE' or job.stage_version!=RULESET:raise DomainError(409,'STAGE_VERSION_UNSUPPORTED','A compatible worker is required for this stage version.')
     if job.state!='RUNNING' or job.lease_owner!=lease_owner or job.lease_until<=utcnow():raise DomainError(409,'LEASE_LOST','The job lease is no longer valid.')
     transaction=get(session,Transaction,identity,job.transaction_id)
     if transaction.latest_version!=job.transaction_version or transaction.row_version!=job.generation:
@@ -186,15 +191,17 @@ def finalize(session,identity,job_id,lease_owner):
     context_data=json_context(context)
     capacity_refs=context_data['capacity_evidence']
     for body in rules:
-        if body['rule_id'] in ('BUD-001','PO-002','GRN-001'):
+        if body['rule_id'] in ('BUD-001','PO-003','PO-004','GRN-001'):
             for reservation in capacity_refs:
                 reference={'kind':'HISTORICAL_AGGREGATE','record_id':reservation['id'],'record_version':1,'tenant_id':str(identity.tenant_id),'legal_entity_id':str(identity.legal_entity_id),'snapshot_id':str(evaluated_snapshot.id),'field_path':None,'document_id':None,'page':None,'bbox':None,'observed_value':None,'import_cell':None}
                 item=EvidenceObject(**identity.scope(),id=uuid4(),evaluation_id=evaluation.id,rule_result_id=UUID(body['result_id']),reference=reference);session.add(item);body['evidence'].append({'id':str(item.id),'reference':reference})
     release(session,identity,transaction.id)
     if decision.eligible:reserve(session,identity,evaluation,version,context_data,decision)
     if decision.decision!='PASS':
-        session.add(ReviewCase(**identity.scope(),evaluation_id=evaluation.id,transaction_id=transaction.id,decision=decision.decision,branch=transaction.branch,reasons=[r.rule_id for r in decision.results if r.decision_effect!='NONE'],state='OPEN'))
-    content=projection({'schema_version':'report-p1-v1','evaluation_id':evaluation.id,'transaction_id':transaction.id,'transaction_version':version.version,'reference_snapshot_id':evaluated_snapshot.id,'ruleset_version':RULESET,'decision_policy_version':DECISION_POLICY,'evaluation_mode':'RULES_ONLY','extraction_mode':'STRUCTURED_SYNTHETIC','model_status':'NOT_CONFIGURED','completeness':decision.completeness,'decision':decision.decision,'eligible':decision.eligible,'input_digest':evaluation.input_digest,'evaluated_at':job.evaluated_at,'supersedes_id':evaluation.supersedes_id,'transaction':redact(version.payload),'rules':rules,'next_actions':[r.reason for r in decision.results if r.decision_effect!='NONE'] or ['Screening checks complete. Authorized human processing remains separate.'],'capacity_basis':capacity_refs})
+        review=ReviewCase(**identity.scope(),id=uuid4(),evaluation_id=evaluation.id,transaction_id=transaction.id,decision=decision.decision,branch=transaction.branch,reasons=[r.rule_id for r in decision.results if r.decision_effect!='NONE'],state='OPEN')
+        session.add(review);session.flush()
+        audit(session,identity,'REVIEW_CASE_CREATED',review.id,1,'Required controls need resolution',str(job.id),{'evaluation_id':str(evaluation.id),'transaction_id':str(transaction.id),'reason_codes':review.reasons})
+    content=projection({'schema_version':'report-p1-v2','evaluation_version':1,'reason_codes':[r.rule_id for r in decision.results if r.decision_effect!='NONE'],'evaluation_id':evaluation.id,'transaction_id':transaction.id,'transaction_version':version.version,'reference_snapshot_id':evaluated_snapshot.id,'ruleset_version':RULESET,'decision_policy_version':DECISION_POLICY,'evaluation_mode':'RULES_ONLY','extraction_mode':'STRUCTURED_SYNTHETIC','model_status':'NOT_CONFIGURED','completeness':decision.completeness,'decision':decision.decision,'eligible':decision.eligible,'input_digest':evaluation.input_digest,'evaluated_at':job.evaluated_at,'supersedes_id':evaluation.supersedes_id,'transaction':redact(version.payload),'rules':rules,'next_actions':[r.reason for r in decision.results if r.decision_effect!='NONE'] or ['Screening checks complete. Authorized human processing remains separate.'],'capacity_basis':capacity_refs})
     session.add(Report(**identity.scope(),evaluation_id=evaluation.id,content=content,html=report_html(content),content_digest=digest(content)))
     if job.lease_until<=utcnow():raise DomainError(409,'LEASE_EXPIRED','Execution exceeded the durable lease deadline.')
     transaction.latest_evaluation_id=evaluation.id;transaction.processing_state='COMPLETED';transaction.decision=decision.decision;transaction.eligible=decision.eligible;transaction.row_version+=1

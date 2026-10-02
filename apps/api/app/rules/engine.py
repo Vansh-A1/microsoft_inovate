@@ -9,9 +9,9 @@ from app.domain.money import Money
 from app.domain.states import RuleStatus, DecisionEffect, ScreeningDecision
 from app.domain.evidence import EvidenceReference, EvidenceKind, ImportCellLocator
 
-RULESET = 'rules-p1-v5'
+RULESET = 'rules-p1-v6'
 DECISION_POLICY = 'hold-first-p1-v1'
-RULE_IDS = ('VAL-001','VAL-002','VAL-003','VEN-001','VEN-002','DUP-002','PO-001','PO-002','GRN-001','EMP-001','DOC-001','EXP-003','BUD-001','APR-001','SYS-001')
+RULE_IDS = ('VAL-001','VAL-003','VAL-002','VEN-001','VEN-002','VEN-003','DUP-002','PO-001','PO-002','PO-003','PO-004','GRN-001','EMP-001','DOC-001','EXP-001','EXP-003','BUD-001','APR-001','APR-002','SYS-001')
 D = Decimal
 ZERO = D('0')
 TOLERANCE = D('0.01')
@@ -89,7 +89,7 @@ def _evaluate(c):
         return bool(r and day and (not r.get('effective_from') or r['effective_from']<=day) and (not r.get('effective_to') or day<r['effective_to']))
     def result(rid,status,reason,observed=None,expected=None,evidence=(),effect=None,tolerance=None):
         effect=effect or ('NONE' if status in ('PASS','NOT_APPLICABLE') else 'REVIEW')
-        results.append(RuleResult(rid,'1.0.4',status,effect,reason,projection(observed),projection(expected),tolerance,tuple([ev()]+list(evidence))))
+        results.append(RuleResult(rid,'1.0.5',status,effect,reason,projection(observed),projection(expected),tolerance,tuple([ev()]+list(evidence))))
     def check(rid,ok,reason,observed=None,expected=None,evidence=(),failure='REVIEW',tolerance=None):
         result(rid,'PASS' if ok else 'FAIL',reason,observed,expected,evidence,'NONE' if ok else failure,tolerance)
     def na(rid):result(rid,'NOT_APPLICABLE','Control does not apply to this transaction branch.',p['branch'],'Applicable branch only')
@@ -106,8 +106,8 @@ def _evaluate(c):
     if vendor:
         fields=['quantity','unit_price','discount_amount','net_amount','tax_rate','tax_amount','gross_amount','currency']
         unknown=not p.get('currency') or any(line.get('currency')!=p.get('currency') for line in p['lines']) or any(any(line.get(k) is None for k in fields) for line in p['lines']) or any(p.get(k) is None for k in ['subtotal_amount','tax_amount','total_amount','document_discount_amount','shipping_amount','other_charges_amount'])
-        if unknown:result('VAL-002','UNKNOWN','Arithmetic needs explicit line amounts, discounts, tax and totals. Missing tax is not zero.')
-        elif p.get('tax_basis')!='EXCLUSIVE':result('VAL-002','UNKNOWN','This slice supports explicit exclusive-tax ordinary invoices only.',p.get('tax_basis'),'EXCLUSIVE')
+        if unknown:result('VAL-003','UNKNOWN','Arithmetic needs explicit line amounts, discounts, tax and totals. Missing tax is not zero.')
+        elif p.get('tax_basis')!='EXCLUSIVE':result('VAL-003','UNKNOWN','This slice supports explicit exclusive-tax ordinary invoices only.',p.get('tax_basis'),'EXCLUSIVE')
         else:
             observations=[];ok=True
             for line in p['lines']:
@@ -118,27 +118,29 @@ def _evaluate(c):
             subtotal=sum((D(l['net_amount']) for l in p['lines']),ZERO);tax=sum((D(l['tax_amount']) for l in p['lines']),ZERO)
             computed=(Money(subtotal,p['currency'])-Money(p['document_discount_amount'],p['currency'])+Money(p['tax_amount'],p['currency'])+Money(p['shipping_amount'],p['currency'])+Money(p['other_charges_amount'],p['currency'])).amount
             ok=ok and abs(subtotal-D(p['subtotal_amount']))<=TOLERANCE and abs(tax-D(p['tax_amount']))<=TOLERANCE and abs(computed-total)<=TOLERANCE and total>ZERO and D(p['document_discount_amount'])<=subtotal and all(D(p[k])>=ZERO for k in ['document_discount_amount','shipping_amount','other_charges_amount','tax_amount'])
-            check('VAL-002',ok,'Exclusive-tax line and document totals reconcile.' if ok else 'Line or document arithmetic does not reconcile.',{'lines':observations,'computed_total':computed},{'stated_total':total,'rounding':'HALF_EVEN / 0.01'},tolerance='0.01')
+            check('VAL-003',ok,'Exclusive-tax line and document totals reconcile.' if ok else 'Line or document arithmetic does not reconcile.',{'lines':observations,'computed_total':computed},{'stated_total':total,'rounding':'HALF_EVEN / 0.01'},tolerance='0.01')
     else:
         fields=['claimed_amount','receipt_total_amount','company_paid_amount','applied_advance_amount','currency']
-        if total is None or not p.get('currency') or any(i.get('currency')!=p.get('currency') for i in p['items']) or any(any(i.get(k) is None for k in fields) for i in p['items']):result('VAL-002','UNKNOWN','Requested amount and explicit receipt, company-paid and advance values are required.')
+        if total is None or not p.get('currency') or any(i.get('currency')!=p.get('currency') for i in p['items']) or any(any(i.get(k) is None for k in fields) for i in p['items']):result('VAL-003','UNKNOWN','Requested amount and explicit receipt, company-paid and advance values are required.')
         else:
             computed=sum((D(i['claimed_amount'])-D(i['company_paid_amount'])-D(i['applied_advance_amount']) for i in p['items']),ZERO)
             ok=total>ZERO and abs(computed-total)<=TOLERANCE and all(i['currency']==p['currency'] and ZERO<=D(i['claimed_amount'])<=D(i['receipt_total_amount']) and ZERO<=D(i['company_paid_amount'])+D(i['applied_advance_amount'])<=D(i['claimed_amount']) and D(i['company_paid_amount'])>=ZERO and D(i['applied_advance_amount'])>=ZERO for i in p['items'])
-            check('VAL-002',ok,'Net reimbursement reconciles.' if ok else 'Reimbursement or receipt amounts conflict.',{'computed_requested':computed},{'stated_requested':total},tolerance='0.01')
+            check('VAL-003',ok,'Net reimbursement reconciles.' if ok else 'Reimbursement or receipt amounts conflict.',{'computed_requested':computed},{'stated_requested':total},tolerance='0.01')
     if business_day and p.get('submission_date'):
-        check('VAL-003',business_day<=p['submission_date']<=c['evaluated_at'][:10],'Dates must be ordered and cannot be in the future.',{'business_date':business_day,'submission_date':p['submission_date']},c['evaluated_at'][:10])
-    else:result('VAL-003','UNKNOWN','Explicit, unambiguous dates are required.')
+        check('VAL-002',business_day<=p['submission_date']<=c['evaluated_at'][:10] and p.get('currency')=='INR','ISO dates must be ordered, not future-dated; currency must be supported INR.',{'business_date':business_day,'submission_date':p['submission_date']},c['evaluated_at'][:10])
+    else:result('VAL-002','UNKNOWN','Explicit, unambiguous dates are required.')
     if vendor:
-        check('VEN-001',bool(primary and effective(primary,business_day) and primary.get('status')=='ACTIVE_APPROVED'),'Vendor must be active and approved in the pinned master.',primary and primary.get('status'),'ACTIVE_APPROVED',[ev(primary,'status','MASTER_RECORD')] if primary else [],failure='HOLD')
+        result('VEN-001','PASS' if primary else 'UNKNOWN','Vendor identity must resolve to an owned master version.',{'vendor_id':p.get('vendor_id')},'Resolved approved-vendor master',[ev(primary,None,'MASTER_RECORD')] if primary else [])
+        check('VEN-002',bool(primary and effective(primary,business_day) and primary.get('status')=='ACTIVE_APPROVED'),'Vendor must be active and approved in the pinned master.',primary and primary.get('status'),'ACTIVE_APPROVED',[ev(primary,'status','MASTER_RECORD')] if primary else [],failure='HOLD')
         doc=ref('source_document_id','documents');master_token=primary and primary.get('payment_account_token');source_token=doc and doc['facts'].get('payment_account_token')
-        if not master_token or not source_token or not p.get('payment_account_token'):result('VEN-002','UNKNOWN','Verified synthetic account token comparison is incomplete.',expected='Submitted and document token equal approved vendor token')
-        else:check('VEN-002',master_token==source_token==p['payment_account_token'],'Submitted account token must match approved vendor and source.',{'submitted':'[synthetic token redacted]'},'Approved master equality',[ev(primary,'payment_account_token','MASTER_RECORD'),ev(doc,'facts.payment_account_token','DOCUMENT_FIELD')],failure='HOLD')
+        if not master_token or not source_token or not p.get('payment_account_token'):result('VEN-003','UNKNOWN','Verified synthetic account token comparison is incomplete.',expected='Submitted and document token equal approved vendor token')
+        else:check('VEN-003',master_token==source_token==p['payment_account_token'],'Submitted account token must match approved vendor and source.',{'submitted':'[synthetic token redacted]'},'Approved master equality',[ev(primary,'payment_account_token','MASTER_RECORD'),ev(doc,'facts.payment_account_token','DOCUMENT_FIELD')],failure='HOLD')
         dup=c['duplicates']
         check('DUP-002',not dup,'Confirmed exact duplicates must be held.' if dup else 'Scoped exact duplicate search completed with no match.',{'matching_record_ids':[r['id'] for r in dup]},'No active same-vendor number/date/amount/currency record',[ev(r,None,'HISTORICAL_AGGREGATE') if r.get('_kind') else ev(r) for r in dup],failure='HOLD')
         po=ref('po_id','purchase_orders')
-        check('PO-001',bool(po and effective(po,business_day) and po.get('status')=='APPROVED_OPEN' and po.get('vendor_id')==p.get('vendor_id') and po.get('currency')==p.get('currency') and po.get('budget_id')==p.get('budget_id') and po.get('category')==p.get('category')),'Approved PO must belong to this vendor, currency, category and budget.',po and po.get('status'),'APPROVED_OPEN',[ev(po,'status','MASTER_RECORD')] if po else [],failure='HOLD')
-        po_ok=True;grn_ok=True;missing_po=False;missing_grn=False;po_obs=[];grn_obs=[];po_ev=[];grn_ev=[]
+        check('PO-001',bool(po and effective(po,business_day) and po.get('status')=='APPROVED_OPEN'),'Required PO must exist, be effective and be approved/open.',po and po.get('status'),'APPROVED_OPEN',[ev(po,'status','MASTER_RECORD')] if po else [],failure='HOLD')
+        check('PO-002',bool(po and po.get('vendor_id')==p.get('vendor_id') and po.get('currency')==p.get('currency') and po.get('budget_id')==p.get('budget_id') and po.get('category')==p.get('category')),'PO association must match vendor, scoped entity, currency, category and budget.',{'po_id':p.get('po_id'),'vendor_id':p.get('vendor_id'),'currency':p.get('currency')},'Matching owned PO',[ev(po,None,'MASTER_RECORD')] if po else [],failure='HOLD')
+        price_ok=True;capacity_ok=True;grn_ok=True;missing_po=False;missing_grn=False;po_obs=[];grn_obs=[];po_ev=[];grn_ev=[]
         for line in p['lines']:
             pl=refs.get(str(line.get('po_line_id')));gl=refs.get(str(line.get('grn_line_id')))
             if not pl or pl['_kind']!='po_lines' or any(line.get(k) is None for k in ['quantity','unit_price','uom','tax_rate']):missing_po=True;continue
@@ -147,21 +149,28 @@ def _evaluate(c):
             remaining=D(pl['ordered_quantity'])-consumed-live
             requested=sum((D(x['quantity']) for x in p['lines'] if x.get('po_line_id')==pl['id'] and x.get('quantity') is not None),ZERO)
             tol=max(D(pl['tolerance']['price_absolute_amount']),D(pl['unit_price'])*D(pl['tolerance']['price_relative_rate']))
-            po_ok=po_ok and pl['po_id']==p.get('po_id') and pl['vendor_id']==p.get('vendor_id') and pl['currency']==p.get('currency') and pl['tax_basis']==p.get('tax_basis') and D(pl['tax_rate'])==D(line['tax_rate']) and pl['uom']==line['uom'] and abs(D(pl['unit_price'])-D(line['unit_price']))<=tol and ZERO<requested<=remaining
+            price_ok=price_ok and pl['po_id']==p.get('po_id') and pl['vendor_id']==p.get('vendor_id') and pl['currency']==p.get('currency') and pl['tax_basis']==p.get('tax_basis') and D(pl['tax_rate'])==D(line['tax_rate']) and pl['uom']==line['uom'] and abs(D(pl['unit_price'])-D(line['unit_price']))<=tol and pl['tolerance']['operator']=='MAX'
+            capacity_ok=capacity_ok and ZERO<requested<=remaining
             po_ev.extend(ev(r,None,'HISTORICAL_AGGREGATE') for r in refs.values() if r['_kind']=='matching_allocations' and r.get('lifecycle')=='CONSUMED' and r.get('po_line_id')==pl['id'])
-            po_obs.append({'po_line_id':pl['id'],'requested':requested,'remaining':remaining,'price_tolerance':tol});po_ev.append(ev(pl,None,'PO_LINE'))
+            po_obs.append({'po_line_id':pl['id'],'requested':requested,'remaining':remaining,'price_tolerance':tol,'unit_price_variance':D(line['unit_price'])-D(pl['unit_price']),'quantity_shortfall':max(ZERO,requested-remaining)});po_ev.append(ev(pl,None,'PO_LINE'))
             if not gl or gl['_kind']!='grn_lines':missing_grn=True;continue
             used=sum((D(r['quantity']) for r in refs.values() if r['_kind']=='matching_allocations' and r.get('lifecycle')=='CONSUMED' and r.get('grn_line_id')==gl['id']),ZERO)
             grn_remaining=D(gl['accepted_quantity'])-D(gl['returned_quantity'])-D(gl['reversed_quantity'])-used-D(c['capacity'].get(gl['id'],{}).get('quantity','0'))
             requested_grn=sum((D(x['quantity']) for x in p['lines'] if x.get('grn_line_id')==gl['id'] and x.get('quantity') is not None),ZERO)
             grn_ok=grn_ok and gl['po_line_id']==pl['id'] and gl['po_id']==p.get('po_id') and gl['uom']==line['uom'] and ZERO<requested_grn<=grn_remaining
             grn_ev.extend(ev(r,None,'HISTORICAL_AGGREGATE') for r in refs.values() if r['_kind']=='matching_allocations' and r.get('lifecycle')=='CONSUMED' and r.get('grn_line_id')==gl['id'])
-            grn_obs.append({'grn_line_id':gl['id'],'accepted_net_remaining':grn_remaining,'requested':requested_grn});grn_ev.append(ev(gl,None,'GRN_LINE'))
-        result('PO-002','UNKNOWN' if missing_po else 'PASS' if po_ok else 'FAIL','Compare PO line identity, units, price, tax and remaining quantity.',po_obs,'Within approved PO',po_ev,'HOLD' if missing_po or not po_ok else 'NONE')
+            grn_obs.append({'grn_line_id':gl['id'],'accepted_net_remaining':grn_remaining,'requested':requested_grn,'quantity_shortfall':max(ZERO,requested_grn-grn_remaining)});grn_ev.append(ev(gl,None,'GRN_LINE'))
+        if any(p.get(k) is None or D(p[k])!=ZERO for k in ['shipping_amount','other_charges_amount']):price_ok=False
+        prior_value=sum((D(r['amount']) for r in refs.values() if r['_kind']=='matching_allocations' and r.get('lifecycle')=='CONSUMED' and r.get('po_id')==p.get('po_id')),ZERO)
+        live_value=D(c['po_commitment_used'].get(str(p.get('po_id')),'0'))
+        remaining_value=D(po['approved_ceiling_amount'])-prior_value-live_value if po else None
+        capacity_ok=capacity_ok and bool(total is not None and remaining_value is not None and ZERO<total<=remaining_value)
+        result('PO-003','UNKNOWN' if missing_po else 'PASS' if price_ok else 'FAIL','PO units, prices, tax and configured MAX tolerances must match; unapproved extra charges are blocked.',po_obs,'Within approved commercial terms',po_ev,'HOLD' if missing_po or not price_ok else 'NONE')
+        result('PO-004','UNKNOWN' if missing_po or remaining_value is None else 'PASS' if capacity_ok else 'FAIL','Cumulative quantity and gross value must fit approved PO capacity.',{'lines':po_obs,'remaining_value':remaining_value,'requested_value':total},'Sufficient approved capacity',po_ev,'HOLD' if missing_po or not capacity_ok else 'NONE')
         result('GRN-001','UNKNOWN' if missing_grn else 'PASS' if grn_ok else 'FAIL','Accepted receipts less returns, reversals and active allocations must cover the invoice.',grn_obs,'Quantity covered by accepted goods',grn_ev,'HOLD' if missing_grn or not grn_ok else 'NONE')
         na('EMP-001')
     else:
-        for rid in ['VEN-001','VEN-002','DUP-002','PO-001','PO-002','GRN-001']:na(rid)
+        for rid in ['VEN-001','VEN-002','VEN-003','DUP-002','PO-001','PO-002','PO-003','PO-004','GRN-001']:na(rid)
         ok=bool(primary and effective(primary,business_day) and primary.get('status')=='ACTIVE' and primary.get('employment_from')<=business_day and (not primary.get('employment_to') or business_day<primary['employment_to']) and primary.get('cost_center_id')==p.get('cost_center_id') and primary.get('department')==p.get('department'))
         check('EMP-001',ok,'Employee must be active on the expense date with matching master dimensions.',primary and primary.get('status'),'ACTIVE',[ev(primary,None,'MASTER_RECORD')] if primary else [],failure='HOLD')
     docs=[];doc_ok=True;doc_missing=False
@@ -179,6 +188,11 @@ def _evaluate(c):
         # Reusing a receipt across Phase-1 claims requires a later allocation workflow.
         if len({i.get('source_document_id') for i in p['items']})!=len(p['items']) or c.get('receipt_conflicts'):doc_ok=False
     result('DOC-001','UNKNOWN' if doc_missing else 'PASS' if doc_ok else 'FAIL','Submitted values must reconcile with pinned synthetic source facts; source pages and boxes are unavailable.',{'source_ids':[d['id'] for d in docs],'active_receipt_conflicts':c.get('receipt_conflicts',[])},'Verified consistent synthetic document facts',[ev(d,'facts','DOCUMENT_FIELD') for d in docs])
+    if vendor:na('EXP-001')
+    else:
+        receipt_policy=ref('expense_policy_id','expense_policies')
+        receipt_valid=bool(receipt_policy and docs and not doc_missing and all(d['facts'].get('readable') is True and d['facts'].get('receipt_type')==receipt_policy.get('receipt_type') for d in docs))
+        result('EXP-001','PASS' if receipt_valid else 'UNKNOWN','Required receipt must exist, be readable and match the policy receipt type.',{'document_ids':[d['id'] for d in docs]},'Adequate configured receipt',[ev(d,'facts','DOCUMENT_FIELD') for d in docs]+([ev(receipt_policy,'receipt_required','POLICY_CLAUSE')] if receipt_policy else []),'NONE' if receipt_valid else 'HOLD')
     if vendor:na('EXP-003')
     else:
         policy=ref('expense_policy_id','expense_policies');observed={};evidence=[];unknown=False;over=False
@@ -217,17 +231,18 @@ def _evaluate(c):
         bands=[b for b in approval['bands'] if (total>D(b['lower_bound_amount']) or b['lower_inclusive'] and total==D(b['lower_bound_amount'])) and (b['upper_bound_amount'] is None or total<D(b['upper_bound_amount']) or b['upper_inclusive'] and total==D(b['upper_bound_amount']))]
         valid_policy=len(bands)==1
         if valid_policy:required_roles=bands[0]['required_roles']
-    valid=bool(valid_policy and required_roles and len(approvals)==len(required_roles) and len({a['actor_id'] for a in approvals})==len(approvals));previous=None;steps=[]
+    chain_valid=bool(valid_policy and required_roles and len(approvals)==len(required_roles));valid=chain_valid and len({a['actor_id'] for a in approvals})==len(approvals);previous=None;steps=[]
     for index,role in enumerate(required_roles,1):
         step=next((a for a in approvals if a['sequence']==index),None);actor=refs.get(step['actor_id']) if step else None
+        chain_valid=chain_valid and bool(step and step['role']==role and step['state']=='APPROVED' and step['policy_id']==approval['id'] and step['policy_version']==approval['version'] and step['transaction_version']==c['transaction_version'] and datetime.fromisoformat(step['approved_at'].replace('Z','+00:00'))<=datetime.fromisoformat(c['evaluated_at'].replace('Z','+00:00')) and (previous is None or previous<=datetime.fromisoformat(step['approved_at'].replace('Z','+00:00'))))
         valid=valid and bool(step and actor and actor['_kind']=='employees' and actor['status']=='ACTIVE' and role in actor['roles'] and step['role']==role and step['state']=='APPROVED' and step['policy_id']==approval['id'] and step['policy_version']==approval['version'] and step['transaction_version']==c['transaction_version'] and step['actor_id'] not in (p.get('employee_id'),c['author_id']) and datetime.fromisoformat(step['approved_at'].replace('Z','+00:00'))<=datetime.fromisoformat(c['evaluated_at'].replace('Z','+00:00')) and effective(actor,step['approved_at'][:10]) and actor.get('cost_center_id')==approval['cost_center_id'] and actor.get('department')==approval['department'] and (role!='MANAGER' or vendor or primary and primary.get('manager_id')==step['actor_id']) and (previous is None or previous<=datetime.fromisoformat(step['approved_at'].replace('Z','+00:00'))))
         steps.append({'sequence':index,'required_role':role,'present':step is not None,'actor_has_role':bool(actor and role in actor.get('roles',[])),'version_bound':bool(step and step['transaction_version']==c['transaction_version'])})
         if step:previous=datetime.fromisoformat(step['approved_at'].replace('Z','+00:00'))
-    check('APR-001',valid,'Complete, authoritative, version-bound approval chain is required.',{'required_roles':required_roles,'steps':steps,'record_ids':[a['id'] for a in approvals]},'All policy steps approved by authorized distinct people',[ev(approval,None,'POLICY_CLAUSE')] if approval else [],failure='HOLD')
-    # Include actual approvals as evidence, never fabricate an ID for a missing step.
-    if approvals:
-        authority=[ev(refs[a['actor_id']],'roles','MASTER_RECORD') for a in approvals if a['actor_id'] in refs]
-        r=results[-1];results[-1]=RuleResult(r.rule_id,r.version,r.status,r.decision_effect,r.reason,r.observed,r.expected,r.tolerance,r.evidence+tuple(ev(a,None,'APPROVAL') for a in approvals)+tuple(authority))
+    check('APR-001',chain_valid,'Complete, authoritative, version-bound approval chain is required.',{'required_roles':required_roles,'steps':steps,'record_ids':[a['id'] for a in approvals]},'All policy steps approved by authorized distinct people',[ev(approval,None,'POLICY_CLAUSE')] if approval else [],failure='HOLD')
+    authority=[ev(refs[a['actor_id']],'roles','MASTER_RECORD') for a in approvals if a['actor_id'] in refs]
+    approval_evidence=([ev(approval,None,'POLICY_CLAUSE')] if approval else [])+[ev(a,None,'APPROVAL') for a in approvals]+authority
+    r=results[-1];results[-1]=RuleResult(r.rule_id,r.version,r.status,r.decision_effect,r.reason,r.observed,r.expected,r.tolerance,tuple([ev()]+approval_evidence))
+    result('APR-002','PASS' if valid and chain_valid else 'FAIL','Approval actors need effective master authority, department/cost-center scope and separation of duties.',{'steps':steps,'actor_ids':[a['actor_id'] for a in approvals]},'Authorized distinct approvers; no claimant/submitter self-approval',approval_evidence,'NONE' if valid and chain_valid else 'HOLD')
     full_receipts=vendor or all(i.get('claimed_amount') is not None and i.get('receipt_total_amount') is not None and D(i['claimed_amount'])==D(i['receipt_total_amount']) for i in p['items'])
     supported=p.get('document_type')=='ORDINARY' and p.get('currency')=='INR' and c.get('context_complete') is True and full_receipts
     result('SYS-001','PASS' if supported else 'UNKNOWN','Rules-only context is complete; risk model NOT_CONFIGURED.' if supported else 'Unsupported currency/type, partial receipt allocation or incomplete context requires review.',{'mode':'RULES_ONLY','model_status':'NOT_CONFIGURED','extraction':'STRUCTURED_SYNTHETIC','currency':p.get('currency')},'Complete supported deterministic context')
