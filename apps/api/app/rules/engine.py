@@ -9,7 +9,7 @@ from app.domain.money import Money
 from app.domain.states import RuleStatus, DecisionEffect, ScreeningDecision
 from app.domain.evidence import EvidenceReference, EvidenceKind, ImportCellLocator
 
-RULESET = 'rules-p1-v6'
+RULESET = 'rules-p1-v7'
 DECISION_POLICY = 'hold-first-p1-v1'
 RULE_IDS = ('VAL-001','VAL-003','VAL-002','VEN-001','VEN-002','VEN-003','DUP-002','PO-001','PO-002','PO-003','PO-004','GRN-001','EMP-001','DOC-001','EXP-001','EXP-003','BUD-001','APR-001','APR-002','SYS-001')
 D = Decimal
@@ -89,7 +89,7 @@ def _evaluate(c):
         return bool(r and day and (not r.get('effective_from') or r['effective_from']<=day) and (not r.get('effective_to') or day<r['effective_to']))
     def result(rid,status,reason,observed=None,expected=None,evidence=(),effect=None,tolerance=None):
         effect=effect or ('NONE' if status in ('PASS','NOT_APPLICABLE') else 'REVIEW')
-        results.append(RuleResult(rid,'1.0.5',status,effect,reason,projection(observed),projection(expected),tolerance,tuple([ev()]+list(evidence))))
+        results.append(RuleResult(rid,'1.0.6',status,effect,reason,projection(observed),projection(expected),tolerance,tuple([ev()]+list(evidence))))
     def check(rid,ok,reason,observed=None,expected=None,evidence=(),failure='REVIEW',tolerance=None):
         result(rid,'PASS' if ok else 'FAIL',reason,observed,expected,evidence,'NONE' if ok else failure,tolerance)
     def na(rid):result(rid,'NOT_APPLICABLE','Control does not apply to this transaction branch.',p['branch'],'Applicable branch only')
@@ -100,7 +100,7 @@ def _evaluate(c):
     business_day=p.get('invoice_date' if vendor else 'expense_date')
     primary=ref('vendor_id' if vendor else 'employee_id','vendors' if vendor else 'employees')
     required=['currency','submission_date','category','cost_center_id','approval_policy_id','budget_id']+(['vendor_id','invoice_number','invoice_date','subtotal_amount','tax_amount','total_amount','tax_basis','document_discount_amount','shipping_amount','other_charges_amount','po_id'] if vendor else ['employee_id','claim_number','expense_date','requested_amount','expense_policy_id','local_timezone','business_purpose'])
-    missing=[k for k in required if p.get(k) is None or p.get(k)=='']
+    missing=[k for k in required if p.get(k) is None or isinstance(p.get(k),str) and not p[k].strip()]
     if not p.get('lines' if vendor else 'items'):missing.append('lines' if vendor else 'items')
     result('VAL-001','UNKNOWN' if missing else 'PASS','Missing required facts need correction.' if missing else 'Required structured facts are present.',{'missing':missing},'All required facts present')
     if vendor:
@@ -136,14 +136,16 @@ def _evaluate(c):
         if not master_token or not source_token or not p.get('payment_account_token'):result('VEN-003','UNKNOWN','Verified synthetic account token comparison is incomplete.',expected='Submitted and document token equal approved vendor token')
         else:check('VEN-003',master_token==source_token==p['payment_account_token'],'Submitted account token must match approved vendor and source.',{'submitted':'[synthetic token redacted]'},'Approved master equality',[ev(primary,'payment_account_token','MASTER_RECORD'),ev(doc,'facts.payment_account_token','DOCUMENT_FIELD')],failure='HOLD')
         dup=c['duplicates']
-        check('DUP-002',not dup,'Confirmed exact duplicates must be held.' if dup else 'Scoped exact duplicate search completed with no match.',{'matching_record_ids':[r['id'] for r in dup]},'No active same-vendor number/date/amount/currency record',[ev(r,None,'HISTORICAL_AGGREGATE') if r.get('_kind') else ev(r) for r in dup],failure='HOLD')
+        if not all(p.get(k) is not None and p.get(k)!='' for k in ['vendor_id','invoice_number','invoice_date','total_amount','currency']):
+            result('DUP-002','UNKNOWN','Exact duplicate lookup requires vendor, number, date, amount and currency; the search was not complete.')
+        else:check('DUP-002',not dup,'Confirmed exact duplicates must be held.' if dup else 'Scoped exact duplicate search completed with no match.',{'matching_record_ids':[r['id'] for r in dup]},'No active same-vendor number/date/amount/currency record',[ev(r,None,'HISTORICAL_AGGREGATE') if r.get('_kind') else ev(r) for r in dup],failure='HOLD')
         po=ref('po_id','purchase_orders')
         check('PO-001',bool(po and effective(po,business_day) and po.get('status')=='APPROVED_OPEN'),'Required PO must exist, be effective and be approved/open.',po and po.get('status'),'APPROVED_OPEN',[ev(po,'status','MASTER_RECORD')] if po else [],failure='HOLD')
         check('PO-002',bool(po and po.get('vendor_id')==p.get('vendor_id') and po.get('currency')==p.get('currency') and po.get('budget_id')==p.get('budget_id') and po.get('category')==p.get('category')),'PO association must match vendor, scoped entity, currency, category and budget.',{'po_id':p.get('po_id'),'vendor_id':p.get('vendor_id'),'currency':p.get('currency')},'Matching owned PO',[ev(po,None,'MASTER_RECORD')] if po else [],failure='HOLD')
-        price_ok=True;capacity_ok=True;grn_ok=True;missing_po=False;missing_grn=False;po_obs=[];grn_obs=[];po_ev=[];grn_ev=[]
+        price_ok=True;capacity_ok=True;grn_ok=True;missing_po=not p['lines'];missing_grn=not p['lines'];po_obs=[];grn_obs=[];po_ev=[];grn_ev=[]
         for line in p['lines']:
             pl=refs.get(str(line.get('po_line_id')));gl=refs.get(str(line.get('grn_line_id')))
-            if not pl or pl['_kind']!='po_lines' or any(line.get(k) is None for k in ['quantity','unit_price','uom','tax_rate']):missing_po=True;continue
+            if not pl or pl['_kind']!='po_lines' or any(line.get(k) is None for k in ['quantity','unit_price','uom','tax_rate']):missing_po=True;missing_grn=True;continue
             consumed=sum((D(r['quantity']) for r in refs.values() if r['_kind']=='matching_allocations' and r.get('lifecycle')=='CONSUMED' and r.get('po_line_id')==pl['id']),ZERO)
             live=D(c['capacity'].get(pl['id'],{}).get('quantity','0'))
             remaining=D(pl['ordered_quantity'])-consumed-live
@@ -160,13 +162,14 @@ def _evaluate(c):
             grn_ok=grn_ok and gl['po_line_id']==pl['id'] and gl['po_id']==p.get('po_id') and gl['uom']==line['uom'] and ZERO<requested_grn<=grn_remaining
             grn_ev.extend(ev(r,None,'HISTORICAL_AGGREGATE') for r in refs.values() if r['_kind']=='matching_allocations' and r.get('lifecycle')=='CONSUMED' and r.get('grn_line_id')==gl['id'])
             grn_obs.append({'grn_line_id':gl['id'],'accepted_net_remaining':grn_remaining,'requested':requested_grn,'quantity_shortfall':max(ZERO,requested_grn-grn_remaining)});grn_ev.append(ev(gl,None,'GRN_LINE'))
-        if any(p.get(k) is None or D(p[k])!=ZERO for k in ['shipping_amount','other_charges_amount']):price_ok=False
+        if any(p.get(k) is None for k in ['shipping_amount','other_charges_amount']):missing_po=True
+        elif any(D(p[k])!=ZERO for k in ['shipping_amount','other_charges_amount']):price_ok=False
         prior_value=sum((D(r['amount']) for r in refs.values() if r['_kind']=='matching_allocations' and r.get('lifecycle')=='CONSUMED' and r.get('po_id')==p.get('po_id')),ZERO)
         live_value=D(c['po_commitment_used'].get(str(p.get('po_id')),'0'))
         remaining_value=D(po['approved_ceiling_amount'])-prior_value-live_value if po else None
         capacity_ok=capacity_ok and bool(total is not None and remaining_value is not None and ZERO<total<=remaining_value)
         result('PO-003','UNKNOWN' if missing_po else 'PASS' if price_ok else 'FAIL','PO units, prices, tax and configured MAX tolerances must match; unapproved extra charges are blocked.',po_obs,'Within approved commercial terms',po_ev,'HOLD' if missing_po or not price_ok else 'NONE')
-        result('PO-004','UNKNOWN' if missing_po or remaining_value is None else 'PASS' if capacity_ok else 'FAIL','Cumulative quantity and gross value must fit approved PO capacity.',{'lines':po_obs,'remaining_value':remaining_value,'requested_value':total},'Sufficient approved capacity',po_ev,'HOLD' if missing_po or not capacity_ok else 'NONE')
+        result('PO-004','UNKNOWN' if missing_po or remaining_value is None or total is None else 'PASS' if capacity_ok else 'FAIL','Cumulative quantity and gross value must fit approved PO capacity.',{'lines':po_obs,'remaining_value':remaining_value,'requested_value':total},'Sufficient approved capacity',po_ev,'HOLD' if missing_po or total is None or not capacity_ok else 'NONE')
         result('GRN-001','UNKNOWN' if missing_grn else 'PASS' if grn_ok else 'FAIL','Accepted receipts less returns, reversals and active allocations must cover the invoice.',grn_obs,'Quantity covered by accepted goods',grn_ev,'HOLD' if missing_grn or not grn_ok else 'NONE')
         na('EMP-001')
     else:
@@ -180,7 +183,9 @@ def _evaluate(c):
         else:
             facts=doc['facts'];doc_ok=doc.get('verification')=='ADJUDICATED_SYNTHETIC_FACTS' and doc.get('source_type')=='VENDOR_INVOICE' and facts.get('invoice_number')==p.get('invoice_number') and facts.get('invoice_date')==business_day and facts.get('currency')==p.get('currency') and facts.get('total_amount') is not None and total is not None and D(facts['total_amount'])==total and primary is not None and facts.get('vendor_name')==primary.get('legal_name')
     else:
+        if not p['items']:doc_missing=True
         for item in p['items']:
+            if any(item.get(k) is None for k in ['currency','category','expense_date','receipt_total_amount']):doc_missing=True
             doc=refs.get(str(item.get('source_document_id')))
             if not doc or doc['_kind']!='documents':doc_missing=True;continue
             docs.append(doc);facts=doc['facts']
@@ -196,7 +201,7 @@ def _evaluate(c):
     if vendor:na('EXP-003')
     else:
         policy=ref('expense_policy_id','expense_policies');observed={};evidence=[];unknown=False;over=False
-        if not effective(policy,business_day) or not primary or not policy or total is None:unknown=True
+        if not p['items'] or any(i.get('claimed_amount') is None for i in p['items']) or not effective(policy,business_day) or not primary or not policy or total is None:unknown=True
         else:
             evidence=[ev(policy,None,'POLICY_CLAUSE')]
             dimensions=policy['dimensions'];valid=policy['category']==p.get('category') and policy['currency']==p.get('currency') and dimensions['grade']==primary.get('grade') and dimensions['country']==p.get('country')==primary.get('country') and dimensions['location']==p.get('location') and policy['local_timezone']==p.get('local_timezone') and p.get('submission_date') and ZERO<=D((date.fromisoformat(p['submission_date'])-date.fromisoformat(business_day)).days)<=D(policy['submission_window_days'])

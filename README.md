@@ -2,15 +2,15 @@
 
 Accounts-Payable Exception Assistant · Microsoft Innovate 2026 · AI BATTALION 1 · Team ID 152
 
-The planned assistant screens vendor invoices and employee expense claims against verified evidence, versioned finance rules, reference records, budgets, and approvals. Every finding must explain which control applies and which source or matched record supports it.
+The assistant screens vendor invoices and employee expense claims against verified evidence, versioned finance rules, reference records, budgets, and approvals. Every finding must explain which control applies and which source or matched record supports it.
 
 ## Development status
 
-**PHASE 0 COMPLETE — Contracts and feasibility, with explicit external-runtime deferral.** P0-01–P0-03 establish the local repository, tested Money/state/evidence contracts and reproducible synthetic finance fixtures. P0-04 provides the replaceable extraction contract, verified deterministic fixture adapter, ten structured extraction cases, comparison harness, official-source research and observed runtime prerequisite gate. P0-05 consolidates compatibility findings; P0-06 records identity, effective-policy, durable-job/private-storage, RULES_ONLY risk and optimized enterprise-inference decisions. See the [formal exit review](docs/phase0_exit_review.md).
+**Phase 1 complete locally — executable rules-first slice for both branches.** FastAPI, PostgreSQL, durable jobs, immutable evaluations/evidence, deterministic JSON/HTML reports and the Next.js review workspace run locally with real persisted data. The approved scope is P1-01–P1-06; final verification and publication are recorded in [progress](docs/progress.md) and the [Phase-1 exit review](docs/phase1_exit_review.md).
 
-Real TypeLLM/VLM execution is **DEFERRED — INFRASTRUCTURE PREREQUISITE**: observed driver 550.120 does not meet the proposed CUDA 13 >=580 prerequisite, Docker daemon access is denied, and GPU passthrough is unverified. No model/runtime was installed or downloaded; actual image quality, latency and VRAM remain unavailable. Research pins are not production-approved pins. The development extraction implementation is the verified fixture adapter.
+The original Phase-0 contracts, fixture adapters and synthetic corpora remain intact. Extraction is **STRUCTURED_SYNTHETIC** for this slice; the separate P0 **FIXTURE** adapter remains available. Finance risk is **RULES_ONLY / NOT_CONFIGURED**, with no score, live VLM or ML dependency. Real TypeLLM/GPU execution remains deferred under the recorded infrastructure gate. No inference installation, model download, payment execution or Phase 2 work was performed.
 
-All T01–T42 business behavior remains **NOT IMPLEMENTED**. There is no API server, frontend, database, durable worker, finance rule engine or trained risk model. Architecture acceptance is not service implementation. Phase 1 has not started; Git publication outcome is recorded in [progress](docs/progress.md). No payment execution exists or is in the initial scope.
+The seeded demos compute clean vendor PASS, paid duplicate HOLD, clean employee PASS, daily meal REVIEW and missing approval HOLD. Ordinary submissions cannot assert approval authority; new examples commonly HOLD until a trusted chain exists. This is a synthetic local development product, not a production pilot.
 
 Screening terminology:
 
@@ -20,13 +20,13 @@ Screening terminology:
 
 Processing status and human review/approval status are separate from these screening decisions.
 
-## Planned architecture
+## Architecture
 
 The intended CPU-friendly control plane contains the Next.js/TypeScript client, FastAPI/Pydantic API, PostgreSQL, deterministic Python finance rules, approvals, budgets, review/audit/reporting and durable jobs/outbox. A separate shared enterprise inference plane contains preprocessing/router, TypeLLM, compatible VLM, SGLang and GPU workers/caches. **Finance-user laptops do not require GPU/VLM runtime.** They need supported browser/client access; no CUDA, weights, TypeLLM, SGLang or GPU Docker.
 
 The [accepted inference design](docs/inference_architecture.md) uses reliable native text → cheap structured extraction → small VLM if needed → stronger fallback if needed → unresolved facts/human review. It supports bounded actual pages/crops, persistent resident models, safe scoped caching, supported batching, async jobs and independently scaled inference workers; autoscaling and quantization are later benchmarked options. Neither the router nor the VLM decides finance PASS/REVIEW/HOLD. Money remains raw string → trusted normalization → Decimal/currency, with honest uncertainty and no invented source boxes.
 
-Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finance-risk-baseline.md): no ML risk score or fake zero risk. Document-extraction VLM is a separate concern. These are accepted designs; application services and live extraction remain future implementation.
+Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finance-risk-baseline.md): no ML risk score or fake zero risk. Document-extraction VLM is a separate concern. The CPU application services are implemented; live extraction remains future work.
 
 ## Current repository layout
 
@@ -39,12 +39,18 @@ Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finan
 ├── apps/api/
 │   ├── app/domain/                 # states, Money/currency, evidence, extraction contracts
 │   ├── app/extraction/             # Protocol, fixture adapter, synthetic comparison
-│   └── tests/                      # domain, fixture integrity, extraction tests
+│   ├── app/core, db, schemas/       # trusted context, relational persistence, intake
+│   ├── app/rules, services/         # pure controls, worker, reports, imports
+│   ├── migrations/                 # three versioned PostgreSQL migrations
+│   └── tests/                      # original 488 tests plus rules and PostgreSQL integration
+├── apps/web/                       # Next.js client, private API proxy, Playwright tests
+├── packages/api-client/            # generated OpenAPI contract
 ├── data/
 │   ├── synthetic/                 # reference JSON, README and fixture checksums
 │   ├── golden_cases/              # vendor/employee finance expectations and manifest
 │   └── extraction_spike/          # structured inputs/annotations, responses, own checksums
 ├── scripts/benchmark/extraction_spike.py
+├── scripts/dev/, scripts/seed/      # isolated bootstrap, supervisor, trusted demo seed
 ├── docs/
 │   ├── AP_Exception_Assistant_Codex_Spec.md
 │   ├── progress.md
@@ -56,7 +62,7 @@ Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finan
 │   ├── inference_architecture.md
 │   ├── phase0_exit_review.md
 │   ├── source_inputs.sha256
-│   └── adr/                       # ADR-0001–0008
+│   └── adr/                       # ADR-0001–0009
 ├── AP_Exception_Assistant_6_Person_Team_Pack/
 │   ├── AP_Exception_Assistant_Codex_Spec.md
 │   ├── AP_Exception_Assistant_6_Person_Work_Plan.md
@@ -87,25 +93,36 @@ Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finan
 
 The `docs/` specification is the implementation reference, copied byte-for-byte from the preserved source pack. The original folder and ZIP are intentionally version controlled as project inputs. The ADR explains their relationship; do not edit the originals or silently diverge from the specification.
 
-## Setup status
+## Run locally
 
-There is no runnable application, project dependency manifest, startup command, or migration. Tests use the existing Python/pytest environment; no dependencies were installed in Phase 0. Production modules and fixture validation use the Python standard library and existing domain contracts. From the repository root:
+See the [tested local runbook](docs/runbooks/phase1-local.md) for prerequisites, private identities, imports, tests, process control, backup boundaries and limits. The automated tool bootstrap targets Ubuntu 24.04 x86_64 and runs as an ordinary user:
 
 ```bash
-python3 -m pytest apps/api/tests/unit/domain -q
-python3 -m pytest apps/api/tests/fixtures -q
-python3 -m pytest apps/api/tests/unit/extraction -q
-PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider
+python3 scripts/dev/bootstrap.py
+.venv/bin/alembic -c apps/api/alembic.ini upgrade head
+.venv/bin/python scripts/seed/phase1.py
+export PATH="$PWD/runtime/tools/node-v24.21.0-linux-x64/bin:$PATH"
+npm run --prefix apps/web build
+.venv/bin/python scripts/dev/run.py
+```
+
+Open [AP Review Desk](http://127.0.0.1:3000). API docs: [OpenAPI](http://127.0.0.1:8000/docs). All three application processes bind loopback; PostgreSQL runs on port 55432. Credentials remain in ignored 0600 private files. The application role cannot bypass forced row-level tenant/entity policies. The Next proxy injects the trusted development token server-side; request bodies cannot supply scope, role, approval or outcome authority. This is not production SSO.
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider
+npm run --prefix apps/web typecheck
+PLAYWRIGHT_BROWSERS_PATH="$PWD/runtime/playwright" npm exec --prefix apps/web -- playwright install chromium
+PLAYWRIGHT_BROWSERS_PATH="$PWD/runtime/playwright" npm run --prefix apps/web test:e2e
 sha256sum -c docs/source_inputs.sha256
 sha256sum -c data/synthetic/fixtures.sha256
 sha256sum -c data/extraction_spike/fixtures.sha256
 python3 scripts/benchmark/extraction_spike.py --dataset data/extraction_spike --output generated/reports/extraction-fixture.json
 ```
 
+The PostgreSQL integration suite uses separate migrated test schemas. Browser tests use the running application and retain their synthetic UI-TEST records. Imports have a single `transaction_json` text column; CSV/XLSX previews preserve invalid rows, and commit queues only valid rows. No approval write surface exists in this phase. Corrections append canonical versions; evaluation requests are asynchronous and idempotent; reports remain immutable after supersession.
+
 The harness replays structured responses, compares each critical field, preserves abstentions, and measures row coverage/value agreement and source-locator availability. Its generated report is ignored by Git. Perfect fixture agreement is expected by construction and says nothing about visual extraction or production accuracy; absent boxes/latency remain unavailable. See the extraction dataset README for denominators and limitations.
 
-The root `pytest.ini` supplies test discovery and the import path; no shell `PYTHONPATH` override or package installation is required. Tests are verified on Python 3.13.11. The source avoids features newer than Python 3.10, but other interpreter versions have not been runtime-tested. Environment observations and missing prerequisites are recorded in the assumption register. The completed Phase-0 review permits the explicit external-runtime deferral. The next phase requires new approval; this closure creates no Phase-1 scaffold.
+The root `pytest.ini` supplies test discovery and import paths. Python dependencies and npm packages are locked and installed locally. The original standard-library domain/extraction modules were not rewritten. The [coverage tracker](docs/test_coverage.md) separates implemented supported scenarios from partial and deferred later-phase cases; synthetic tests do not establish visual accuracy, company-policy correctness or production readiness.
 
-Repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate).
-
-The latest approval authorizes exactly one consolidated Phase-0 push to `main` after verification. If Git authentication fails, preserve clean local commits and report the blocker without credential repair or retry. Future phase pushes follow the user-approved publication policy. Never force-push without explicit authorization.
+Repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate). Phase 1 has one consolidated authorized main push attempt after the exit gate; the actual result is recorded in progress. Authentication failure is recorded without credential repair or push retry. Phase 2 requires new approval.

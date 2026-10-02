@@ -94,7 +94,7 @@ def create_app(settings=None,database=None):
             q=scope_query(select(Transaction),Transaction,ctx).order_by(Transaction.created_at.desc()).limit(limit)
             if decision:q=q.where(Transaction.decision==decision)
             if branch:q=q.where(Transaction.branch==branch)
-            return {'items':[finance.transaction_detail(session,ctx,r.id) for r in session.scalars(q)]}
+            return {'items':finance.transaction_list(session,ctx,q)}
     @app.get('/api/v1/transactions/{record_id}')
     def transaction(record_id:UUID,ctx=Depends(identity)):
         with database.session(ctx) as session:return finance.transaction_detail(session,ctx,record_id)

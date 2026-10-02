@@ -401,3 +401,28 @@ def test_incompatible_worker_stage_never_executes(environment):
     with db.session(ctx) as s:
         assert not finance.get(s,Transaction,ctx,UUID(rid)).eligible
         assert s.scalar(select(func.count()).select_from(Evaluation))==0
+
+
+def test_transaction_list_batches_current_facts_and_latest_jobs(environment):
+    from sqlalchemy import event
+    db,ctx,other,client,cfg=environment
+    ids=[create(client,payload()|{'invoice_number':f'LIST-{i}'}) for i in range(5)]
+    revision={'expected_version':1,'reason':'List current revision','transaction':payload()|{'invoice_number':'LIST-CORRECTED'}}
+    assert client.post(f'/api/v1/transactions/{ids[0]}/revisions',json=revision,headers=headers()).status_code==201
+    for number in range(2):
+        r=client.post(f'/api/v1/transactions/{ids[0]}/evaluate',json={'expected_version':2,'reason':f'List intent {number}'},headers=headers())
+        assert r.status_code==202
+        last_job=r.json()['job_id']
+    statements=[]
+    def record(connection,cursor,statement,parameters,context,executemany):
+        if statement.lstrip().upper().startswith('SELECT') and 'set_config' not in statement:statements.append(statement)
+    event.listen(db.engine,'before_cursor_execute',record)
+    try:response=client.get('/api/v1/transactions')
+    finally:event.remove(db.engine,'before_cursor_execute',record)
+    assert response.status_code==200 and len(statements)==3
+    items={row['id']:row for row in response.json()['items']}
+    assert set(items)==set(ids)
+    assert items[ids[0]]['versions'][0]['payload']['invoice_number']=='LIST-CORRECTED'
+    assert items[ids[0]]['versions'][0]['version']==2 and len(items[ids[0]]['versions'])==1
+    assert items[ids[0]]['job']['id']==last_job
+    assert len(client.get('/api/v1/transactions/'+ids[0]).json()['versions'])==2

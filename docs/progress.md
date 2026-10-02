@@ -3,24 +3,24 @@
 ## Project status
 
 - Session date: 2026-10-02–03 (Asia/Kolkata).
-- Current phase: **PHASE 1 IN PROGRESS — Rules-first vertical slice for both branches**; Phase 0 remains complete with external-runtime deferral.
-- Current task: **P1-01–P1-06 continuous approved build; environment/schema foundation first**.
+- Current phase: **PHASE 1 COMPLETE LOCALLY — Rules-first vertical slice for both branches**; Phase 0 remains complete with external-runtime deferral.
+- Current task: **P1-01–P1-06 complete; verified local exit, consolidated publication and stop before Phase 2**.
 - P0-01: **COMPLETE LOCALLY**; the single consolidated phase push failed authentication; remote publication remains blocked.
 - P0-02: **COMPLETE**; tested Money/currency, states and evidence foundation.
 - P0-03: **COMPLETE**; reproducible synthetic references and independent golden expectations.
 - P0-04: **CLOSED WITH EXTERNAL RUNTIME DEFERRAL**; fixture/contracts/research verified, real inference not executed.
 - P0-05: **COMPLETE FEASIBILITY CONSOLIDATION**; final compatibility matrix, research pins and honest unverified/blocked/deferred limitations.
 - P0-06: **COMPLETE DESIGN DECISIONS**; identity, effective policy, durable jobs, private storage, RULES_ONLY risk and optimized shared inference.
-- Real runtime: **BLOCKED_EXTERNAL_PREREQUISITE**; observed BLOCKED_DRIVER and BLOCKED_DOCKER_ACCESS, ENVIRONMENT_FAILURE, IMAGE_PATH_NOT_RUN.
+- Real inference runtime: **BLOCKED_EXTERNAL_PREREQUISITE**; observed BLOCKED_DRIVER and BLOCKED_DOCKER_ACCESS, ENVIRONMENT_FAILURE, IMAGE_PATH_NOT_RUN.
 - Development extraction: **VERIFIED FIXTURE ADAPTER**; enterprise target **OPTIMIZED SHARED VLM INFERENCE SERVICE**.
-- Phase 1: **APPROVED / IN PROGRESS**; no approval stops between P1 tasks, stop before Phase 2.
+- Phase 1: **COMPLETE LOCALLY**; all mandatory local exit criteria satisfied. Phase 2 has not begun.
 
-The [formal exit review](phase0_exit_review.md) records the explicit runtime qualification and full-product acceptance limits. [T01–T42 coverage](test_coverage.md) remains 42 NOT IMPLEMENTED. Historical work records below describe the approval/status at each checkpoint; this current disposition supersedes their prior stop/parent-incomplete statements. No original record or specification is rewritten to suggest a passed real spike.
+The [Phase-0 exit review](phase0_exit_review.md) preserves the explicit runtime qualification. The [Phase-1 exit review](phase1_exit_review.md) records the working product and full-release limits. [T01–T42 coverage](test_coverage.md) is 21 implemented/passing, 11 partial and 10 unimplemented. Historical work records below describe the approval/status at each checkpoint; this current disposition supersedes their prior stop/parent-incomplete statements. No original record or specification is rewritten to suggest a passed real spike.
 
 ## Phase checklist
 
 - [x] Phase 0 — Contracts and feasibility (local exit criteria satisfied; real runtime explicitly deferred, publication separately reported).
-- [ ] Phase 1 — Rules-first vertical slice for both branches.
+- [x] Phase 1 — Rules-first vertical slice for both branches (local exit passed; Git publication separately recorded).
 - [ ] Phase 2 — Real document ingestion and extraction.
 - [ ] Phase 3 — Complete finance matching and controls.
 - [ ] Phase 4 — Human workflow and operational reliability.
@@ -494,3 +494,44 @@ Production frontend compiled and ran. The first ten-browser-test pass found a sa
 Formal review aligned the executable catalog with section 11: VAL-002 format/date/currency, VAL-003 arithmetic, VEN-001 identity, VEN-002 approval status, VEN-003 account verification, PO-001–004 reference/association/terms/capacity, and separate APR-001 chain/APR-002 authority. Twenty supported controls now persist under `rules-p1-v6` / `1.0.5`. The complete post-alignment Python run passed **559 passed, 0 failed, 0 skipped** in 198.23 seconds. Three migrations match ORM metadata (`alembic check`: no new upgrade operations).
 
 JSON and HTML now include pinned metadata, all required passed/failed checks, observed/expected/tolerance values, reason codes and authorized evidence links. Review creation is separately audited in the same finalization transaction. All nine original inputs, 23 finance JSON files and 11 extraction JSON files pass their original checksums; the specification remains byte-identical. Eleven browser checks are running against the refreshed production app; ten already passed before the catalog expansion. The frontend has been visually inspected at desktop and 390-pixel mobile widths. No Phase 2 or GPU/inference work was started.
+
+## Phase-1 completed local exit — 2026-10-03
+
+| Task | Disposition and verified behavior |
+|---|---|
+| P1-01 | COMPLETE: isolated locked FastAPI/Next stack, real PostgreSQL, three migrations, private local storage, durable leased jobs/outbox. |
+| P1-02 | COMPLETE: trusted scoped identity, canonical intake/revisions and retained CSV/XLSX preview/commit provenance. |
+| P1-03 | COMPLETE: 20 deterministic controls, explicit applicability/UNKNOWN, exact duplicates, party/PO/GRN/policy/budget/approval checks for the bounded synthetic slice. |
+| P1-04 | COMPLETE: HOLD-first decisions, immutable input/evaluation/rules/evidence/report, atomic audit and minimal guarded capacity effects. |
+| P1-05 | COMPLETE: production-built API-backed overview, create/import, transaction list, case/rules/evidence, exception filters and report screens; inspected desktop/mobile. |
+| P1-06 | COMPLETE: fixture-derived five-case demo computes PASS/HOLD/PASS/REVIEW/HOLD; eight supported golden alternatives pass separately. |
+
+Final engine is **rules-p1-v7**, per-rule **1.0.6**, decision policy **hold-first-p1-v1**, report **report-p1-v2**. Null/empty operands now produce explicit unresolved findings, including incomplete duplicate search, missing PO/GRN values and empty hotel rows. No skipped lookup is presented as a completed clean search. Historical prototype evaluations remain immutable and superseded; old implementation source is preserved in coherent commits.
+
+### Final executed verification
+
+| Command/check | Actual result |
+|---|---|
+| `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider --tb=short` | Exit 0: **569 passed, 0 failed, 0 skipped**, 197.53 seconds. 488 original + 44 rules + 37 PostgreSQL integration tests. One upstream Starlette/httpx deprecation warning. |
+| `npm run typecheck --prefix apps/web` | Exit 0, strict TypeScript. |
+| `npm run build --prefix apps/web` | Exit 0, Next 16.3.8 production webpack build. |
+| `PLAYWRIGHT_BROWSERS_PATH=... npm run test:e2e --prefix apps/web` | Exit 0: **11 passed, 0 failed, 0 skipped**, 9.4 seconds against the running production frontend, API and worker. |
+| `.venv/bin/python scripts/seed/phase1.py` | Exit 0; five actual computed decisions: clean vendor PASS, paid duplicate HOLD, clean employee PASS, meals REVIEW, missing approval HOLD. Refreshes current rules without deleting/replacing old facts. |
+| `.venv/bin/python -m pip check` | Exit 0: no broken requirements. |
+| `python3 scripts/dev/bootstrap.py` | Exit 0, idempotent isolated tool/database/dependency setup on the tested host. |
+| Alembic fresh/roundtrip migration and metadata check | Integration tests pass; application at 0003_generation; `alembic check` exit 0, no new upgrade operations. |
+| Original source/finance/extraction manifests and specification `cmp` | All 9/23/11 files OK; copied specification byte-identical. |
+
+The browser suite exercises both-branch create/evaluate/persist/reload, vendor/employee PASS and duplicate/meal exceptions, 20-rule evidence/report views, CSV valid/invalid retention, queue filtering/empty state, delayed loading/simulated API error and cross-origin mutation rejection. Desktop overview, vendor case/evidence and employee HTML report plus 390-pixel create screen were visually inspected. UI test cases remain as synthetic history in the development database.
+
+See [exit criteria and AC01–AC20 review](phase1_exit_review.md), [current scenario tracker](test_coverage.md), [actual setup/runbook](runbooks/phase1-local.md) and [bounded persistence ADR](adr/0009-phase1-persistence-and-local-runtime.md). This is a local synthetic product, not a production pilot. INR/ordinary/full-receipt rules are bounded; shared/fuzzy/live extraction/ML, full settlement/approval workflow, policy-change replay and production restore/performance gates remain deferred. Phase 0 contracts/source corpora were preserved. No system/GPU/cloud changes or Phase-2 work occurred.
+
+The user authorized exactly one final normal main push after verification; its actual result is recorded below after the attempt. Do not repair credentials or retry. The next major batch is Phase-2 secure original intake/preprocessing behind the existing adapter, only after explicit approval.
+
+### Final list-read refinement and documentation audit
+
+The transaction list now reads current canonical facts and latest generation-ordered jobs in three batched queries, rather than fetching full history separately for each record. Full revision history remains available on detail. The first targeted check caught a missing `func` import (2 passed / 1 failed); corrected, then all three targeted list/auth/idempotency tests passed. The final complete rerun is **569 passed, 0 failed, 0 skipped** in 197.53 seconds. The refreshed live-browser suite is **11 passed, 0 failed, 0 skipped** in 9.4 seconds. No finance rule changes followed this gate.
+
+`/tmp/audit_phase1.py` returned exit 0: 201 local documentation links/anchors resolve, all 42 original scenario/expectation strings remain exact, the 21/11/10 coverage disposition and all 20 user exit criteria/AC01–AC20 rows are present. Original contracts, extraction, 488 tests, datasets and inference research remain unchanged against Phase-0 HEAD. Saved OpenAPI matches the actual app. Private development directory/files are 0700/0600; generated credentials/passwords are absent from trackable text, common secret-pattern scan is clean, and runtime/build/browser output paths are ignored. These limited scans are not a security certification. Final Alembic drift check, pip check, all checksum sets, specification comparison, generated client/typecheck and preserved ten-case fixture CLI also passed.
+
+The documented clean stop of the owned PostgreSQL cluster and restart through `setup_database.py` returned exit 0. The application supervisor restarted; readiness reported PostgreSQL migration 0003_generation, liveness retained explicit modes, and the production frontend returned HTTP 200. This is process recovery verification, not a backup restore exercise. The local application remains running for review.

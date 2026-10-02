@@ -1,6 +1,6 @@
 # Domain glossary and implemented foundational contracts
 
-Terminology comes from the [specification](AP_Exception_Assistant_Codex_Spec.md). P0-02 implements the foundational value contracts described below; the broader glossary is not a database schema or complete transaction/evaluation model. No persistence fields or financial workflow are introduced here.
+Terminology comes from the [specification](AP_Exception_Assistant_Codex_Spec.md). P0-02 implements the foundational value contracts described below; the broader glossary also describes future release concepts. The Phase-1 persisted schema is documented below.
 
 | Term | Meaning |
 |---|---|
@@ -32,7 +32,7 @@ Terminology comes from the [specification](AP_Exception_Assistant_Codex_Spec.md)
 | Audit Event | An append-only record of a significant action and its actor, versions, reason, and evidence; eligibility changes must commit consistently with audit. |
 | Waiver | A separate, authorized, scoped, evidence-backed exception to a waivable rule; ordinary approval does not imply a waiver. |
 
-Financial screening, processing, and human review states stay separate. Transaction/evaluation/rule-result schemas and business controls remain future tasks.
+Financial screening, processing, and human review states stay separate. Phase 1 implements the bounded transaction/evaluation/rule-result schema and controls below; wider accounting and human workflows remain future work.
 
 ## Implemented states
 
@@ -46,11 +46,11 @@ Implementation: [states.py](../apps/api/app/domain/states.py).
 | RuleStatus | PASS, FAIL, UNKNOWN, NOT_APPLICABLE, ERROR |
 | DecisionEffect | NONE, REVIEW, HOLD |
 
-These are separate Enum types, not interchangeable string aliases. Use `.value` for their documented wire vocabulary and explicit member comparisons such as `status is RuleStatus.PASS`. Boolean coercion raises TypeError for every state, so `if status` cannot mistake UNKNOWN, FAIL, or NOT_APPLICABLE for success. No state transition logic or decision combiner exists.
+These are separate Enum types, not interchangeable string aliases. Use `.value` for their documented wire vocabulary and explicit member comparisons such as `status is RuleStatus.PASS`. Boolean coercion raises TypeError for every state, so `if status` cannot mistake UNKNOWN, FAIL, or NOT_APPLICABLE for success. The value-contract module contains no transitions; Phase-1 services and the pure rules engine implement processing/decision behavior separately.
 
 ### UNKNOWN and absent values
 
-`RuleStatus.UNKNOWN != False`, `0`, `None`, FAIL, PASS, NOT_APPLICABLE, and ERROR. None represents an absent optional value; UNKNOWN is an explicit unresolved-check status. Neither defaults to a clean result. Money rejects None and booleans; monetary zero must be supplied explicitly. Evidence observations may be absent (`None`) or explicit text (`"0"`, `"false"`, or a redacted representation); they do not become numeric/boolean facts or replace a rule status. Eligibility handling belongs to later controls.
+`RuleStatus.UNKNOWN != False`, `0`, `None`, FAIL, PASS, NOT_APPLICABLE, and ERROR. None represents an absent optional value; UNKNOWN is an explicit unresolved-check status. Neither defaults to a clean result. Money rejects None and booleans; monetary zero must be supplied explicitly. Evidence observations may be absent (`None`) or explicit text (`"0"`, `"false"`, or a redacted representation); they do not become numeric/boolean facts or replace a rule status. The Phase-1 combiner makes required UNKNOWN/ERROR ineligible.
 
 ## Money and currency
 
@@ -61,7 +61,7 @@ Implementation: [money.py](../apps/api/app/domain/money.py).
 - Currency must be exactly three ASCII letters and is normalized to uppercase. Whitespace/symbols/digits are rejected. This validates structure only, not official registration or policy support.
 - Equality compares amount and currency; differing scale with the same exact value compares equal. Addition/subtraction require another Money in the same currency, otherwise fail explicitly. There is no FX, scalar coercion, tax calculation, division, or rounding policy.
 - Arithmetic uses a private Decimal context with operand-derived sufficient precision and rounding/inexact/overflow traps. It does not read or mutate the caller's precision, rounding, or flags. Supported operations never silently lose digits; implementation-limit errors remain errors.
-- `to_dict()` emits `amount` as plain decimal text and `currency` as normalized text. Fractional zeros are preserved without rounding, including tiny values beyond ordinary currency minor units. No API endpoint is implemented.
+- `to_dict()` emits `amount` as plain decimal text and `currency` as normalized text. Fractional zeros are preserved without rounding, including tiny values beyond ordinary currency minor units. Phase-1 API schemas and reports reuse decimal-string serialization.
 - Explicit zero and negative values are valid generic monetary values. This does not authorize any bill/credit/refund treatment; those are later business controls. Currency scale, input resource limits, tax/FX, and rounding policy are not implemented in P0-02.
 
 ## EvidenceReference and source locators
@@ -80,13 +80,13 @@ Implementation: [evidence.py](../apps/api/app/domain/evidence.py).
 | BoundingBox | Frozen x1/y1/x2/y2 numeric positions satisfying `0 <= x1 <= x2 <= 1` and `0 <= y1 <= y2 <= 1`. Non-finite, reversed, out-of-bounds, boolean, or nonnumeric coordinates are rejected. Coordinate floats are positions, not financial values. |
 | bbox / coordinate_system | Optional typed BoundingBox; when present, document_id and page are required and the convention is `normalized_original_page`. When absent, both bbox and coordinate_system are None. Coordinates are never invented. |
 | observed_value | Optional text preserving an observed or redacted representation. Numeric/boolean values are not silently converted. |
-| ImportCellLocator | Frozen batch UUID, nonblank sheet, positive one-based row, and nonblank original column identifier. IMPORT_CELL evidence requires this complete locator; no importer or spreadsheet parser exists. |
+| ImportCellLocator | Frozen batch UUID, nonblank sheet, positive one-based row, and nonblank original column identifier. IMPORT_CELL evidence requires this complete locator; the Phase-1 CSV/XLSX importer supplies actual retained row/cell bindings. |
 
-These references validate structure and keep facts immutable; they do not prove record existence, authorize access, verify tenant relationships against a database, or verify that coordinates map to real content. Source resolution and transform validation are later work.
+These references validate structure and keep facts immutable; they do not prove record existence, authorize access, verify tenant relationships against a database, or verify that coordinates map to real content. Phase-1 API lookup resolves scoped records; actual document transform validation remains later work.
 
 ### Missing evidence without invented records
 
-A missing-approval finding can carry a TRANSACTION reference to the actual current transaction/version, a POLICY_CLAUSE reference to the actual requirement/version, and the search snapshot on the transaction reference. Its observed text can state that approval was absent. It does not create an APPROVAL reference or guess an approval UUID. No standalone missing-approval rule, evaluation, or policy engine is implemented here.
+A missing-approval finding can carry a TRANSACTION reference to the actual current transaction/version, a POLICY_CLAUSE reference to the actual requirement/version, and the search snapshot on the transaction reference. Its observed text can state that approval was absent. It does not create an APPROVAL reference or guess an approval UUID. The value contract itself implements no approval rule; Phase-1 APR-001/APR-002 persist the missing/insufficient-chain finding and its real context.
 
 ## P0-03 fixture terminology
 
@@ -172,3 +172,27 @@ The following concepts are design metadata, not new enum values, implemented rec
 | RESEARCH PIN | Source-verified proposed component/checkpoint/container revisions, not a tested production tuple. PRODUCTION APPROVED PIN is NONE until suitable-host quality/safety/operations gates pass. |
 
 Money, uncertainty and evidence semantics above remain stable. Real provider mappings, crop detection, quality thresholds, normalization, router, storage and durable execution remain future work, with real measurements deferred rather than given numeric defaults.
+
+## Implemented Phase-1 persistence
+
+Every business record carries tenant_id/legal_entity_id. UUID keys, scoped foreign keys, forced RLS and transaction-local server identity apply. Monetary columns are Numeric(20,6); quantity columns Numeric(24,8). Financial JSON uses decimal strings. DateTime values are timezone-aware; business dates are ISO dates. The schema has 22 domain tables plus Alembic metadata.
+
+| Tables | Stored behavior and mutability |
+|---|---|
+| tenants, legal_entities | Trusted scope, names, currency/timezone. Tenant holds an atomic audit sequence/hash projection. |
+| reference_records, reference_links | Immutable kind/version/payload catalog; flattened PO/GRN/ledger/allocation children with scoped edges. Indexed exact history attributes. Original synthetic source remains unchanged. |
+| reference_snapshots, snapshot_members | Immutable manifest and concrete record/version membership, including relevant selected history at finalization. |
+| transactions | Mutable latest version/evaluation, processing state, decision and current eligibility projection; never the historical facts. |
+| transaction_versions | Immutable validated canonical payload, amount/date/party search attributes, digest, author/reason and normalizer/schema versions. |
+| approval_records | Immutable trusted action bound to transaction/policy version, actor, role, sequence, state and timestamp. No client authority fields. |
+| evaluations, evaluation_inputs | Immutable rule/decision-policy versions, reference snapshot, mode/completeness/outcome, input digest/time/supersession and complete canonical rule context. |
+| rule_results, evidence_objects | Immutable typed status/effect, operands, expected values/tolerance/reason, and actual scoped source/version references; no synthetic bounding boxes. |
+| reports | Immutable deterministic JSON/HTML, digest and report schema version. Snapshot eligibility is distinct from current projection eligibility. |
+| review_cases | OPEN REVIEW/HOLD queue with reason-rule IDs. Corrections or a newer evaluation supersede older queue projections. Human resolution is later work. |
+| audit_events | Append-only actor/object/version/time/reason/correlation/payload, sequence and hash linkage; atomic with business writes. No external tamper-proof claim. |
+| jobs, outbox_events | Durable stage/version/key, current-request generation, QUEUED/RUNNING/RETRYABLE/SUCCEEDED/FAILED/CANCELLED/STALE state, attempts, deadlines and lease owner; local delivery metadata. |
+| idempotency_records | Scoped actor/endpoint/key/request hash with stable original response/status. Changed input conflicts. |
+| import_batches, import_rows | Private original object key/digest; sheet/row/raw JSON/error/canonical/link metadata. Raw source is immutable; commit links valid rows and retains invalid rows. |
+| capacity_reservations | Minimal budget/PO-line/GRN-line admission amounts/quantities. A new version or request releases current effects; guarded finalization creates fresh ones only on eligible PASS. |
+
+Transaction processing uses P0 RECEIVED/QUEUED/PROCESSING/FAILED_RETRYABLE/FAILED_FINAL/COMPLETED. Job execution has its separate vocabulary above. Rule and screening state values remain the unchanged P0 contracts. No rules infer document boxes, FX, zero tax or approval authority. Catalog/input ceilings and version checks are part of the bounded Phase-1 contract; see ADR-0009 and the runbook.

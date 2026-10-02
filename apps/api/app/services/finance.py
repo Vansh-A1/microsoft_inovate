@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, localcontext
 import html
 from uuid import UUID, uuid4, uuid5
-from sqlalchemy import select, update, or_, and_
+from sqlalchemy import select, update, or_, and_, func
 from app.core.errors import DomainError, unavailable
 from app.core.serialization import canonical_json, digest, projection, utcnow
 from app.db.models import *
@@ -236,8 +236,25 @@ def reserve(session,identity,evaluation,version,context,decision):
                     session.add(CapacityReservation(**identity.scope(),transaction_id=version.transaction_id,transaction_version=version.version,evaluation_id=evaluation.id,reference_id=UUID(rid),reference_version=refs[rid]['version'],kind=kind,amount=amt,quantity=qty,currency=p['currency']))
 
 
+def transaction_projection(row,versions,job):
+    return projection({'job':{'id':job.id,'state':job.state,'stage':job.stage,'attempts':job.attempts,'maximum_attempts':job.maximum_attempts,'last_error':job.last_error} if job else None,'id':row.id,'branch':row.branch,'version':row.latest_version,'processing_state':row.processing_state,'decision':row.decision,'eligible':row.eligible,'latest_evaluation_id':row.latest_evaluation_id,'created_at':row.created_at,'versions':[{'version':v.version,'payload':redact(v.payload),'digest':v.content_digest,'author_id':v.author_id,'reason':v.change_reason,'created_at':v.created_at} for v in versions]})
+
+
 def transaction_detail(session,identity,record_id):
     row=get(session,Transaction,identity,record_id)
     versions=session.scalars(scope_query(select(TransactionVersion),TransactionVersion,identity).where(TransactionVersion.transaction_id==row.id).order_by(TransactionVersion.version)).all()
-    job=session.scalar(scope_query(select(Job),Job,identity).where(Job.transaction_id==row.id).order_by(Job.created_at.desc()).limit(1))
-    return projection({'job':{'id':job.id,'state':job.state,'stage':job.stage,'attempts':job.attempts,'maximum_attempts':job.maximum_attempts,'last_error':job.last_error} if job else None,'id':row.id,'branch':row.branch,'version':row.latest_version,'processing_state':row.processing_state,'decision':row.decision,'eligible':row.eligible,'latest_evaluation_id':row.latest_evaluation_id,'created_at':row.created_at,'versions':[{'version':v.version,'payload':redact(v.payload),'digest':v.content_digest,'author_id':v.author_id,'reason':v.change_reason,'created_at':v.created_at} for v in versions]})
+    job=session.scalar(scope_query(select(Job),Job,identity).where(Job.transaction_id==row.id).order_by(Job.generation.desc(),Job.id.desc()).limit(1))
+    return transaction_projection(row,versions,job)
+
+
+def transaction_list(session,identity,query):
+    # The list needs only current facts; full revision history belongs to case detail.
+    rows=list(session.scalars(query))
+    if not rows:return []
+    ids=[row.id for row in rows]
+    versions=session.scalars(scope_query(select(TransactionVersion).join(Transaction,TransactionVersion.transaction_id==Transaction.id),TransactionVersion,identity).where(TransactionVersion.transaction_id.in_(ids),TransactionVersion.version==Transaction.latest_version)).all()
+    current={v.transaction_id:v for v in versions}
+    ranked=scope_query(select(Job.id,func.row_number().over(partition_by=Job.transaction_id,order_by=(Job.generation.desc(),Job.id.desc())).label('position')),Job,identity).where(Job.transaction_id.in_(ids)).subquery()
+    jobs=session.scalars(scope_query(select(Job).join(ranked,ranked.c.id==Job.id),Job,identity).where(ranked.c.position==1)).all()
+    latest={job.transaction_id:job for job in jobs}
+    return [transaction_projection(row,[current[row.id]],latest.get(row.id)) for row in rows]

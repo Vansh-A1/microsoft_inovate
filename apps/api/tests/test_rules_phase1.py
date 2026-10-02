@@ -95,3 +95,28 @@ def test_partial_receipt_allocation_is_explicitly_unsupported():
     result=evaluate(RuleContext.pin(**data))
     assert result.decision=='REVIEW' and not result.eligible
     assert next(r for r in result.results if r.rule_id=='SYS-001').status=='UNKNOWN'
+
+
+@pytest.mark.parametrize('field',['quantity','unit_price','tax_rate','net_amount','tax_amount','gross_amount'])
+def test_missing_line_operands_persist_unknown_without_fake_pass(field):
+    data=json.loads(context('vendor/clean').encoded);data['transaction']['lines'][0][field]=None
+    result=evaluate(RuleContext.pin(**data))
+    assert not result.eligible and next(r for r in result.results if r.rule_id=='VAL-003').status=='UNKNOWN'
+    if field in ['quantity','unit_price','tax_rate']:
+        assert next(r for r in result.results if r.rule_id=='PO-003').status=='UNKNOWN'
+        assert next(r for r in result.results if r.rule_id=='GRN-001').status=='UNKNOWN'
+
+
+def test_no_lines_and_no_hotel_items_abstain_without_dividing_by_zero():
+    for case,key in [('vendor/clean','lines'),('employee/hotel_two_nights','items')]:
+        data=json.loads(context(case).encoded);data['transaction'][key]=[]
+        result=evaluate(RuleContext.pin(**data));assert not result.eligible
+        if key=='lines':assert next(r for r in result.results if r.rule_id=='GRN-001').status=='UNKNOWN'
+        else:assert next(r for r in result.results if r.rule_id=='EXP-003').status=='UNKNOWN'
+
+
+def test_missing_claim_amount_and_incomplete_duplicate_search_are_unknown():
+    data=json.loads(context('employee/hotel_two_nights').encoded);data['transaction']['items'][0]['claimed_amount']=None
+    assert next(r for r in evaluate(RuleContext.pin(**data)).results if r.rule_id=='EXP-003').status=='UNKNOWN'
+    data=json.loads(context('vendor/clean').encoded);data['transaction']['invoice_number']=None
+    assert next(r for r in evaluate(RuleContext.pin(**data)).results if r.rule_id=='DUP-002').status=='UNKNOWN'
