@@ -3,22 +3,23 @@
 ## Project status
 
 - Session date: 2026-10-02–03 (Asia/Kolkata).
-- Current phase: **Phase 0 — Contracts and feasibility**.
-- Current task: **P0-04C1 — Runtime prerequisite gate and minimal real image smoke (BLOCKED_DRIVER; Docker access also blocked)**.
-- Project status before this baseline: **application implementation not started**.
-- P0-01 status: **P0-01 implementation complete locally — remote publication blocked**.
-- P0-02 status: **COMPLETE — locally verified domain foundation**.
-- P0-03 status: **COMPLETE — locally verified synthetic fixtures and golden expectations**.
-- P0-04 status: **P0-04 IN PROGRESS — P0-04A/P0-04B COMPLETE**.
-- P0-04B: **research complete; local inference blocked; no provider installed/executed**.
-- P0-04C1: **gate attempted; ENVIRONMENT_FAILURE before downloads; text/image smoke NOT RUN**.
-- P0-04C2 and subsequent tasks: **not started; separate approval required**.
+- Current phase: **PHASE 0 COMPLETE — Contracts and feasibility**, with explicit external-runtime deferral.
+- Current task: **Phase-0 implementation/review complete locally; end-of-phase publication and completion report**.
+- P0-01: **COMPLETE LOCALLY**; publication separate from local completion, end-of-phase push authorized once.
+- P0-02: **COMPLETE**; tested Money/currency, states and evidence foundation.
+- P0-03: **COMPLETE**; reproducible synthetic references and independent golden expectations.
+- P0-04: **CLOSED WITH EXTERNAL RUNTIME DEFERRAL**; fixture/contracts/research verified, real inference not executed.
+- P0-05: **COMPLETE FEASIBILITY CONSOLIDATION**; final compatibility matrix, research pins and honest unverified/blocked/deferred limitations.
+- P0-06: **COMPLETE DESIGN DECISIONS**; identity, effective policy, durable jobs, private storage, RULES_ONLY risk and optimized shared inference.
+- Real runtime: **BLOCKED_EXTERNAL_PREREQUISITE**; observed BLOCKED_DRIVER and BLOCKED_DOCKER_ACCESS, ENVIRONMENT_FAILURE, IMAGE_PATH_NOT_RUN.
+- Development extraction: **VERIFIED FIXTURE ADAPTER**; enterprise target **OPTIMIZED SHARED VLM INFERENCE SERVICE**.
+- Phase 1: **NOT STARTED**; separate user approval required.
 
-The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gates. A completed documentation task does not complete Phase 0. [T01–T42 coverage](test_coverage.md) tracks implementation separately from documentation checks.
+The [formal exit review](phase0_exit_review.md) records the explicit runtime qualification and full-product acceptance limits. [T01–T42 coverage](test_coverage.md) remains 42 NOT IMPLEMENTED. Historical work records below describe the approval/status at each checkpoint; this current disposition supersedes their prior stop/parent-incomplete statements. No original record or specification is rewritten to suggest a passed real spike.
 
 ## Phase checklist
 
-- [ ] Phase 0 — Contracts and feasibility (P0-01–P0-03 and P0-04A/P0-04B complete locally; parent P0-04 incomplete; publication blocked; later work not started).
+- [x] Phase 0 — Contracts and feasibility (local exit criteria satisfied; real runtime explicitly deferred, publication separately reported).
 - [ ] Phase 1 — Rules-first vertical slice for both branches.
 - [ ] Phase 2 — Real document ingestion and extraction.
 - [ ] Phase 3 — Complete finance matching and controls.
@@ -28,17 +29,20 @@ The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gat
 
 ### Phase 0 tasks
 
-- [ ] P0-01 — Repository inspection and documentation baseline (complete locally; publication blocked).
-- [x] P0-02 — Domain glossary, state enums, Decimal/currency conventions, evidence schema, unknown-data semantics (verified locally).
-- [x] P0-03 — Synthetic references and adjudicated golden fixtures (verified locally; data expectations only).
-- [ ] P0-04 — ExtractionAdapter and varied-document TypeLLM/VLM spike.
-- [x] P0-04A — Extraction contract, fixture adapter and structured synthetic spike harness (verified locally; no real provider).
-- [x] P0-04B — Verify current TypeLLM/SGLang/model sources and produce the exact gated runtime plan (research complete; runtime not verified).
-- [ ] P0-04C — Isolated real provider image spike (incomplete).
-- [ ] P0-04C1 — Prerequisite gate + minimal real image smoke (BLOCKED_DRIVER / Docker access denial; smoke not run).
-- [ ] P0-04C2 — Full ten-case real provider benchmark (not started; separate approval required).
-- [ ] P0-05 — Runtime compatibility, quality/latency/license/hardware notes and version pins; fixture fallback if blocked.
-- [ ] P0-06 — Initial architecture decisions for identity, policies, queues/storage, and decision mode.
+- [x] P0-01 — Repository/documentation baseline complete locally; publication separate external gate.
+- [x] P0-02 — Domain glossary, explicit states, exact Money/currency and evidence contracts.
+- [x] P0-03 — Reproducible synthetic references and independent golden expectations.
+- [x] P0-04 — Replaceable extraction contract, fixture adapter/harness, research and observed prerequisite gate; real image execution deferred by explicit approval.
+- [x] P0-05 — Compatibility/null/row/evidence/latency/license/hardware findings and research pins, with working fixture fallback and external prerequisites recorded.
+- [x] P0-06 — Accepted identity, policy, durable-job/private-storage, RULES_ONLY and optimized enterprise architecture decisions.
+
+### P0-04 execution detail and explicit deferrals
+
+- P0-04A: COMPLETE, locally tested extraction contract/fixture/harness; no visual artifacts.
+- P0-04B: COMPLETE research; upstream evidence is not local provider execution.
+- P0-04C1: prerequisite gate COMPLETE; runtime smoke NOT RUN due to observed blockers.
+- P0-04C / P0-04C2: real image smoke and full ten-case real-provider benchmark **DEFERRED — REQUIRES SUITABLE INFERENCE HOST**. Real image quality, latency and VRAM unavailable.
+- Quantization, text/visual/model-cascade and actual crop benchmarks: later suitable-host work, not completed measurements or remaining required Phase-0 local tasks.
 
 ## P0-01 work record
 
@@ -369,3 +373,56 @@ No container/image/model/client package downloaded or installed; no runtime/p004
 Next external action: machine owner/administrator supplies a host driver supported by the approved CUDA 13 runtime (>=580 baseline) and authorized Docker daemon access with NVIDIA GPU passthrough. These system changes are outside this task and were not attempted. Then reapprove/recheck P0-04C1 using the same pins; do not jump to P0-04C2. Parent P0-04 remains incomplete. A documentation-only local commit records the fresh failed gate; no push authorized.
 
 Documentation self-review: `PYTHONDONTWRITEBYTECODE=1 python3 /tmp/audit_p004c1.py` returned exit 0: exactly five documentation files, 125 local links/anchors resolve, original P0-04B plan/pins preserved byte-for-byte as a prefix, all 20 provider statuses unchanged, all 42 business scenarios unimplemented, no experiment directory, and all 16 recorded host package states unchanged. Limited credential-pattern scan found no common key/token signatures; this is not a security certification. `git diff --check` returned exit 0. The temporary audit/inventory files are outside Git. Final local commit SHA, staged-check result and clean-tree status are reported in the checkpoint completion message; push not attempted.
+
+## Phase 0 consolidated closure — approved implementation plan
+
+The 2026-10-03 user approval supersedes the prior per-task stop gates for the remainder of Phase 0 only. Close P0-04 with its verified fixture/contracts/research and externally blocked real-runtime outcome; consolidate P0-05; complete P0-06 architecture decisions; review all Phase-0 exit criteria; commit and attempt the Phase-0 main push once. Do not rerun the host gate, install/download inference, provision cloud resources, or begin Phase 1.
+
+Expected changes are documentation only: README, AGENTS, progress, assumptions, data dictionary, compatibility checklist, appended runtime-plan closure, coverage clarification, new inference architecture and Phase-0 exit review, plus ADR-0003–0008 covering identity, effective policy selection, durable jobs, private storage, RULES_ONLY risk mode and optimized enterprise inference. Existing provider-independent contracts already accommodate replaceable extraction and version metadata; routing/crop/attempt metadata will be documented as future sidecar contracts rather than adding speculative runtime fields. Money/uncertainty/evidence code and all 488 tests remain unchanged.
+
+Specification basis: sections 2–4, 5, 12–14, 17–19, Phase-0 tasks/exit in section 21, acceptance gates in section 23 and external-prerequisite handling in section 24. The original spec is preserved; the latest human authorization explicitly accepts deferral of the real image spike. Upstream source verification and research pins remain distinct from locally validated provider/production pins.
+
+Verification plan: run the complete existing pytest suite, all 9/23/11 checksum sets, byte-identical spec comparison, runnable ten-case fixture CLI and report integrity, repeated normalized fixture digests, documentation/link/scope/import audit, acceptance coverage review, working/staged whitespace checks and phase-exit evidence matrix. No test deletion or invented quality/latency/VRAM metrics. Review/commit the completed phase, push main once to the authorized remote without repairing credentials, verify published SHA/file set only if the push succeeds, record the actual outcome and preserve clean local commits. Stop before Phase 1.
+
+## Phase 0 consolidated completion — executed review
+
+### Completed behavior and design
+
+P0-04 closes with verified provider-independent extraction, deterministic fixture replay, ten structured extraction cases, comparison metrics, official TypeLLM/SGLang/model research and the previously observed external prerequisite failure. The fixture adapter remains the only development provider implementation. P0-05 consolidates 26 final requirements and distinguishes RESEARCH PIN from PRODUCTION APPROVED PIN: NONE. The original 20 provider-source statuses remain unchanged; real image smoke/full benchmark and quality/latency/VRAM are deferred rather than passed.
+
+P0-06 adds six accepted ADRs: trusted server identity/UUID keys, effective versioned policy selection without permissive fallback, PostgreSQL durable jobs/outbox and independent inference workers, private original/derived storage, initial RULES_ONLY finance-risk configuration and optimized shared enterprise inference. Architecture describes native-text-first selective routing, bounded actual pages/crops, small then stronger tiers, measured quantization selection, persistent serving, supported batching, safe scoped caches, async jobs, independent scaling and future warm-capacity autoscaling. Finance laptops need no GPU/VLM runtime. No service, router, crop detector, model or Phase-1 code is implemented by these decisions.
+
+Changed file set: README.md, AGENTS.md; docs/progress.md, assumptions.md, data_dictionary.md, test_coverage.md, extraction_compatibility.md, typellm_spike_plan.md, inference_architecture.md, phase0_exit_review.md; and docs/adr/0003–0008. Exactly **16 documentation files**. Existing application code, all 488 tests, fixtures, specification/originals, prior ADRs, checksums and configuration are unchanged.
+
+### Exact local validation
+
+| Command/check | Exit / result |
+|---|---|
+| `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider` | Exit 0; **488 passed, 0 failed, 0 skipped**, 0.43s (241 domain, 123 finance-fixture, 124 extraction). |
+| `sha256sum -c docs/source_inputs.sha256` | Exit 0; all 9 preserved original inputs OK. |
+| `sha256sum -c data/synthetic/fixtures.sha256` | Exit 0; all 23 finance fixture JSON files OK. |
+| `sha256sum -c data/extraction_spike/fixtures.sha256` | Exit 0; all 11 extraction JSON files OK. |
+| `cmp docs/AP_Exception_Assistant_Codex_Spec.md AP_Exception_Assistant_6_Person_Team_Pack/AP_Exception_Assistant_Codex_Spec.md` | Exit 0; copied specification byte-identical, 123,229 bytes. |
+| `PYTHONDONTWRITEBYTECODE=1 python3 scripts/benchmark/extraction_spike.py --dataset data/extraction_spike --output generated/reports/phase0-fixture.json` | Exit 0; generated ten-case structured fixture comparison, ignored by Git. |
+| `PYTHONDONTWRITEBYTECODE=1 python3 /tmp/audit_phase0.py` | Exit 0; exactly 16 authorized documentation files; 187 local links/anchors resolve; T01–T42 unchanged and NOT IMPLEMENTED; all AC01–AC20 mapped to foundations and pending release work. Temporary audit is outside Git. |
+| Same audit: preservation/runtime/development boundary | Original runtime-plan text preserved as exact prefix; original 20 provider statuses unchanged; final matrix 26 requirements; all 16 recorded package states unchanged, no experiment directory; 10 application modules parse as Python 3.10 and import only stdlib/project code. Execution remains verified on Python 3.13.11. No GPU gate rerun. |
+| Same audit: version/digest/replay checks | Actual contract/data/report/adapter versions match catalog and unchanged historical Git code. Finance digest 1fdd167453d530ad286dbb633ed1e0abb5051f61b38b08bfd3b13a6ba52550b6 and extraction digest db00315130436eb572065cad35b1b00edcb2c8058dad84ea862de5975387bd0a unchanged. Deterministic library replay matches CLI report except generated UTC timestamp. |
+| Same audit: ignored artifacts / limited credential patterns | Report and model paths ignored. No common private-key/AWS/GitHub token signatures in changed docs; limited scan is not security certification. |
+| `git diff --check` | Exit 0; no working-tree whitespace errors. |
+| `PYTHONDONTWRITEBYTECODE=1 python3 /tmp/audit_phase0.py --final` | Exit 0; qualified Phase-0 completion, four exit criteria and Phase-1 boundary verified. |
+| `PYTHONDONTWRITEBYTECODE=1 python3 /tmp/audit_phase0.py --staged` | Exit 0; exactly 16 intended documentation files staged; no unstaged tracked changes; all link/scope/version/preservation checks pass. |
+| `git diff --cached --check` | Exit 0; no staged whitespace errors. |
+
+Fixture observations: 10/10 COMPLETED replay cases; 130/130 state agreement; 7/7 expected abstentions; 12/12 row coverage; 48/48 important row-value agreement; 130 declared page locators available; zero boxes with unsupported ratio null; adapter latency count 0 and min/max/mean null. These are authored response/annotation comparison results, not measured image accuracy, evidence correctness, VLM latency/VRAM or business screening.
+
+### Exit review and limitations
+
+All four Phase-0 exit criteria are **SATISFIED** under the latest approved external-runtime qualification: versioned contracts; compatibility notes; reproducible fixtures; no unsupported provider assumptions. Money/currency, uncertainty, evidence and replaceable extraction remain stable. Normal fixture development needs no cloud/model dependency. None of AC01–AC20 is claimed as a full-product release pass; all 42 mandatory business cases remain NOT IMPLEMENTED. TEST FIXTURE READY is distinct from BUSINESS BEHAVIOR IMPLEMENTED.
+
+Real runtime execution remains BLOCKED_EXTERNAL_PREREQUISITE: recorded driver 550.120 / CUDA 13.0.3 supported >=580 requirement, Docker daemon permission denial and unverified GPU passthrough. Adequate observed filesystem capacity does not verify DockerRootDir. No models/runtime downloaded/installed, no host configuration changed, no cloud provisioned, no real documents/secrets/reasoning processed. Real image benchmark, latency, VRAM, quantized accuracy and text/visual/model cascade are **DEFERRED — REQUIRES SUITABLE INFERENCE HOST** plus later provider/preprocessing implementation. Production model/tier/format approval is NONE.
+
+### Commit and publication boundary
+
+After the final/staged audit and whitespace review, commit the consolidated verified Phase 0 with `docs: close Phase 0 with optimized enterprise inference`. Exactly one normal main push to the authorized repository follows; actual SHA/publication outcome will be in the completion report and any necessary local blocker record. Do not repair credentials, retry or force-push. Preserve clean local commits if publication fails.
+
+Recommended first major next batch only: **P1-01 — API/frontend scaffold, PostgreSQL migrations, local storage adapter and durable jobs/outbox**, explicit fixture development mode and RULES_ONLY risk design. No Phase-1 implementation has started. Phase 0 is complete locally; waiting for approval to begin Phase 1.

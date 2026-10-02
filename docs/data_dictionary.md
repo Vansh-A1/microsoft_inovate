@@ -138,3 +138,37 @@ Parsed candidates remain text, including amount strings; they are neither author
 These are documented decisions/proposals, not implemented provider behavior. [ADR-0002](adr/0002-extraction-money-and-provider-boundary.md) fixes printed financial values as strings; later trusted locale/currency normalization may construct Decimal from validated text. TypeLLM number/float output cannot enter authoritative money or be stringified as recovered exact source. Initial provider candidates remain None until trusted normalization is approved; raw/state and combined candidate metrics stay distinct.
 
 Explicit state enums and conditional raw-text questions map to the existing five extraction states; skipped keys are not implicit absence. Per-page requests can bind known source pages, with bbox/coordinate_system None. Flat bounded row assembly avoids unsupported nested provider schemas. Private reasoning and raw exception bodies are excluded. The [plan](typellm_spike_plan.md) specifies mappings, failure states, pins and gates; no real adapter, visual dataset, OCR, normalization or finance routing exists.
+
+## Phase 0 contract version catalog
+
+This is a release/provenance catalog, not a new API version field. The unchanged P0-02 values are Git-versioned at their foundational revision; extraction and synthetic fixtures also carry explicit schema/version identifiers. Later breaking changes require intentional versioning/migrations. Provider pins do not version the finance contracts.
+
+| Contract/data | Version / immutable reference | Scope |
+|---|---|---|
+| State, Money/currency and evidence foundation | P0-02 Git revision `c7e82a688ee5daccbb354afa03d18f8e4ed5c8af` | [states.py](../apps/api/app/domain/states.py), [money.py](../apps/api/app/domain/money.py), [evidence.py](../apps/api/app/domain/evidence.py); unchanged through Phase-0 closure. No business evaluator/persistence schema. |
+| Extraction boundary | `extraction-v1`; P0-04A Git revision `4bf48d764242dd01a7ab5cc59b9ec8682558a8b8` | [extraction.py](../apps/api/app/domain/extraction.py) and [ExtractionAdapter](../apps/api/app/extraction/base.py); frozen scoped inputs, raw/candidate states, bounded rows and explicit result/capabilities metadata. |
+| Finance fixture schema | `p0-03-v1` | Golden manifest and 23 finance JSON byte checksums; normalized digest `1fdd167453d530ad286dbb633ed1e0abb5051f61b38b08bfd3b13a6ba52550b6`. Expected outputs are data. |
+| Extraction fixture dataset | `extraction-spike-v1` | Ten structured cases, 11 JSON byte checksums; canonical manifest digest `db00315130436eb572065cad35b1b00edcb2c8058dad84ea862de5975387bd0a`. No visual artifacts. |
+| Fixture adapter / provider | `fixture-v1` / `synthetic-response-replay` | Explicit synthetic development replay, not runtime fallback for real documents. |
+| Spike report | `extraction-spike-report-v1` | Versioned independent comparison results; optional model/runtime/latency/bbox remain unavailable where unobserved. CLI timestamp is generated report data only. |
+
+## Accepted architecture vocabulary — future implementation
+
+The following concepts are design metadata, not new enum values, implemented records or extra extraction-v1 JSON fields. See [inference architecture](inference_architecture.md) and [Phase-0 exit review](phase0_exit_review.md).
+
+| Concept | Responsibility and safety boundary |
+|---|---|
+| Control plane | CPU-friendly central API/database/rules/approvals/budgets/review/audit/reports and durable jobs/outbox metadata. A laptop runs only the supported client/browser. |
+| Inference plane | Separately hosted shared TypeLLM/VLM/SGLang, preprocessing/router, resident model serving/caches and extraction workers. No finance decision authority. |
+| FIXTURE | Verified current synthetic development provider mode; no GPU or paid provider. No deployment configuration enum/service yet. |
+| ENTERPRISE_VLM | Future shared GPU provider mode behind the same ExtractionAdapter; no production model approved. |
+| TEXT_FAST_PATH | Future extraction route for reliable native text and structured extraction, not a finance-risk mode. |
+| ExtractionRouter | Chooses text/visual/tier/page/crop paths based on versioned quality/evidence sufficiency, family/layout and resource availability. Cannot decide PASS/REVIEW/HOLD. |
+| Model tier | Small visual tier followed by stronger fallback only for supported unresolved facts; disagreement remains explicit. Human review is later workflow. |
+| Route/attempt sidecar | Future explicitly versioned run/document/version/scope, original/artifact digest, route/tier, attempts/fallback reason, quality-policy versions and real measurements. Keep strict extraction-v1 unchanged until approved version work. |
+| Region/transform sidecar | Future actual crop kind/extent, original page/dimensions, orientation/transform, derived artifact/version/hash and nullable verified field bbox. A selected crop is not a field box; no coordinates invented. |
+| Durable extraction job | Future at-least-once leased job/outbox with scoped versioned stage key, timeout/retries/cancellation/failure/provider-unavailable states and guarded idempotent finalization. No persistence/job implementation exists. |
+| RULES_ONLY | Initial finance-risk design: no configured ML risk model/score; not a zero-risk result. Independent of extraction VLM. Visibility/reporting and finance rules require Phase-1 implementation. |
+| RESEARCH PIN | Source-verified proposed component/checkpoint/container revisions, not a tested production tuple. PRODUCTION APPROVED PIN is NONE until suitable-host quality/safety/operations gates pass. |
+
+Money, uncertainty and evidence semantics above remain stable. Real provider mappings, crop detection, quality thresholds, normalization, router, storage and durable execution remain future work, with real measurements deferred rather than given numeric defaults.

@@ -95,3 +95,11 @@ These tests support the future T29 uncertainty boundary and T41 untrusted-text b
 ## P0-04B source and environment verification
 
 Official-source compatibility research and read-only hardware/package checks are documented in the [plan](typellm_spike_plan.md) and [progress](progress.md). They add no provider tests or financial behavior. The existing 488-test suite remains the regression baseline; all T01–T42 remain NOT IMPLEMENTED. Model accuracy/latency, the proposed 4B image tuple and runtime failure mappings require an explicitly approved P0-04C execution. No test is promoted from fixture agreement to real visual verification.
+
+## Consolidated Phase 0 exit coverage
+
+Phase 0 closes under the latest explicitly approved external-runtime deferral; the [exit review](phase0_exit_review.md) maps AC01–AC20 to supporting foundations and remaining release work. None is claimed as an end-to-end product release pass. All original T01–T42 scenarios, expectations and NOT IMPLEMENTED statuses remain unchanged.
+
+**TEST FIXTURE READY** means synthetic inputs/operands and independent expectations exist. **BUSINESS BEHAVIOR IMPLEMENTED** requires actual production rules/workflows/persistence and meaningful tests. The existing 241 domain + 123 finance-fixture + 124 extraction tests (488 total) verify only their stated local boundaries. No tests were deleted, weakened or relabeled. Architecture acceptance in ADR-0003–0008 does not create integration tests or deployed behavior.
+
+The fixture CLI remains runnable without GPU, cloud or paid provider. Real TypeLLM image behavior/quality, latency/VRAM, field-locator correctness, supported quantization and complete text/visual/tier cascade are **DEFERRED — REQUIRES SUITABLE INFERENCE HOST** plus later provider/preprocessing work, with benchmark requirements in [inference architecture](inference_architecture.md). Historical P0-04C execution recommendations above are superseded by this qualified closure; no failed GPU gate was repeated. No fixture agreement is promoted to real visual accuracy or finance PASS.

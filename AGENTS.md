@@ -19,7 +19,8 @@ The supplied team-pack folder and ZIP are preserved original inputs. Use the `do
 - Implement only the current task and its necessary support. Do not add later-phase work, unrelated refactors, or speculative features.
 - After each task, report the result and stop. Do not begin the next task until the user approves it.
 - Before phase completion, review every task and exit criterion, run the phase checks, inspect any relevant UI, confirm documentation, and disclose remaining gaps. Do not enter the next phase without the user's approval.
-- Respect the scope of the user's latest bounded-task approval. P0-04C1 approves a runtime prerequisite gate and, only if every mandatory gate passes, the exact pinned isolated runtime plus one text/one synthetic image smoke. A failed gate stops downloads, installs and runtime work. No host driver/CUDA/system/Docker permission/configuration changes are authorized. The full ten-case benchmark, P0-04C2, production adapter and later work require separate approval.
+- The 2026-10-03 approval authorizes continuous closure of P0-04–P0-06, the optimized enterprise design and the Phase-0 exit review without intermediate approval stops. It accepts the verified external-runtime deferral and authorizes one consolidated end-of-phase main push. Phase 0 is complete locally under that qualification; stop before Phase 1 pending new user approval.
+- Do not repeat the failed driver/Docker experiment, download models, install inference, search replacement models, alter host permissions/configuration or provision cloud resources under this closure. Real image smoke/quality/latency/VRAM and full benchmark remain deferred to separately authorized suitable infrastructure. Preserve the recorded research pins and explicit blockers.
 
 Operating loop:
 
@@ -30,12 +31,21 @@ Operating loop:
 - Use Decimal for authoritative monetary calculations and explicit currency. Encode financial amounts as decimal strings in JSON. Do not use binary floats, invent FX rates, or infer missing tax as zero.
 - Keep UNKNOWN distinct from PASS, FAIL, zero, false, missing, NOT_APPLICABLE, and ERROR. Preserve ambiguity and missing dependencies explicitly; they cannot silently permit PASS.
 - Use PASS / REVIEW / HOLD for final screening decisions. Processing states and human approval/review states are separate.
-- Required finance controls cannot be overridden by a low ML score. A model may escalate to REVIEW; it cannot clear a mandatory failure.
+- Initial finance-risk mode is RULES_ONLY: no trained risk model, score or fake zero risk; document-extraction VLM is independent. Required finance controls cannot be overridden by a low ML score. A model may escalate to REVIEW; it cannot clear a mandatory failure.
 - Never hard-code PASS/REVIEW/HOLD demo results or invent extraction confidence, model scores, SHAP values, metrics, or successful checks.
 - Preserve originals, field provenance, canonical revisions, pinned evaluations, reference/rule/policy versions, and audit history. Corrections create new versions; historical decisions are not overwritten.
 - Use UUID identities and tenant/legal-entity scope. Invoice numbers, hashes, and fuzzy matches are attributes or candidates, not universal identities or proof of duplication.
 - Design retries and finalization to be idempotent. Budget, PO/GRN, and receipt capacity must remain valid under concurrency and reevaluation.
 - Keep finance logic independent of FastAPI routes and the frontend. API and workers must reuse the same domain logic.
+
+## Extraction and enterprise architecture
+
+- Follow [ADR-0008](docs/adr/0008-optimized-enterprise-inference.md) and [inference architecture](docs/inference_architecture.md): CPU client/control plane, separate shared GPU inference plane. Finance laptops require no GPU, CUDA, weights, TypeLLM, SGLang or GPU Docker.
+- Keep extraction provider-independent: verified synthetic FIXTURE now; future ENTERPRISE_VLM. TEXT_FAST_PATH is routing, not a finance-risk mode. Never substitute fixture answers for live outage.
+- Plan reliable native text → cheap structured path → small VLM → stronger fallback only when needed → unresolved facts/human review. Router selects paths, never PASS/REVIEW/HOLD; versioned quality/evidence criteria determine sufficiency, not model confidence.
+- Extract money as raw strings; later trusted normalization produces Decimal. Preserve explicit observation states, independent source bindings and unknown boxes. Actual crop transforms are future work; crop extents are not field boxes.
+- Use durable jobs/outbox, guarded idempotent effects, async UI status, persistent resident serving, bounded requests, tenant-isolated caches and independently scaled workers. Supported batching/quantization/cascade must be measured on suitable infrastructure; no production model/quantization is approved.
+- Routing/crop/attempt metadata is a future versioned sidecar, not speculative keys in strict extraction-v1. ADR acceptance does not implement services. [Exit review](docs/phase0_exit_review.md) records limits.
 
 ## Security and boundaries
 
@@ -61,7 +71,7 @@ Operating loop:
 ## Git publication policy
 
 - Target repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate); primary branch: `main`.
-- The verified initial P0-01 baseline has explicit push authorization.
+- The verified initial baseline and now the consolidated completed Phase 0 have explicit publication authorization. For this Phase-0 closure, attempt the final main push exactly once after all checks; if authentication fails, do not repair credentials/retry. Record the result locally and leave a clean tree.
 - From P0-02 onward, make appropriate local commits for approved tasks. Do not push every small step. Push consolidated work only after the entire phase is completed, verified, and approved by the user, unless explicitly instructed otherwise.
 - Review staged files, ignore rules, source preservation, and whitespace before committing. Preserve existing history; never force-push without explicit authorization.
 - If identity/authentication/push permission is unavailable, keep safe verified local work, record the safe error, and report the blocker. Do not alter credentials or expose tokens.

@@ -1,6 +1,6 @@
 # Assumptions and external inputs
 
-This register separates proposed development defaults, currently missing inputs, and observed environment facts. None establishes a live company's finance policy or a production capability. Basis: [specification](AP_Exception_Assistant_Codex_Spec.md), repository reconnaissance, and the user's bounded P0-01–P0-04B approvals on 2026-10-02–03.
+This register separates proposed development defaults, currently missing inputs, and observed environment facts. None establishes a live company's finance policy or a production capability. Basis: [specification](AP_Exception_Assistant_Codex_Spec.md), repository reconnaissance, and the user's Phase-0 approvals including consolidated closure on 2026-10-02–03.
 
 ## Business defaults and missing inputs
 
@@ -16,14 +16,14 @@ This register separates proposed development defaults, currently missing inputs,
 
 | Item | Current basis/status |
 |---|---|
-| Architecture | The specification proposes Next.js/TypeScript, FastAPI/Pydantic, PostgreSQL, shared Python finance logic, local storage/jobs initially, and Azure later. These components have not been scaffolded. |
+| Architecture | The specification proposes Next.js/TypeScript, FastAPI/Pydantic, PostgreSQL, shared Python finance logic, local storage and durable PostgreSQL jobs/outbox initially, and private Azure storage later. ADR-0003–0008 accept those decisions and separate CPU control plane from shared GPU inference. These services have not been scaffolded. |
 | Extraction | P0-04A implements provider-independent contracts and deterministic fixture response replay. It observes no actual document pixels and does not normalize or decide financial eligibility. |
 | Extraction spike data | Ten structured synthetic cases declare raw/candidate/state/row ground truth separately from replay responses. Poor text, rotation, obstruction and repeated headers are annotations/metadata, not generated or processed visual artifacts. Page references are synthetic declarations; all bbox/artifact slots are null. |
 | Spike metrics | Fixture agreement is expected by construction, not an independently measured extractor's accuracy. Absent candidates, abstention denominators, locators and adapter timings produce null metrics where unavailable. Locators measure availability only, not factual correctness. |
 | TypeLLM/VLM | P0-04B verifies official interfaces/revisions and proposes an isolated experimental 4B image tuple; end-to-end compatibility, image quality, row discovery and latency remain unverified. Recorded image-tested 27B derivative exceeds local VRAM; CUDA 13/host driver and Docker access block the selected plan. No provider installed. See [spike plan](typellm_spike_plan.md). |
 | Deterministic controls | P0-02 implements immutable standard-library state, exact-decimal Money/currency, and evidence contracts. Finance rules, screening, and finalization remain unimplemented. |
 | Fixture conventions | P0-03 uses fixed UUIDs, version 1, half-open reference dates, fixed UTC evaluation time, exact decimal strings including night quantities, and independent case snapshots. Test-only validation and operand assertions are not production transaction schemas or evaluators. |
-| ML | No adjudicated training dataset or trained model is supplied or created. Synthetic tests will not establish real-world generalization. |
+| Finance-risk ML | Initial RULES_ONLY mode is accepted design: risk model NOT_CONFIGURED, no score/zero-risk fallback. No actual reporting/rules implementation exists. Extraction VLM is independent; no adjudicated training data or trained risk model exists. Synthetic tests do not establish generalization. |
 | Operational readiness | No latency, extraction-quality, availability, backup, or restore target has been measured. Targets in the specification are proposals. |
 
 ## Environment observations
@@ -44,13 +44,23 @@ Observed in the checked shell/Python environment on 2026-10-02–03. These are n
 | PostgreSQL tools | `psql` not available on the checked PATH; no project database exists. |
 | uv / GitHub CLI | Not available on the checked PATH. |
 
-No dependencies were installed in P0-01–P0-04B. P0-04B proposes conditional experiment pins; they are not installed project dependencies. Production domain/extraction modules and fixture support use the standard library and existing contracts; pytest uses the preexisting environment. Source syntax targets Python 3.10, but execution is verified only on Python 3.13.11. No project dependency manifest or tested GPU compatibility claim is introduced. Subsequent runtime setup must be a separately approved task. The [compatibility checklist](extraction_compatibility.md) now triages all 20 topics using official evidence and explicit unresolved/blocked statuses. Read-only inventory records Ubuntu 24.04.2, 20-core Intel Ultra 7 265, 62 GiB RAM (43 available), one 16,380 MiB RTX 2000 Ada GPU/SM8.9, driver 550.120/CUDA driver capability 12.4, nvcc NOT AVAILABLE, /data ~790 GiB free and root/home/tmp ~238 GiB free. Existing Torch 2.10.0+cu128 can enumerate CUDA; that does not verify SGLang CUDA 13. Python 3.12.3 lacks ensurepip/pip; proposed inference uses container Python 3.12. Full version/source/storage details are in the [plan](typellm_spike_plan.md). P0-04C has not started.
+No dependencies were installed in Phase 0. P0-04B proposes conditional experiment pins; they are not installed project dependencies. Production domain/extraction modules and fixture support use the standard library and existing contracts; pytest uses the preexisting environment. Source syntax targets Python 3.10, but execution is verified only on Python 3.13.11. No project dependency manifest or tested GPU compatibility claim is introduced. Subsequent runtime setup must use separately approved suitable infrastructure. Phase 0 closes with this explicit external-runtime deferral; it is not an inference validation. The [compatibility checklist](extraction_compatibility.md) preserves the original 20-topic source snapshot and adds the final P0-05 matrix. **RESEARCH PIN** differs from **PRODUCTION APPROVED PIN: NONE**; no proposed tuple has executed. Read-only inventory records Ubuntu 24.04.2, 20-core Intel Ultra 7 265, 62 GiB RAM (43 available), one 16,380 MiB RTX 2000 Ada GPU/SM8.9, driver 550.120/CUDA driver capability 12.4, nvcc NOT AVAILABLE, /data ~790 GiB free and root/home/tmp ~238 GiB free. Existing Torch 2.10.0+cu128 can enumerate CUDA; that does not verify SGLang CUDA 13. Python 3.12.3 lacks ensurepip/pip; proposed inference uses container Python 3.12. Full version/source/storage details are in the [plan](typellm_spike_plan.md). P0-04C1 executed only the prerequisite gate: driver 550.120 / supported >=580 requirement and Docker access denial; text/image smoke NOT RUN. Current gate had 42 GiB available RAM; prior research inventory had 43 GiB. P0-04C2 and real extraction measurements are deferred to suitable infrastructure; no gate rerun during closure.
 
 ## External dependencies
 
 - Azure subscription, deployment destination, region, access, and budget have not been supplied. No resources were provisioned.
 - Authorized ERP/vendor/employee/PO/GRN/master sources and freshness requirements are not available.
 - Production identity/role mapping, retention, legal-hold, provider data terms, and real-data permissions remain external inputs.
-- The user selected [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate) and authorized initial baseline publication to `main`; remote publication status belongs in [progress](progress.md).
+- The user selected [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate) and authorized initial baseline publication plus one consolidated Phase-0 end push to `main`; remote publication status belongs in [progress](progress.md).
 
 Record future decisions or changed observations with evidence. Do not replace an unresolved input with a permissive value or represent a planned adapter as implemented.
+
+## Accepted enterprise assumptions and deferred validation
+
+[Inference architecture](inference_architecture.md) and [ADR-0008](adr/0008-optimized-enterprise-inference.md) keep TypeLLM/VLM/SGLang on shared enterprise GPU serving. Finance-user laptops need only supported client/browser access, with no GPU runtime. CPU-only fixture development needs no cloud account, model download or paid provider. The current developer host need not be repaired to finish Phase 0.
+
+Reliable native text can use a cheap structured path; visual calls, actual bounded pages/crops, small/stronger tiers, persistent models, supported batching, private caches and independent worker scaling are future implementations. ExtractionRouter chooses a path under versioned source-quality/evidence criteria and cannot make a finance decision. Provider outage preserves incomplete/uncertain work and cannot create PASS or synthetic live answers. Future autoscaling balances queue depth, warm capacity, cold starts and cost; no zero-cost GPU claim.
+
+Actual crop detection/transforms, real field-coordinate correctness, provider null/row/failure mapping and tier/quantized quality are unverified. FP8/FP4/INT4/AWQ/GPTQ are possible benchmark families only if officially supported by the selected tuple, compared with higher-precision baseline. Qwen3.5-4B is not production approved. All real image quality, latency, VRAM, throughput, quantization and cascade measurements are **DEFERRED — REQUIRES SUITABLE INFERENCE HOST**, with benchmark requirements in the architecture. Proposed specification targets remain targets.
+
+Identity/authenticated scope, effective policy ambiguity handling, durable/idempotent jobs and private immutable storage are accepted [P0-06 decisions](phase0_exit_review.md), not live services. Production permissions, actual finance policy, live data/provider terms and complete transitive licenses remain gates. Phase-0 fixture-ready cases do not implement T01–T42 business behavior. Phase 1 requires separate approval.
