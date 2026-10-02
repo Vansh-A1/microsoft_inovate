@@ -1,0 +1,86 @@
+# Python environments and generated package output
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.python-version.local
+/build/
+/dist/
+
+# Test, lint, type-check, and coverage caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+coverage/
+playwright-report/
+test-results/
+
+# Future frontend dependencies and generated builds
+node_modules/
+.next/
+.turbo/
+.vercel/
+*.tsbuildinfo
+/apps/web/out/
+/apps/web/dist/
+
+# Environment files and secrets; example templates remain trackable
+.env
+.env.*
+!.env.example
+!.env.*.example
+.secrets/
+secrets/
+.aws/
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Editor and operating-system metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Local databases, runtime storage, uploads, and generated data exports
+*.sqlite
+*.sqlite3
+*.db
+/runtime/
+/storage/
+/uploads/
+/data/uploads/
+/data/documents/
+/reports/
+/exports/
+/generated/reports/
+
+# Model weights and generated model artifacts
+/model_weights/
+/ml/artifacts/
+/ml/model_weights/
+*.pt
+*.pth
+*.safetensors
+*.onnx
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# Preserve project Markdown, original team-pack files/ZIP, and intentional
+# synthetic/golden/reference source fixtures; do not add broad document ignores.
