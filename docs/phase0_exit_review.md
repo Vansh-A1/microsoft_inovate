@@ -105,6 +105,6 @@ The final/staged documentation audit and staged whitespace review are recorded i
 
 ## Publication and next boundary
 
-The end-of-phase publication policy authorizes exactly one normal main push after local verification, with no credential repair or force-push. Its actual outcome and final SHAs belong in [progress](progress.md) and the completion report. Authentication failure can leave Phase 0 complete locally with clean commits; it is distinct from extraction runtime deferral.
+The completion commit is **a5d09b7b7192e8829f4e4ac0adf28affd2bdf3e1**. The exactly-one authorized `GIT_TERMINAL_PROMPT=0 git -c core.askPass= push -u origin main` attempt returned **exit 128**: HTTPS Username unavailable with terminal prompts disabled. **Phase 0 complete locally. Push blocked by local Git authentication.** No retry or credential/configuration repair occurred; no remote SHA/file verification is claimed. A documentation-only follow-up records this outcome; final clean-tree/commit evidence is in [progress](progress.md) and the completion report. Publication is distinct from extraction runtime deferral.
 
 Recommend only the first major Phase-1 batch: **P1-01 — API/frontend scaffold, PostgreSQL migrations, local storage adapter and durable jobs/outbox foundation**, using explicit fixture development extraction and planned RULES_ONLY risk configuration. Implementation requires new approval. No Phase-1 code or deployment was created by this review.

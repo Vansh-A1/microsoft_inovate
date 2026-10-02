@@ -34,7 +34,7 @@ Observed in the checked shell/Python environment on 2026-10-02–03. These are n
 |---|---|
 | Python | 3.13.11 (`/opt/conda/bin/python3`). |
 | Git | 2.43.0; an existing author/committer identity is configured. |
-| GitHub publication | Anonymous remote read succeeds, but the initial HTTPS push returned exit 128: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. Authentication is unavailable to this noninteractive Git operation; no credentials/configuration were changed. |
+| GitHub publication | The initial and single consolidated Phase-0 HTTPS pushes returned exit 128: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. Phase 0 is complete locally at a5d09b7b7192e8829f4e4ac0adf28affd2bdf3e1; publication is blocked by authentication. No credentials/configuration were changed or push retried; no remote SHA/file verification is claimed. |
 | pytest | Installed, version 9.1.1 in the checked Python environment; P0-01 found no tests, and P0-02 introduces domain unit tests configured by root `pytest.ini`. |
 | FastAPI / Pydantic | Installed environment distributions: 0.137.1 / 2.12.4. No project dependency manifest or compatibility test exists; neither is used by the P0-02 domain modules. |
 | Node / npm | Not available on the checked PATH. |
