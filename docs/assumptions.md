@@ -19,7 +19,7 @@ This register separates proposed development defaults, currently missing inputs,
 | Architecture | The specification proposes Next.js/TypeScript, FastAPI/Pydantic, PostgreSQL, shared Python finance logic, local storage/jobs initially, and Azure later. These components have not been scaffolded. |
 | Extraction | Fixture extraction is the safe planned default until a provider/runtime is verified. No extraction adapter exists yet. |
 | TypeLLM/VLM | Compatibility, null handling, line strategy, evidence granularity, latency, license, and hardware needs are not verified. No provider was selected. |
-| Deterministic controls | Rules-first screening and exact Decimal calculations are required; domain contracts and rules remain unimplemented. |
+| Deterministic controls | P0-02 implements immutable standard-library state, exact-decimal Money/currency, and evidence contracts. Finance rules, screening, and finalization remain unimplemented. |
 | ML | No adjudicated training dataset or trained model is supplied or created. Synthetic tests will not establish real-world generalization. |
 | Operational readiness | No latency, extraction-quality, availability, backup, or restore target has been measured. Targets in the specification are proposals. |
 
@@ -32,8 +32,8 @@ Observed in the checked shell/Python environment on 2026-10-02. These are not pr
 | Python | 3.13.11 (`/opt/conda/bin/python3`). |
 | Git | 2.43.0; an existing author/committer identity is configured. |
 | GitHub publication | Anonymous remote read succeeds, but the initial HTTPS push returned exit 128: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. Authentication is unavailable to this noninteractive Git operation; no credentials/configuration were changed. |
-| pytest | Installed, version 9.1.1 in the checked Python environment; workspace collection found no tests. |
-| FastAPI / Pydantic | Installed environment distributions: 0.137.1 / 2.12.4. No project dependency manifest or compatibility test exists. |
+| pytest | Installed, version 9.1.1 in the checked Python environment; P0-01 found no tests, and P0-02 introduces domain unit tests configured by root `pytest.ini`. |
+| FastAPI / Pydantic | Installed environment distributions: 0.137.1 / 2.12.4. No project dependency manifest or compatibility test exists; neither is used by the P0-02 domain modules. |
 | Node / npm | Not available on the checked PATH. |
 | SQLAlchemy / Alembic | Not installed in the checked Python environment. |
 | Docker | CLI 29.1.3 available; daemon availability was not tested. |
@@ -41,7 +41,7 @@ Observed in the checked shell/Python environment on 2026-10-02. These are not pr
 | PostgreSQL tools | `psql` not available on the checked PATH; no project database exists. |
 | uv / GitHub CLI | Not available on the checked PATH. |
 
-No dependencies are installed or selected in P0-01. Subsequent runtime setup must be a separately approved task.
+No dependencies were installed or selected in P0-01/P0-02. Production domain modules use the standard library; pytest uses the preexisting environment. P0-02 avoids syntax/API features newer than Python 3.10, but execution is verified only on Python 3.13.11. No package metadata or broader compatibility claim is introduced. Subsequent runtime setup must be a separately approved task.
 
 ## External dependencies
 

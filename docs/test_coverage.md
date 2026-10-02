@@ -2,7 +2,7 @@
 
 This is the implementation coverage tracker for T01–T42 in [specification section 22.2](AP_Exception_Assistant_Codex_Spec.md#222-mandatory-test-cases). Scenarios and expected results are copied from that table; they describe required behavior, not executed tests.
 
-**Baseline: 42 NOT IMPLEMENTED; 0 automated cases; no application test suite exists.** Documentation verification does not change these statuses.
+**T01–T42 status: 42 NOT IMPLEMENTED; 0 completed end-to-end finance cases.** P0-02 adds automated domain unit/invariant tests; those do not implement complete transaction workflows or satisfy these business scenarios.
 
 Target phases are provisional planning assignments derived from the implementation plan. A test spanning phases is not complete until all its required behavior is implemented and verified. Update this matrix with actual automated test paths and results after approved work; do not mark PASS because an expectation is documented.
 
@@ -52,3 +52,13 @@ Target phases are provisional planning assignments derived from the implementati
 | T42 | Retained evaluation replay after policy changes | Original pinned result reproduced; new policy produces separate evaluation | Phase 4 | NOT IMPLEMENTED | — |
 
 Core deterministic, concurrency, and security cases remain mandatory. Optional later-phase functionality may be explicitly unsupported under the specification, but must not enable unsafe PASS. Phase and release gates are not satisfied by this baseline.
+
+## P0-02 supporting tests
+
+| Test file | Foundation behavior |
+|---|---|
+| [test_states.py](../apps/api/tests/unit/domain/test_states.py) | Exact state vocabulary, separate lifecycle dimensions, explicit unknown/absent values, no implicit truthiness. |
+| [test_money.py](../apps/api/tests/unit/domain/test_money.py) | Exact inputs, no floats/booleans/missing amount coercion, structural currency, same-currency arithmetic, context independence, immutability, decimal-string serialization. |
+| [test_evidence.py](../apps/api/tests/unit/domain/test_evidence.py) | UUID/scope/version/page/bounds validation, optional page-only evidence, full import-cell locators, immutable references, truthful missing-data context. |
+
+These tests support later evidence, arithmetic, and uncertainty controls. No T01–T42 row is marked implemented solely because these supporting contracts exist. Exact executed results are recorded in [progress](progress.md).
