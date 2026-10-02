@@ -1,6 +1,6 @@
 # Assumptions and external inputs
 
-This register separates proposed development defaults, currently missing inputs, and observed environment facts. None establishes a live company's finance policy or a production capability. Basis: [specification](AP_Exception_Assistant_Codex_Spec.md), repository reconnaissance, and the user's bounded P0-01–P0-04A approvals on 2026-10-02.
+This register separates proposed development defaults, currently missing inputs, and observed environment facts. None establishes a live company's finance policy or a production capability. Basis: [specification](AP_Exception_Assistant_Codex_Spec.md), repository reconnaissance, and the user's bounded P0-01–P0-04B approvals on 2026-10-02–03.
 
 ## Business defaults and missing inputs
 
@@ -20,7 +20,7 @@ This register separates proposed development defaults, currently missing inputs,
 | Extraction | P0-04A implements provider-independent contracts and deterministic fixture response replay. It observes no actual document pixels and does not normalize or decide financial eligibility. |
 | Extraction spike data | Ten structured synthetic cases declare raw/candidate/state/row ground truth separately from replay responses. Poor text, rotation, obstruction and repeated headers are annotations/metadata, not generated or processed visual artifacts. Page references are synthetic declarations; all bbox/artifact slots are null. |
 | Spike metrics | Fixture agreement is expected by construction, not an independently measured extractor's accuracy. Absent candidates, abstention denominators, locators and adapter timings produce null metrics where unavailable. Locators measure availability only, not factual correctness. |
-| TypeLLM/VLM | Compatibility, null handling, line strategy, evidence granularity, latency, license, and hardware needs are not verified. No provider was selected. |
+| TypeLLM/VLM | P0-04B verifies official interfaces/revisions and proposes an isolated experimental 4B image tuple; end-to-end compatibility, image quality, row discovery and latency remain unverified. Recorded image-tested 27B derivative exceeds local VRAM; CUDA 13/host driver and Docker access block the selected plan. No provider installed. See [spike plan](typellm_spike_plan.md). |
 | Deterministic controls | P0-02 implements immutable standard-library state, exact-decimal Money/currency, and evidence contracts. Finance rules, screening, and finalization remain unimplemented. |
 | Fixture conventions | P0-03 uses fixed UUIDs, version 1, half-open reference dates, fixed UTC evaluation time, exact decimal strings including night quantities, and independent case snapshots. Test-only validation and operand assertions are not production transaction schemas or evaluators. |
 | ML | No adjudicated training dataset or trained model is supplied or created. Synthetic tests will not establish real-world generalization. |
@@ -28,7 +28,7 @@ This register separates proposed development defaults, currently missing inputs,
 
 ## Environment observations
 
-Observed in the checked shell/Python environment on 2026-10-02. These are not project lockfile selections or compatibility approvals; an executable missing from PATH may exist elsewhere.
+Observed in the checked shell/Python environment on 2026-10-02–03. These are not project lockfile selections or compatibility approvals; an executable missing from PATH may exist elsewhere.
 
 | Tool/package | Observation |
 |---|---|
@@ -39,12 +39,12 @@ Observed in the checked shell/Python environment on 2026-10-02. These are not pr
 | FastAPI / Pydantic | Installed environment distributions: 0.137.1 / 2.12.4. No project dependency manifest or compatibility test exists; neither is used by the P0-02 domain modules. |
 | Node / npm | Not available on the checked PATH. |
 | SQLAlchemy / Alembic | Not installed in the checked Python environment. |
-| Docker | CLI 29.1.3 available; daemon availability was not tested. |
+| Docker | CLI 29.1.3; P0-04B daemon/image metadata commands return exit 1, permission denied at /var/run/docker.sock. GPU passthrough/configuration NOT YET VERIFIED. NVIDIA container tools 1.20.0 available; no configuration changed. |
 | Docker Compose | `docker compose version` returned exit 1, unknown command. |
 | PostgreSQL tools | `psql` not available on the checked PATH; no project database exists. |
 | uv / GitHub CLI | Not available on the checked PATH. |
 
-No dependencies were installed or selected in P0-01–P0-04A. Production domain/extraction modules and fixture support use the standard library and existing contracts; pytest uses the preexisting environment. Source syntax targets Python 3.10, but execution is verified only on Python 3.13.11. No package metadata or broader compatibility claim is introduced. Subsequent runtime setup must be a separately approved task. The [compatibility checklist](extraction_compatibility.md) is document-only; P0-04B has not started and all provider/runtime topics are NOT CHECKED.
+No dependencies were installed in P0-01–P0-04B. P0-04B proposes conditional experiment pins; they are not installed project dependencies. Production domain/extraction modules and fixture support use the standard library and existing contracts; pytest uses the preexisting environment. Source syntax targets Python 3.10, but execution is verified only on Python 3.13.11. No project dependency manifest or tested GPU compatibility claim is introduced. Subsequent runtime setup must be a separately approved task. The [compatibility checklist](extraction_compatibility.md) now triages all 20 topics using official evidence and explicit unresolved/blocked statuses. Read-only inventory records Ubuntu 24.04.2, 20-core Intel Ultra 7 265, 62 GiB RAM (43 available), one 16,380 MiB RTX 2000 Ada GPU/SM8.9, driver 550.120/CUDA driver capability 12.4, nvcc NOT AVAILABLE, /data ~790 GiB free and root/home/tmp ~238 GiB free. Existing Torch 2.10.0+cu128 can enumerate CUDA; that does not verify SGLang CUDA 13. Python 3.12.3 lacks ensurepip/pip; proposed inference uses container Python 3.12. Full version/source/storage details are in the [plan](typellm_spike_plan.md). P0-04C has not started.
 
 ## External dependencies
 

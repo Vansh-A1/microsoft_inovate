@@ -2,21 +2,22 @@
 
 ## Project status
 
-- Session date: 2026-10-02 (Asia/Kolkata).
+- Session date: 2026-10-02–03 (Asia/Kolkata).
 - Current phase: **Phase 0 — Contracts and feasibility**.
-- Current task: **P0-04A — Extraction contract, fixture adapter and spike harness**.
+- Current task: **P0-04B — Compatibility verification and exact runtime plan (complete)**.
 - Project status before this baseline: **application implementation not started**.
 - P0-01 status: **P0-01 implementation complete locally — remote publication blocked**.
 - P0-02 status: **COMPLETE — locally verified domain foundation**.
 - P0-03 status: **COMPLETE — locally verified synthetic fixtures and golden expectations**.
-- P0-04 status: **P0-04 IN PROGRESS — P0-04A COMPLETE**.
-- P0-04B and subsequent tasks: **not started; awaiting separate approval**.
+- P0-04 status: **P0-04 IN PROGRESS — P0-04A/P0-04B COMPLETE**.
+- P0-04B: **research complete; local inference blocked; no provider installed/executed**.
+- P0-04C and subsequent tasks: **not started; awaiting separate approval and prerequisites**.
 
 The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gates. A completed documentation task does not complete Phase 0. [T01–T42 coverage](test_coverage.md) tracks implementation separately from documentation checks.
 
 ## Phase checklist
 
-- [ ] Phase 0 — Contracts and feasibility (P0-01–P0-03 and P0-04A complete locally; parent P0-04 incomplete; publication blocked; later work not started).
+- [ ] Phase 0 — Contracts and feasibility (P0-01–P0-03 and P0-04A/P0-04B complete locally; parent P0-04 incomplete; publication blocked; later work not started).
 - [ ] Phase 1 — Rules-first vertical slice for both branches.
 - [ ] Phase 2 — Real document ingestion and extraction.
 - [ ] Phase 3 — Complete finance matching and controls.
@@ -31,7 +32,8 @@ The [specification](AP_Exception_Assistant_Codex_Spec.md) defines phase exit gat
 - [x] P0-03 — Synthetic references and adjudicated golden fixtures (verified locally; data expectations only).
 - [ ] P0-04 — ExtractionAdapter and varied-document TypeLLM/VLM spike.
 - [x] P0-04A — Extraction contract, fixture adapter and structured synthetic spike harness (verified locally; no real provider).
-- [ ] P0-04B — Verify current TypeLLM/SGLang/model compatibility and produce the exact dependency/runtime plan (not started).
+- [x] P0-04B — Verify current TypeLLM/SGLang/model sources and produce the exact gated runtime plan (research complete; runtime not verified).
+- [ ] P0-04C — Isolated real provider image spike (not started; local prerequisites blocked; separate approval required).
 - [ ] P0-05 — Runtime compatibility, quality/latency/license/hardware notes and version pins; fixture fallback if blocked.
 - [ ] P0-06 — Initial architecture decisions for identity, policies, queues/storage, and decision mode.
 
@@ -276,3 +278,46 @@ Updated root README, bounded approval notice in AGENTS, this tracker, assumption
 Commit checkpoint: one local commit, `feat: define extraction contract and spike harness`, after staged scope/whitespace review. No push or authentication attempt is authorized or attempted; the prior P0-01 publication blocker remains recorded separately. Post-commit SHA and clean working-tree verification are reported in the completion response.
 
 Next recommended task: **P0-04B — Verify current TypeLLM/SGLang/model compatibility and produce an exact dependency/runtime plan before installation**, only after explicit user approval. Stop here.
+
+## P0-04B work record
+
+### Approved research and verification plan
+
+Phase 0, bounded P0-04B verifies official TypeLLM/SGLang/model metadata and documented interfaces, inspects this machine without changing its environment, compares the existing extraction boundary, and produces a gated exact P0-04C runtime/install/spike/rollback plan. Expected changes are documentation only: compatibility checklist, new spike plan, progress, assumptions, dictionary/coverage context and README/AGENTS scope notice as needed; an ADR only if a consequential decision is supported. Sources must have URLs/access dates and immutable revisions where practical. Distinguish upstream documentation from actual local execution; proposed pins are not compatibility-tested pins.
+
+Investigate the string-only authoritative money boundary, explicit uncertainty/dependency/conditional mapping, bounded header/row extraction and page-only evidence, safe reasoning/error/privacy handling, exact package/model revisions, Python/CUDA/GPU requirements, native/container isolation, download/cache/storage budgets and cleanup. Local inspection is read-only: OS/CPU/RAM/disk, GPU/driver/toolkit and safe Docker/tool/package metadata. No packages, model weights, images, accounts, keys, drivers, CUDA or system settings may be installed/changed; no real adapter or P0-04C implementation, no push. Preserve the 488-test project environment and all prior source/fixture files.
+
+Verification plan: official-source provenance/consistency review, non-mutating Python/package/hardware checks, existing full pytest suite, nine original and both fixture checksum sets, byte-identical spec comparison, documentation/link/scope audits and working/staged whitespace checks. Record unverified dependencies/hardware blockers explicitly, keep parent P0-04 incomplete, make one local documentation commit and stop for user approval.
+
+### Findings and documented decisions
+
+Official sources and immutable release/model/image identities are recorded in [typellm_spike_plan.md](typellm_spike_plan.md), accessed 2026-10-02–03. TypeLLM 0.5.1 declares Python>=3.10/Apache-2.0 and supports client-encoded images, scalar/null/enum/DAG/conditional questions; nested property objects/arrays are rejected. Its number decoder returns float. [ADR-0002](adr/0002-extraction-money-and-provider-boundary.md) therefore records string-only printed financial values, with later trusted Decimal normalization and no float recovery. Existing domain contracts are unchanged. Explicit states/conditional omissions, serialized field/row calls, page-only provenance with bbox None, reasoning suppression and sanitized failures are proposed mappings, not an implemented adapter.
+
+TypeLLM README names Qwen3.8-27B for images, but its recorded image smoke actually uses RadixArk/Qwen3.8-27B-NVFP4-BF16-LMHead on Blackwell; exact engine version/model revision are absent. Stock BF16 weighs 55,563,006,776 bytes (~51.75 GiB), recorded derivative 23,749,332,688 (~22.12 GiB), both beyond local 16,380 MiB before runtime overhead. Official Qwen FP8 and NVIDIA NVFP4 variants also exceed capacity. Qwen3.5-4B revision 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a weighs 9,319,828,096 bytes (~8.68 GiB); TypeLLM evidence is text-only, its proposed image tuple explicitly experimental.
+
+VERIFIED LOCALLY: Ubuntu 24.04.2/x86_64/glibc 2.39, Intel Ultra 7 265/20 cores, 62 GiB RAM (43 available), single RTX 2000 Ada/SM8.9, driver 550.120/nvidia-smi CUDA driver capability 12.4, nvcc NOT AVAILABLE on PATH; /data ~790 GiB free and root/home/tmp ~238 GiB. Docker CLI 29.1.3 exists but daemon/image queries exit 1 with permission denial. NVIDIA container tools 1.20.0 exist; GPU passthrough NOT YET VERIFIED. Python 3.12.3 lacks ensurepip/pip. Existing Python 3.13.11/Torch 2.10.0+cu128 CUDA enumeration works; not evidence of selected inference compatibility.
+
+Verdict **NOT FEASIBLE ON THIS MACHINE** in its current state. Proposed SGLang 0.5.21 pinned amd64 container uses CUDA 13.0.3/Ubuntu 24.04/Python 3.12 and requires a supported >=580 host driver. Image metadata source SHA matches the release; runtime package imports/resolution remain unverified. Recommend a gated small 4B BF16 experiment only after supported runtime and owner-approved Docker GPU access are supplied. The older official cu129 image is a separate unverified alternative, not an automatic workaround. Neither system changes nor remote/paid compute are authorized. Storage reservations are 65 GiB /data and 120 GiB at actual DockerRootDir; VRAM fit remains an estimate with OOM risk.
+
+Nine documentation files changed: AGENTS, README, progress, assumptions, dictionary, coverage context, [20-row checklist](extraction_compatibility.md), new exact plan, and ADR-0002. The plan includes provenance, version matrix, native/container comparison, conditional install/check/download/launch/text-image smoke/future ten-case entrypoint commands, network/privacy, bounded failure mapping and scoped rollback. Commands were syntax/signature checked only, NOT executed. The future benchmark entrypoint/visual manifest is explicitly not available yet. Parent P0-04 remains incomplete; P0-04C has not started; all T01–T42 remain NOT IMPLEMENTED.
+
+### Executed verification
+
+| Exact command/check | Exit/result |
+|---|---|
+| `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider` | Exit 0; **488 passed, 0 failed, 0 skipped**, 0.43s. Existing test files unchanged. |
+| `sha256sum -c docs/source_inputs.sha256` | Exit 0; all nine preserved original inputs OK. |
+| `sha256sum -c data/synthetic/fixtures.sha256` | Exit 0; all 23 prior finance fixture JSON files OK. |
+| `sha256sum -c data/extraction_spike/fixtures.sha256` | Exit 0; all 11 structured extraction JSON files OK. |
+| `cmp docs/AP_Exception_Assistant_Codex_Spec.md AP_Exception_Assistant_6_Person_Team_Pack/AP_Exception_Assistant_Codex_Spec.md` | Exit 0; specification copy remains byte-identical. |
+| `PYTHONDONTWRITEBYTECODE=1 python3 /tmp/audit_p004b.py` | Exit 0; exactly nine documentation files, 122 local links/anchors resolve, all 42 scenarios unchanged, no provider/runtime/test/data changes. Temporary audit script is not part of the repository. |
+| Same audit: source/pin/command consistency | Exit 0; five model revisions/blob byte inventories and selected image source/CUDA/digest agree with retrieved official metadata. Ten shell blocks pass bash -n; seven Python examples parse and client/generate keyword signatures match 0.5.1 source. No proposed code executed. |
+| Same audit: runtime/fixture preservation | Exit 0; 16 recorded package states unchanged, selected kernel still absent, no experiment directory created. Finance normalized digest remains 1fdd167453d530ad286dbb633ed1e0abb5051f61b38b08bfd3b13a6ba52550b6; extraction manifest remains db00315130436eb572065cad35b1b00edcb2c8058dad84ea862de5975387bd0a. Ten deterministic fixture comparisons; latency remains null. |
+| Same audit: status/security checks | Exit 0; 20 topics: 11 VERIFIED FROM OFFICIAL SOURCE, 0 VERIFIED LOCALLY provider rows, 5 NOT VERIFIED, 3 BLOCKED, 1 UNSUPPORTED. No NOT CHECKED rows. Limited credential-pattern scan clean; not a security certification. |
+| `git diff --check` | Exit 0; no whitespace errors. |
+
+Runtime mutation: TypeLLM installed NO; SGLang installed NO; model weights downloaded NO; Docker inference image pulled NO; CUDA/driver modified NO; project runtime modified NO. Only official source/metadata text and temporary audit data fetched; no real documents, keys or private reasoning sent/stored. Existing fixture operation preserved. Complete transitive licensing, actual model/kernel/CUDA/image compatibility, measured latency/quality and visual artifacts remain outstanding.
+
+Publication policy: one local documentation commit `docs: verify TypeLLM spike compatibility plan`; no push attempted. `PYTHONDONTWRITEBYTECODE=1 python3 /tmp/audit_p004b.py --staged` and `git diff --cached --check` both returned exit 0: exactly nine authorized documentation files staged, no unstaged tracked changes, no whitespace errors. Final commit SHA and post-commit clean-tree state are reported in the checkpoint completion message. No Git authentication/configuration was changed. Stop before P0-04C.
+
+Next recommended step: supply supported CUDA 13 runtime and owner-approved GPU Docker access, then explicitly approve the pinned Qwen3.5-4B experimental image smoke and gated ten-case P0-04C spike. Keep the fixture adapter operational; no automatic dependency/model/hardware/hosted-provider substitution. Await approval.

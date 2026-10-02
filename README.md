@@ -6,7 +6,7 @@ The planned assistant screens vendor invoices and employee expense claims agains
 
 ## Development status
 
-**Implementation in progress: Phase 0 — Contracts and feasibility.** P0-01 established the local repository/documentation baseline; GitHub publication remains blocked by authentication. P0-02 adds tested, framework-independent state, Money/currency, and evidence contracts. P0-03 adds 38 synthetic root references and ten golden finance cases. P0-04A adds extraction contracts, deterministic fixture response replay, ten separately annotated structured extraction cases, and a comparison harness. Parent P0-04 remains IN PROGRESS; real provider compatibility and execution have not started. All T01–T42 business behavior remains NOT IMPLEMENTED. No API server, frontend, database, worker, finance rules, or model exists yet. No payment execution exists or is in the initial scope.
+**Implementation in progress: Phase 0 — Contracts and feasibility.** P0-01 established the local repository/documentation baseline; GitHub publication remains blocked by authentication. P0-02 adds tested, framework-independent state, Money/currency, and evidence contracts. P0-03 adds 38 synthetic root references and ten golden finance cases. P0-04A adds extraction contracts, deterministic fixture response replay, ten separately annotated structured extraction cases, and a comparison harness. P0-04B completes official-source research and a gated runtime plan: the recorded image-tested checkpoint exceeds local VRAM, CUDA 13 needs a supported newer driver, and Docker access is blocked. Parent P0-04 remains IN PROGRESS; P0-04C and real provider execution have not started. All T01–T42 business behavior remains NOT IMPLEMENTED. No API server, frontend, database, worker, finance rules, or model exists yet. No payment execution exists or is in the initial scope.
 
 Screening terminology:
 
@@ -46,6 +46,7 @@ The intended flow is intake → extraction/normalization → validation → bran
 │   ├── data_dictionary.md
 │   ├── test_coverage.md
 │   ├── extraction_compatibility.md
+│   ├── typellm_spike_plan.md
 │   ├── source_inputs.sha256
 │   └── adr/0001-repository-and-specification-authority.md
 ├── AP_Exception_Assistant_6_Person_Team_Pack/
@@ -69,13 +70,15 @@ The intended flow is intake → extraction/normalization → validation → bran
 - [Synthetic reference inventory and validation](data/synthetic/README.md)
 - [Golden case inventory and expectations](data/golden_cases/README.md)
 - [Extraction cases and harness](data/extraction_spike/README.md)
-- [Future provider compatibility checklist](docs/extraction_compatibility.md)
+- [Verified-source provider checklist and unresolved runtime gates](docs/extraction_compatibility.md)
+- [Exact conditional TypeLLM/SGLang experiment plan](docs/typellm_spike_plan.md)
+- [String-only money extraction boundary](docs/adr/0002-extraction-money-and-provider-boundary.md)
 
 The `docs/` specification is the implementation reference, copied byte-for-byte from the preserved source pack. The original folder and ZIP are intentionally version controlled as project inputs. The ADR explains their relationship; do not edit the originals or silently diverge from the specification.
 
 ## Setup status
 
-There is no runnable application, project dependency manifest, startup command, or migration. Tests use the existing Python/pytest environment; no dependencies were installed in P0-01–P0-04A. Production modules and fixture validation use the Python standard library and existing domain contracts. From the repository root:
+There is no runnable application, project dependency manifest, startup command, or migration. Tests use the existing Python/pytest environment; no dependencies were installed in P0-01–P0-04B. Production modules and fixture validation use the Python standard library and existing domain contracts. From the repository root:
 
 ```bash
 python3 -m pytest apps/api/tests/unit/domain -q

@@ -1,30 +1,32 @@
-# P0-04B/P0-04C compatibility checklist
+# P0-04B compatibility checklist
 
-P0-04A supplies contracts, structured synthetic cases, replay and comparison only. This checklist records future verification work; P0-04B has not started. No TypeLLM/SGLang source was fetched or installed, model downloaded, runtime launched, OCR integrated, or provider called in P0-04A. Every topic below is **NOT CHECKED**. The [specification](AP_Exception_Assistant_Codex_Spec.md) states the intended architecture; it does not prove current package/runtime compatibility.
+Research completed on 2026-10-02–03 (Asia/Kolkata). This is source verification and local inspection, not an executed provider compatibility test. P0-04C has not started; parent P0-04 remains incomplete. The exact sources, immutable revisions, machine observations, commands, storage calculations and release gates are in the [spike plan](typellm_spike_plan.md).
 
-For P0-04B, inspect current official repositories/documentation and model cards. Record exact URLs, inspection dates, release/commit/package versions and supporting evidence. Tutorials are not authoritative. A documentation claim may become DOCUMENTED; only an executed, recorded check may become VERIFIED LOCALLY. BLOCKED and UNSUPPORTED require stated evidence. Unresolved claims remain NOT CHECKED/NOT VERIFIED. No installation is authorized by this document.
+Status meanings: **VERIFIED FROM OFFICIAL SOURCE** establishes the stated upstream behavior; **VERIFIED LOCALLY** requires an executed local check; **NOT VERIFIED** identifies an unanswered compatibility/measurement question; **BLOCKED** identifies an observed prerequisite that prevents the selected experiment; **UNSUPPORTED** identifies a rejected interface feature. Source verification does not establish end-to-end compatibility. Each row has one primary status; its evidence column preserves qualifications.
 
-| Topic | Status | Evidence required in later approved work |
+| Topic | Status | Evidence and consequence |
 |---|---|---|
-| TypeLLM identity/version | NOT CHECKED | Official repository, exact release/commit/package identity; distinguish similarly named projects. |
-| Python support | NOT CHECKED | Declared interpreter range plus compatibility of proposed local interpreter. |
-| Installation | NOT CHECKED | Official installation method and full dependency/runtime impact; propose exact environment changes before installing. |
-| Image input | NOT CHECKED | Actual accepted input forms, page/image requirements, limits and model/backend support. |
-| Nullable fields | NOT CHECKED | Null/missing behavior and how it maps to explicit extraction uncertainty. |
-| Scalars | NOT CHECKED | String/Decimal-like candidates, coercion/failure behavior; preserve raw text. |
-| Enums | NOT CHECKED | Supported enum constraints, invalid-value handling and explicit observation states. |
-| Line-item strategy | NOT CHECKED | Header then bounded line-region/row approach; row limits, missing/repeated row behavior. |
-| Nested schemas | NOT CHECKED | Documented restrictions; do not assume native arbitrary recursive/nested table support. |
-| Backend/runtime | NOT CHECKED | Required engines, API/protocol versions and supported deployment modes. |
-| SGLang compatibility | NOT CHECKED | Whether required, exact compatible releases/commits and dependency constraints. |
-| Model family/revision | NOT CHECKED | Official supported model family, exact revision, processor/tokenizer and input requirements. |
-| GPU/CPU needs | NOT CHECKED | Supported hardware, memory/storage, CUDA/toolchain requirements and CPU feasibility. |
-| Package/runtime licenses | NOT CHECKED | TypeLLM, backend and transitive runtime license obligations for intended use. |
-| Model license | NOT CHECKED | Exact weights license, use/distribution limits and any required gated access. |
-| Local/offline feasibility | NOT CHECKED | Artifact fetch/cache requirements, runtime network behavior and offline execution feasibility. |
-| Latency | NOT CHECKED | Later measured hardware/model/input configuration, per-case elapsed time, warm/cold behavior and missing measurements. |
-| Provider/data retention | NOT CHECKED | Local/hosted behavior, data transmission, retention/logging terms and permitted document use. |
-| Source locators/bbox | NOT CHECKED | Whether page/box evidence is supplied, coordinate convention/transform mapping; absence remains explicit. |
-| Malformed/timeout behavior | NOT CHECKED | Invalid/incomplete responses, retries/timeouts, error mapping and safe artifact references without private traces. |
+| TypeLLM identity/version | VERIFIED FROM OFFICIAL SOURCE | S1/S2: TypeLLM/TypeLLM, stable 0.5.1, tag v0.5.1, commit `0c34f00251f850b4cd1b8060f24dd7066522fb5d`; Apache-2.0, Python >=3.10. |
+| Python support | VERIFIED FROM OFFICIAL SOURCE | S2/S8/S9: TypeLLM and SGLang declare >=3.10; selected container uses Python 3.12. SGLang offers cp312 x86_64 wheels. This does not verify the full dependency set on the host's Python 3.13. |
+| Installation | BLOCKED | S8/S9/S14 and local inventory: selected SGLang 0.5.21 container uses CUDA 13.0.3, host driver is 550.120, Docker daemon access is permission-denied. Plan only; no packages/layers installed. |
+| Image input | VERIFIED FROM OFFICIAL SOURCE | S3/S6: local files/bytes/PIL are encoded by client; HTTP/data URIs accepted. An upstream one/two-image smoke report exists for the precise RadixArk checkpoint. Smaller 4B image behavior is unverified. |
+| Nullable fields | VERIFIED FROM OFFICIAL SOURCE | S4/S5: one scalar type plus null supported; null alone does not encode the five observation states. Conditional skips omit fields and appear in `skipped`; adapter must explicitly map them. |
+| Scalars | VERIFIED FROM OFFICIAL SOURCE | S4/S5: string/int/float/bool outputs; `number` parses via float. Authoritative money must use raw string extraction, then later trusted Decimal normalization. No exact Decimal-output contract verified. |
+| Enums | VERIFIED FROM OFFICIAL SOURCE | S4: bounded enums, maximum 24 alternatives; five explicit uncertainty states fit. Typed output does not prove the model chose the correct state. |
+| Line-item strategy | NOT VERIFIED | No native table API established. Proposed bounded header → row discovery → per-row scalar calls, using existing 200-row/16-field limits; visual row discovery, repetition and truncation need P0-04C measurement. |
+| Nested schemas | UNSUPPORTED | S4: object/array property types raise NotImplementedError in 0.5.1. The existing flat project row contract can be retained; do not send it as a nested TypeLLM schema. |
+| Backend/runtime | VERIFIED FROM OFFICIAL SOURCE | S5/S16: self-hosted native SGLang `/generate`, `/model_info`, `/server_info`; hosted API is a separate keyed mode. Explicit loopback URL prevents implicit environment-key routing. |
+| SGLang compatibility | NOT VERIFIED | S7/S8: upstream small-model evidence uses 0.5.19/transformers 5.12.1; proposed release is 0.5.21. Image report omits its engine version and checkpoint revision. The exact proposed tuple has not run. |
+| Model family/revision | VERIFIED FROM OFFICIAL SOURCE | S6/S10–S13: Qwen3.8-27B documented image family; actual report uses RadixArk NVFP4/BF16-LMHead. Qwen3.5-4B is TypeLLM text-tested only and is the proposed smaller experimental target. Exact revisions/bytes in plan. |
+| GPU/CPU needs | BLOCKED | Local 1×16,380 MiB Ada GPU cannot hold stock 27B BF16 or recorded mixed-precision checkpoint plus overhead. CUDA 13 driver gate fails. No documented CPU-only substitute established; smaller 4B fit is an estimate. |
+| Package/runtime licenses | NOT VERIFIED | S2/S8/S17: primary projects declare Apache-2.0; CUDA has separate NVIDIA terms. Complete transitive/container license inventory and redistribution assessment remain unverified. No production licensing claim. |
+| Model license | VERIFIED FROM OFFICIAL SOURCE | S10–S13: examined stock/FP8/NVFP4/4B cards and metadata declare Apache-2.0, public and ungated at inspection. Preserve license/notices and exact derivative provenance. |
+| Local/offline feasibility | BLOCKED | S5/S9 and local inventory: explicit local tokenizer/cache/offline plan exists, but Docker/driver gates block launch. Offline execution, JIT cache completeness and egress remain unverified until tested. |
+| Latency | NOT VERIFIED | No model executed or timed. Upstream hardware timings are not this machine's measurements. Current fixture adapter latency remains null. |
+| Provider/data retention | NOT VERIFIED | S5 establishes local vs hosted routing, not hosted retention guarantees. No hosted account/key/contract inspected; no finance documents uploaded. Local logs and cache retention require explicit control. |
+| Source locators/bbox | VERIFIED FROM OFFICIAL SOURCE | S3/S5 expose image inputs and typed answers, not a native OCR-coordinate result contract. Plan uses known one-page input provenance and bbox=None; coordinate capabilities false. Model-generated coordinates are not evidence. |
+| Malformed/timeout behavior | VERIFIED FROM OFFICIAL SOURCE | S4/S5: SchemaError/NotImplementedError, SGLangError, GenerationTimeout/Cancelled documented in source. Cancellation checks between requests; immediate server abort is not guaranteed. Project mapping remains unimplemented. |
 
-P0-04B should produce a reviewable exact dependency/runtime plan and blockers before installation. P0-04C, if subsequently approved, must materialize suitable synthetic visual artifacts, version the manifest/input bindings, integrate a real adapter and execute the varied-document spike. The [structured harness](../data/extraction_spike/README.md) is reusable at the observation boundary; fixture agreement cannot substitute for those runtime checks. Parent P0-04 remains incomplete.
+Counts for these **20 checklist rows**: VERIFIED FROM OFFICIAL SOURCE **11**; VERIFIED LOCALLY **0**; NOT VERIFIED **5**; BLOCKED **3**; UNSUPPORTED **1**. The separately executed hardware/package/fixture checks are VERIFIED LOCALLY in the plan and progress record; they do not promote provider rows to end-to-end compatibility.
+
+Release gates: [string-only money boundary](adr/0002-extraction-money-and-provider-boundary.md), explicit uncertainty, reasoning suppression, truthful source locators, bounded rows, sanitized failures, pinned runtime and measured image checks. The current [fixture harness](../data/extraction_spike/README.md) remains operational and unchanged. No NOT CHECKED topics remain; no installation or next-task approval is implied.

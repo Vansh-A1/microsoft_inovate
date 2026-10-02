@@ -91,3 +91,7 @@ Supporting integrity tests: [reference integrity](../apps/api/tests/fixtures/tes
 | [test_spike_harness.py](../apps/api/tests/unit/extraction/test_spike_harness.py) | All ten cases, independent critical metrics, guesses and missing observations/rows detected, extra rows and wrong item amounts, state/status/error reporting, unavailable metrics null, optional latency/version metadata, checksum scope and malformed inputs. |
 
 These tests support the future T29 uncertainty boundary and T41 untrusted-text boundary only. They do not implement REVIEW routing, provider disagreements, real VLM prompt behavior, or finance controls. All 42 main matrix rows remain NOT IMPLEMENTED. The ten [extraction cases](../data/extraction_spike/README.md) are separate from the ten P0-03 golden finance cases. Exact executed results appear in [progress](progress.md).
+
+## P0-04B source and environment verification
+
+Official-source compatibility research and read-only hardware/package checks are documented in the [plan](typellm_spike_plan.md) and [progress](progress.md). They add no provider tests or financial behavior. The existing 488-test suite remains the regression baseline; all T01–T42 remain NOT IMPLEMENTED. Model accuracy/latency, the proposed 4B image tuple and runtime failure mappings require an explicitly approved P0-04C execution. No test is promoted from fixture agreement to real visual verification.
