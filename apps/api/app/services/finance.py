@@ -90,8 +90,8 @@ def enqueue(session,identity,record_id,expected,reason,correlation,intent,evalua
     key=digest({'transaction':row.id,'version':expected,'snapshot':snap.id,'stage':RULESET,'intent':intent})
     job=session.scalar(scope_query(select(Job),Job,identity).where(Job.stage_key==key))
     if job:return {'job_id':str(job.id),'state':job.state,'transaction_id':str(row.id)}
-    release(session,identity,row.id);row.eligible=False;row.decision=None;row.processing_state='QUEUED'
-    job=Job(**identity.scope(),id=uuid4(),transaction_id=row.id,transaction_version=expected,snapshot_id=snap.id,stage_key=key,stage_version=RULESET,evaluated_at=evaluated_at or utcnow(),actor_id=identity.actor_id)
+    release(session,identity,row.id);row.eligible=False;row.decision=None;row.processing_state='QUEUED';row.row_version+=1
+    job=Job(**identity.scope(),id=uuid4(),transaction_id=row.id,transaction_version=expected,snapshot_id=snap.id,stage_key=key,generation=row.row_version,stage_version=RULESET,evaluated_at=evaluated_at or utcnow(),actor_id=identity.actor_id)
     session.add(job);session.flush()
     session.add(OutboxEvent(**identity.scope(),job_id=job.id,event_type='EVALUATION_REQUESTED',aggregate_id=row.id,aggregate_version=expected,payload={'job_id':str(job.id),'stage':RULESET}))
     audit(session,identity,'EVALUATION_REQUESTED',row.id,expected,reason,correlation,{'job_id':str(job.id),'snapshot_id':str(snap.id)})
@@ -163,8 +163,9 @@ def finalize(session,identity,job_id,lease_owner):
     if job.state=='SUCCEEDED':return job.result_evaluation_id
     if job.state!='RUNNING' or job.lease_owner!=lease_owner or job.lease_until<=utcnow():raise DomainError(409,'LEASE_LOST','The job lease is no longer valid.')
     transaction=get(session,Transaction,identity,job.transaction_id)
-    if transaction.latest_version!=job.transaction_version:
-        job.state='STALE';job.lease_until=None;job.updated_at=utcnow();return None
+    if transaction.latest_version!=job.transaction_version or transaction.row_version!=job.generation:
+        job.state='STALE';job.lease_until=None;job.updated_at=utcnow()
+        audit(session,identity,'JOB_STALE',job.id,1,'A newer canonical version or evaluation request superseded this job',str(job.id));return None
     version=session.scalar(scope_query(select(TransactionVersion),TransactionVersion,identity).where(TransactionVersion.transaction_id==transaction.id,TransactionVersion.version==job.transaction_version))
     context=build_context(session,identity,job,version)
     context_data=json_context(context)
@@ -231,4 +232,5 @@ def reserve(session,identity,evaluation,version,context,decision):
 def transaction_detail(session,identity,record_id):
     row=get(session,Transaction,identity,record_id)
     versions=session.scalars(scope_query(select(TransactionVersion),TransactionVersion,identity).where(TransactionVersion.transaction_id==row.id).order_by(TransactionVersion.version)).all()
-    return projection({'id':row.id,'branch':row.branch,'version':row.latest_version,'processing_state':row.processing_state,'decision':row.decision,'eligible':row.eligible,'latest_evaluation_id':row.latest_evaluation_id,'created_at':row.created_at,'versions':[{'version':v.version,'payload':redact(v.payload),'digest':v.content_digest,'author_id':v.author_id,'reason':v.change_reason,'created_at':v.created_at} for v in versions]})
+    job=session.scalar(scope_query(select(Job),Job,identity).where(Job.transaction_id==row.id).order_by(Job.created_at.desc()).limit(1))
+    return projection({'job':{'id':job.id,'state':job.state,'stage':job.stage,'attempts':job.attempts,'maximum_attempts':job.maximum_attempts,'last_error':job.last_error} if job else None,'id':row.id,'branch':row.branch,'version':row.latest_version,'processing_state':row.processing_state,'decision':row.decision,'eligible':row.eligible,'latest_evaluation_id':row.latest_evaluation_id,'created_at':row.created_at,'versions':[{'version':v.version,'payload':redact(v.payload),'digest':v.content_digest,'author_id':v.author_id,'reason':v.change_reason,'created_at':v.created_at} for v in versions]})

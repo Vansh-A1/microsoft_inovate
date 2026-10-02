@@ -317,3 +317,69 @@ def test_revision_invalidates_approved_version_and_capacity(environment):
     assert report['decision']=='HOLD'
     assert next(rule for rule in report['rules'] if rule['rule_id']=='APR-001')['status']=='FAIL'
     with db.session(ctx) as s:assert s.scalar(select(func.count()).select_from(CapacityReservation).where(CapacityReservation.state=='ACTIVE'))==0
+
+
+def test_newer_same_version_intent_makes_old_job_stale(environment):
+    db,ctx,other,client,cfg=environment;rid=create(client);body={'expected_version':1,'reason':'Fresh deterministic intent'}
+    first=client.post(f'/api/v1/transactions/{rid}/evaluate',json=body,headers=headers()).json()
+    second=client.post(f'/api/v1/transactions/{rid}/evaluate',json=body,headers=headers()).json()
+    assert run_once(db,ctx);assert client.get('/api/v1/jobs/'+first['job_id']).json()['state']=='STALE'
+    assert run_once(db,ctx);assert client.get('/api/v1/jobs/'+second['job_id']).json()['state']=='SUCCEEDED'
+    with db.session(ctx) as s:assert s.scalar(select(func.count()).select_from(Evaluation))==1
+
+
+def test_retry_pass_has_one_capacity_effect(environment):
+    from phase1 import seed_case
+    db,ctx,other,client,cfg=environment
+    with db.session(ctx) as s:rid=seed_case(s,ctx,'vendor/clean')
+    leased=claim(db,ctx)
+    with db.session(ctx) as s:finance.get(s,Job,ctx,leased[0]).lease_until=utcnow()-timedelta(seconds=1)
+    assert run_once(db,ctx)
+    with db.session(ctx) as s:
+        job=finance.get(s,Job,ctx,leased[0]);assert job.state=='SUCCEEDED'
+        assert finance.finalize(s,ctx,job.id,uuid4())==job.result_evaluation_id
+        assert finance.get(s,Transaction,ctx,rid).eligible is True
+        assert s.scalar(select(func.count()).select_from(Evaluation))==1
+        assert s.scalar(select(func.count()).select_from(CapacityReservation).where(CapacityReservation.state=='ACTIVE'))==3
+
+
+def test_worker_exhaustion_does_not_stop_drain_of_other_jobs(environment):
+    db,ctx,other,client,cfg=environment;first=create(client);second=create(client,payload('employee/clean_taxi'))
+    body={'expected_version':1,'reason':'Drain durable queue'}
+    jobs=[client.post(f'/api/v1/transactions/{rid}/evaluate',json=body,headers=headers()).json()['job_id'] for rid in [first,second]]
+    with db.session(ctx) as s:finance.get(s,Job,ctx,UUID(jobs[0])).attempts=3
+    assert run_once(db,ctx);assert client.get('/api/v1/jobs/'+jobs[0]).json()['state']=='FAILED'
+    assert client.get('/api/v1/transactions/'+first).json()['processing_state']=='FAILED_FINAL'
+    assert run_once(db,ctx);assert client.get('/api/v1/jobs/'+jobs[1]).json()['state']=='SUCCEEDED'
+
+
+def test_seed_rerun_keeps_one_logical_evaluation_and_effect(environment):
+    db,ctx,other,client,cfg=environment;seed(db,ctx,['vendor/clean'])
+    with db.session(ctx) as s:counts=[s.scalar(select(func.count()).select_from(model)) for model in [Transaction,Evaluation,ApprovalRecord,CapacityReservation,AuditEvent]]
+    assert seed(db,ctx,['vendor/clean'])[0]['decision']=='PASS'
+    with db.session(ctx) as s:assert counts==[s.scalar(select(func.count()).select_from(model)) for model in [Transaction,Evaluation,ApprovalRecord,CapacityReservation,AuditEvent]]
+
+
+def test_insufficient_approver_authority_is_persisted_hold(environment):
+    db,ctx,other,client,cfg=environment;rid=UUID(create(client))
+    with db.session(ctx) as s:
+        for seq,actor,role in [(1,'51000000-0000-4000-8000-000000000002','MANAGER'),(2,'51000000-0000-4000-8000-000000000004','DEPARTMENT_HEAD')]:
+            s.add(ApprovalRecord(**ctx.scope(),transaction_id=rid,transaction_version=1,policy_id=UUID(payload()['approval_policy_id']),policy_version=1,actor_id=UUID(actor),role=role,sequence=seq,state='APPROVED',approved_at=utcnow()-timedelta(seconds=10)))
+    report=evaluate_case(client,db,ctx,str(rid));approval=next(r for r in report['rules'] if r['rule_id']=='APR-001')
+    assert report['decision']=='HOLD' and approval['status']=='FAIL' and approval['observed']['steps'][0]['actor_has_role'] is False
+
+
+def test_arithmetic_and_bank_failures_have_persisted_evidence(environment):
+    db,ctx,other,client,cfg=environment;original=payload();rid=create(client,original|{'total_amount':'23601.00','payment_account_token':'DEMO-UNAPPROVED-ACCOUNT'})
+    report=evaluate_case(client,db,ctx,rid)
+    assert report['decision']=='HOLD'
+    for rule_id in ['VAL-002','VEN-002']:
+        rule=next(r for r in report['rules'] if r['rule_id']==rule_id);assert rule['status']=='FAIL' and rule['evidence']
+    with db.session(ctx) as s:assert s.scalar(select(ReferenceRecord).where(ReferenceRecord.id==UUID(original['vendor_id']))).payload['payment_account_token']==original['payment_account_token']
+
+
+def test_http_envelope_and_request_size_limit(environment):
+    db,ctx,other,client,cfg=environment
+    assert client.get('/api/v1/unknown-route').json()['error']['code']=='HTTP_404'
+    result=client.post('/api/v1/transactions',content=b' ' * 2300001,headers=headers()|{'Content-Type':'application/json'})
+    assert result.status_code==413 and result.json()['error']['code']=='REQUEST_TOO_LARGE'

@@ -265,6 +265,7 @@ class Job(Scoped, Identified, Base):
     stage: Mapped[str] = mapped_column(String(32), default='EVALUATE')
     stage_version: Mapped[str] = mapped_column(String(32), default='rules-p1-v1')
     stage_key: Mapped[str] = mapped_column(String(64))
+    generation: Mapped[int] = mapped_column(Integer, default=0)
     state: Mapped[str] = mapped_column(String(32), default='QUEUED')
     attempts: Mapped[int] = mapped_column(Integer, default=0)
     maximum_attempts: Mapped[int] = mapped_column(Integer, default=3)

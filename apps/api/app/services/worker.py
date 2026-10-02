@@ -4,6 +4,7 @@ from uuid import uuid4
 from sqlalchemy import select, or_, and_
 from app.core.serialization import utcnow
 from app.core.identity import Identity
+from app.domain.states import ProcessingState
 from app.db.models import Job, OutboxEvent, Transaction
 from app.db.session import scope_query
 from app.services.finance import get, finalize, audit
@@ -18,9 +19,11 @@ def claim(database,identity,now=None):
         if job.attempts>=job.maximum_attempts:
             job.state='FAILED';job.last_error='ATTEMPTS_EXHAUSTED';job.lease_until=None;job.updated_at=now
             transaction=get(session,Transaction,identity,job.transaction_id)
-            if transaction.latest_version==job.transaction_version and transaction.processing_state=='QUEUED':transaction.processing_state='FAILED';transaction.eligible=False
-            audit(session,identity,'JOB_FAILED',job.id,1,'Maximum execution attempts exhausted',str(job.id));return None
+            if transaction.latest_version==job.transaction_version and transaction.row_version==job.generation:transaction.processing_state=ProcessingState.FAILED_FINAL.value;transaction.eligible=False
+            audit(session,identity,'JOB_FAILED',job.id,1,'Maximum execution attempts exhausted',str(job.id));return (None,None,None)
         job.state='RUNNING';job.attempts+=1;job.lease_owner=uuid4();job.lease_until=now+timedelta(seconds=60);job.updated_at=now
+        transaction=get(session,Transaction,identity,job.transaction_id)
+        if transaction.latest_version==job.transaction_version and transaction.row_version==job.generation:transaction.processing_state=ProcessingState.PROCESSING.value
         for event in session.scalars(scope_query(select(OutboxEvent),OutboxEvent,identity).where(OutboxEvent.job_id==job.id,OutboxEvent.delivered_at.is_(None))):event.delivered_at=now
         audit(session,identity,'JOB_CLAIMED',job.id,1,'Durable execution lease acquired',str(job.id),{'attempt':job.attempts})
         return job.id,job.lease_owner,job.actor_id
@@ -30,6 +33,7 @@ def run_once(database,identity):
     leased=claim(database,identity)
     if not leased:return False
     job_id,owner,actor=leased
+    if job_id is None:return True
     execution_identity=Identity(identity.tenant_id,identity.legal_entity_id,actor,identity.roles,identity.label)
     try:
         with database.session(execution_identity) as session:finalize(session,execution_identity,job_id,owner)
@@ -40,7 +44,8 @@ def run_once(database,identity):
             if job.state=='RUNNING' and job.lease_owner==owner:
                 job.state='FAILED' if job.attempts>=job.maximum_attempts else 'RETRYABLE';job.last_error='EXECUTION_FAILED';job.lease_until=None;job.available_at=utcnow()+timedelta(seconds=2**job.attempts);job.updated_at=utcnow()
                 transaction=get(session,Transaction,execution_identity,job.transaction_id)
-                if job.state=='FAILED' and transaction.latest_version==job.transaction_version:transaction.processing_state='FAILED';transaction.eligible=False
+                if transaction.latest_version==job.transaction_version and transaction.row_version==job.generation:
+                    transaction.processing_state=ProcessingState.FAILED_FINAL.value if job.state=='FAILED' else ProcessingState.FAILED_RETRYABLE.value;transaction.eligible=False
                 audit(session,execution_identity,'JOB_RETRY_SCHEDULED' if job.state=='RETRYABLE' else 'JOB_FAILED',job.id,1,'Execution rolled back; safe failure recorded',str(job.id))
     return True
 

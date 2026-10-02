@@ -482,3 +482,9 @@ The first PostgreSQL integration pass was 21 passed / 1 failed (migration table-
 ### Phase-1 internal checkpoint — executable rules and API
 
 The pure engine covers 15 controls for both branches. Strict API intake, revisions, idempotency, CSV/XLSX preview/commit, scoped evidence resolution, durable jobs and deterministic JSON/HTML reports are implemented. The original 488 tests remain intact. Thirty-one new pure rules tests passed; the 28-test PostgreSQL suite passed before the final deadline guard, and the eight affected persisted golden cases passed after its cleanup-order correction. Final complete regression is still pending. Rule implementation `rules-p1-v3` / `1.0.2` is checkpointed in Git; further rule changes require a new version.
+
+### Phase-1 internal checkpoint — admission freshness and bounded execution
+
+The complete Python regression run passed: **549 passed, 0 failed, 0 skipped** in 174.42 seconds, preserving all 488 Phase-0 tests. It adds 31 pure rules and 30 real PostgreSQL integration tests. A current-request generation now prevents older jobs for the same canonical version from publishing over a newer evaluation request; expiring leases, transaction-local database timeouts and minimal capacity effects are guarded. The pure engine now directly reuses P0 Money and state validation as well as typed evidence. `rules-p1-v4` / `1.0.3` is checkpointed with its tested source. Four targeted worker/seed/authority/arithmetic tests also passed after refinements; final aggregate count will be recorded at exit.
+
+Production frontend compiled and ran. The first ten-browser-test pass found a same-origin proxy hostname bug (five passed/five failed including selector issues). It was corrected using explicit loopback host/origin pairs; cross-origin rejection remains enforced. Browser rerun and screenshot review are pending. The API and proxy now bound request bytes before structured parsing.

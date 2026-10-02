@@ -9,7 +9,8 @@ sys.path.insert(0,str(ROOT/'apps/api'))
 from app.core.config import Settings
 from app.core.identity import authenticate
 from app.db.session import Database
-from app.db.models import Transaction, ApprovalRecord
+from app.db.models import Transaction, ApprovalRecord, Evaluation
+from app.rules.engine import RULESET
 from app.services.references import seed_references
 from app.services.finance import create_transaction,enqueue,audit,scope_lock
 from app.services.worker import run_once
@@ -20,7 +21,12 @@ DEMO_CASES=['vendor/clean','vendor/paid_duplicate','employee/clean_taxi','employ
 
 def seed_case(session,identity,name):
     case=json.loads((ROOT/f'data/golden_cases/{name}.json').read_text());p=case['transaction'];rid=UUID(p['id'])
-    if session.get(Transaction,rid):return rid
+    existing=session.get(Transaction,rid)
+    if existing:
+        latest=session.get(Evaluation,existing.latest_evaluation_id) if existing.latest_evaluation_id else None
+        if existing.latest_version==1 and (latest is None or latest.ruleset_version!=RULESET):
+            enqueue(session,identity,rid,1,'Refresh unchanged synthetic seed for the current rule version','development-seed',f'seed:{name}:{RULESET}',datetime.fromisoformat(case['evaluation_at'].replace('Z','+00:00')))
+        return rid
     create_transaction(session,identity,fixture_canonical(p),'Trusted synthetic fixture seed','development-seed',rid)
     for a in p['approvals']:
         session.add(ApprovalRecord(**identity.scope(),id=UUID(a['id']),transaction_id=rid,transaction_version=a['transaction_version'],policy_id=UUID(a['approval_policy_id']),policy_version=1,actor_id=UUID(a['actor_id']),role=a['role'],sequence=a['sequence'],state=a['state'],approved_at=datetime.fromisoformat(a['approved_at'].replace('Z','+00:00'))))

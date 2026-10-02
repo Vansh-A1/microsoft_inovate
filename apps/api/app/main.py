@@ -5,6 +5,8 @@ from uuid import UUID, uuid4
 from fastapi import FastAPI, Depends, Header, UploadFile, File, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, HTMLResponse
+from starlette.exceptions import HTTPException
+from app.core.limits import BoundedBody
 from sqlalchemy import select, text, func
 from sqlalchemy.exc import SQLAlchemyError
 from app.core.config import Settings
@@ -21,7 +23,11 @@ from app.services import finance, imports
 def create_app(settings=None,database=None):
     settings=settings or Settings.load();database=database or Database(settings.database_url);storage=LocalStorage(settings.storage_root)
     app=FastAPI(title='AP Exception Assistant',version='1.0.0',description='Synthetic development / RULES_ONLY / no payment execution')
+    app.add_middleware(BoundedBody)
     app.state.database=database;app.state.settings=settings
+    @app.exception_handler(HTTPException)
+    async def http_error(request,exc):
+        return JSONResponse(status_code=exc.status_code,content={'error':{'code':'HTTP_'+str(exc.status_code),'message':'Request route or method is unavailable.' if exc.status_code in (404,405) else 'Request could not be processed.','details':{},'retryable':False},'correlation_id':getattr(request.state,'correlation','')})
     @app.exception_handler(DomainError)
     async def domain_error(request,exc):
         return JSONResponse(status_code=exc.status,content={'error':{'code':exc.code,'message':exc.message,'details':exc.details,'retryable':exc.retryable},'correlation_id':getattr(request.state,'correlation','')})
@@ -52,7 +58,7 @@ def create_app(settings=None,database=None):
     def ready():
         try:
             with database.engine.connect() as conn:version=conn.scalar(text('SELECT version_num FROM alembic_version'))
-            if version!='0002_inputs':raise ValueError()
+            if version!='0003_generation':raise ValueError()
         except Exception:raise DomainError(503,'NOT_READY','Apply the database migration before serving requests.',retryable=True) from None
         return {'status':'ready','database':'PostgreSQL','migration':version}
     @app.get('/api/v1/me')

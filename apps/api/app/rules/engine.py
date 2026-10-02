@@ -5,9 +5,11 @@ from decimal import Decimal, localcontext, ROUND_HALF_EVEN
 import json
 from uuid import UUID
 from app.core.serialization import canonical_json, projection
+from app.domain.money import Money
+from app.domain.states import RuleStatus, DecisionEffect, ScreeningDecision
 from app.domain.evidence import EvidenceReference, EvidenceKind, ImportCellLocator
 
-RULESET = 'rules-p1-v3'
+RULESET = 'rules-p1-v4'
 DECISION_POLICY = 'hold-first-p1-v1'
 RULE_IDS = ('VAL-001','VAL-002','VAL-003','VEN-001','VEN-002','DUP-002','PO-001','PO-002','GRN-001','EMP-001','DOC-001','EXP-003','BUD-001','APR-001','SYS-001')
 D = Decimal
@@ -38,6 +40,11 @@ class RuleResult:
     evidence: tuple[EvidenceReference, ...]
     required: bool = True
 
+    def __post_init__(self):
+        RuleStatus(self.status)
+        DecisionEffect(self.decision_effect)
+        if self.status=='FAIL' and self.decision_effect=='NONE':raise ValueError('Failed required controls need an explicit escalation.')
+
     def json(self):
         return projection(asdict(self))
 
@@ -57,6 +64,7 @@ def combine(results):
     hold = any(r.decision_effect == 'HOLD' for r in results)
     review = any(r.decision_effect == 'REVIEW' or (r.required and r.status in ('UNKNOWN','ERROR')) for r in results)
     decision = 'HOLD' if hold else 'REVIEW' if review else 'PASS'
+    ScreeningDecision(decision)
     return Decision(decision, 'COMPLETE' if complete else 'INCOMPLETE', decision == 'PASS' and complete, tuple(results))
 
 
@@ -81,11 +89,13 @@ def _evaluate(c):
         return bool(r and day and (not r.get('effective_from') or r['effective_from']<=day) and (not r.get('effective_to') or day<r['effective_to']))
     def result(rid,status,reason,observed=None,expected=None,evidence=(),effect=None,tolerance=None):
         effect=effect or ('NONE' if status in ('PASS','NOT_APPLICABLE') else 'REVIEW')
-        results.append(RuleResult(rid,'1.0.2',status,effect,reason,projection(observed),projection(expected),tolerance,tuple([ev()]+list(evidence))))
+        results.append(RuleResult(rid,'1.0.3',status,effect,reason,projection(observed),projection(expected),tolerance,tuple([ev()]+list(evidence))))
     def check(rid,ok,reason,observed=None,expected=None,evidence=(),failure='REVIEW',tolerance=None):
         result(rid,'PASS' if ok else 'FAIL',reason,observed,expected,evidence,'NONE' if ok else failure,tolerance)
     def na(rid):result(rid,'NOT_APPLICABLE','Control does not apply to this transaction branch.',p['branch'],'Applicable branch only')
-    def amount(k):return D(p[k]) if p.get(k) is not None else None
+    def amount(k):
+        if p.get(k) is None:return None
+        return Money(p[k],p['currency']).amount if p.get('currency') else D(p[k])
     total=amount('total_amount' if vendor else 'requested_amount')
     business_day=p.get('invoice_date' if vendor else 'expense_date')
     primary=ref('vendor_id' if vendor else 'employee_id','vendors' if vendor else 'employees')
@@ -95,7 +105,7 @@ def _evaluate(c):
     result('VAL-001','UNKNOWN' if missing else 'PASS','Missing required facts need correction.' if missing else 'Required structured facts are present.',{'missing':missing},'All required facts present')
     if vendor:
         fields=['quantity','unit_price','discount_amount','net_amount','tax_rate','tax_amount','gross_amount','currency']
-        unknown=any(any(line.get(k) is None for k in fields) for line in p['lines']) or any(p.get(k) is None for k in ['subtotal_amount','tax_amount','total_amount','document_discount_amount','shipping_amount','other_charges_amount'])
+        unknown=not p.get('currency') or any(line.get('currency')!=p.get('currency') for line in p['lines']) or any(any(line.get(k) is None for k in fields) for line in p['lines']) or any(p.get(k) is None for k in ['subtotal_amount','tax_amount','total_amount','document_discount_amount','shipping_amount','other_charges_amount'])
         if unknown:result('VAL-002','UNKNOWN','Arithmetic needs explicit line amounts, discounts, tax and totals. Missing tax is not zero.')
         elif p.get('tax_basis')!='EXCLUSIVE':result('VAL-002','UNKNOWN','This slice supports explicit exclusive-tax ordinary invoices only.',p.get('tax_basis'),'EXCLUSIVE')
         else:
@@ -106,12 +116,12 @@ def _evaluate(c):
                 ok=ok and line_ok
                 observations.append({'line_id':line['id'],'computed_net':net,'computed_tax':tax,'computed_gross':gross,'matches':line_ok})
             subtotal=sum((D(l['net_amount']) for l in p['lines']),ZERO);tax=sum((D(l['tax_amount']) for l in p['lines']),ZERO)
-            computed=subtotal-D(p['document_discount_amount'])+D(p['tax_amount'])+D(p['shipping_amount'])+D(p['other_charges_amount'])
+            computed=(Money(subtotal,p['currency'])-Money(p['document_discount_amount'],p['currency'])+Money(p['tax_amount'],p['currency'])+Money(p['shipping_amount'],p['currency'])+Money(p['other_charges_amount'],p['currency'])).amount
             ok=ok and abs(subtotal-D(p['subtotal_amount']))<=TOLERANCE and abs(tax-D(p['tax_amount']))<=TOLERANCE and abs(computed-total)<=TOLERANCE and total>ZERO and D(p['document_discount_amount'])<=subtotal and all(D(p[k])>=ZERO for k in ['document_discount_amount','shipping_amount','other_charges_amount','tax_amount'])
             check('VAL-002',ok,'Exclusive-tax line and document totals reconcile.' if ok else 'Line or document arithmetic does not reconcile.',{'lines':observations,'computed_total':computed},{'stated_total':total,'rounding':'HALF_EVEN / 0.01'},tolerance='0.01')
     else:
         fields=['claimed_amount','receipt_total_amount','company_paid_amount','applied_advance_amount','currency']
-        if total is None or any(any(i.get(k) is None for k in fields) for i in p['items']):result('VAL-002','UNKNOWN','Requested amount and explicit receipt, company-paid and advance values are required.')
+        if total is None or not p.get('currency') or any(i.get('currency')!=p.get('currency') for i in p['items']) or any(any(i.get(k) is None for k in fields) for i in p['items']):result('VAL-002','UNKNOWN','Requested amount and explicit receipt, company-paid and advance values are required.')
         else:
             computed=sum((D(i['claimed_amount'])-D(i['company_paid_amount'])-D(i['applied_advance_amount']) for i in p['items']),ZERO)
             ok=total>ZERO and abs(computed-total)<=TOLERANCE and all(i['currency']==p['currency'] and ZERO<=D(i['claimed_amount'])<=D(i['receipt_total_amount']) and ZERO<=D(i['company_paid_amount'])+D(i['applied_advance_amount'])<=D(i['claimed_amount']) and D(i['company_paid_amount'])>=ZERO and D(i['applied_advance_amount'])>=ZERO for i in p['items'])
