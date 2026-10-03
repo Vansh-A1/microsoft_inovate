@@ -55,6 +55,11 @@ def test_real_document_to_finance_both_branches_and_authorized_evidence(environm
     assert report['decision']=='HOLD' and report['ruleset_version']=='rules-p1-v7'
     assert next(rule for rule in report['rules'] if rule['rule_id']=='DOC-001')['status']=='PASS',report
     assert report['extraction_mode']=='DOCUMENT_DERIVED' and report['normalizer_version']=='document-normalizer-v1'
+    # Phase-5 quality uses actual branch-specific source observations, excluding
+    # the other branch's deliberately missing supplier/merchant/date fields.
+    intelligence=client.get('/api/v1/evaluations/'+report['evaluation_id']+'/intelligence').json()
+    assert intelligence['features']['values']['quality_and_freshness']==0
+    assert len(intelligence['features']['lineage']['quality_and_freshness']['source_observation_ids'])==4
     physical=[e for rule in report['rules'] for e in rule['evidence'] if e['reference']['document_id']==doc['id']]
     assert physical and any(e['reference']['bbox'] for e in physical)
     for e in physical:

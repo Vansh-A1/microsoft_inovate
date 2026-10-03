@@ -191,3 +191,48 @@ verified `55a0d5d32f98afceabfa92029a972f36fadc1ffc` returned exit 128 because th
 HTTPS username could not be read with terminal prompts disabled. Local Phase 4
 is complete. No credentials changed, push retried or alternate publication occurred;
 remote SHA/file-set verification remains unavailable.
+
+## Phase-5 intelligence boundary (2026-10-04)
+
+- Entry inventory found 200 synthetic vendor inputs, a disposable 10k vendor
+  history generator and zero taxonomy-adjudicated training labels. Neither routing,
+  golden expected decisions nor reviewer corrections are supervised targets.
+  **SUPERVISED_TRAINING_NOT_JUSTIFIED**. No fitted classifier, Isolation Forest,
+  calibrated exception probability or SHAP is delivered. The authorized fallback
+  is transparent statistical anomaly review; representative labels remain required.
+- The 20-feature schema uses latest known versions strictly before cutoff, excludes
+  the current UUID/all revisions and compares same-currency cohorts. Historical
+  facts describe submitted transactions, not presumed clean or settled outcomes.
+  Reference registration records server-observed availability now, never a client
+  backdate. Later lifecycle, approval, settlement, disposition and feedback cannot
+  alter an existing feature snapshot. Identifiers support joins/grouping/lineage
+  only; names, accounts, contact data and protected attributes are excluded.
+- History is bounded to 10k inputs and a usable statistical cohort requires five
+  prior observations. Incomplete history, zero MAD, missing sources and incompatible
+  currencies remain explicit. Policy ratios currently support PER_CLAIM and
+  ELIGIBLE_NIGHT; daily/trip/month ratios stay missing until a cutoff-safe aggregate
+  exists. Finance policy controls continue to evaluate those units independently.
+- ROBUST_STATISTICAL produces a defined 0–100 anomaly score from median/MAD/amount
+  ratios. The threshold of 60 and minimum shadow observation are development
+  governance defaults, not calibrated probability, validated review capacity or
+  sufficient production approval. Scoring only escalates PASS to REVIEW. Mandatory
+  HOLD and existing REVIEW remain authoritative, including actual low-score tests.
+- Default new scopes retain RULES_ONLY/null score. The local synthetic product can
+  explicitly use RULES_PLUS_ANOMALY after independent approval and shadow evidence.
+  Required unavailable scoring produces MODEL_UNAVAILABLE/null score and REVIEW
+  where controls otherwise permit PASS. No implicit outage fallback or ML-only HOLD.
+- Feedback is immutable evidenced adjudication with FINAL/PROVISIONAL quality.
+  PASS audit sampling opens the existing review workflow without changing screening
+  or inferring clean labels. Dataset origin remains server-owned synthetic; no
+  client assertion can authorize representative data. Connected revisions/documents/
+  duplicate groups cannot leak across chronological folds. Gate defaults are
+  documented in the runbook and are not organization-specific training policy.
+- Private JSON statistical artifacts bind dataset/schema/code/run/SHA-256. Code
+  changes make incompatible artifacts unavailable rather than silently rescore.
+  Replay needs retained compatible scoring code/artifact; unavailable old code is
+  explicit failure. Training cannot activate, self-approval is rejected, deployment
+  and rollback append versions and invalidate current eligibility pending screening.
+- Monitoring records actual bounded distributions/missingness/feedback and may
+  request evaluation. No online learning, automatic retraining, automatic promotion
+  or institutional ML-data authorization exists. VLM runtime remains externally
+  deferred. No Phase-6 deployment work has begun.

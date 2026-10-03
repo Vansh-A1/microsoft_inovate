@@ -1,0 +1,15 @@
+{
+  "version": "representative-label-gate-v1",
+  "scope": "DEVELOPMENT_GATE_DEFAULTS",
+  "authorized_representative_data_required": true,
+  "minimum_final_labels": 500,
+  "minimum_positive": 50,
+  "minimum_negative": 100,
+  "minimum_vendors": 10,
+  "minimum_employees": 10,
+  "minimum_time_days": 90,
+  "minimum_document_quality_strata": 2,
+  "both_classes_in_each_split": true,
+  "synthetic_rows_qualify": false,
+  "promotion_is_separate": true
+}

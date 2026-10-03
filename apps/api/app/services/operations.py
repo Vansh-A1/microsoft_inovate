@@ -32,6 +32,9 @@ NEXT={'DOC-001':('CORRECT_AMBIGUOUS_TOTAL','Verify unreadable or ambiguous sourc
  'EXP-003':('REVIEW_ALLOWANCE','Review the allowance and applicable waiver authority'),
  'REF-001':('REFRESH_REFERENCE_DATA','Supply current authorized reference data'),
  'SYS-001':('RESTORE_REQUIRED_DEPENDENCY','Resolve missing required dependencies')}
+NEXT.update({'ANOMALY_ESCALATION':('REVIEW_UNUSUAL_TRANSACTION','Review unusual transaction history'),
+ 'MODEL_UNAVAILABLE':('RESTORE_REQUIRED_INTELLIGENCE','Resolve required intelligence availability or insufficient history'),
+ 'PASS_AUDIT':('AUDIT_PASS_CASE','Adjudicate the sampled screening result')})
 
 def read_permission(identity):
     if not {'FINANCE_REVIEWER','AUDITOR','OPERATIONS_READER','OPERATIONS_ADMIN'}&identity.roles:
@@ -60,6 +63,13 @@ def eligibility(session,identity,t,evaluation=None,now=None):
     if e.id!=t.latest_evaluation_id:status='SUPERSEDED';reason='NEWER_EVALUATION'
     elif e.transaction_version!=t.latest_version:status='STALE';reason='FACTS_CHANGED'
     elif t.processing_state!='COMPLETED':status='STALE';reason='CANCELLED' if t.processing_state=='CANCELLED' else 'REEVALUATION_REQUIRED'
+    if status=='CURRENT':
+        from app.services.intelligence import deployment
+        from app.db.risk_models import RiskScore
+        current=deployment(session,identity)
+        retained=session.scalar(scope_query(select(RiskScore),RiskScore,identity).where(RiskScore.evaluation_id==e.id))
+        if (current.id if current else None)!=(retained.deployment_id if retained else None):
+            status='STALE';reason='RISK_CONFIGURATION_CHANGED'
     eligible=bool(status=='CURRENT' and t.eligible and e.eligible)
     if eligible:
         stored=session.scalar(scope_query(select(EvaluationInput),EvaluationInput,identity).where(EvaluationInput.evaluation_id==e.id))
@@ -232,14 +242,23 @@ def retry(session,identity,kind,job_id,data,correlation):
 
 def dependencies(database,storage,settings,identity):
     db_state='AVAILABLE'
+    risk_status='UNKNOWN'
     try:
-        with database.session(identity) as s:s.execute(text('SELECT 1'))
+        with database.session(identity) as s:
+            s.execute(text('SELECT 1'))
+            from app.services.intelligence import deployment,load_artifact
+            from app.db.risk_models import ModelVersion
+            current=deployment(s,identity)
+            risk_status='NOT_CONFIGURED' if not current or current.mode=='RULES_ONLY' else 'MODEL_UNAVAILABLE'
+            if current and current.model_id and current.mode!='RULES_ONLY':
+                try:load_artifact(s,identity,finance.get(s,ModelVersion,identity,current.model_id));risk_status='AVAILABLE'
+                except (ValueError,OSError,DomainError):pass
     except Exception:db_state='UNAVAILABLE'
     storage_state='AVAILABLE' if storage.root.is_dir() and __import__('os').access(storage.root,__import__('os').R_OK|__import__('os').W_OK) else 'UNAVAILABLE'
     return {'database':db_state,'storage':storage_state,'job_executor':'DATABASE_LEASED_POLLING',
         'ocr':'CONFIGURED' if settings.document_providers.ocr_executable else 'NOT_CONFIGURED',
         'enterprise_vlm':'CONFIGURED_UNVERIFIED' if settings.document_providers.endpoint else 'NOT_CONFIGURED',
-        'enterprise_runtime':'DEFERRED_EXTERNAL_PREREQUISITE','malware':'NOT_CONFIGURED','risk_model':'NOT_CONFIGURED'}
+        'enterprise_runtime':'DEFERRED_EXTERNAL_PREREQUISITE','malware':'NOT_CONFIGURED','risk_model':risk_status}
 
 def replay(session,identity,evaluation_id,correlation):
     read_permission(identity);finance.scope_lock(session,identity)
@@ -251,6 +270,8 @@ def replay(session,identity,evaluation_id,correlation):
     from app.rules.import_evidence import mapped_evidence
     if e.ruleset_version not in (RULESET,'rules-p3-v1'):raise DomainError(409,'REPLAY_RULESET_UNAVAILABLE','The retained ruleset is not available in this runtime.')
     c=json.loads(stored.encoded);decision=mapped_evidence(evaluate(RuleContext(stored.encoded)),c)
+    from app.services.intelligence import replay as replay_intelligence
+    decision=replay_intelligence(session,identity,e,decision)
     actual={'decision':decision.decision,'completeness':decision.completeness,'eligible':decision.eligible,'rules':sorted([r.json() for r in decision.results],key=lambda r:r['rule_id'])}
     rows=session.scalars(scope_query(select(RuleResultRow),RuleResultRow,identity).where(RuleResultRow.evaluation_id==e.id)).all()
     expected={'decision':e.decision,'completeness':e.completeness,'eligible':e.eligible,'rules':sorted([r.result for r in rows],key=lambda r:r['rule_id'])}

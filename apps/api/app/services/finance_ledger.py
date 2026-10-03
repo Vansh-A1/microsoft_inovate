@@ -21,25 +21,30 @@ def import_budget(session,identity,record,batch_id):
         kind={'PO_COMMITMENT':'COMMITMENT','CLAIM_RESERVATION':'RESERVATION'}.get(row['entry_type'],row['entry_type'])
         event(session,identity,record.payload,kind,row['amount'],f'import:{batch_id}:{row["id"]}','Validated synthetic source ledger',owner=row.get('owner_id'),metadata={'source_record_id':row['id'],'source_version':record.version,'source_import':True,'direction':row.get('direction','INCREASE')})
 
-def states(session,identity,allocations):
+def states(session,identity,allocations,*,cutoff=None):
     ids=[r.id for r in allocations]
     if not ids:return {}
-    rows=session.scalars(scope_query(select(AllocationEvent),AllocationEvent,identity).where(AllocationEvent.allocation_id.in_(ids)).order_by(AllocationEvent.created_at,AllocationEvent.id)).all()
+    q=scope_query(select(AllocationEvent),AllocationEvent,identity).where(AllocationEvent.allocation_id.in_(ids))
+    if cutoff:q=q.where(AllocationEvent.created_at<cutoff)
+    rows=session.scalars(q.order_by(AllocationEvent.created_at,AllocationEvent.id)).all()
     result={}
     for r in rows:result[r.allocation_id]=r.action
     return result
 
-def active(session,identity,*,exclude=None,kind=None,resource=None):
+def active(session,identity,*,exclude=None,kind=None,resource=None,cutoff=None):
     q=scope_query(select(FinanceAllocation),FinanceAllocation,identity)
     if kind:q=q.where(FinanceAllocation.kind==kind)
     if resource:q=q.where(FinanceAllocation.resource_id==resource)
+    if cutoff:q=q.where(FinanceAllocation.created_at<cutoff)
     rows=session.scalars(q.limit(10001)).all()
     if len(rows)>10000:raise DomainError(503,'ALLOCATION_LIMIT','Allocation query coverage exceeds its configured bound.')
-    lifecycle=states(session,identity,rows)
+    lifecycle=states(session,identity,rows,cutoff=cutoff)
     return [(r,lifecycle.get(r.id)) for r in rows if lifecycle.get(r.id) in ('RESERVED','CONSUMED') and not (exclude and r.transaction_id==exclude and lifecycle.get(r.id)=='RESERVED')]
 
-def balance(session,identity,budget,*,exclude=None,po_id=None):
-    events=session.scalars(scope_query(select(BudgetEvent),BudgetEvent,identity).where(BudgetEvent.budget_id==UUID(budget['id']),BudgetEvent.budget_version==budget['version']).order_by(BudgetEvent.created_at,BudgetEvent.id)).all()
+def balance(session,identity,budget,*,exclude=None,po_id=None,cutoff=None):
+    q=scope_query(select(BudgetEvent),BudgetEvent,identity).where(BudgetEvent.budget_id==UUID(budget['id']),BudgetEvent.budget_version==budget['version'])
+    if cutoff:q=q.where(BudgetEvent.created_at<cutoff)
+    events=session.scalars(q.order_by(BudgetEvent.created_at,BudgetEvent.id)).all()
     source=[r for r in events if r.metadata_json.get('source_import') or r.allocation_id is None]
     if source:
         allocation=sum((r.amount for r in source if r.entry_type=='ALLOCATION'),ZERO)
@@ -55,7 +60,7 @@ def balance(session,identity,budget,*,exclude=None,po_id=None):
         committed=sum((D(r['amount']) for r in ledger if r['entry_type']=='PO_COMMITMENT'),ZERO)
         fixed_reserved=sum((D(r['amount']) for r in ledger if r['entry_type']=='CLAIM_RESERVATION'),ZERO)
         covered=sum((D(r['amount']) for r in ledger if r['entry_type']=='PO_COMMITMENT' and r.get('owner_id')==po_id),ZERO)
-    live=active(session,identity,exclude=exclude,kind='BUDGET',resource=UUID(budget['id']))
+    live=active(session,identity,exclude=exclude,kind='BUDGET',resource=UUID(budget['id']),cutoff=cutoff)
     reserved=ZERO;coverage_used=ZERO;total_consumed=ZERO;total_transferred=ZERO
     for a,state in live:
         coverage=D(a.metadata_json.get('commitment_coverage','0'))

@@ -58,7 +58,7 @@ def create_app(settings=None,database=None):
     def ready():
         try:
             with database.engine.connect() as conn:version=conn.scalar(text('SELECT version_num FROM alembic_version'))
-            if version!='0006_workflow':raise ValueError()
+            if version!='0008_intelligence_audit':raise ValueError()
         except Exception:raise DomainError(503,'NOT_READY','Required persistence is unavailable.',retryable=True) from None
         return {'status':'ready'}
     @app.get('/api/v1/me')
@@ -210,4 +210,6 @@ def create_app(settings=None,database=None):
     mount_controls(app,database,identity,mutation)
     from app.workflow_routes import mount as mount_workflow
     mount_workflow(app,settings,database,storage,identity,mutation)
+    from app.risk_routes import mount as mount_intelligence
+    mount_intelligence(app,database,identity,mutation)
     return app

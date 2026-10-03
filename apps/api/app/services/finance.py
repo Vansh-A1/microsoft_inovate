@@ -212,9 +212,13 @@ def report_html(content):
     for rule in content['rules']:
         links=''.join('<li><a href="../../evidence/'+esc(e['id'])+'">'+esc(e['reference']['kind'])+' / '+esc(e['reference']['record_id'])+' / version '+esc(e['reference']['record_version'])+'</a></li>' for e in rule['evidence'])
         sections.append('<section><h2>'+esc(rule['rule_id'])+' · '+esc(rule['status'])+'</h2><p>Rule version '+esc(rule['version'])+' · effect '+esc(rule['decision_effect'])+'</p><p>'+esc(rule['reason'])+'</p><h3>Observed</h3><pre>'+esc(canonical_json(rule['observed']))+'</pre><h3>Expected / tolerance</h3><pre>'+esc(canonical_json({'expected':rule['expected'],'tolerance':rule['tolerance']}))+'</pre><h3>Evidence references</h3><ul>'+links+'</ul></section>')
+    intelligence=content.get('intelligence',{})
+    risk_summary='<p>'+esc(content.get('evaluation_mode','RULES_ONLY'))+' · intelligence '+esc(content.get('model_status','NOT_CONFIGURED'))+' · Versioned source evidence is linked below.</p>'
+    if intelligence and intelligence.get('mode')!='RULES_ONLY':
+        sections.insert(0,'<section><h2>Transaction intelligence</h2><p>Statistical review support; finance controls remain authoritative. Synthetic development observations are not production validation.</p><p>Score kind: '+esc(intelligence.get('score_kind') or 'Unavailable')+' · Value: '+esc(intelligence.get('score') if intelligence.get('score') is not None else 'Unavailable')+' · Explanation: '+esc(intelligence.get('explanation_status'))+'</p><p>Artifact version: '+esc(intelligence.get('model_version') or 'Unavailable')+'</p><ul>'+''.join('<li>'+esc(f['text'])+'</li>' for f in intelligence.get('factors',[]))+'</ul><p>Review reason: '+esc(intelligence.get('review_reason') or 'None')+'</p></section>')
     metadata={key:content.get(key) for key in ['schema_version','evaluation_id','evaluation_version','transaction_id','transaction_version','reference_snapshot_id','ruleset_version','decision_policy_version','completeness','input_digest','evaluated_at','supersedes_id','reason_codes']}
     sections.insert(0,'<section><h2>Waiver dispositions</h2><pre>'+esc(canonical_json(content.get('waiver_dispositions',[])))+'</pre><p>Original rule findings remain visible below.</p></section>' if content.get('waiver_dispositions') else '')
-    return '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Screening report</title><style>body{font:15px/1.5 system-ui;margin:2rem;color:#16324f}section{border-top:1px solid #ccd5df;margin-top:2rem;padding-top:1rem}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f6fa;padding:12px;font-size:12px}h1{font-size:24px}h2{font-size:18px}h3{font-size:14px}a{color:#185b8a;overflow-wrap:anywhere}</style><h1>'+esc(content['decision'])+' — Synthetic screening report</h1><p>Transaction '+esc(content['transaction_id'])+' · version '+esc(content['transaction_version'])+'</p><p>Eligibility at evaluation: '+esc(content['eligible'])+'. No payment execution.</p><p>RULES_ONLY · risk model NOT_CONFIGURED · Versioned source evidence is linked below.</p><h2>Pinned evaluation metadata</h2><pre>'+esc(canonical_json(metadata))+'</pre><h2>Next actions</h2><ul>'+''.join('<li>'+esc(action)+'</li>' for action in content['next_actions'])+'</ul>'+''.join(sections)+'</html>'
+    return '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Screening report</title><style>body{font:15px/1.5 system-ui;margin:2rem;color:#16324f}section{border-top:1px solid #ccd5df;margin-top:2rem;padding-top:1rem}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f6fa;padding:12px;font-size:12px}h1{font-size:24px}h2{font-size:18px}h3{font-size:14px}a{color:#185b8a;overflow-wrap:anywhere}</style><h1>'+esc(content['decision'])+' — Synthetic screening report</h1><p>Transaction '+esc(content['transaction_id'])+' · version '+esc(content['transaction_version'])+'</p><p>Eligibility at evaluation: '+esc(content['eligible'])+'. No payment execution.</p>'+risk_summary+'<h2>Pinned evaluation metadata</h2><pre>'+esc(canonical_json(metadata))+'</pre><h2>Next actions</h2><ul>'+''.join('<li>'+esc(action)+'</li>' for action in content['next_actions'])+'</ul>'+''.join(sections)+'</html>'
 
 
 def finalize(session,identity,job_id,lease_owner):
@@ -241,8 +245,11 @@ def finalize(session,identity,job_id,lease_owner):
     selected_ruleset='rules-p3-v1' if context_data.get('finance_v3') else RULESET
     from app.rules.import_evidence import mapped_evidence
     decision=mapped_evidence(decision,context_data)
-    evaluation=Evaluation(**identity.scope(),id=uuid4(),transaction_id=transaction.id,transaction_version=version.version,reference_snapshot_id=evaluated_snapshot.id,ruleset_version=selected_ruleset,decision_policy_version=DECISION_POLICY,evaluation_mode='RULES_ONLY',completeness=decision.completeness,decision=decision.decision,eligible=decision.eligible,input_digest=digest(context.encoded),evaluated_at=job.evaluated_at,supersedes_id=transaction.latest_evaluation_id)
+    from app.services import intelligence
+    decision,feature_data,risk_data,risk_deployment,risk_model=intelligence.prepare(session,identity,job,version,context_data,decision)
+    evaluation=Evaluation(**identity.scope(),id=uuid4(),transaction_id=transaction.id,transaction_version=version.version,reference_snapshot_id=evaluated_snapshot.id,ruleset_version=selected_ruleset,decision_policy_version=DECISION_POLICY,evaluation_mode=risk_data['mode'],completeness=decision.completeness,decision=decision.decision,eligible=decision.eligible,input_digest=digest(context.encoded),evaluated_at=job.evaluated_at,supersedes_id=transaction.latest_evaluation_id)
     session.add(evaluation);session.flush()
+    intelligence.persist(session,identity,evaluation,feature_data,risk_data,risk_deployment,risk_model)
     session.add(EvaluationInput(**identity.scope(),evaluation_id=evaluation.id,encoded=context.encoded,content_digest=digest(context.encoded)));session.flush()
     rules=[]
     for result in decision.results:
@@ -267,7 +274,7 @@ def finalize(session,identity,job_id,lease_owner):
         else:reserve(session,identity,evaluation,version,context_data,decision)
     if decision.decision!='PASS':
         previous_review=session.scalar(scope_query(select(ReviewCase),ReviewCase,identity).where(ReviewCase.transaction_id==transaction.id).order_by(ReviewCase.created_at.desc()).limit(1))
-        review=ReviewCase(**identity.scope(),id=uuid4(),evaluation_id=evaluation.id,transaction_id=transaction.id,decision=decision.decision,branch=transaction.branch,reasons=[r.rule_id for r in decision.results if r.decision_effect!='NONE'],state='OPEN')
+        review=ReviewCase(**identity.scope(),id=uuid4(),evaluation_id=evaluation.id,transaction_id=transaction.id,decision=decision.decision,branch=transaction.branch,reasons=[r.rule_id for r in decision.results if r.decision_effect!='NONE']+([risk_data['review_reason']] if risk_data['review_reason'] else []),state='OPEN')
         if previous_review and previous_review.owner_id and previous_review.state!='CANCELLED':review.owner_id=previous_review.owner_id;review.state='ASSIGNED'
         session.add(review);session.flush()
         audit(session,identity,'REVIEW_CASE_CREATED',review.id,1,'Required controls need resolution',str(job.id),{'evaluation_id':str(evaluation.id),'transaction_id':str(transaction.id),'reason_codes':review.reasons})
@@ -278,6 +285,10 @@ def finalize(session,identity,job_id,lease_owner):
             normalizer_version=version.normalizer_version,document_rules_version=DOCUMENT_RULE_VERSION,schema_version='report-p2-v1')
     if context_data.get('finance_v3'):
         content.update(schema_version='report-p3-v1',finance_controls=projection(context_data['finance_v3']),waiver_dispositions=context_data['finance_v3'].get('waivers',[]))
+    content.update(evaluation_mode=risk_data['mode'],model_status=risk_data['status'],intelligence=risk_data)
+    if risk_data['review_reason']:
+        content['reason_codes'].append(risk_data['review_reason'])
+        content['next_actions'].append('Review unusual transaction history' if risk_data['review_reason']=='ANOMALY_ESCALATION' else 'Resolve required intelligence availability or insufficient history')
     generated_html=report_html(content)
     if context_data.get('document_sources'):
         generated_html=generated_html.replace('Versioned source evidence is linked below.',

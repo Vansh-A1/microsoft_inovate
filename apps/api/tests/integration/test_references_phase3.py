@@ -35,7 +35,7 @@ def test_invalid_import_never_activates_and_new_tables_forced_rls(environment):
     with db.session(admin) as s:
         bid=UUID(stage(s,admin,data,'test')['id']);r=validate(s,admin,bid,'test');assert r['state']=='INVALID' and any(e['code']=='BROKEN_LINK' for e in r['validation'])
         with pytest.raises(DomainError):activate(s,admin,bid,'Do not activate invalid batch','test')
-        assert s.scalar(text("SELECT count(*) FROM pg_class WHERE relnamespace=current_schema()::regnamespace AND relkind='r' AND relrowsecurity AND relforcerowsecurity"))==49
+        assert s.scalar(text("SELECT count(*) FROM pg_class WHERE relnamespace=current_schema()::regnamespace AND relkind='r' AND relrowsecurity AND relforcerowsecurity"))==61
 
 
 def test_scale_catalog_activation_relationships_and_immutable_staging(environment):

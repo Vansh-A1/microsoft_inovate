@@ -1,0 +1,267 @@
+{
+  "version": "features-p5-v1",
+  "order": [
+    "log_amount",
+    "vendor_amount_ratio",
+    "employee_category_ratio",
+    "robust_amount_z",
+    "po_value_ratio",
+    "price_variance_ratio",
+    "receipt_shortfall",
+    "policy_limit_ratio",
+    "budget_utilization_after",
+    "max_duplicate_similarity",
+    "min_phash_distance",
+    "same_amount_count_30d",
+    "days_since_previous",
+    "vendor_tenure_days",
+    "payment_account_changed",
+    "claims_near_limit_7d",
+    "submission_delay_days",
+    "quality_and_freshness",
+    "history_count",
+    "cold_start"
+  ],
+  "features": [
+    {
+      "name": "log_amount",
+      "type": "number",
+      "definition": "log1p of positive canonical amount",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "vendor_amount_ratio",
+      "type": "number",
+      "definition": "amount / prior same-currency submitted vendor median",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "employee_category_ratio",
+      "type": "number",
+      "definition": "amount / prior same-currency submitted employee/category median",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "robust_amount_z",
+      "type": "number",
+      "definition": "absolute amount deviation / (1.4826 * median absolute deviation)",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "po_value_ratio",
+      "type": "number",
+      "definition": "current amount / pinned remaining PO value",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "price_variance_ratio",
+      "type": "number",
+      "definition": "absolute line-price difference / comparable expected line total",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "receipt_shortfall",
+      "type": "number",
+      "definition": "positive billed quantity minus verified available acceptance",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "policy_limit_ratio",
+      "type": "number",
+      "definition": "comparable policy-unit amount / pinned allowance",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "budget_utilization_after",
+      "type": "number",
+      "definition": "projected same-basis exposure / allocated budget",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "max_duplicate_similarity",
+      "type": "number",
+      "definition": "highest completed comparable candidate similarity, 0 only for completed no-match search",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "min_phash_distance",
+      "type": "number",
+      "definition": "closest actual comparable 64-bit image hash distance",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "same_amount_count_30d",
+      "type": "integer",
+      "definition": "prior cohort submissions at the same exact amount in 30 business days",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": null,
+      "category_vocabulary": null
+    },
+    {
+      "name": "days_since_previous",
+      "type": "number",
+      "definition": "business-date days since most recent prior cohort submission",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "vendor_tenure_days",
+      "type": "number",
+      "definition": "days since explicitly recorded approved onboarding date",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "payment_account_changed",
+      "type": "boolean",
+      "definition": "verified requested account differs from approved master; no account token in vector",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": null,
+      "category_vocabulary": null
+    },
+    {
+      "name": "claims_near_limit_7d",
+      "type": "integer",
+      "definition": "prior comparable policy-unit claims with ratio in [0.9,1.0] in 7 days",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": null,
+      "category_vocabulary": null
+    },
+    {
+      "name": "submission_delay_days",
+      "type": "number",
+      "definition": "actual submitted business-local date minus canonical business date",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "quality_and_freshness",
+      "type": "number",
+      "definition": "fraction of known critical source observations unresolved; absent source metrics are missing",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": [
+        -1000000000,
+        1000000000
+      ],
+      "category_vocabulary": null
+    },
+    {
+      "name": "history_count",
+      "type": "integer",
+      "definition": "number of prior submitted comparable canonical observations",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": null,
+      "category_vocabulary": null
+    },
+    {
+      "name": "cold_start",
+      "type": "boolean",
+      "definition": "complete cohort has fewer than 5 observations, or history coverage is incomplete",
+      "missing": "null with explicit missing indicator/reason",
+      "normalization": "none",
+      "clipping": null,
+      "category_vocabulary": null
+    }
+  ],
+  "history_semantics": "prior submitted facts, never clean/paid labels",
+  "excluded_predictors": [
+    "raw identifiers",
+    "names",
+    "accounts",
+    "email",
+    "phone",
+    "protected attributes",
+    "approval outcomes",
+    "settlement outcomes",
+    "reviewer outcomes",
+    "labels",
+    "future corrections",
+    "future dispositions"
+  ]
+}

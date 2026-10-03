@@ -321,3 +321,66 @@ Operational job display maps RUNNING/RETRYABLE/FAILED/SUCCEEDED to
 PROCESSING/FAILED_RETRYABLE/DEAD_LETTER/COMPLETED without rewriting old facts.
 CSV escaping changes only exported cells. Original document/field/import evidence
 remains unmodified. New export artifact UUIDs resolve only through authorized routes.
+
+## Phase-5 immutable intelligence sidecar
+
+All twelve tables carry tenant/legal-entity scope and forced RLS. Scoped foreign
+keys bind existing evaluations, versions, reviews and source evidence; database
+triggers and ORM guards reject updates/deletes. Migrations `0007_intelligence` and
+`0008_intelligence_audit` are additive. The existing review table accepts explicit
+PASS audit cases; this does not permit setting a finance decision.
+
+| Table | Retained fact |
+|---|---|
+| feature_schemas | Ordered names/types/definitions/null semantics/clips, schema version and digest. |
+| risk_history_sources | Activated historical reference/version, sanitized facts, digest and server-observed knowledge time. |
+| feature_snapshots | Evaluation/schema, cutoff, transaction/version/reference pin, values/types/missing reasons, lineage/source manifest and code digests. |
+| feedback_labels | Evaluation/review/action, actor/time/reason/evidence, taxonomy, label, quality and superseded label. |
+| risk_audit_samples | Stable campaign/rate selection of a retained PASS evaluation and existing review case. |
+| risk_datasets | Frozen taxonomy/schema/source digest, included IDs/cutoffs, grouped chronological splits, exclusions and supervised-data gate. |
+| risk_training_runs | Offline actor/dataset/schema/configuration/seed/code/dependencies; BASELINE_BUILT or SUPERVISED_DEFERRED. |
+| risk_models | Statistical artifact version/algorithm/private key/SHA-256, dataset/schema/run and model card. |
+| risk_model_events | Append-only CANDIDATE/EVALUATED/APPROVED/SHADOW/ACTIVE/RETIRED/REJECTED governance events. |
+| risk_deployments | Scoped configuration version/mode/model/threshold/previous configuration, actor and reason. |
+| risk_scores | Evaluation/feature/deployment/model pins; status, score kind/value, factors, separate review reason and digest. |
+| risk_monitoring | Bounded actual measurements/baseline/drift diagnostics, actor, digest; no automatic model update. |
+
+`features-p5-v1` contains log_amount, vendor_amount_ratio,
+employee_category_ratio, robust_amount_z, po_value_ratio, price_variance_ratio,
+receipt_shortfall, policy_limit_ratio, budget_utilization_after,
+max_duplicate_similarity, min_phash_distance, same_amount_count_30d,
+days_since_previous, vendor_tenure_days, payment_account_changed,
+claims_near_limit_7d, submission_delay_days, quality_and_freshness, history_count
+and cold_start. The public machine-readable definitions are in
+[ml/contracts/features-p5-v1.json](../ml/contracts/features-p5-v1.json).
+
+Feature monetary operands and statistical medians remain decimal strings with
+currency; numerical feature outputs are diagnostic, never ledger amounts.
+Missing values are null with explicit indicators/reasons, not zero. History excludes
+the current transaction and future knowledge. Zero MAD produces no robust z-score;
+fewer than five prior observations produces no cohort anomaly score. A backdated
+synthetic input created after its cutoff supplies no predictive values.
+
+`max_duplicate_similarity` is bounded printed-number similarity within the completed
+prior same-party/currency/branch cohort, not a duplicate disposition. `min_phash_distance`
+is actual prior 64-bit Hamming distance, never proof of duplication. Source quality
+is the unresolved fraction of known critical observations (vendor/date/currency/total
+or merchant/expense date/currency/total), not an invented quality percentage.
+Unsupported policy aggregate units and unavailable onboarding/account/source data
+remain missing.
+
+`ANOMALY_SCORE` is a defined 0–100 statistical deviation; higher is more unusual.
+It is not exception_probability. Explanation status is STATISTICAL or explicitly
+unavailable; SHAP is NOT_APPLICABLE. RULES_ONLY retains NOT_CONFIGURED/null score;
+SHADOW cannot route; RULES_PLUS_ANOMALY may escalate PASS to REVIEW; a required
+RULES_PLUS_MODEL without a compatible model remains MODEL_UNAVAILABLE. An
+intelligence configuration change produces STALE current eligibility separately
+from immutable historical PASS/REVIEW/HOLD.
+
+`adjudication-p5-v1` labels are CLEAN_CONFIRMED, DUPLICATE_CONFIRMED,
+POLICY_EXCEPTION, DOCUMENT_CORRECTION_ONLY, DISTINCT_CONFIRMED and
+INSUFFICIENT_INFORMATION. Only final clean/distinct and material duplicate/policy
+adjudications form binary targets; correction-only/insufficient labels are excluded.
+All current manifests remain SYNTHETIC_DEVELOPMENT and fail the representative
+supervised gate. See [model card](../ml/model_card.md) and
+[runbook](runbooks/phase5-local.md) for score and governance semantics.

@@ -185,7 +185,7 @@ class Evaluation(Scoped, Identified, Base):
         fk('reference_snapshots','reference_snapshot_id'), fk('evaluations','supersedes_id'),
         CheckConstraint("decision IN ('PASS','REVIEW','HOLD')"),
         CheckConstraint("completeness IN ('COMPLETE','INCOMPLETE')"),
-        CheckConstraint("evaluation_mode = 'RULES_ONLY'"),
+        CheckConstraint("evaluation_mode IN ('RULES_ONLY','SHADOW','RULES_PLUS_ANOMALY','RULES_PLUS_MODEL')",name='ck_evaluation_mode'),
         CheckConstraint("NOT eligible OR (decision = 'PASS' AND completeness = 'COMPLETE')"))
 
 
@@ -232,7 +232,7 @@ class ReviewCase(Scoped, Identified, Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     __table_args__ = scoped(fk('evaluations','evaluation_id'), fk('transactions','transaction_id'),
         UniqueConstraint('tenant_id','legal_entity_id','evaluation_id'),
-        CheckConstraint("decision IN ('REVIEW','HOLD')"),
+        CheckConstraint("decision IN ('PASS','REVIEW','HOLD')",name='ck_review_decision'),
         CheckConstraint('row_version > 0'),
         Index('ix_review_owner', 'tenant_id','legal_entity_id','owner_id','state','created_at','id'),
         Index('ix_review_queue', 'tenant_id','legal_entity_id','state','decision','created_at'))
@@ -379,3 +379,4 @@ for kind in IMMUTABLE:
 from app.db import document_models  # noqa: E402,F401
 from app.db import finance_models  # noqa: E402,F401
 from app.db import workflow_models  # noqa: E402,F401
+from app.db import risk_models  # noqa: E402,F401

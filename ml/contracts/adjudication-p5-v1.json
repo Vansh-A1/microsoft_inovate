@@ -1,0 +1,28 @@
+{
+  "version": "adjudication-p5-v1",
+  "labels": [
+    "CLEAN_CONFIRMED",
+    "DUPLICATE_CONFIRMED",
+    "POLICY_EXCEPTION",
+    "DOCUMENT_CORRECTION_ONLY",
+    "DISTINCT_CONFIRMED",
+    "INSUFFICIENT_INFORMATION"
+  ],
+  "binary_target": {
+    "CLEAN_CONFIRMED": 0,
+    "DISTINCT_CONFIRMED": 0,
+    "DUPLICATE_CONFIRMED": 1,
+    "POLICY_EXCEPTION": 1
+  },
+  "excluded_from_binary_target": [
+    "DOCUMENT_CORRECTION_ONLY",
+    "INSUFFICIENT_INFORMATION"
+  ],
+  "quality": [
+    "PROVISIONAL",
+    "FINAL"
+  ],
+  "target_definition": "Confirmed material exception or material human intervention, never engine routing",
+  "pass_is_a_label": false,
+  "online_learning": false
+}
