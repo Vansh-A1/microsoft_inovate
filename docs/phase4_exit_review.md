@@ -118,10 +118,16 @@ ownership query; no further indexes were justified by these measurements.
 
 ## Publication and next boundary
 
-Phase-4 publication has not yet been attempted. Prior consolidated pushes are
-authentication-blocked; credentials will not be repaired or retried. Verified local
-commits and exact publication outcome will be recorded before the final report.
 Local implementation batches: `c07e6ad` (backend/schema/recovery) and `81b7c96`
-(operational UI/browser contract). The final gate/documentation commit records the
-passed aggregate and preserved boundaries before publication.
+(operational UI/browser contract). Final gate/documentation commit
+`55a0d5d32f98afceabfa92029a972f36fadc1ffc` was clean before publication and contains
+the passed aggregate and preserved boundaries. The 43 changed files were reviewed.
+
+Exactly one Phase-4 command executed:
+`GIT_TERMINAL_PROMPT=0 git -c core.askPass= push -u origin main`.
+It returned **exit 128**: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`.
+Publication remains externally blocked by HTTPS authentication. No credentials
+were repaired, push retried, alternate publication attempted or history rewritten.
+Remote branch/SHA/file-set verification is unavailable and is not claimed. A local
+documentation follow-up retains this actual outcome.
 The next phase is Phase 5 and requires separate user approval; no ML work begins.

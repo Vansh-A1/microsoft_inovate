@@ -185,3 +185,9 @@ verification is unavailable; local completion is distinct from publication.
 - Warm local performance over 100 computed synthetic cases is measured by the
   Phase-4 benchmark. It does not establish production throughput, SLA or inference
   performance.
+
+Phase-4 publication observation: the single normal consolidated main push of
+verified `55a0d5d32f98afceabfa92029a972f36fadc1ffc` returned exit 128 because the
+HTTPS username could not be read with terminal prompts disabled. Local Phase 4
+is complete. No credentials changed, push retried or alternate publication occurred;
+remote SHA/file-set verification remains unavailable.

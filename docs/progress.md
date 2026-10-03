@@ -976,3 +976,27 @@ T01–T42: 38 implemented/passing, 2 partial, 2 not implemented — Phase 5.
 
 Local implementation commits are `c07e6ad` and `81b7c96`. The next task is Phase 5
 only after separate approval. No Phase-5 implementation began.
+
+### Phase-4 local commits and publication outcome
+
+Coherent commits on main:
+
+- `c07e6ad` — Add versioned review ownership and guarded operational recovery.
+- `81b7c96` — Add accessible review operations and private report exports.
+- `55a0d5d32f98afceabfa92029a972f36fadc1ffc` — Verify Phase 4 exit and document review recovery operations.
+
+The branch and requested origin were verified; main was clean, with 43 intended
+Phase-4 files changed from the retained Phase-3 baseline. Exactly one new Phase-4
+push executed: `GIT_TERMINAL_PROMPT=0 git -c core.askPass= push -u origin main`.
+It returned **exit 128**:
+
+```text
+fatal: could not read Username for 'https://github.com': terminal prompts disabled
+```
+
+**Phase 4 complete locally; GitHub publication remains blocked by HTTPS
+authentication.** No push retry, credential repair, force push, alternate publication
+or further remote check was attempted. Remote branch SHA and published file-set
+verification are unavailable and not claimed. This documentation-only follow-up
+records the observed outcome. The final owned API/worker/web are running at
+http://127.0.0.1:3000. Stop before Phase 5; separate approval is required.
