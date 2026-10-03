@@ -58,11 +58,16 @@ def main():
     from app.db.session import Database
     parser=argparse.ArgumentParser();parser.add_argument('--once',action='store_true');args=parser.parse_args()
     settings=Settings.load();database=Database(settings.database_url)
+    from app.integrations.storage import LocalStorage
+    from app.services.document_worker import run_once as run_document_once
+    storage=LocalStorage(settings.storage_root)
     identities={}
     for token in settings.identities:
         identity=authenticate(token,settings);identities[(identity.tenant_id,identity.legal_entity_id)]=identity
     while True:
-        for identity in identities.values():run_once(database,identity)
+        for identity in identities.values():
+            run_once(database,identity)
+            run_document_once(database,identity,storage,settings)
         if args.once:break
         time.sleep(.5)
 

@@ -9,6 +9,9 @@ class BoundedBody:
     async def __call__(self,scope,receive,send):
         if scope['type']!='http' or scope['method'] in ('GET','HEAD'):
             await self.app(scope,receive,send);return
+        # Binary originals stream through the authenticated storage bound; structured limits remain unchanged.
+        if scope['method']=='POST' and scope.get('path','').startswith('/api/v1/uploads/') and scope['path'].endswith('/bytes'):
+            await self.app(scope,receive,send);return
         messages=[];size=0
         while True:
             message=await receive()

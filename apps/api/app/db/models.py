@@ -365,3 +365,6 @@ def forbid_mutation(mapper, connection, target):
 for kind in IMMUTABLE:
     event.listen(kind, 'before_update', forbid_mutation)
     event.listen(kind, 'before_delete', forbid_mutation)
+
+# Register additive Phase-2 tables for Alembic without weakening Phase-1 models.
+from app.db import document_models  # noqa: E402,F401

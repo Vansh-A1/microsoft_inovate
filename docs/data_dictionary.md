@@ -196,3 +196,17 @@ Every business record carries tenant_id/legal_entity_id. UUID keys, scoped forei
 | capacity_reservations | Minimal budget/PO-line/GRN-line admission amounts/quantities. A new version or request releases current effects; guarded finalization creates fresh ones only on eligible PASS. |
 
 Transaction processing uses P0 RECEIVED/QUEUED/PROCESSING/FAILED_RETRYABLE/FAILED_FINAL/COMPLETED. Job execution has its separate vocabulary above. Rule and screening state values remain the unchanged P0 contracts. No rules infer document boxes, FX, zero tax or approval authority. Catalog/input ceilings and version checks are part of the bounded Phase-1 contract; see ADR-0009 and the runbook.
+
+## Phase-2 document records and raw observations
+
+| Record | Meaning |
+|---|---|
+| documents / upload_sessions | Mutable scoped processing projection and expiring actor-bound upload. Internal keys are server generated. No finance decision on a document. |
+| document_versions | Immutable original SHA-256, actual bytes/MIME, upload ID, object key/version, actor/correlation/UTC time. |
+| document_pages | Immutable one-based page, PNG preview SHA/key, native text/spans, actual original/display dimensions and transform, explicit quality measurements/routing reason. |
+| document_jobs / document_outbox | Additive document-specific durable stage/version/generation/key/attempt/lease/result metadata and delivery marker. Existing finance job schema remains strict. |
+| extraction_runs / field_observations | Immutable attempt/provider/schema/template/runtime metadata and explicit PRESENT/MISSING/ILLEGIBLE/AMBIGUOUS/NOT_APPLICABLE raw strings with actual scoped page/box sources. No finance or hidden reasoning fields. |
+| document_drafts | Immutable NORMALIZE/VALIDATE candidates, per-field source observation/rule/steps/status trace and unresolved/arithmetic/source findings. Money is decimal string; dates are business dates. |
+| transaction_documents / source_corrections / import_cells | Scoped append-only linkage/correction/cell foundations; canonical/UI integration is the next batch. |
+
+Quality fields name their measurements: Laplacian variance, mean luminance 0–255, dark/light pixel fractions, native character count/density and preview dimensions. Coordinate/quality floats are not financial values. The routing-v1 sidecar is separate from strict extraction-v1. PDF coordinates use actual display rotation; image OCR boxes map through inverse EXIF orientation into normalized original-page coordinates. Unknown boxes are null. Crop/deskew are not fabricated.

@@ -8,7 +8,7 @@ The original scenario and expected-result text is preserved below. A partial row
 
 Test references: **PG** = [PostgreSQL integration](../apps/api/tests/integration/test_vertical_slice.py); **RULES** = [pure rules](../apps/api/tests/test_rules_phase1.py); **UI** = [live browser flows](../apps/web/tests/workspace.spec.ts). Each named test below was executed; unsupported cases are never promoted from fixture availability.
 
-| Test ID | Scenario | Expected result | Target phase | NOT IMPLEMENTED | Later-phase behavior; no executed complete scenario. |
+| Test ID | Scenario | Expected result | Target phase | Status | Automated test / remaining scope |
 |---|---|---|---|---|---|
 | T01 | Clean vendor invoice, matching PO/GRN, sufficient budget, complete approvals | PASS with all required controls and evidence | Phase 1 / 3 | IMPLEMENTED + PASSING | PG `test_real_postgres_golden_end_to_end[vendor/clean]`; UI persisted vendor PASS/evidence/report. |
 | T02 | Same invoice number from different vendors | No duplicate based on number alone | Phase 1 | IMPLEMENTED + PASSING | PG `test_same_number_other_vendor_not_duplicate`. |
@@ -109,3 +109,7 @@ Phase 0 closes under the latest explicitly approved external-runtime deferral; t
 **TEST FIXTURE READY** means synthetic inputs/operands and independent expectations exist. **BUSINESS BEHAVIOR IMPLEMENTED** requires actual production rules/workflows/persistence and meaningful tests. The existing 241 domain + 123 finance-fixture + 124 extraction tests (488 total) verify only their stated local boundaries. No tests were deleted, weakened or relabeled. Architecture acceptance in ADR-0003–0008 does not create integration tests or deployed behavior.
 
 The fixture CLI remains runnable without GPU, cloud or paid provider. Real TypeLLM image behavior/quality, latency/VRAM, field-locator correctness, supported quantization and complete text/visual/tier cascade are **DEFERRED — REQUIRES SUITABLE INFERENCE HOST** plus later provider/preprocessing work, with benchmark requirements in [inference architecture](inference_architecture.md). Historical P0-04C execution recommendations above are superseded by this qualified closure; no failed GPU gate was repeated. No fixture agreement is promoted to real visual accuracy or finance PASS.
+
+### Phase-2 A/B executed checks
+
+The 569-test baseline is preserved. New parser/storage suite (12), PostgreSQL intake suite (4), extraction/normalization/mock-provider/stage/real CPU photo suite (40) pass; full suite is **625 passed, 0 failed, 0 skipped**, 433.02s. Safety, content limits, corruption/encryption/active PDF content, authoritative hashes, one-based pages, actual transforms, raw string finance values, ambiguity/disagreement, RLS and immutable/replayed stage outputs are exercised. These checks support partial T06/T29/T35/T37/T39/T41 work; full scenario status changes await canonical/UI/exit verification. Real VLM metrics remain deferred.

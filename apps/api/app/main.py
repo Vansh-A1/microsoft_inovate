@@ -58,7 +58,7 @@ def create_app(settings=None,database=None):
     def ready():
         try:
             with database.engine.connect() as conn:version=conn.scalar(text('SELECT version_num FROM alembic_version'))
-            if version!='0003_generation':raise ValueError()
+            if version!='0004_documents':raise ValueError()
         except Exception:raise DomainError(503,'NOT_READY','Apply the database migration before serving requests.',retryable=True) from None
         return {'status':'ready','database':'PostgreSQL','migration':version}
     @app.get('/api/v1/me')
@@ -166,4 +166,6 @@ def create_app(settings=None,database=None):
     @app.get('/api/v1/imports/{record_id}')
     def import_status(record_id:UUID,ctx=Depends(identity)):
         with database.session(ctx) as session:return imports.detail(session,ctx,record_id)
+    from app.documents.routes import mount
+    mount(app,settings,database,storage,identity,writer,mutation)
     return app

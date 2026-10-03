@@ -1,0 +1,3 @@
+# Optional extraction-service control-plane client. Not installed on finance laptops.
+# Existing research pin; actual SGLang/GPU/model smoke remains externally deferred.
+typellm==0.5.1

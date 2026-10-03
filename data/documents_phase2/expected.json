@@ -1,0 +1,27 @@
+{
+  "version": "document-corpus-v1",
+  "synthetic": true,
+  "vendor": {
+    "invoice_number": "P2-INV-00128",
+    "invoice_date": "2026-09-25",
+    "currency": "INR",
+    "subtotal_amount": "20000.00",
+    "tax_amount": "3600.00",
+    "total_amount": "23600.00"
+  },
+  "receipt": {
+    "receipt_number": "P2-TAXI-001",
+    "expense_date": "2026-09-25",
+    "currency": "INR",
+    "total_amount": "500.00"
+  },
+  "scenarios": {
+    "ambiguous_date.pdf": "AMBIGUOUS_DATE",
+    "missing_total.pdf": "MISSING_TOTAL",
+    "conflicting_total.pdf": "AMBIGUOUS_TOTAL",
+    "uncertain_bundle.pdf": "SEGMENTATION_UNCERTAIN",
+    "password_protected.pdf": "QUARANTINED",
+    "corrupt.pdf": "QUARANTINED",
+    "receipt_unreadable.png": "NEEDS_INPUT"
+  }
+}

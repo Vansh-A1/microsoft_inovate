@@ -1,8 +1,9 @@
 """Explicit development configuration; no implicit live provider or identity."""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import json
 import os
 from pathlib import Path
+from app.documents.config import DocumentLimits, ProviderSettings
 
 ROOT = Path(__file__).resolve().parents[4]
 
@@ -15,6 +16,8 @@ class Settings:
     development: bool = True
     extraction_mode: str = 'STRUCTURED_SYNTHETIC'
     risk_mode: str = 'RULES_ONLY'
+    document_limits: DocumentLimits = field(default_factory=DocumentLimits)
+    document_providers: ProviderSettings = field(default_factory=ProviderSettings)
 
     @classmethod
     def load(cls):
@@ -26,4 +29,6 @@ class Settings:
         identities = data.get('identities', {})
         if not identities:
             raise ValueError('Run development setup to configure isolated identities.')
-        return cls(url, identities, ROOT / 'runtime/storage')
+        return cls(url, identities, ROOT / 'runtime/storage',
+            document_limits=DocumentLimits(**data.get('document_limits', {})),
+            document_providers=ProviderSettings(**data.get('document_providers', {})))

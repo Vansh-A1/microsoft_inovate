@@ -1,0 +1,4 @@
+# Preserve actual synthetic binary source bytes; PDF xref whitespace is structural.
+data/documents_phase2/*.pdf binary
+data/documents_phase2/*.png binary
+data/documents_phase2/*.jpg binary

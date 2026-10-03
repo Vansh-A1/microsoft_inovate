@@ -22,6 +22,8 @@ The supplied team-pack folder and ZIP are preserved original inputs. Use the `do
 - The latest 2026-10-03 approval authorizes all P1-01–P1-06 in one continuous build. Use coherent internal batches/commits and continue without per-task approval stops until the Phase-1 exit gate passes or a genuine external blocker prevents dependent work; continue independent work. User/project-scoped stack dependencies are authorized. Stop before Phase 2. Phase 0 remains complete with external-runtime deferral.
 - Do not repeat the failed driver/Docker experiment, download models, install inference, search replacement models, alter host permissions/configuration or provision cloud resources under this closure. Real image smoke/quality/latency/VRAM and full benchmark remain deferred to separately authorized suitable infrastructure. Preserve the recorded research pins and explicit blockers.
 
+The latest Phase-2 approval supersedes the prior stop-before-Phase-2 boundary: complete P2-01–P2-05 continuously, with coherent tested batches and no per-task approval stops. Preserve the Phase-1 finance application. Build secure intake, bounded native/visual/OCR preprocessing, remote TypeLLM contract integration, normalization/source corrections and attachment/import mappings. Do not repair GPU/Docker prerequisites, install/run SGLang, download VLM weights, provision cloud resources or begin Phase 3.
+
 Operating loop:
 
 **INSPECT → PLAN → IMPLEMENT → TEST → SELF-REVIEW → DOCUMENT → REPORT → STOP**
