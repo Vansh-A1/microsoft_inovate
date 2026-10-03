@@ -18,7 +18,7 @@ from app.db.risk_models import (FeatureSchema,RiskHistorySource,FeatureSnapshot,
     DatasetVersion,TrainingRun,ModelVersion,ModelEvent,RiskDeployment,RiskScore,MonitoringSnapshot)
 from app.db.session import scope_query
 from app.db.workflow_models import ReviewAction
-from app.integrations.storage import LocalStorage
+from app.integrations.blob_storage import configured_storage
 from app.risk import features,anomaly,datasets
 from app.services import finance,reviews
 
@@ -46,7 +46,7 @@ def state(s,ctx,model):return s.scalar(query(s,ctx,ModelEvent).where(ModelEvent.
 def storage(s):
     settings=s.info.get('settings')
     if not settings:raise DomainError(503,'MODEL_STORAGE_UNAVAILABLE','Private model artifact storage is not configured.')
-    return LocalStorage(settings.storage_root)
+    return configured_storage(settings)
 
 def register_history(s,ctx,records,reason,correlation):
     require(ctx,{'ML_ADMIN'});finance.scope_lock(s,ctx);created=[]

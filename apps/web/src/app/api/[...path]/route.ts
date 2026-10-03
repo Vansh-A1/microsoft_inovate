@@ -5,12 +5,14 @@ async function proxy(request:NextRequest,context:{params:Promise<{path:string[]}
   const {path}=await context.params;
   if(path.some(part=>!/^[-a-zA-Z0-9_]+$/.test(part)))return Response.json({error:{message:'Invalid API path'}},{status:400});
   const origin=process.env.AP_API_ORIGIN;
-  const token=await serverIdentityToken(request.cookies.get('ap-demo-identity')?.value ? decodeURIComponent(request.cookies.get('ap-demo-identity')!.value):undefined);
-  if(!origin||!token)return Response.json({error:{message:'Development API connection is not configured.'}},{status:503});
-  const allowedOrigins=new Set(['http://127.0.0.1:3000','http://localhost:3000']);
+  const enterprise=process.env.AP_ENVIRONMENT==='enterprise';
+  const token=enterprise?request.headers.get('x-ms-token-aad-access-token'):await serverIdentityToken(request.cookies.get('ap-demo-identity')?.value ? decodeURIComponent(request.cookies.get('ap-demo-identity')!.value):undefined);
+  if(!origin||!token)return Response.json({error:{message:'A verified application connection is required.'}},{status:503});
+  const allowedOrigins=new Set(enterprise?[process.env.AP_WEB_ORIGIN||'']:['http://127.0.0.1:3000','http://localhost:3000']);
+  if(enterprise&&(!process.env.AP_WEB_ORIGIN?.startsWith('https://')||process.env.AP_ENABLE_DEMO_IDENTITIES==='1'))return Response.json({error:{message:'Enterprise browser security is not configured.'}},{status:503});
   const host=request.headers.get('host')||'';
   const requestOrigin=request.headers.get('origin');
-  if(!allowedOrigins.has('http://'+host) || (request.method!=='GET' && (!requestOrigin || !allowedOrigins.has(requestOrigin) || new URL(requestOrigin).host!==host)))
+  if(!allowedOrigins.has((enterprise?'https://':'http://')+host) || (request.method!=='GET' && (!requestOrigin || !allowedOrigins.has(requestOrigin) || new URL(requestOrigin).host!==host)))
     return Response.json({error:{message:'Same-origin request required.'}},{status:403});
   let body:ArrayBuffer|undefined;
   const binaryOriginal=path.length===3&&path[0]==='uploads'&&path[2]==='bytes';

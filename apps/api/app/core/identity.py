@@ -17,7 +17,8 @@ class Identity:
 
 def authenticate(token, settings):
     if not settings.development:
-        raise ValueError('Enterprise identity is not implemented; development mode required.')
+        from app.core.enterprise_identity import authenticate_enterprise
+        return authenticate_enterprise(token,settings)
     for expected, record in settings.identities.items():
         if hmac.compare_digest(token, expected):
             return Identity(UUID(record['tenant_id']), UUID(record['legal_entity_id']),

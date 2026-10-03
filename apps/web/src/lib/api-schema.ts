@@ -1216,6 +1216,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Catalog */
+        get: operations["catalog_api_v1_admin_catalog_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/records/{record_id}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Versions */
+        get: operations["versions_api_v1_admin_records__record_id__versions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/records/{record_id}/drafts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Draft */
+        post: operations["draft_api_v1_admin_records__record_id__drafts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/drafts/{batch_id}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Activate */
+        post: operations["activate_api_v1_admin_drafts__batch_id__activate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1290,6 +1358,15 @@ export interface components {
             /** Expected Review Version */
             expected_review_version?: number | null;
         };
+        /** Band */
+        Band: {
+            /** From Amount */
+            from_amount: string;
+            /** To Amount */
+            to_amount?: string | null;
+            /** Roles */
+            roles: string[];
+        };
         /** Body_preview_api_v1_imports_preview_post */
         Body_preview_api_v1_imports_preview_post: {
             /** File */
@@ -1309,6 +1386,39 @@ export interface components {
             amount: string;
             /** Direction */
             direction: string;
+        };
+        /** BusinessChange */
+        BusinessChange: {
+            /** Expected Version */
+            expected_version: number;
+            /** Reason */
+            reason: string;
+            /** Effective From */
+            effective_from?: string | null;
+            /** Effective To */
+            effective_to?: string | null;
+            /** Allowance Amount */
+            allowance_amount?: string | null;
+            /** Submission Window Days */
+            submission_window_days?: number | null;
+            /** Receipt Required */
+            receipt_required?: boolean | null;
+            /** Bands */
+            bands?: components["schemas"]["Band"][] | null;
+            /** Ceiling Amount */
+            ceiling_amount?: string | null;
+            /** Roles */
+            roles?: string[] | null;
+            /** Maximum Days */
+            maximum_days?: number | null;
+            /** Name */
+            name?: string | null;
+            /** Legal Name */
+            legal_name?: string | null;
+            /** Status */
+            status?: ("ACTIVE" | "INACTIVE" | "APPROVED" | "BLOCKED") | null;
+            /** Department */
+            department?: string | null;
         };
         /** Canonical */
         Canonical: {
@@ -1844,6 +1954,11 @@ export interface components {
             expires_at: string;
             /** Evidence Ids */
             evidence_ids: string[];
+        };
+        /** Reason */
+        app__admin_routes__Reason: {
+            /** Reason */
+            reason: string;
         };
         /** Reason */
         app__finance_routes__Reason: {
@@ -4464,6 +4579,146 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["Monitoring"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    catalog_api_v1_admin_catalog_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    versions_api_v1_admin_records__record_id__versions_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path: {
+                record_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    draft_api_v1_admin_records__record_id__drafts_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+                authorization?: string | null;
+            };
+            path: {
+                record_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BusinessChange"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    activate_api_v1_admin_drafts__batch_id__activate_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+                authorization?: string | null;
+            };
+            path: {
+                batch_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["app__admin_routes__Reason"];
             };
         };
         responses: {

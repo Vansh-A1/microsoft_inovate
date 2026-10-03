@@ -255,6 +255,7 @@ def dependencies(database,storage,settings,identity):
                 except (ValueError,OSError,DomainError):pass
     except Exception:db_state='UNAVAILABLE'
     storage_state='AVAILABLE' if storage.root.is_dir() and __import__('os').access(storage.root,__import__('os').R_OK|__import__('os').W_OK) else 'UNAVAILABLE'
+    if settings.storage_mode=='AZURE_BLOB':storage_state='CONFIGURED_UNVERIFIED'
     return {'database':db_state,'storage':storage_state,'job_executor':'DATABASE_LEASED_POLLING',
         'ocr':'CONFIGURED' if settings.document_providers.ocr_executable else 'NOT_CONFIGURED',
         'enterprise_vlm':'CONFIGURED_UNVERIFIED' if settings.document_providers.endpoint else 'NOT_CONFIGURED',
@@ -354,10 +355,10 @@ def reconcile(session,identity,storage,reason,correlation):
         finding('UPLOAD_AWAITING_FINALIZATION',row.id,'NEEDS_USER_FINALIZATION')
     pages=session.scalars(scope_query(select(DocumentPage),DocumentPage,identity).order_by(DocumentPage.created_at.desc()).limit(100)).all()
     for row in pages:
-        if not storage.path(identity,row.preview_key).is_file():finding('PAGE_ARTIFACT_MISSING',row.id,'UNRESOLVED_SOURCE_REPAIR_REQUIRED')
+        if not storage.exists(identity,row.preview_key):finding('PAGE_ARTIFACT_MISSING',row.id,'UNRESOLVED_SOURCE_REPAIR_REQUIRED')
     originals=session.scalars(scope_query(select(DocumentVersion),DocumentVersion,identity).limit(100)).all()
     for row in originals:
-        if not storage.path(identity,row.storage_key).is_file():finding('ORIGINAL_ARTIFACT_MISSING',row.id,'UNRESOLVED_ORIGINAL_REQUIRED')
+        if not storage.exists(identity,row.storage_key):finding('ORIGINAL_ARTIFACT_MISSING',row.id,'UNRESOLVED_ORIGINAL_REQUIRED')
     # Inspect a bounded scoped directory; never delete evidence or guess retained object ownership.
     directory=storage.root/str(identity.tenant_id)/str(identity.legal_entity_id)
     inspected=[]

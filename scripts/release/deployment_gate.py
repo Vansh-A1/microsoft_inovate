@@ -4,12 +4,14 @@ import argparse,json,re,sys
 from decimal import Decimal
 from pathlib import Path
 from uuid import UUID
-REQUIRED=('subscription_id','region','permissions_verified','monthly_spend_ceiling','identity_approved','network_approved','data_residency_approved','gpu_disposition','approved_by','approved_at','private_runner_verified','cloud_restore_verified','authorization_smoke_verified','rollback_verified','release_commit','release_parameters_sha256')
+REQUIRED=('subscription_id','region','permissions_verified','monthly_spend_ceiling','identity_approved','network_approved','data_residency_approved','gpu_disposition','approved_by','approved_at','private_runner_verified','cloud_restore_verified','authorization_smoke_verified','rollback_verified','release_commit','release_parameters_sha256','resource_group')
 
 def validate(data):
     missing=[k for k in REQUIRED if not data.get(k)]
     if missing:raise ValueError('Missing deployment gate inputs: '+', '.join(missing))
     if not re.fullmatch('[a-f0-9]{40}',data['release_commit']) or not re.fullmatch('[a-f0-9]{64}',data['release_parameters_sha256']):raise ValueError('Verified commit and reviewed parameter digest required.')
+    if not isinstance(data['resource_group'],str) or not re.fullmatch('[a-zA-Z0-9._-]{1,90}',data['resource_group']):raise ValueError('Approved resource group required.')
+    if not isinstance(data['approved_by'],str) or not data['approved_by'].strip():raise ValueError('Explicit approver required.')
     UUID(data['subscription_id'])
     if not re.fullmatch('[a-z0-9]+',data['region']):raise ValueError('Approved Azure region required.')
     if not isinstance(data['monthly_spend_ceiling'],str) or not Decimal(data['monthly_spend_ceiling']).is_finite() or Decimal(data['monthly_spend_ceiling'])<=0:raise ValueError('Explicit finite decimal spend ceiling required.')

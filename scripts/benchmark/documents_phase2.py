@@ -18,6 +18,7 @@ from app.documents.processor import DocumentProcessor,DocumentFailure
 from app.documents.normalizer import Normalizer,validate_draft
 from app.documents.config import ProviderSettings
 from app.domain.extraction import to_data
+from app.db.models import Base  # Load the established model registry before document stages.
 from app.services.document_worker import extract
 
 

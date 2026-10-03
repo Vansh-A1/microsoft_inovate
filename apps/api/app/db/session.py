@@ -14,6 +14,10 @@ def bind_scope(session, transaction, connection):
     if connection.dialect.name == 'postgresql':
         if identity is None:
             raise ValueError('Business database session requires server identity.')
+        settings=session.info.get('settings')
+        if settings is not None and not settings.development:
+            unsafe=connection.scalar(text("SELECT rolsuper OR rolbypassrls FROM pg_roles WHERE rolname=current_user"))
+            if unsafe:raise ValueError('Enterprise business role must enforce row-level security.')
         connection.execute(text("SELECT set_config('app.tenant_id', :tenant, true), set_config('app.legal_entity_id', :entity, true)"),
             {'tenant': str(identity.tenant_id), 'entity': str(identity.legal_entity_id)})
         connection.execute(text("SELECT set_config('statement_timeout', '10000', true), set_config('lock_timeout', '5000', true)"))

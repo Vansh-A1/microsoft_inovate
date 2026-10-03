@@ -24,7 +24,7 @@ test('native PDF upload, actual field box, source verification and persisted fin
  await page.getByText('I reviewed the source pages and confirm the observable facts.').click();
  await page.getByRole('button',{name:'Verify facts and evaluate'}).click();await expect(page).toHaveURL(/\/cases\/[a-f0-9-]{36}$/);
  await expect(page.locator('.page-title .badge')).toHaveText('HOLD',{timeout:25000});
- await expect(page.locator('.rule').filter({hasText:'DOC-001'}).getByText('PASS',{exact:true})).toBeVisible();
+ await page.getByText('View detailed checks',{exact:true}).click();await expect(page.locator('.rule').filter({hasText:'DOC-001'}).getByText('PASS',{exact:true})).toBeVisible();
  await expect(page.getByRole('heading',{name:'Document lineage & attachments'})).toBeVisible();
  await page.reload();await expect(page.getByRole('link',{name:'vendor_native.pdf',exact:true})).toBeVisible();
  const doc=await page.request.get('/api/documents/'+id);expect((await doc.json()).original.sha256).toMatch(/^[a-f0-9]{64}$/);
@@ -39,7 +39,7 @@ test('actual photo OCR and employee source produce finance result without approv
  await page.getByText('I reviewed the source pages and confirm the observable facts.').click();
  await page.getByRole('button',{name:'Verify facts and evaluate'}).click();
  await expect(page).toHaveURL(/\/cases\/[a-f0-9-]{36}$/);await expect(page.locator('.page-title .badge')).toHaveText('HOLD',{timeout:25000});
- await expect(page.locator('.rule').filter({hasText:'DOC-001'}).getByText('PASS',{exact:true})).toBeVisible();
+ await page.getByText('View detailed checks',{exact:true}).click();await expect(page.locator('.rule').filter({hasText:'DOC-001'}).getByText('PASS',{exact:true})).toBeVisible();
  await page.screenshot({path:'../../output/playwright/document-employee-case.png',fullPage:true});
 });
 

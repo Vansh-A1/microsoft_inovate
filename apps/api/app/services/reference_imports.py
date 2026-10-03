@@ -161,8 +161,16 @@ def validate_records(records,current,identity):
     return errors
 
 
-def stage(session,identity,data,correlation):
-    require(identity,'REFERENCE_ADMIN')
+def authorize_batch(identity, records, policy_only=False):
+    if policy_only:
+        require(identity,'POLICY_ADMIN')
+        if any(e['kind'] not in ('expense_policies','approval_policies','delegations','waiver_policies') for e in records):
+            raise DomainError(403,'POLICY_SCOPE','Policy administration cannot activate master or financial records.')
+    else:require(identity,'REFERENCE_ADMIN')
+
+
+def stage(session,identity,data,correlation,*,policy_only=False):
+    authorize_batch(identity,data['records'],policy_only)
     row=ReferenceBatch(**identity.scope(),source_system=data['source_system'],source_version=data['source_version'],actor_id=identity.actor_id,records=data['records'],state='STAGED',validation=[])
     session.add(row);session.flush();finance.audit(session,identity,'REFERENCE_STAGED',row.id,1,data['reason'],correlation,{'record_count':len(row.records)})
     return batch_view(row)
@@ -171,8 +179,10 @@ def stage(session,identity,data,correlation):
 def batch_view(row):return projection({'id':row.id,'source_system':row.source_system,'source_version':row.source_version,'state':row.state,'records':row.records,'validation':row.validation,'imported_at':row.created_at})
 
 
-def validate(session,identity,batch_id,correlation):
-    require(identity,'REFERENCE_ADMIN');finance.scope_lock(session,identity);row=finance.get(session,ReferenceBatch,identity,batch_id)
+def validate(session,identity,batch_id,correlation,*,policy_only=False):
+    authorize_batch(identity,[],policy_only)
+    finance.scope_lock(session,identity);row=finance.get(session,ReferenceBatch,identity,batch_id)
+    authorize_batch(identity,row.records,policy_only)
     if row.state not in ('STAGED','VALID','INVALID'):raise DomainError(409,'BATCH_FINALIZED','This batch is already activated.')
     row.validation=validate_records(row.records,active_records(session,identity),identity)
     row.state='INVALID' if row.validation else 'VALID'
@@ -180,8 +190,10 @@ def validate(session,identity,batch_id,correlation):
     return batch_view(row)
 
 
-def activate(session,identity,batch_id,reason,correlation):
-    require(identity,'REFERENCE_ADMIN');finance.scope_lock(session,identity);row=finance.get(session,ReferenceBatch,identity,batch_id)
+def activate(session,identity,batch_id,reason,correlation,*,policy_only=False):
+    authorize_batch(identity,[],policy_only)
+    finance.scope_lock(session,identity);row=finance.get(session,ReferenceBatch,identity,batch_id)
+    authorize_batch(identity,row.records,policy_only)
     if row.state=='ACTIVE':return batch_view(row)
     if row.state!='VALID':raise DomainError(409,'BATCH_NOT_VALID','Validate this reference batch first.')
     errors=validate_records(row.records,active_records(session,identity),identity)

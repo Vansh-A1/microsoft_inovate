@@ -20,12 +20,12 @@ def augment(session,identity,version,data):
     p=version.payload;day=p.get('invoice_date' if p['branch']=='VENDOR_INVOICE' else 'expense_date');current=[r for r in profiles if effective(r,day)]
     if len(current)!=1:raise DomainError(409,'FINANCE_PROFILE_AMBIGUOUS','Exactly one effective finance-control profile is required.')
     profile=current[0]
-    from app.integrations.storage import LocalStorage
+    from app.integrations.blob_storage import configured_storage
     settings=session.info.get('settings')
     # Runtime storage is only used to fingerprint actual already-safe previews.
     if settings:
         documents={UUID(s) for s in [p.get('source_document_id')]+[i.get('source_document_id') for i in p['items']] if s}
-        storage=LocalStorage(settings.storage_root)
+        storage=configured_storage(settings)
         for did in documents:duplicates.ensure_fingerprints(session,identity,did,storage)
     comparisons,coverage=duplicates.search(session,identity,version,profile)
     all_allocations=ledger.active(session,identity,exclude=version.transaction_id)
@@ -85,7 +85,8 @@ def augment(session,identity,version,data):
             if cutoff-imported>timedelta(days=profile['freshness_days']):stale.append(r['id'])
     authenticated_roles=set()
     if settings:
-        for account in settings.identities.values():
+        accounts=settings.identities.values() if settings.development else (a for a in settings.enterprise_identity.get('memberships',{}).values() if a.get('enabled',False))
+        for account in accounts:
             if account['actor_id']==str(version.author_id) and account['tenant_id']==str(identity.tenant_id) and account['legal_entity_id']==str(identity.legal_entity_id):authenticated_roles.update(account['roles'])
     else:authenticated_roles=set(identity.roles)
     from app.services.reference_imports import active_records

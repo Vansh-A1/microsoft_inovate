@@ -15,14 +15,14 @@ from app.core.errors import DomainError
 from app.core.serialization import projection, utcnow, digest
 from app.db.session import Database, scope_query
 from app.db.models import Transaction, Evaluation, Report, EvidenceObject, ReferenceRecord, TransactionVersion, ApprovalRecord, ImportRow, CapacityReservation, ReviewCase, Job, AuditEvent
-from app.integrations.storage import LocalStorage
+from app.integrations.blob_storage import configured_storage
 from app.schemas.canonical import Canonical, Revision, EvaluationRequest
 from app.services import finance, imports
 
 
 def create_app(settings=None,database=None):
-    settings=settings or Settings.load();database=database or Database(settings.database_url);storage=LocalStorage(settings.storage_root)
-    app=FastAPI(title='AP Exception Assistant',version='1.0.0',description='Synthetic development / RULES_ONLY / no payment execution')
+    settings=settings or Settings.load();database=database or Database(settings.database_url);storage=configured_storage(settings)
+    app=FastAPI(title='AP Exception Assistant',version='1.0.0',description='Versioned finance screening, governed intelligence and private source evidence; no payment execution')
     app.add_middleware(BoundedBody)
     app.state.database=database;app.state.settings=settings;database.settings=settings
     @app.exception_handler(HTTPException)
@@ -41,9 +41,12 @@ def create_app(settings=None,database=None):
     @app.middleware('http')
     async def correlation(request,call_next):
         request.state.correlation=str(uuid4());response=await call_next(request);response.headers['X-Correlation-ID']=request.state.correlation;return response
-    def identity(authorization:Annotated[str|None,Header()]=None):
+    def identity(request:Request,authorization:Annotated[str|None,Header()]=None):
+        if not settings.development and request.url.path.startswith('/api/v1/development/'):raise DomainError(404,'NOT_FOUND','Development actions are unavailable.')
         found=authenticate(authorization[7:] if authorization and authorization.startswith('Bearer ') else '',settings)
-        if found is None:raise DomainError(401,'UNAUTHENTICATED','A trusted development identity is required.')
+        if found is None:raise DomainError(401,'UNAUTHENTICATED','A verified scoped identity is required.')
+        finance_paths=('/api/v1/overview','/api/v1/transactions','/api/v1/evaluations','/api/v1/evidence','/api/v1/documents','/api/v1/uploads','/api/v1/reviews','/api/v1/jobs','/api/v1/imports')
+        if request.url.path.startswith(finance_paths) and not {'FINANCE_REVIEWER','AUDITOR','EMPLOYEE','FINANCE_CONTROLLER','MANAGER','DEPARTMENT_HEAD','DEPT_HEAD','CFO','DIRECTOR','APPROVER','OPERATIONS_ADMIN'}&found.roles:raise DomainError(403,'FORBIDDEN','Finance workspace access is required.')
         return found
     def writer(ctx=Depends(identity)):
         if 'FINANCE_REVIEWER' not in ctx.roles:raise DomainError(403,'FORBIDDEN','Finance reviewer permission is required.')
@@ -62,7 +65,7 @@ def create_app(settings=None,database=None):
         except Exception:raise DomainError(503,'NOT_READY','Required persistence is unavailable.',retryable=True) from None
         return {'status':'ready'}
     @app.get('/api/v1/me')
-    def me(ctx=Depends(identity)):return projection({'tenant_id':ctx.tenant_id,'legal_entity_id':ctx.legal_entity_id,'actor_id':ctx.actor_id,'roles':sorted(ctx.roles),'label':ctx.label,'development':True})
+    def me(ctx=Depends(identity)):return projection({'tenant_id':ctx.tenant_id,'legal_entity_id':ctx.legal_entity_id,'actor_id':ctx.actor_id,'roles':sorted(ctx.roles),'label':ctx.label,'development':settings.development})
     @app.get('/api/v1/references')
     def references(ctx=Depends(identity)):
         with database.session(ctx) as session:
@@ -70,6 +73,7 @@ def create_app(settings=None,database=None):
             return {'records':[{'id':str(r.id),'version':r.version,'kind':r.kind,'label':r.label,'payload':finance.redact(r.payload)} for r in session.scalars(scope_query(select(ReferenceRecord),ReferenceRecord,ctx)) if r.kind!='historical_transactions']}
     @app.get('/api/v1/development/templates/{branch}')
     def template(branch:str,ctx=Depends(identity)):
+        if not settings.development:raise DomainError(404,'NOT_FOUND','Development fixtures are unavailable.')
         if branch not in ('vendor','employee'):raise DomainError(400,'BRANCH_INVALID','Use vendor or employee.')
         from app.core.config import ROOT
         from app.schemas.canonical import fixture_canonical
@@ -212,4 +216,8 @@ def create_app(settings=None,database=None):
     mount_workflow(app,settings,database,storage,identity,mutation)
     from app.risk_routes import mount as mount_intelligence
     mount_intelligence(app,database,identity,mutation)
+    from app.admin_routes import mount as mount_admin
+    mount_admin(app,database,identity,mutation)
+    from app.core.observability import mount as mount_telemetry
+    mount_telemetry(app)
     return app

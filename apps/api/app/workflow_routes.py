@@ -7,6 +7,7 @@ from pydantic import Field, model_validator
 from app.schemas.canonical import Strict, Canonical
 from app.documents.routes import DocumentCommit
 from app.db.models import ReviewCase, Transaction
+from app.core.errors import DomainError
 from app.services import finance, reviews, operations
 
 class ReviewWrite(Strict):
@@ -79,7 +80,7 @@ def mount(app,settings,database,storage,identity,mutation):
         return mutation(request,ctx,key,body.model_dump(),200,lambda s:operations.retry(s,ctx,kind,job_id,body.model_dump(),request.state.correlation))
     @app.get('/api/v1/operations/dependencies')
     def dependencies(ctx=Depends(identity)):
-        operations.read_permission(ctx)
+        if not {'OPERATIONS_ADMIN','OPERATIONS_READER','AUDITOR'}&ctx.roles:raise DomainError(403,'FORBIDDEN','Operational health permission is required.')
         return operations.dependencies(database,storage,settings,ctx)
     @app.post('/api/v1/operations/reconcile')
     def reconcile(body:Reason,request:Request,ctx=Depends(identity),key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):

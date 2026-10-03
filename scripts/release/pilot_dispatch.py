@@ -11,7 +11,9 @@ def main():
     from deployment_gate import validate
     approvals=json.loads(Path(os.environ.get('APPROVAL_FILE','/nonexistent')).read_text());validate(approvals)
     if approvals['release_commit']!=commit or approvals['release_parameters_sha256']!=hashlib.sha256(parameter_file.read_bytes()).hexdigest():raise SystemExit('Release inputs differ from the explicitly approved commit or parameters.')
+    active_subscription=subprocess.run(['az','account','show','--query','id','--output','tsv'],check=True,capture_output=True,text=True).stdout.strip()
     config=json.loads(parameter_file.read_text())['parameters'];registry=config['registryHost']['value']
+    if active_subscription!=approvals['subscription_id'] or group!=approvals['resource_group'] or config['location']['value']!=approvals['region']:raise SystemExit('Active account, resource group or region differs from explicit approval.')
     for name in ('apiImage','webImage'):
         if not re.fullmatch(re.escape(registry)+r'/[-a-z0-9/]+@sha256:[a-f0-9]{64}',config[name]['value']):raise SystemExit('Use verified registry image digests, not mutable tags.')
     folder=ROOT/'runtime/release';folder.mkdir(parents=True,exist_ok=True);folder.chmod(0o700)

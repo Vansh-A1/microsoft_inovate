@@ -169,6 +169,8 @@ def test_replay_pass_hold_review_and_health_minimal(environment):
         response=client.post('/api/v1/evaluations/'+r['latest_evaluation_id']+'/replay',headers=headers());assert response.status_code==200 and response.json()['matches'],response.text
     assert client.get('/api/v1/health/live').json()=={'status':'alive'}
     assert client.get('/api/v1/health/ready').json()=={'status':'ready'}
+    assert client.get('/api/v1/operations/dependencies').status_code==403
+    client.app.state.settings.identities['test-reviewer']['roles'].append('OPERATIONS_READER')
     status=client.get('/api/v1/operations/dependencies').json();assert status['enterprise_runtime']=='DEFERRED_EXTERNAL_PREREQUISITE' and status['risk_model']=='NOT_CONFIGURED'
 
 

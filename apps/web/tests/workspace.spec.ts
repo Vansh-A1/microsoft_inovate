@@ -5,18 +5,18 @@ const duplicate='30000000-0000-4000-8000-000000000002';
 const expense='30000000-0000-4000-8000-000000000008';
 test('overview shows actual persisted cases and has no browser token',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('/');await expect(page.getByRole('heading',{name:'Screening overview'})).toBeVisible();
+ await page.goto('/');await expect(page.getByRole('heading',{name:'Finance dashboard'})).toBeVisible();
  // The overview is bounded and ordered by recency; compare an actual returned record by UUID.
  const latest=(await (await page.request.get('/api/transactions?limit=25')).json()).items[0];
  const facts=latest.versions.at(-1).payload;
  await expect(page.locator('a[href="/cases/'+latest.id+'"]').filter({hasText:facts.invoice_number||facts.claim_number})).toBeVisible();
- await expect(page.getByText('NOT_CONFIGURED',{exact:false})).toBeVisible();
+ await expect(page.getByText('NOT_CONFIGURED',{exact:false})).toHaveCount(0);
  await page.screenshot({path:'../../output/playwright/overview.png',fullPage:true});
  const browserStorage=await page.evaluate(()=>({...localStorage,...sessionStorage}));expect(Object.keys(browserStorage)).toHaveLength(0);expect(errors).toEqual([]);
 });
 for(const [id,outcome] of [[vendor,'PASS'],[employee,'PASS'],[duplicate,'HOLD'],[expense,'REVIEW']]){
  test(`persisted case ${outcome} ${id.slice(-3)} resolves evidence and report`,async({page})=>{
-  await page.goto('/cases/'+id);await expect(page.getByRole('heading',{name:'Rule findings'})).toBeVisible();
+  await page.goto('/cases/'+id);await page.getByText('View detailed checks',{exact:true}).click();await expect(page.getByRole('heading',{name:'Rule findings'})).toBeVisible();
   await expect(page.locator('.page-title .badge')).toHaveText(outcome);
   await expect(page.locator('.rule')).toHaveCount(20);
   await page.locator('.rule').first().getByText('Observed, expected & evidence').click();
@@ -40,14 +40,14 @@ for(const choice of ['vendor','employee']){
   await expect(page).toHaveURL(/\/cases\/[a-f0-9-]{36}$/);
   await expect(page.getByRole('heading',{name:number,exact:true})).toBeVisible();
   await expect(page.locator('.page-title .badge')).toHaveText('HOLD',{timeout:25000});
-  await expect(page.locator('.rule').filter({hasText:'APR-001'}).getByText('FAIL',{exact:true})).toBeVisible();
+  await page.getByText('View detailed checks',{exact:true}).click();await expect(page.locator('.rule').filter({hasText:'APR-001'}).getByText('FAIL',{exact:true})).toBeVisible();
   await page.reload();await expect(page.getByRole('heading',{name:number,exact:true})).toBeVisible();
  });
 }
 test('exception filters, empty state and mobile layout',async({page})=>{
- await page.goto('/queue');await page.getByRole('combobox',{name:'Decision',exact:true}).selectOption('HOLD');await page.getByLabel('Reason rule').fill('APR-001');
+ await page.goto('/queue');await page.getByRole('combobox',{name:'Decision',exact:true}).selectOption('HOLD');await page.getByLabel('Reason',{exact:true}).selectOption('APR-001');
  await expect(page.locator('tbody tr').first()).toBeVisible();
- await page.getByLabel('Reason rule').fill('NO-SUCH-RULE');await expect(page.getByRole('heading',{name:'No open exceptions match'})).toBeVisible();
+ await page.goto('/queue?reason=NO-SUCH-RULE');await expect(page.getByRole('heading',{name:'No open exceptions match'})).toBeVisible();
  await page.setViewportSize({width:390,height:844});await page.goto('/create');await expect(page.getByRole('heading',{name:'Create & import',exact:true})).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.screenshot({path:'../../output/playwright/mobile-create.png',fullPage:true});

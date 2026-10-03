@@ -71,6 +71,15 @@ def run_once(database,identity):
 def worker_identities(settings):
     from app.core.identity import authenticate
     identities={}
+    if not settings.development:
+        from app.core.identity import Identity
+        from uuid import UUID
+        for r in settings.worker_scopes:
+            if set(r['roles'])!={'SERVICE_WORKER','FINANCE_REVIEWER'}:raise ValueError('Use only scoped worker capabilities.')
+            ctx=Identity(UUID(r['tenant_id']),UUID(r['legal_entity_id']),UUID(r['actor_id']),frozenset(r['roles']),'Scoped enterprise worker')
+            identities[(ctx.tenant_id,ctx.legal_entity_id)]=ctx
+        if not identities:raise ValueError('Approved worker scopes are required.')
+        return identities
     for token in settings.identities:
         identity=authenticate(token,settings)
         if 'FINANCE_REVIEWER' in identity.roles:identities.setdefault((identity.tenant_id,identity.legal_entity_id),identity)
@@ -85,9 +94,9 @@ def main():
     from app.db.session import Database
     parser=argparse.ArgumentParser();parser.add_argument('--once',action='store_true');args=parser.parse_args()
     settings=Settings.load();database=Database(settings.database_url);database.settings=settings
-    from app.integrations.storage import LocalStorage
+    from app.integrations.blob_storage import configured_storage
     from app.services.document_worker import run_once as run_document_once
-    storage=LocalStorage(settings.storage_root)
+    storage=configured_storage(settings)
     identities=worker_identities(settings)
     while True:
         for identity in identities.values():

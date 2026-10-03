@@ -22,6 +22,9 @@ class LocalStorage:
             raise ValueError('Unsafe storage path')
         return path
 
+    def exists(self, identity, key):
+        return self.path(identity,key).is_file()
+
     def put(self, identity, content, *, maximum=2 * 1024 * 1024):
         if not isinstance(content, bytes) or len(content) > maximum:
             raise ValueError('Structured import exceeds storage limit')

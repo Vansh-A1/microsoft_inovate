@@ -90,6 +90,7 @@ jobs:
           sha256sum -c data/documents_phase2/fixtures.sha256
       - name: Bicep compile and private deployment contracts
         run: |
+          runtime/release-tools/bin/python scripts/release/check_artifacts.py
           .venv/bin/python scripts/release/install_bicep.py
           runtime/tools/bicep/bicep build infra/azure/foundation.bicep --outfile runtime/foundation.json
           runtime/tools/bicep/bicep build infra/azure/release.bicep --outfile runtime/release.json

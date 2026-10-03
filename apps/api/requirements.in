@@ -17,3 +17,7 @@ opencv-python-headless==5.0.0.93
 reportlab==5.0.1
 # Phase-3 candidate similarity; diagnostic values are not probabilities.
 rapidfuzz==3.14.6
+# Phase-6 CPU enterprise authentication/private-storage boundaries; no GPU packages.
+PyJWT[crypto]==2.15.1
+azure-storage-blob==12.31.0
+azure-identity==1.26.0

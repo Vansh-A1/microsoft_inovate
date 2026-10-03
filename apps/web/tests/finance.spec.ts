@@ -52,7 +52,7 @@ test('waiver action preserves original finding and records explicit disposition'
 
 test('reference stage validate activate and unauthorized action errors are visible',async({page})=>{
  await page.goto('/reference-imports');const tag='SYNTHETIC-UI-'+randomUUID();await page.getByLabel('Source system',{exact:true}).fill(tag);await page.getByLabel('Import / activation reason').fill('Activate explicit fictional browser source');await page.getByLabel('Reference records JSON').fill(JSON.stringify([{kind:'cost_centers',payload:{id:randomUUID(),version:1,name:tag,department:'DEMO-ENGINEERING'}}]));await page.getByRole('button',{name:'Stage import'}).click();const batch=page.locator('.reference-batch').filter({hasText:tag});await expect(batch).toContainText('STAGED');await batch.getByRole('button',{name:'Validate batch'}).click();await expect(batch).toContainText('VALID');await batch.getByRole('button',{name:'Activate validated batch'}).click();await expect(batch).toContainText('ACTIVE');await page.screenshot({path:'../../output/playwright/phase3-reference.png',fullPage:true});
- await page.getByLabel('Configured demo identity').selectOption('Synthetic employee');await expect(page.locator('.error[role=alert]')).toContainText('REFERENCE_ADMIN');
+ await page.getByLabel('Configured demo identity').selectOption('Synthetic employee');await expect(page.locator('.error[role=alert]')).toContainText('cannot open');expect((await page.request.get('/api/reference-imports')).status()).toBe(403);
  const forged=await page.request.post('/api/development/session',{headers:{Origin:origin},data:{label:'Synthetic employee',roles:['CFO']}});expect(forged.status()).toBe(422);
 });
 
