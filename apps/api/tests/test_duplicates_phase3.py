@@ -1,5 +1,5 @@
 from io import BytesIO
-from PIL import Image,ImageDraw,ImageEnhance
+from PIL import Image,ImageDraw,ImageEnhance,ImageFilter
 from app.services.duplicates import fingerprint,bands,aggressive
 
 
@@ -17,7 +17,7 @@ def encode(im,format='PNG',**kw):
 
 def test_phash_actual_resize_recompress_brightness_and_template_negative():
     original=image();bits,metadata=fingerprint(encode(original));assert metadata['hash_size']==64 and metadata['crop'] is None and not metadata['low_information']
-    for variant in [encode(original.resize((320,425))),encode(original,'JPEG',quality=55),encode(ImageEnhance.Brightness(original).enhance(.85))]:
+    for variant in [encode(original.resize((320,425))),encode(original,'JPEG',quality=55),encode(ImageEnhance.Brightness(original).enhance(.85)),encode(original.filter(ImageFilter.GaussianBlur(.4)))]:
         other,_=fingerprint(variant);distance=(int(bits,16)^int(other,16)).bit_count();assert distance<=6
         assert set(bands(bits))&set(bands(other))
     negative,_=fingerprint(encode(image('2450.00')));distance=(int(bits,16)^int(negative,16)).bit_count()

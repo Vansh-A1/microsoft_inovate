@@ -43,6 +43,15 @@ def augment(session,identity,version,data):
     receipt_usage=[r for r in allocations if r['kind']=='RECEIPT']
     payments=[r for r in refs.values() if r.get('_kind')=='company_payments' and r.get('employee_id')==p.get('employee_id')]
     delegation=approvals.delegation(refs,p.get('employee_id'),str(version.author_id),p,day,'SUBMIT') if p.get('employee_id') else None
+    preapprovals=[]
+    for r in refs.values():
+        if r.get('_kind')!='preapprovals' or r.get('employee_id')!=p.get('employee_id'):continue
+        actor=refs.get(r.get('approver_id'),{})
+        if (r.get('status')=='APPROVED' and effective(r,day) and r.get('approved_date','9999-12-31')<=day
+            and r.get('currency')==p.get('currency') and r.get('category')==p.get('category')
+            and r.get('cost_center_id')==p.get('cost_center_id') and D(r['ceiling_amount'])>=D(p.get('requested_amount') or '0')
+            and actor.get('status')=='ACTIVE' and effective(actor,r['approved_date']) and 'PREAPPROVER' in actor.get('roles',[])
+            and actor.get('cost_center_id')==p.get('cost_center_id') and actor.get('id') not in (p.get('employee_id'),str(version.author_id))):preapprovals.append(r)
     employee=p.get('employee_id');aggregates={};split=None
     if employee and day:
         facts=[]
@@ -84,6 +93,7 @@ def augment(session,identity,version,data):
     restriction=current_master.payload|{'_kind':current_master.kind} if current_master else None
     if restriction:refs['_current_vendor:'+restriction['id']]=restriction
     v={'profile':profile,'duplicates':comparisons,'duplicate_coverage':coverage,'allocations':allocations,'budget':balance,'approval':approvals.state(session,identity,version,refs),'receipt_shares':shares,'receipt_usage':receipt_usage,'company_payments':payments,'submission_delegation':delegation,'finance_submission_authorized':'FINANCE_SUBMITTER' in authenticated_roles,'aggregates':aggregates,'split_pattern':split,'waivers':waivers,'stale_references':stale,'current_vendor_restriction':restriction,'already_consumed':any(r.transaction_id==version.transaction_id and state=='CONSUMED' for r,state in all_allocations)}
+    v['verified_preapproval']=preapprovals[0] if len(preapprovals)==1 else None
     data['finance_v3']=v
     # Conditional authority is driven by computed facts, never a client-declared exception.
     if any(r.get('exception_roles') for r in refs.values() if r.get('_kind')=='approval_policies'):

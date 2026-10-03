@@ -112,3 +112,13 @@ def test_split_pattern_is_review_only_and_not_a_duplicate_confirmation():
 def test_currency_and_unknown_denominator_never_become_pass():
     c=inputs('employee/clean_taxi');c['transaction']['currency']='USD';assert evaluate(RuleContext.pin(**c)).decision!='PASS'
     c=inputs('employee/hotel_unknown_nights');assert rule(c,'EXP-003').status=='UNKNOWN'
+
+
+def test_policy_gap_overlap_and_stale_sources_preserve_unknown_with_evidence():
+    c=inputs('employee/clean_taxi');policy=c['references'][c['transaction']['expense_policy_id']]
+    policy['effective_to']='2026-01-01';assert rule(c,'REF-001').status=='UNKNOWN' and evaluate(RuleContext.pin(**c)).decision!='PASS'
+    c=inputs('employee/clean_taxi');policy=c['references'][c['transaction']['expense_policy_id']]
+    extra=policy|{'id':str(uuid4()),'allowance_amount':'999999'};c['references'][extra['id']]=extra
+    assert rule(c,'REF-001').status=='UNKNOWN' and evaluate(RuleContext.pin(**c)).decision!='PASS'
+    c=inputs();rid=c['transaction']['vendor_id'];c['finance_v3']['stale_references']=[rid]
+    result=rule(c,'REF-001');assert result.status=='UNKNOWN' and any(str(e.record_id)==rid for e in result.evidence)

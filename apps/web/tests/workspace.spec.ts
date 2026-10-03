@@ -6,7 +6,8 @@ const expense='30000000-0000-4000-8000-000000000008';
 test('overview shows actual persisted cases and has no browser token',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/');await expect(page.getByRole('heading',{name:'Screening overview'})).toBeVisible();
- await expect(page.getByRole('link',{name:'DEMO-INV-CLEAN-001',exact:true})).toBeVisible();
+ // Invoice numbers are attributes; identify the retained seeded transaction by UUID.
+ await expect(page.locator('a[href="/cases/30000000-0000-4000-8000-000000000001"]').filter({hasText:'DEMO-INV-CLEAN-001'})).toBeVisible();
  await expect(page.getByText('NOT_CONFIGURED',{exact:false})).toBeVisible();
  await page.screenshot({path:'../../output/playwright/overview.png',fullPage:true});
  const browserStorage=await page.evaluate(()=>({...localStorage,...sessionStorage}));expect(Object.keys(browserStorage)).toHaveLength(0);expect(errors).toEqual([]);

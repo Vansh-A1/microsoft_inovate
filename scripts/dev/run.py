@@ -10,6 +10,7 @@ def main():
     env=dict(os.environ);env['PYTHONPATH']=str(ROOT/'apps/api');env['PATH']=str(NODE)+':'+env.get('PATH','')
     sys.path.insert(0,str(ROOT/'apps/api'))
     from app.core.config import Settings
+    env['AP_ENABLE_DEMO_IDENTITIES']='1'
     env['AP_DOCUMENT_MAXIMUM_BYTES']=str(Settings.load().document_limits.maximum_bytes)
     children=[]
     try:

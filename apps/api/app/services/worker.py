@@ -8,12 +8,13 @@ from app.domain.states import ProcessingState
 from app.rules.engine import RULESET
 from app.db.models import Job, OutboxEvent, Transaction
 from app.db.session import scope_query
-from app.services.finance import get, finalize, audit
+from app.services.finance import get, finalize, audit, scope_lock
 
 
-def claim(database,identity,now=None):
+def _claim_once(database,identity,now=None):
     now=now or utcnow()
     with database.session(identity) as session:
+        scope_lock(session,identity)
         q=scope_query(select(Job),Job,identity).where(Job.stage=='EVALUATE',Job.stage_version.in_([RULESET,'rules-p3-v1']),or_(and_(Job.state.in_(['QUEUED','RETRYABLE']),Job.available_at<=now),and_(Job.state=='RUNNING',Job.lease_until<=now))).order_by(Job.created_at).with_for_update(skip_locked=True).limit(1)
         job=session.scalar(q)
         if not job:return None
@@ -30,6 +31,18 @@ def claim(database,identity,now=None):
         return job.id,job.lease_owner,job.actor_id
 
 
+def claim(database,identity,now=None):
+    from sqlalchemy.exc import DBAPIError
+    import time
+    for attempt in range(3):
+        try:return _claim_once(database,identity,now)
+        except DBAPIError as exc:
+            if getattr(exc.orig,'sqlstate',None) not in ('40P01','40001'):raise
+            if attempt==2:return None
+            time.sleep(.05*(2**attempt))
+    return None
+
+
 def run_once(database,identity):
     leased=claim(database,identity)
     if not leased:return False
@@ -41,6 +54,7 @@ def run_once(database,identity):
     except Exception:
         # Never persist provider/driver text, SQL, credentials or uploaded values as errors.
         with database.session(execution_identity) as session:
+            scope_lock(session,execution_identity)
             job=get(session,Job,execution_identity,job_id)
             if job.state=='RUNNING' and job.lease_owner==owner:
                 job.state='FAILED' if job.attempts>=job.maximum_attempts else 'RETRYABLE';job.last_error='EXECUTION_FAILED';job.lease_until=None;job.available_at=utcnow()+timedelta(seconds=2**job.attempts);job.updated_at=utcnow()
@@ -49,6 +63,16 @@ def run_once(database,identity):
                     transaction.processing_state=ProcessingState.FAILED_FINAL.value if job.state=='FAILED' else ProcessingState.FAILED_RETRYABLE.value;transaction.eligible=False
                 audit(session,execution_identity,'JOB_RETRY_SCHEDULED' if job.state=='RETRYABLE' else 'JOB_FAILED',job.id,1,'Execution rolled back; safe failure recorded',str(job.id))
     return True
+
+
+def worker_identities(settings):
+    from app.core.identity import authenticate
+    identities={}
+    for token in settings.identities:
+        identity=authenticate(token,settings)
+        if 'FINANCE_REVIEWER' in identity.roles:identities.setdefault((identity.tenant_id,identity.legal_entity_id),identity)
+    if not identities:raise ValueError('Configure an explicit scoped finance worker identity.')
+    return identities
 
 
 def main():
@@ -61,9 +85,7 @@ def main():
     from app.integrations.storage import LocalStorage
     from app.services.document_worker import run_once as run_document_once
     storage=LocalStorage(settings.storage_root)
-    identities={}
-    for token in settings.identities:
-        identity=authenticate(token,settings);identities[(identity.tenant_id,identity.legal_entity_id)]=identity
+    identities=worker_identities(settings)
     while True:
         for identity in identities.values():
             run_once(database,identity)

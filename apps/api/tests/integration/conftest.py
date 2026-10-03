@@ -27,7 +27,7 @@ def environment(tmp_path):
     scoped_url=url.update_query_dict({'options':f'-csearch_path={schema}'})
     cfg=Config(str(ROOT/'apps/api/alembic.ini'));cfg.attributes['database_url']=scoped_url.render_as_string(hide_password=False)
     command.upgrade(cfg,'head')
-    database=Database(scoped_url.render_as_string(hide_password=False));ctx=authenticate(next(iter(settings.identities)),settings)
+    database=Database(scoped_url.render_as_string(hide_password=False));ctx=replace(authenticate(next(iter(settings.identities)),settings),roles=frozenset({'FINANCE_REVIEWER','DEVELOPMENT_ADMIN'}))
     second=Identity(UUID('10000000-0000-4000-8000-000000000002'),UUID('20000000-0000-4000-8000-000000000003'),uuid4(),frozenset({'FINANCE_REVIEWER'}),'Second synthetic tenant')
     identities={'test-reviewer':{'tenant_id':str(ctx.tenant_id),'legal_entity_id':str(ctx.legal_entity_id),'actor_id':str(ctx.actor_id),'roles':list(ctx.roles),'label':ctx.label},'test-second':{'tenant_id':str(second.tenant_id),'legal_entity_id':str(second.legal_entity_id),'actor_id':str(second.actor_id),'roles':list(second.roles),'label':second.label},'test-reader':{'tenant_id':str(ctx.tenant_id),'legal_entity_id':str(ctx.legal_entity_id),'actor_id':str(uuid4()),'roles':['AUDITOR'],'label':'Read-only synthetic auditor'}}
     settings=replace(settings,database_url=scoped_url.render_as_string(hide_password=False),identities=identities,storage_root=tmp_path/'private')

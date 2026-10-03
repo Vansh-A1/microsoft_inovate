@@ -1,10 +1,11 @@
 import { NextRequest } from 'next/server';
+import {serverIdentityToken} from '@/lib/development-identity';
 export const dynamic = 'force-dynamic';
 async function proxy(request:NextRequest,context:{params:Promise<{path:string[]}>}) {
   const {path}=await context.params;
   if(path.some(part=>!/^[-a-zA-Z0-9_]+$/.test(part)))return Response.json({error:{message:'Invalid API path'}},{status:400});
   const origin=process.env.AP_API_ORIGIN;
-  const token=process.env.AP_DEV_TOKEN;
+  const token=await serverIdentityToken(request.cookies.get('ap-demo-identity')?.value ? decodeURIComponent(request.cookies.get('ap-demo-identity')!.value):undefined);
   if(!origin||!token)return Response.json({error:{message:'Development API connection is not configured.'}},{status:503});
   const allowedOrigins=new Set(['http://127.0.0.1:3000','http://localhost:3000']);
   const host=request.headers.get('host')||'';

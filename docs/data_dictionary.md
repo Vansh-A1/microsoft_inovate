@@ -240,3 +240,55 @@ not extend the established bounded INR finance policy.
 | document-normalizer-v1 | Observation-linked normalization/validation and canonical provenance. |
 | document-source-v1 | Physical DOC-001 reconciliation; core rules-p1-v7 remains unchanged. |
 | report-p2-v1 | Document-derived metadata/links; structured report-p1-v2 remains supported. |
+
+## Phase-3 reference and finance facts
+
+Migration `0005_finance` adds 13 tables to the 34 existing business tables; all 47
+enforce forced scoped RLS. Immutable facts reject ORM and direct SQL mutation.
+ReferenceBatch is a workflow projection whose source records/system/version/actor
+remain protected. Existing reference_records/snapshots/members/links retain exact
+versions; contracts, service acceptance, delegation and policy facts reuse them.
+
+| Table | Authority and fields |
+|---|---|
+| reference_batches | Source system/version, raw records, actor, timestamp, STAGED/VALID/INVALID/ACTIVE/SUPERSEDED projection and exact validation findings. |
+| reference_activations | Immutable batch-to-reference UUID/version activation and actor. |
+| finance_allocations | Evaluation/transaction/version/resource, BUDGET/PO_LINE/GRN_LINE/CONTRACT/SERVICE/RECEIPT kind, exact amount/quantity/currency and metadata. |
+| allocation_events | Append-only RESERVED/CONSUMED/RELEASED/REVERSED lifecycle facts and stable operation key. |
+| budget_events | Allocation/adjustment/commitment/reservation/consumption/release/reversal exposure with source/owner/operation binding and decimal amounts. |
+| duplicate_comparisons | Both transaction/reference versions, candidate classification, separate signals, normalizer/provider metadata and safe source/candidate facts. |
+| duplicate_resolutions | DISTINCT/CONFIRMED_DUPLICATE/SHARED_RECEIPT_ALLOCATION, both version bindings, authenticated actor, reason and real evidence. |
+| image_fingerprints | Actual document/page version, algorithm/library/preprocessing, 64-bit hash, dimensions and no invented crop. |
+| fingerprint_bands | Indexed seven disjoint bands for bounded <=6-bit candidate retrieval. |
+| receipt_shares | Actual receipt UUID, current claim/item/version/employee, authorized exact amount/quantity, actor, reason and evidence. |
+| approval_requests | Transaction/policy versions, computed ordered requirements, requirements digest and immutable creation fact. |
+| approval_actions | Request/step, APPROVED/DECLINED/REJECTED, actor, master/delegation versions, rejection reason/evidence and UTC time. |
+| waivers | Exact rule/version, transaction/version, configured actor/role/policy, reason/evidence, expiry; original result retained. |
+
+All new tables use tenant/entity foreign-key scopes and UUID identities. Receipt
+and resource pointers spanning physical and adjudicated synthetic references are
+validated through scoped services; they are not represented as a fictitious single
+foreign-key target. No raw bank account is imported; equality tokens are redacted
+from reports and comparison facts. Page evidence uses the existing physical source
+contract; absent boxes remain null.
+
+Activated reference payloads add source_system/source_record_id/source_version,
+import_batch_id/imported_at/validation_result and effective half-open dates where
+applicable. A nested budget ledger receives its own immutable reference child and
+server-owned version equal to the parent import version. Approval policies use
+explicit bands, authority matrices, scopes and optional computed exception roles.
+Preapprovals require explicit approved_date, period, claimant/approver/category,
+scope/currency/ceiling and PREAPPROVER authority. Approved UOM factors and tolerance
+MAX/MIN/AND/OR operators are trusted configuration, never extracted assumptions.
+
+Reference selection returns EXACT, CURATED_ALIAS or unresolved FUZZY_CANDIDATES;
+multiple exact/alias/policy candidates remain AMBIGUOUS. Similarity is not a
+probability. EXACT_BYTES and POSSIBLE_DUPLICATE remain candidates; corroborated
+active STRONG_BUSINESS_MATCH or explicit authorized confirmation can HOLD.
+Shared receipts still undergo independent cumulative capacity controls.
+
+`rules-p3-v1` / rule version `3.0.0` extends the preserved engine to 28 controls.
+Eight additions are REF-001, DUP-001, DUP-003, EXP-002, EXP-004, EXP-005, EXP-006
+and PAT-001. Existing control IDs keep their meaning while their configured scope
+expands. Reports retain original results plus finance_controls and waiver_dispositions.
+Risk remains RULES_ONLY / NOT_CONFIGURED with no score or model probability.

@@ -29,12 +29,13 @@ KINDS={'vendors':('legal_name','status','approved_categories','payment_account_t
 'uom_conversions':('from_uom','to_uom','factor','status'),
 'payment_accounts':('vendor_id','equality_token','status'),
 'company_payments':('employee_id','document_id','amount','currency','payment_type','status'),
+'preapprovals':('employee_id','approver_id','category','currency','ceiling_amount','approved_date','status'),
 'finance_profiles':('ruleset','currencies','duplicate_window_days','near_amount_absolute','fuzzy_number_cutoff','phash_distance','waivable_rules','waiver_roles','freshness_days'),
 'documents':('facts','verification','source_type'),
 'budget_ledger':('budget_id','entry_type','amount','currency'),
 'waiver_policies':('rule_ids','roles','maximum_days','nonwaivable_rules')}
-LINKS={'vendor_id':'vendors','employee_id':'employees','cost_center_id':'cost_centers','po_id':'purchase_orders','po_line_id':'po_lines','contract_id':'contracts','contract_line_id':'contract_lines','accepter_id':'employees','delegator_id':'employees','delegate_id':'employees','budget_id':'budgets','manager_id':'employees'}
-PERIOD_KINDS={'vendors','employees','purchase_orders','contracts','expense_policies','approval_policies','budgets','delegations','uom_conversions','payment_accounts','waiver_policies','finance_profiles'}
+LINKS={'vendor_id':'vendors','employee_id':'employees','cost_center_id':'cost_centers','po_id':'purchase_orders','po_line_id':'po_lines','contract_id':'contracts','contract_line_id':'contract_lines','accepter_id':'employees','approver_id':'employees','delegator_id':'employees','delegate_id':'employees','budget_id':'budgets','manager_id':'employees'}
+PERIOD_KINDS={'vendors','employees','purchase_orders','contracts','expense_policies','approval_policies','budgets','delegations','uom_conversions','payment_accounts','waiver_policies','finance_profiles','preapprovals'}
 
 
 def require(identity,role):
@@ -69,6 +70,14 @@ def validate_records(records,current,identity):
         if (kind,source) in sources:error('DUPLICATE_SOURCE_ID')
         sources.add((kind,source))
         if kind not in KINDS:error('KIND_UNSUPPORTED');continue
+        shape_invalid=False
+        for field in ('tolerance','dimensions','facts','exception_roles'):
+            if field in p and not isinstance(p[field],dict):error('OBJECT_REQUIRED',field);shape_invalid=True
+        for field in ('ledger','bands','roles','branches','aliases','waivable_rules','waiver_roles','currencies'):
+            if field in p and not isinstance(p[field],list):error('ARRAY_REQUIRED',field);shape_invalid=True
+        for field in ('ledger','bands'):
+            if isinstance(p.get(field),list) and any(not isinstance(value,dict) for value in p[field]):error('OBJECT_ARRAY_REQUIRED',field);shape_invalid=True
+        if shape_invalid:continue
         if any(p.get(k) is None for k in KINDS[kind]):error('REQUIRED_FIELD')
         if p.get('tenant_id') not in (None,str(identity.tenant_id)) or p.get('legal_entity_id') not in (None,str(identity.legal_entity_id)):error('FOREIGN_SCOPE')
         old=current.get(rid)
@@ -103,12 +112,17 @@ def validate_records(records,current,identity):
         if kind=='budgets':
             for ledger in p.get('ledger',[]):
                 if ledger.get('entry_type') not in ('ALLOCATION','ADJUSTMENT','CONSUMPTION','PO_COMMITMENT','CLAIM_RESERVATION') or ledger.get('currency')!=p.get('currency'):error('BUDGET_LEDGER_INVALID')
+                existing=known.get(ledger.get('id'))
+                if existing and (existing.kind!='budget_ledger' or existing.payload.get('budget_id')!=p['id']):error('DUPLICATE_LEDGER_ID')
                 try:UUID(ledger['id']);assert Decimal(ledger['amount'])>=0
                 except (KeyError,TypeError,ValueError,InvalidOperation,AssertionError):error('BUDGET_LEDGER_INVALID')
         if kind=='uom_conversions':
             try:approved=p.get('status')=='APPROVED' and isinstance(p.get('factor'),str) and Decimal(p['factor']).is_finite() and Decimal(p['factor'])>0
             except (InvalidOperation,ValueError,TypeError,KeyError):approved=False
             if not approved:error('UOM_NOT_APPROVED')
+        if kind=='preapprovals':
+            try:date.fromisoformat(p['approved_date']);assert p['status']=='APPROVED'
+            except (KeyError,ValueError,TypeError,AssertionError):error('PREAPPROVAL_INVALID')
         if kind=='finance_profiles':
             if p.get('ruleset')!='rules-p3-v1' or p.get('currencies')!=['INR']:error('UNSUPPORTED_FINANCE_PROFILE')
             nonwaivable={'VEN-003','DUP-002','GRN-001','BUD-001','APR-001','APR-002','EXP-005','VAL-001','VAL-003'}
@@ -174,12 +188,22 @@ def activate(session,identity,batch_id,reason,correlation):
     if errors:raise DomainError(409,'REFERENCE_CHANGED','Revalidate against the current activated catalog.',details=errors)
     for entry in row.records:
         p=dict(entry['payload']);kind=entry['kind'];p.update(tenant_id=str(identity.tenant_id),legal_entity_id=str(identity.legal_entity_id),source_system=row.source_system,source_record_id=p.get('source_record_id',p['id']),source_version=row.source_version,import_batch_id=str(row.id),imported_at=utcnow().isoformat(),validation_result='VALID')
+        if kind=='budgets':
+            p['ledger']=[dict(item,version=p['version'],budget_id=p['id']) for item in p['ledger']]
         rid=UUID(p['id']);old=session.get(ReferenceRecord,(rid,p['version']))
         if old:raise DomainError(409,'VERSION_EXISTS','An immutable version already exists.')
         amt=p.get('total_amount',p.get('requested_amount',p.get('amount')));day=p.get('invoice_date',p.get('expense_date'))
         r=ReferenceRecord(**identity.scope(),id=rid,version=p['version'],kind=kind,label=p.get('legal_name',p.get('name',p.get('policy_code',p.get('code',p['id'])))),payload=p,amount=Decimal(amt) if amt else None,currency=p.get('currency'),business_date=date.fromisoformat(day) if day else None,party_id=UUID(p.get('vendor_id',p.get('employee_id'))) if p.get('vendor_id',p.get('employee_id')) else None,number_key=number_key(p.get('invoice_number',p.get('claim_number'))),effective_from=date.fromisoformat(p['effective_from']) if p.get('effective_from') else None,effective_to=date.fromisoformat(p['effective_to']) if p.get('effective_to') else None)
         session.add(r);session.flush();session.add(ReferenceActivation(**identity.scope(),batch_id=row.id,record_id=rid,record_version=p['version'],actor_id=identity.actor_id))
         if kind=='budgets':
+            for item in p['ledger']:
+                child=item|{key:p[key] for key in ('tenant_id','legal_entity_id','source_system','source_version','import_batch_id','imported_at','validation_result')}
+                child['source_record_id']=child['id']
+                cid=UUID(child['id'])
+                if session.get(ReferenceRecord,(cid,p['version'])):raise DomainError(409,'LEDGER_VERSION_EXISTS','Ledger source versions are immutable.')
+                session.add(ReferenceRecord(**identity.scope(),id=cid,version=p['version'],kind='budget_ledger',label='Validated source budget ledger',payload=child,amount=Decimal(child['amount']),currency=p['currency']));session.flush()
+                session.add(ReferenceActivation(**identity.scope(),batch_id=row.id,record_id=cid,record_version=p['version'],actor_id=identity.actor_id))
+                session.add(ReferenceLink(**identity.scope(),child_id=cid,child_version=p['version'],parent_id=r.id,parent_version=r.version,relationship='budget_id'))
             from app.services.finance_ledger import import_budget
             import_budget(session,identity,r,row.id)
     catalog=active_records(session,identity)

@@ -10,7 +10,7 @@ from app.core.identity import Identity
 from app.core.serialization import utcnow, projection
 from app.db.document_models import *
 from app.db.session import scope_query
-from app.services.finance import get, audit
+from app.services.finance import get, audit, scope_lock
 from app.services.documents import enqueue_stage, pages, STAGES, PIPELINE_VERSION
 from app.documents.processor import DocumentProcessor, DocumentFailure, PROCESSOR_VERSION
 from app.documents.malware import UnconfiguredMalwareAdapter
@@ -24,6 +24,7 @@ from app.extraction.typellm import TypeLLMExtractionAdapter
 def claim(database,identity):
     now=utcnow()
     with database.session(identity) as s:
+        scope_lock(s,identity)
         q=scope_query(select(DocumentJob),DocumentJob,identity).where(DocumentJob.stage_version==PIPELINE_VERSION,
             or_(and_(DocumentJob.state.in_(['QUEUED','RETRYABLE']),DocumentJob.available_at<=now),
                 and_(DocumentJob.state=='RUNNING',DocumentJob.lease_until<=now))).order_by(DocumentJob.created_at).with_for_update(skip_locked=True).limit(1)
@@ -133,6 +134,7 @@ def perform(work,identity,storage,settings,scanner):
 
 def persist(database,identity,job_id,owner,work,output,started):
     with database.session(identity) as s:
+        scope_lock(s,identity)
         job=s.scalar(scope_query(select(DocumentJob),DocumentJob,identity).where(DocumentJob.id==job_id).with_for_update());doc=get(s,Document,identity,job.document_id)
         if job.state!='RUNNING' or job.lease_owner!=owner or job.lease_until<=utcnow() or job.generation!=doc.generation:return
         if job.stage=='PREPROCESS':
@@ -162,6 +164,7 @@ def persist(database,identity,job_id,owner,work,output,started):
 
 def record_failure(database,identity,job_id,owner,work,exc,started):
     with database.session(identity) as s:
+        scope_lock(s,identity)
         job=s.scalar(scope_query(select(DocumentJob),DocumentJob,identity).where(DocumentJob.id==job_id).with_for_update());doc=get(s,Document,identity,job.document_id)
         if job.state!='RUNNING' or job.lease_owner!=owner or job.generation!=doc.generation:return
         retry=exc.retryable and job.attempts<job.maximum_attempts

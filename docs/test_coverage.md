@@ -2,9 +2,9 @@
 
 This is the implementation coverage tracker for T01–T42 in [specification section 22.2](AP_Exception_Assistant_Codex_Spec.md#222-mandatory-test-cases). Scenarios and expected results are copied from that table; they describe required behavior, not executed tests.
 
-**Current Phase-2 scenario status: 22 IMPLEMENTED + PASSING; 11 PARTIALLY IMPLEMENTED; 9 NOT IMPLEMENTED.** The preserved Phase-1 gate executed 569 Python tests (488 preserved Phase-0 + 44 pure rules + 37 PostgreSQL integration) and 11 live-browser tests, with zero failures or skips. This is supported synthetic development coverage, not a full production release gate.
+**Current Phase-3 scenario status: 36 IMPLEMENTED + PASSING; 4 PARTIALLY IMPLEMENTED; 2 NOT IMPLEMENTED.** The preserved Phase-1 gate executed 569 Python tests (488 preserved Phase-0 + 44 pure rules + 37 PostgreSQL integration) and 11 live-browser tests, with zero failures or skips. This is supported synthetic development coverage, not a full production release gate.
 
-The original scenario and expected-result text is preserved below. A partial row means some supporting behavior exists but the complete scenario has not been proved. Target phases retain the original planning assignments; Phase 1 implements only the minimal safe subset. See the [Phase-2 exit review](phase2_exit_review.md) for current modes, commands and limitations; the Phase-2 local exit is verified with explicit external VLM deferral.
+The original scenario and expected-result text is preserved below. A partial row means some supporting behavior exists but the complete scenario has not been proved. Target phases retain the original planning assignments; Phase 1 implements only the minimal safe subset. See the [Phase-3 exit review](phase3_exit_review.md) for current gates and limits. Phase-2 extraction and its external VLM deferral are preserved.
 
 Test references: **PG** = [PostgreSQL integration](../apps/api/tests/integration/test_vertical_slice.py); **RULES** = [pure rules](../apps/api/tests/test_rules_phase1.py); **UI** = [live browser flows](../apps/web/tests/workspace.spec.ts). Each named test below was executed; unsupported cases are never promoted from fixture availability.
 
@@ -13,30 +13,30 @@ Test references: **PG** = [PostgreSQL integration](../apps/api/tests/integration
 | T01 | Clean vendor invoice, matching PO/GRN, sufficient budget, complete approvals | PASS with all required controls and evidence | Phase 1 / 3 | IMPLEMENTED + PASSING | PG `test_real_postgres_golden_end_to_end[vendor/clean]`; UI persisted vendor PASS/evidence/report. |
 | T02 | Same invoice number from different vendors | No duplicate based on number alone | Phase 1 | IMPLEMENTED + PASSING | PG `test_same_number_other_vendor_not_duplicate`. |
 | T03 | Same vendor/number/date/amount/currency already paid | HOLD under verified duplicate rule, cites prior transaction | Phase 1 / 3 | IMPLEMENTED + PASSING | PG golden `vendor/paid_duplicate`; UI persisted duplicate HOLD/evidence/report. |
-| T04 | Invoice-number punctuation/case variations | Candidate match with normalization trace | Phase 3 | PARTIALLY IMPLEMENTED | Conservative/aggressive candidate keys and observation-linked normalization traces exist; Phase-3 candidate resolution workflow remains deferred. |
-| T05 | Aggressive normalization collides for two legitimate series | REVIEW or DISTINCT resolution, no silent merge | Phase 3 | NOT IMPLEMENTED | Later-phase behavior; no executed complete scenario. |
+| T04 | Invoice-number punctuation/case variations | Candidate match with normalization trace | Phase 3 | IMPLEMENTED + PASSING | PG `test_duplicate_punctuation_resolution_and_version_binding`: separate UUIDs, conservative/aggressive keys, persisted signals, REVIEW then DISTINCT/new evaluation. |
+| T05 | Aggressive normalization collides for two legitimate series | REVIEW or DISTINCT resolution, no silent merge | Phase 3 | IMPLEMENTED + PASSING | The punctuation-collision PG test proves REVIEW instead of silent merge and authorized DISTINCT invalidation after material candidate revision; exact DISTINCT/policy replay also passes. |
 | T06 | Same file is retried with same idempotency key | Same resource and no new financial effects | Phase 1 / 4 | IMPLEMENTED + PASSING | PG `test_idempotent_create_revision_and_evaluate`, `test_csv_preview_commit_invalid_rows_retained_and_evidence_resolves`; P2 `test_two_step_original_hash_server_keys_replay_and_cross_tenant` and source-commit replay cover actual upload/finalization without duplicate effects. |
-| T07 | Independent second transaction uses same receipt | Duplicate analysis, not silently discarded upload | Phase 3 | PARTIALLY IMPLEMENTED | Structured source-document ID reuse is guarded; independent uploaded receipt/file comparison and full duplicate analysis are deferred. |
+| T07 | Independent second transaction uses same receipt | Duplicate analysis, not silently discarded upload | Phase 3 | IMPLEMENTED + PASSING | PG actual JPEG uploads persist independent documents and comparisons; browser two-receipt PDF comparison displays both sources. Repeated bytes are not silently discarded claims. |
 | T08 | PO 100, received 80, prior billed 30, new billed 70 | HOLD for 20-unit shortfall, cites prior allocations | Phase 3 | IMPLEMENTED + PASSING | PG golden `vendor/partial_grn`; RULES golden fixture computes HOLD from 50 remaining versus 70 requested and preserves prior allocation evidence. |
-| T09 | Service contract requires acceptance but none exists | HOLD, not inferred delivery | Phase 3 | NOT IMPLEMENTED | Later-phase behavior; no executed complete scenario. |
-| T10 | Item price exceeds configured tolerance | Exact variance and rule-specific REVIEW/HOLD | Phase 3 | PARTIALLY IMPLEMENTED | PO-003 computes term variance/tolerance; complete over-tolerance behavior across configured policies lacks a dedicated scenario test. |
+| T09 | Service contract requires acceptance but none exists | HOLD, not inferred delivery | Phase 3 | IMPLEMENTED + PASSING | PG authorized service contract: without independent acceptance HOLD; authorized acceptance plus new approved version PASS. |
+| T10 | Item price exceeds configured tolerance | Exact variance and rule-specific REVIEW/HOLD | Phase 3 | IMPLEMENTED + PASSING | Pure tolerance MAX/MIN/AND/OR cases compute exact variance and configured disposition; matching emits commercial evidence. Unknown UOM remains incomplete. |
 | T11 | Tax/line total mismatch | Finding cites arithmetic operands and source fields | Phase 1 / 3 | IMPLEMENTED + PASSING | PG `test_arithmetic_and_bank_failures_have_persisted_evidence`; RULES missing operands tests. |
 | T12 | Invoice requests new bank account | HOLD; vendor master unchanged | Phase 3 | IMPLEMENTED + PASSING | PG `test_arithmetic_and_bank_failures_have_persisted_evidence` verifies VEN-003 failure and unchanged master. |
 | T13 | Valid employee, allowed expense, policy/budget/approvals satisfied | PASS | Phase 1 / 3 | IMPLEMENTED + PASSING | PG golden `employee/clean_taxi`; UI persisted employee PASS. |
 | T14 | INR 15,000 hotel with two verified nights, INR 8,000/night limit | Category-limit check PASS | Phase 1 / 3 | IMPLEMENTED + PASSING | PG golden `employee/hotel_two_nights`; RULES `test_daily_aggregate_and_nightly_units` asserts 7,500 per night. |
 | T15 | Same INR 15,000 hotel with unknown nights | REVIEW, no assumed night count | Phase 2 / 3 | IMPLEMENTED + PASSING | PG golden `employee/hotel_unknown_nights`; RULES explicit UNKNOWN denominator and empty-item abstention. |
 | T16 | Three meals total INR 1,800 against INR 1,500/day | Aggregate policy finding with all claim IDs | Phase 3 | IMPLEMENTED + PASSING | PG golden `employee/daily_meals`; RULES `test_daily_aggregate_and_nightly_units` asserts 1,800 and two related claim IDs plus current source. |
-| T17 | Same receipt resized/compressed and claimed by another employee | Candidate found on supported benchmark transform; authorized comparison | Phase 3 | NOT IMPLEMENTED | Later-phase behavior; no executed complete scenario. |
-| T18 | Similar receipt template but different actual purchase | No confirmed duplicate from pHash alone | Phase 3 | NOT IMPLEMENTED | Later-phase behavior; no executed complete scenario. |
-| T19 | Authorized shared receipt split within eligible total | Allocation check PASS; no automatic double-claim conclusion | Phase 3 | NOT IMPLEMENTED | Later-phase behavior; no executed complete scenario. |
-| T20 | Shared receipt allocations exceed eligible total | HOLD with allocation evidence | Phase 3 | NOT IMPLEMENTED | Later-phase behavior; no executed complete scenario. |
-| T21 | Expense already paid by company card | HOLD for confirmed double reimbursement request | Phase 3 | PARTIALLY IMPLEMENTED | Explicit company-paid/advance arithmetic exists; independent card/payment ledger proof of double reimbursement is deferred. |
-| T22 | Two individually permitted amounts sum above limit near threshold | Possible split finding, REVIEW without accusation | Phase 3 | NOT IMPLEMENTED | Later-phase behavior; no executed complete scenario. |
+| T17 | Same receipt resized/compressed and claimed by another employee | Candidate found on supported benchmark transform; authorized comparison | Phase 3 | IMPLEMENTED + PASSING | Actual resize/JPEG/brightness/minor-blur pHash tests; PG separate employees retrieve indexed <=6-bit candidates from actual uploads with authorized/masked visibility. |
+| T18 | Similar receipt template but different actual purchase | No confirmed duplicate from pHash alone | Phase 3 | IMPLEMENTED + PASSING | Actual changed purchase with same image template in pure and PG tests; DUP-003 does not confirm a duplicate solely from pHash. |
+| T19 | Authorized shared receipt split within eligible total | Allocation check PASS; no automatic double-claim conclusion | Phase 3 | IMPLEMENTED + PASSING | PG/API/browser source/item/version-bound authorized share, computed receipt capacity and actual ledger allocation; supported complete synthetic expense PASS. |
+| T20 | Shared receipt allocations exceed eligible total | HOLD with allocation evidence | Phase 3 | IMPLEMENTED + PASSING | PG cumulative 600 + 800 > 1200 produces EXP-005 FAIL/HOLD with source/prior allocation evidence. |
+| T21 | Expense already paid by company card | HOLD for confirmed double reimbursement request | Phase 3 | IMPLEMENTED + PASSING | PG independently confirmed COMPANY_CARD and ADVANCE records produce EXP-006 FAIL/HOLD; requested reimbursement is preserved. Pure offset checks also pass. |
+| T22 | Two individually permitted amounts sum above limit near threshold | Possible split finding, REVIEW without accusation | Phase 3 | IMPLEMENTED + PASSING | PG same employee/merchant/day/category/trip near-threshold aggregate produces PAT-001 REVIEW without accusation or duplicate confirmation. |
 | T23 | Two concurrent non-PO claims each 80, budget remaining 100 | At most one obtains PASS reservation; other HOLD | Phase 3 | IMPLEMENTED + PASSING | PG `test_concurrent_admission_never_overallocates[BUDGET]` with two real concurrent finalizations. |
 | T24 | PO commitment already covers invoice | No double budget deduction | Phase 3 | IMPLEMENTED + PASSING | PG `test_re_evaluation_supersedes_immutable_reports_and_reservations` asserts zero incremental budget against covered PO commitment. |
 | T25 | Two concurrent bills compete for same accepted GRN capacity | No over-allocation; losing case reevaluated | Phase 3 | IMPLEMENTED + PASSING | PG `test_concurrent_admission_never_overallocates[GRN]`: one PASS, one HOLD, active capacity remains within 50. |
 | T26 | Mandatory approval absent or insufficient authority | HOLD, exact missing step/authority evidence | Phase 1 / 3 | IMPLEMENTED + PASSING | PG golden `vendor/approval_pending`, `test_insufficient_approver_authority_is_persisted_hold`; UI new submissions lack authority and HOLD. |
-| T27 | Submitter tries self-approval or forged approver ID | Rejected and audited | Phase 3 / 4 | PARTIALLY IMPLEMENTED | RULES `test_no_approval_authority_intake` and PG role tests reject forged authority; rejected-attempt audit/human approval workflow is deferred. |
+| T27 | Submitter tries self-approval or forged approver ID | Rejected and audited | Phase 3 / 4 | IMPLEMENTED + PASSING | PG self-approval 403 with immutable REJECTED action/audit; forged actor DTO 422; ordered authenticated roles and authority enforced. Validation rejection does not fabricate an approval action. |
 | T28 | Amount materially changes after approval | Old approval invalidated and eligibility recomputed | Phase 3 / 4 | IMPLEMENTED + PASSING | PG `test_revision_invalidates_approved_version_and_capacity`. |
 | T29 | Critical extraction unknown or provider disagreement | REVIEW; no invented amount/vendor/currency | Phase 2 | PARTIALLY IMPLEMENTED | Actual missing/conflicting/native/OCR observations and mocked TypeLLM disagreements retain ambiguity; normalizer/source commit blocks unresolved critical facts. Document drafts use NEEDS_INPUT without a finance decision; the complete live-model REVIEW scenario remains deferred. |
 | T30 | Low ML score but mandatory rule failure | HOLD remains | Phase 1 / 5 | PARTIALLY IMPLEMENTED | RULES `test_precedence` proves mandatory HOLD dominance; no ML score path exists to exercise the complete scenario. |
@@ -49,15 +49,15 @@ Test references: **PG** = [PostgreSQL integration](../apps/api/tests/integration
 | T37 | Worker crashes and retries finalization | One ledger effect and one logical decision commit | Phase 1 / 4 | IMPLEMENTED + PASSING | PG `test_worker_recovers_expired_lease_and_effects_are_idempotent`, `test_retry_pass_has_one_capacity_effect`; P2 `test_expired_document_lease_does_not_duplicate_pages_or_stages` proves stale document finalization rejection. |
 | T38 | Audit persistence fails | Eligibility-changing transaction does not commit | Phase 1 / 4 | IMPLEMENTED + PASSING | PG `test_atomic_audit_failure_rolls_back_creation`, `test_audit_failure_blocks_pass_and_all_effects`. |
 | T39 | Credit note or unsupported multi-document layout in MVP | Recognized unsupported path, REVIEW rather than forced positive bill | Phase 2 | PARTIALLY IMPLEMENTED | RULES `test_credit_currency_and_scope_incomplete_abstain` covers credit type; actual uncertain invoice bundles use NEEDS_INPUT and cannot commit or auto-split. Full REVIEW/resolution workflow remains deferred. |
-| T40 | Policy gap/overlap or stale master import | UNKNOWN/ERROR with evidence; no permissive fallback | Phase 3 | PARTIALLY IMPLEMENTED | Effective version/band selection and missing dependencies exist; stale import activation and complete gap/overlap scenarios are deferred. |
+| T40 | Policy gap/overlap or stale master import | UNKNOWN/ERROR with evidence; no permissive fallback | Phase 3 | IMPLEMENTED + PASSING | Pure gap/overlap/stale cases retain UNKNOWN; staging rejects overlap/band gaps; PG stale activated sources prevent PASS, resolve exact evidence and preserve old pinned PASS. |
 | T41 | Malicious receipt says to ignore policy | Text treated as data; controls unchanged | Phase 2 | IMPLEMENTED + PASSING | Actual instruction-bearing synthetic invoice and receipt PDFs: `test_embedded_instructions_have_no_extraction_authority` and PG `test_document_instructions_cannot_clear_approval_or_mutate_master` retain printed amounts, mandatory approval HOLD and unchanged vendor master. Remote prompt safety is separately contract-tested; no live-model claim. |
-| T42 | Retained evaluation replay after policy changes | Original pinned result reproduced; new policy produces separate evaluation | Phase 4 | PARTIALLY IMPLEMENTED | PG `test_persisted_pinned_inputs_reproduce_evaluation` and supersession tests verify current pinned replay; changed-policy and legacy-engine replay are deferred. |
+| T42 | Retained evaluation replay after policy changes | Original pinned result reproduced; new policy produces separate evaluation | Phase 4 | IMPLEMENTED + PASSING | PG exact DISTINCT/policy replay and retained reference replay reproduce original pinned decisions after reference changes; fresh evaluation uses separate current versions. Legacy evaluator is byte-unchanged. |
 
-Core deterministic, concurrency, and security cases remain mandatory. Optional later-phase functionality may be explicitly unsupported under the specification, but must not enable unsafe PASS. The Phase-1 local exit is satisfied; the full release gate remains incomplete.
+Core deterministic, concurrency, and security cases remain mandatory. Optional later-phase functionality may be explicitly unsupported under the specification, but must not enable unsafe PASS. Supported Phase-3 deterministic scenarios work; the complete production release and four partial/two ML scenarios remain incomplete.
 
 ## Historical Phase-0 supporting coverage
 
-The sections below preserve the Phase-0 disposition when those checks ran. Statements that no finance engine existed or all 42 rows were unimplemented describe that historical checkpoint; the Phase-1 matrix above is current.
+The sections below preserve the Phase-0 disposition when those checks ran. Statements that no finance engine existed or all 42 rows were unimplemented describe that historical checkpoint; the Phase-3 matrix above is current.
 
 ### P0-02 supporting tests
 
@@ -117,3 +117,39 @@ The 569-test baseline is preserved. New parser/storage suite (12), PostgreSQL in
 ## Phase-2 canonical, mapping and browser checks
 
 Actual-document finance tests cover both branches, approval HOLD/PASS with trusted test provisioning, physical field/page evidence, immutable corrections/new evaluations, fixture-substitution rejection, uncertain segmentation and multi-document links. Mapped CSV/XLSX tests retain cell provenance and reject formulas, numeric money and claimed attachment flags. Ten document-stage integration checks pass after isolating provider configuration from private development settings. Final production-browser gate: **16 passed**, 41.9s, including all original 11 checks plus actual PDF/photo, date corrections, pages/boxes/zoom, quarantine and mobile/loading/error paths. Final full Python aggregate: **641 passed**, 554.98s, zero failures/skips. The final retained table-coverage guard passed its targeted PostgreSQL test (18.38s) after that aggregate. No unexecuted live VLM scenario is promoted.
+
+## Phase-3 executed coverage
+
+Original 641 Python and 16 browser scenarios remain present. Phase 3 adds 63
+collected Python cases and seven browser cases. The final aggregate returned exit 0: **704 passed in 1179.01 s**, with no
+failures/skips and one upstream Starlette/httpx deprecation warning. The browser command
+`npm --prefix apps/web run test:e2e` returned exit 0: **23 passed**. Build and
+TypeScript commands returned exit 0. Exact commands/times belong in progress.
+
+Pure checks cover tolerances, UOM, acceptance, returns, repeated demand, Decimal
+capacity boundary sweeps, item/trip/month aggregates, offsets, fuzzy/pHash abstention,
+mandatory precedence, gap/overlap/staleness and retained original findings.
+Real PostgreSQL checks cover activation/snapshots, authority/scope/privacy,
+actual PDF-to-PASS in both branches, image retrieval, shared capacity, all-resource
+ledger lifecycle, PO commitment transfer, concurrent budget/GRN/duplicate admission,
+audit rollback/retries, delegation/preapproval/expiry, stale policy/version authority,
+computed exceptional CFO requirements, waivers, replay and resolved evidence.
+
+Browser checks cover matching, budget, approvals, DISTINCT, receipt shares,
+waivers, activation, loading/empty/error/role denials and actual paired receipt
+pages on laptop/mobile. The original overview test now identifies its retained
+seeded transaction by UUID because invoice number is an attribute, not identity.
+New expense fixtures use distinct fictional employee/grade/policy dimensions so
+repeated browser runs cannot consume one another's daily limits. No original
+source fixture semantics or historical test scenarios were weakened.
+
+Remaining owners: T29 needs separately authorized suitable live inference;
+T30/T31/T34 need Phase-5 ML; T33 needs Phase-4 dependency/Phase-5 required-model
+operations; T39 needs Phase-4 unsupported-input resolution (credit accounting needs
+its own approved scope). None can silently permit PASS today.
+
+Final staged review also found and closed a disabled-demo-cookie selection path.
+`node --test apps/web/checks/development-identity.mjs` passes its actual server
+module boundary test (1 passed); final typecheck/build and all 23 live browser
+checks passed again after the repair. This Node check is separate from browser
+and Python counts. No new finance or extraction behavior changed.

@@ -46,3 +46,11 @@ def test_additive_phase3_scale_catalog_and_manifest_reproducibility():
     for row in transactions():Canonical.model_validate(row['transaction'])
     manifest=json.loads((ROOT/'data/finance_phase3/manifest.json').read_text())
     for f in manifest['files']:assert hashlib.sha256((ROOT/'data/finance_phase3'/f['path']).read_bytes()).hexdigest()==f['sha256']
+
+
+def test_malformed_reference_collection_shapes_are_invalid_not_crashes():
+    document={'kind':'documents','payload':{'id':str(uuid4()),'version':1,'facts':{},'verification':'HUMAN_VERIFIED_SYNTHETIC','source_type':'EMPLOYEE_RECEIPT'}}
+    assert validate_records([document],{},S)==[]
+    for field,value in [('waivable_rules',{}),('currencies','INR'),('dimensions',[]),('bands',[None]),('ledger',{})]:
+        r=profile();r['payload'][field]=value
+        assert any(e['code'] in ('OBJECT_REQUIRED','ARRAY_REQUIRED','OBJECT_ARRAY_REQUIRED') for e in validate_records([r],{},S))

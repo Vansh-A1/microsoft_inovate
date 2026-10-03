@@ -757,3 +757,106 @@ Added 13 scoped tables at 0005_finance (47 business tables total), staged valida
 Phase-3 batches B–F implement the activated `rules-p3-v1` extension while retaining the legacy evaluator for historical contexts. The additive, frozen `0005_finance` migration adds 13 tables, forced RLS and immutable fact/source triggers. Matching accounts for net delivery, grouped line demand, explicit UOM, configurable tolerances, contracts and authorized service acceptance. Candidate comparisons/resolutions bind both versions; pHash and fuzzy similarity remain candidates. Append-only allocation/budget lifecycles transition all resources together. Approval requests/actions use authenticated identities, effective master/delegated ceilings, ordered distinct actors and computed exception requirements; waivers retain original findings.
 
 Executed checks: the expanded PostgreSQL/migration batch returned **19 passed in 260.49 s**; the cross-month/split/cancellation, exact DISTINCT/policy replay and decline/payment-account batch returned **3 passed in 39.58 s**. Configured exceptional CFO approval returned **1 passed in 20.68 s** after supplying its explicit master authority. Pure control/reference/image checks and scale activation have also run; the final whole-suite gate remains pending. A full-suite attempt was deliberately interrupted after discovering the new CFO test fixture lacked master authority; it is not recorded as a passing gate. The additive scale corpus supplies 20 vendors, 30 employees, 50 PO/GRN lines, 3 cost centers, explicit fictional USD/INR FX and 200 unverified structured inputs. The first isolated 10,000-history PostgreSQL benchmark ran successfully; final measurements will be rerun against the final revision. No GPU/inference setup or Phase-4 work occurred.
+
+### Phase-3 batch G — actual UI, integration repairs and measured benchmark
+
+Local backend commit `e82803f` preserves a coherent verified B–F implementation.
+The first complete aggregate returned **696 passed**, exit 0, **1163.50 s**; all
+original 641 scenarios were preserved. Its ignored log also contains residual
+stderr from an earlier interrupted process; the actual completed process result
+and aggregate are authoritative. A later unique-log gate includes the additional
+regressions and is still running; no final 704-test success is claimed yet.
+
+Real browser work exposed and repaired three application issues: resident worker
+identity selection was accidentally overwritten by the final restricted identity;
+an imported nested budget ledger lacked its server-owned child source version;
+worker claim and approval mutation used different lock order. Workers now select
+an explicit finance identity per scope while retaining job actor; source ledgers
+get immutable reference children/activation/links; claim, failure recording and
+document DB persistence acquire the same finance lock before job/transaction/audit.
+Bounded SQLState retries remain explicit. Actual synchronized claim/approval,
+finance admission and preserved document-finance checks returned **11 passed in
+137.74 s**, exit 0. Reference/ledger/split checks returned **5 passed in 112.18 s**.
+
+Configured preapproval now has an independently activated versioned source with
+explicit PREAPPROVER master, scope/currency/ceiling/category/business dates, rather
+than an unsatisfiable client-independent flag. Delegated submitter/preapproval
+positive and expiry negative passed (**1 passed, 10.89 s**). A combined check had
+37 passing cases and one preapproval evidence resolver mismatch; using the real
+reference fact kind repaired it. Stale-reference evidence and future-freshness
+abstention, independent card AND advance proof, policy gap/overlap, malformed
+collection shapes and minor image blur are exercised. The original label-based
+verification string stays valid; post-fix reference units returned **7 passed in
+0.22 s**, exit 0. Identity resolution denies employee master-catalog access.
+
+Frontend controls expose real commercial capacities, budget components, lifecycle,
+individual duplicate signals and paired actual pages, ordered authority, receipt
+shares, policy/offset/split facts, waivers and reference activation. A loopback-only
+server-configured synthetic identity picker never sends bearer tokens or accepts
+arbitrary roles. Private setup was executed and kept mode 0600/ignored. Approval,
+duplicate and source-view loading/error/empty/role/mobile paths were exercised.
+Screenshots for matching/approval, duplicate, receipt share, waiver, reference and
+paired source laptop/mobile were visually inspected. No fabricated field box.
+
+After repairing the validator's mistaken object requirement on the established
+verification string, and the old overview test's incorrect unique-invoice-number
+selector, `npm --prefix apps/web run test:e2e` returned **exit 0, 23 passed, 82.625 s,
+0 failed/skipped/flaky**. The original overview behavior now identifies its seeded
+transaction by UUID. Expense browser fixtures use distinct fictional grade/policy
+dimensions so repeated local runs do not consume one another's daily capacity.
+The first 23-test attempt returned 18 pass/5 fail; it is not a passing gate.
+
+`npm --prefix apps/web run typecheck` and `npm --prefix apps/web run build` returned
+exit 0 (production compile 642 ms). `.venv/bin/python -m pip check` returned no
+broken requirements. Live Alembic current = `0005_finance (head)`; check = no new
+upgrade operations. Earlier actual 0004→0005 upgrade preserved meaningful old
+records; fresh/base-downgrade/re-upgrade is also integration-tested. Source checks
+returned exit 0: nine original source entries, 23 finance/golden, 11 extraction and
+15 actual document entries; spec `cmp` and legacy-engine diff are unchanged.
+
+Final benchmark command `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python
+scripts/benchmark/finance_phase3.py` returned exit 0. It actually persisted 10,000
+generated histories and 200 unverified structured transactions, then removed only
+its disposable schema. All ten complete target evaluations computed PASS.
+Lookup median/p95 = **3.764/4.813 ms**, pure matching/rules **2.995/3.332 ms**,
+transactional finalization/budget **140.317/185.991 ms**, enqueue/claim/context/
+finalization **356.879/384.471 ms**. EXPLAIN uses `ix_history_exact`. Environment and
+small warm-sample limits are recorded in the exit review; no SLA claim.
+
+README, runbook, assumptions, dictionary, exact coverage/owners and all 38 exit
+criteria are updated. Current supported matrix: **36 implemented, 4 partial,
+2 not implemented**. Final Python gate, staged review, final commits and the single
+authorized push remain pending. Phase 4 has not begun.
+
+
+### Phase-3 final local exit gate
+
+`PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider`
+completed with **exit 0, 704 passed, 1179.01 s, zero failures/skips**, one upstream
+Starlette/httpx deprecation warning. The established verification-label correction
+was independently checked by the post-fix seven reference units and the complete
+23-browser gate against the running final API. Unique final gate log is ignored
+`generated/reports/pytest-phase3-gate.txt`; earlier interrupted attempts are not
+passing gates. Collect-only confirms 704 cases; it is not an application test pass.
+
+All 38 approved exit criteria are SATISFIED in the formal review. Local Phase 3 is
+complete. Final source check/diff/precision/RLS/migration/UI/API/self-review gates
+are recorded above. The final local-link checker excludes actual URI schemes
+(including the original conversation link), checked 177 targets and found none
+broken. Its first check incorrectly treated that preserved external URI as a local
+path; the source specification was not modified. Actual OpenAPI matches the saved
+contract with 45 paths. Next step is final staged review/commits and the single
+explicitly authorized normal main push. Phase 4 has not begun.
+
+
+Final staged security review found that the proxy honored a supplied configured
+demo cookie even when the identity-picker flag was disabled. The server resolver
+now honors it only with explicit AP_ENABLE_DEMO_IDENTITIES=1. Actual module
+boundary command `node --test apps/web/checks/development-identity.mjs` returned
+exit 0: **1 passed**, disabled/0/enabled/unconfigured/default paths checked with
+private temporary synthetic inputs. A Node module-type inference warning is
+non-fatal and does not change the Next bundler setup. Final `typecheck` / `build`
+returned exit 0 (compile 711 ms). Restarted the owned production server and ran
+all browser cases again: **23 passed, 72.343 s**, exit 0, no failures/skips/flaky.
+The Node check is separate from the 704 Python and 23 browser totals. Backend
+finance/extraction code did not change after the completed aggregate.

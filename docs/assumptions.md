@@ -2,6 +2,9 @@
 
 This register separates proposed development defaults, currently missing inputs, and observed environment facts. None establishes a live company's finance policy or a production capability. Basis: [specification](AP_Exception_Assistant_Codex_Spec.md), repository reconnaissance, and the user's Phase-0 approvals and continuous Phase-1 approval on 2026-10-03.
 
+Later phase sections supersede earlier historical capability limits; they do not
+change the original assumptions or pretend synthetic policy is company policy.
+
 ## Business defaults and missing inputs
 
 | Item | Current basis/status | Required before live use |
@@ -104,3 +107,48 @@ publication occurred. Approval review blocked a later read-only remote branch
 check under the no-retry instruction before execution. No further network attempt
 occurred. Local completion is distinct from remote publication; remote SHA/file-set
 verification is not claimed. See progress for the recorded outcome.
+
+## Phase-3 finance boundary
+
+P3-01–P3-06 are directly approved continuously. An explicit activated profile selects
+28 versioned Phase-3 controls; the original pure 20-control evaluator remains for
+retained contexts. Future evaluations pin reference versions and live cumulative
+capacity at finalization. Current vendor restriction is rechecked under the same
+scoped admission lock; it cannot mutate an older retained evaluation.
+
+All master/authority/receipt/payment/contract/FX values remain fictional. The
+additive catalog includes 20 vendors, 30 employees, 50 PO/GRN lines and 3 cost
+centers. Its 200 structured inputs are explicitly unverified, not eligible cases.
+The configured finance profile is INR-only. USD and fictional USD/INR rate facts
+demonstrate reference handling; there is no automatic cross-currency arithmetic.
+Credit/refund accounting and segmentation confirmation remain safely incomplete.
+
+Fuzzy ratio and 64-bit pHash distance are individual candidate measurements, never
+probability or authority. Initial pHash distance <=6, number cutoff 85 and 7-day
+window are bounded synthetic configuration requiring independent validation.
+Actual resize/JPEG/brightness/minor-blur tests and a different-purchase template
+negative prove the stated candidate/abstention behavior, not general image accuracy.
+Fingerprints use actual safe derived pages, retain versions/dimensions, and skip
+low-information images. Synthetic JSON source facts have no uploaded preview.
+
+Gross append-only budget and allocation lifecycles model screening exposure.
+Consumption is an explicitly authenticated fictional ledger action, not payment
+execution or ERP settlement proof. Scope-wide locking favors correctness over
+parallel throughput; actual PostgreSQL concurrency tests cover budget, GRN and
+duplicate admission plus simultaneous worker claim/approval mutation. Worker
+claim, failure recording and document persistence follow the same lock order.
+Production throughput, restore, availability and scale SLAs remain unverified.
+
+Authenticated synthetic roles live only in ignored private files. The loopback
+supervisor enables a server-defined identity picker; it does not accept arbitrary
+actor or role claims. Explicit Finance Submitter permits reviewer intake on behalf
+of claimants; other submitters require a valid scoped delegation. Preapproval is
+an independently activated record with explicit PREAPPROVER master authority,
+scope, category, currency, ceiling and business dates; a client flag cannot prove it.
+Approval and waiver remain separate. Mandatory nonwaivable controls remain binding.
+
+The final benchmark uses 10,000 generated PostgreSQL histories plus 200 structured
+transactions in its disposable schema. Reported local warm measurements are
+descriptive, not a production SLA. Native/OCR and TypeLLM boundaries are preserved;
+live enterprise VLM remains **DEFERRED — BLOCKED EXTERNAL PREREQUISITE**. No GPU,
+Docker, cloud, ML, SLA/review leases or Phase-4 operations were introduced.

@@ -13,6 +13,7 @@ type Document={id:string;display_name:string;source_type:string;state:string;las
  original:{sha256:string;byte_size:number;detected_mime:string}|null;
  jobs:{stage:string;state:string;attempts:number;metadata:unknown}[];
  extraction_runs:{adapter:string;metadata:unknown;status:string}[]};
+export type DocumentDetail=Document;
 type DocList={id:string;display_name:string;source_type:string;state:string;last_error:string|null};
 export type DocumentEvidence={document:Document;reference:Source;source_image_available:boolean};
 const working=new Set(['QUEUED','PROCESSING','FAILED_RETRYABLE']);

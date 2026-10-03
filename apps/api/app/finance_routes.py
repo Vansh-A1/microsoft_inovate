@@ -43,6 +43,7 @@ def mount(app,database,identity,mutation):
         return mutation(request,ctx,key,body.model_dump(),200,lambda s:refs.activate(s,ctx,batch_id,body.reason,request.state.correlation))
     @app.post('/api/v1/identity-resolutions')
     def resolve(body:ResolveIdentity,ctx=Depends(identity)):
+        if not {'FINANCE_REVIEWER','REFERENCE_ADMIN','AUDITOR','FINANCE_CONTROLLER'}&ctx.roles:refs.require(ctx,'REFERENCE_ADMIN')
         if body.kind not in ('vendors','employees'):raise __import__('app.core.errors',fromlist=['DomainError']).DomainError(422,'IDENTITY_KIND_INVALID','Use vendors or employees.')
         with database.session(ctx) as s:
             records={k:r.payload|{'_kind':r.kind} for k,r in refs.active_records(s,ctx).items()}

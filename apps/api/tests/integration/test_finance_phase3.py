@@ -82,7 +82,8 @@ def test_approval_api_current_version_authority_rejection_audit_and_pass(environ
     assert client.get('/api/v1/transactions/'+tid+'/approval-requests').json()['items'][0]['stale']
 
 
-def test_employee_shared_receipt_and_company_card_controls(environment):
+@pytest.mark.parametrize('payment_type',['COMPANY_CARD','ADVANCE'])
+def test_employee_shared_receipt_and_company_card_controls(environment,payment_type):
     db,ctx,other,client,cfg=configured(environment);p=payload('employee/shared_within');tid=create(client,p);approve(client,tid)
     item=client.get('/api/v1/transactions/'+tid).json()['versions'][-1]['payload']['items'][0]
     body={'expected_version':1,'document_id':item['source_document_id'],'item_id':item['id'],'amount':item['claimed_amount'],'quantity':'1','reason':'Authorized employee share of a fictional meal','evidence_ids':[tid]}
@@ -91,7 +92,7 @@ def test_employee_shared_receipt_and_company_card_controls(environment):
     assert r['decision']=='PASS',r
     p=payload('employee/clean_taxi');p=trusted_source(db,ctx,p);tid2=create(client,p);approve(client,tid2)
     with db.session(ctx) as s:
-        rid=uuid4();s.add(ReferenceRecord(**ctx.scope(),id=rid,version=1,kind='company_payments',label='Confirmed synthetic company card',payload={'id':str(rid),'version':1,'employee_id':p['employee_id'],'document_id':p['items'][0]['source_document_id'],'amount':'2400','currency':'INR','status':'CONFIRMED','payment_type':'COMPANY_CARD'}));s.flush()
+        rid=uuid4();s.add(ReferenceRecord(**ctx.scope(),id=rid,version=1,kind='company_payments',label='Confirmed synthetic independent payment',payload={'id':str(rid),'version':1,'employee_id':p['employee_id'],'document_id':p['items'][0]['source_document_id'],'amount':'2400','currency':'INR','status':'CONFIRMED','payment_type':payment_type}));s.flush()
     q=client.post('/api/v1/transactions/'+tid2+'/evaluate',json={'expected_version':1,'reason':'Verify confirmed company payment'},headers=headers());assert q.status_code==202
     drain(db,ctx);result=report(client,tid2);assert result['decision']=='HOLD' and next(x for x in result['rules'] if x['rule_id']=='EXP-006')['status']=='FAIL'
 
@@ -388,3 +389,55 @@ def test_computed_exception_changes_required_approval_roles(environment):
     drain(db,ctx);r=report(client,tid);assert next(x for x in r['rules'] if x['rule_id']=='APR-001')['status']=='PASS' and r['decision']=='REVIEW'
     # Completion of the exceptional approval chain leaves the original allowance finding intact.
     assert next(x for x in r['rules'] if x['rule_id']=='EXP-003')['status']=='FAIL'
+
+
+def test_resident_worker_selects_finance_scope_and_preserves_job_actor(environment):
+    from app.services.worker import worker_identities
+    db,ctx,other,client,cfg=configured(environment);settings=client.app.state.settings
+    settings.identities['last-restricted-employee']={'tenant_id':str(ctx.tenant_id),'legal_entity_id':str(ctx.legal_entity_id),'actor_id':'51000000-0000-4000-8000-000000000002','roles':['EMPLOYEE'],'label':'Restricted final identity'}
+    worker=worker_identities(settings)[(ctx.tenant_id,ctx.legal_entity_id)]
+    assert 'FINANCE_REVIEWER' in worker.roles and worker.actor_id==ctx.actor_id
+    tid=create(client,payload());client.post('/api/v1/transactions/'+tid+'/evaluate',json={'expected_version':1,'reason':'Exercise the scoped resident worker'},headers=headers());drain(db,worker);r=report(client,tid);assert r['decision']=='HOLD' and r['ruleset_version']=='rules-p3-v1'
+
+
+def test_worker_claim_and_concurrent_approval_mutation_share_lock_order(environment):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+    from app.services.worker import claim
+    db,ctx,other,client,cfg=configured(environment);tid=create(client,payload());client.post('/api/v1/transactions/'+tid+'/evaluate',json={'expected_version':1,'reason':'Concurrent claim and approval request'},headers=headers());barrier=Barrier(2)
+    def lease():barrier.wait(timeout=10);return claim(db,ctx)
+    def request():barrier.wait(timeout=10);return client.post('/api/v1/transactions/'+tid+'/approval-requests',json={'expected_version':1,'reason':'Concurrent durable approval request'},headers=headers())
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        a=pool.submit(lease);b=pool.submit(request);leased=a.result(timeout=15);response=b.result(timeout=15)
+    assert leased and response.status_code==201,response.text
+    with db.session(ctx) as s:assert finance.finalize(s,ctx,leased[0],leased[1])
+    assert report(client,tid)['decision']=='HOLD'
+
+
+def test_on_behalf_submission_and_verified_preapproval_expire_without_defaults(environment):
+    from app.services.reference_imports import active_records
+    db,ctx,other,client,cfg=configured(environment);p=payload('employee/clean_taxi');delegate='51000000-0000-4000-8000-000000000002';manager='51000000-0000-4000-8000-000000000003'
+    client.app.state.settings.identities['test-on-behalf']={'tenant_id':str(ctx.tenant_id),'legal_entity_id':str(ctx.legal_entity_id),'actor_id':delegate,'roles':['FINANCE_REVIEWER'],'label':'Synthetic delegated submitter'}
+    with db.session(ctx) as s:
+        refs=active_records(s,ctx);policy=refs[p['expense_policy_id']].payload|{'version':2,'preapproval_required':True};actor=refs[manager].payload;actor=actor|{'version':2,'roles':actor['roles']+['PREAPPROVER']}
+    period={'effective_from':'2026-01-01','effective_to':'2026-09-26'}
+    delegation=period|{'id':str(uuid4()),'version':1,'delegator_id':p['employee_id'],'delegate_id':delegate,'purpose':'SUBMIT','roles':['SUBMIT'],'ceiling_amount':'5000','currency':'INR','cost_center_id':p['cost_center_id']}
+    preapproval=period|{'id':str(uuid4()),'version':1,'employee_id':p['employee_id'],'approver_id':manager,'currency':'INR','category':p['category'],'cost_center_id':p['cost_center_id'],'ceiling_amount':'5000','approved_date':'2026-09-24','status':'APPROVED'}
+    stage_records(client,[{'kind':'expense_policies','payload':policy},{'kind':'employees','payload':actor},{'kind':'delegations','payload':delegation},{'kind':'preapprovals','payload':preapproval}])
+    def submit(facts):
+        facts=trusted_source(db,ctx,facts);r=client.post('/api/v1/transactions',json=facts,headers=headers()|{'Authorization':'Bearer test-on-behalf'});assert r.status_code==201,r.text
+        tid=r.json()['id'];approve(client,tid);drain(db,ctx);return report(client,tid)
+    r=submit(p);assert r['decision']=='PASS',r
+    control=next(x for x in r['rules'] if x['rule_id']=='EXP-002');assert control['observed']['preapproval_id']==preapproval['id']
+    for e in control['evidence']:assert client.get('/api/v1/evidence/'+e['id']).status_code==200
+    p=payload('employee/clean_taxi');p.update(expense_date='2026-09-27',claim_number='Delegation and preapproval expired');p['items'][0]['expense_date']=p['expense_date']
+    r=submit(p);assert r['decision']=='HOLD' and next(x for x in r['rules'] if x['rule_id']=='EMP-001')['status']=='FAIL'
+    assert 'verified_preapproval' in next(x for x in r['rules'] if x['rule_id']=='EXP-002')['observed']['missing']
+
+
+def test_stale_activated_source_prevents_pass_and_resolves_pinned_evidence(environment):
+    db,ctx,other,client,cfg=configured(environment);tid=create(client,payload());approve(client,tid);drain(db,ctx);old=report(client,tid);assert old['decision']=='PASS'
+    with db.session(ctx) as s:finance.enqueue(s,ctx,UUID(tid),1,'Explicit future freshness check','phase3-stale','stale-source-check',evaluated_at=utcnow()+timedelta(days=31))
+    drain(db,ctx);new=report(client,tid);r=next(x for x in new['rules'] if x['rule_id']=='REF-001');assert new['decision']!='PASS' and r['status']=='UNKNOWN' and r['observed']['stale_reference_ids']
+    for e in r['evidence']:assert client.get('/api/v1/evidence/'+e['id']).status_code==200
+    assert client.get('/api/v1/evaluations/'+old['evaluation_id']).json()['decision']=='PASS'
