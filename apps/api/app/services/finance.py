@@ -15,6 +15,22 @@ from app.services.references import snapshot, snapshot_records, pinned, number_k
 def get(session, model, identity, record_id):
     row=session.scalar(scope_query(select(model),model,identity).where(model.id==record_id))
     if row is None:raise unavailable()
+    if 'EMPLOYEE' in identity.roles and not {'FINANCE_REVIEWER','AUDITOR','FINANCE_CONTROLLER'}&identity.roles:
+        txid=getattr(row,'transaction_id',None)
+        if model is Transaction:txid=row.id
+        if model in (Evaluation,EvidenceObject,Report) and txid is None:
+            eid=getattr(row,'evaluation_id',None)
+            evaluated=session.scalar(scope_query(select(Evaluation),Evaluation,identity).where(Evaluation.id==eid)) if eid else None
+            txid=evaluated.transaction_id if evaluated else None
+        if txid:
+            t=session.scalar(scope_query(select(Transaction),Transaction,identity).where(Transaction.id==txid))
+            current=session.scalar(scope_query(select(TransactionVersion),TransactionVersion,identity).where(TransactionVersion.transaction_id==txid,TransactionVersion.version==t.latest_version)) if t else None
+            if not current or current.party_id!=identity.actor_id:raise unavailable()
+        if model.__tablename__=='documents':
+            from app.db.document_models import UploadSession,TransactionDocument
+            owned=session.scalar(scope_query(select(UploadSession),UploadSession,identity).where(UploadSession.document_id==row.id,UploadSession.actor_id==identity.actor_id))
+            linked=session.scalar(scope_query(select(TransactionVersion).join(TransactionDocument,(TransactionDocument.transaction_id==TransactionVersion.transaction_id)&(TransactionDocument.transaction_version==TransactionVersion.version)),TransactionVersion,identity).where(TransactionDocument.document_id==row.id,TransactionVersion.party_id==identity.actor_id))
+            if not owned and not linked:raise unavailable()
     return row
 
 
@@ -69,6 +85,8 @@ def append_version(session,identity,row,payload,version,reason,*,normalizer_vers
 
 
 def release(session,identity,transaction_id):
+    from app.services.finance_ledger import release_transaction
+    release_transaction(session,identity,transaction_id)
     session.execute(scope_query(update(CapacityReservation),CapacityReservation,identity).where(CapacityReservation.transaction_id==transaction_id,CapacityReservation.state=='ACTIVE').values(state='RELEASED'))
     session.execute(scope_query(update(ReviewCase),ReviewCase,identity).where(ReviewCase.transaction_id==transaction_id,ReviewCase.state=='OPEN').values(state='SUPERSEDED'))
 
@@ -90,14 +108,17 @@ def revise(session,identity,record_id,data,correlation,*,normalizer_version='str
 def enqueue(session,identity,record_id,expected,reason,correlation,intent,evaluated_at=None):
     scope_lock(session,identity);row=get(session,Transaction,identity,record_id)
     if row.latest_version!=expected:raise DomainError(409,'STALE_VERSION','Evaluation must target the latest version.')
-    snap=snapshot(session,identity)
-    key=digest({'transaction':row.id,'version':expected,'snapshot':snap.id,'stage':RULESET,'intent':intent})
+    latest=session.scalar(scope_query(select(TransactionVersion),TransactionVersion,identity).where(TransactionVersion.transaction_id==row.id,TransactionVersion.version==expected))
+    snap=snapshot(session,identity,latest.business_date.isoformat() if latest.business_date else None)
+    catalog=pinned(session,identity,snap.id)
+    stage_version='rules-p3-v1' if any(r.get('_kind')=='finance_profiles' for r in catalog.values()) else RULESET
+    key=digest({'transaction':row.id,'version':expected,'snapshot':snap.id,'stage':stage_version,'intent':intent})
     job=session.scalar(scope_query(select(Job),Job,identity).where(Job.stage_key==key))
     if job:return {'job_id':str(job.id),'state':job.state,'transaction_id':str(row.id)}
     release(session,identity,row.id);row.eligible=False;row.decision=None;row.processing_state='QUEUED';row.row_version+=1
-    job=Job(**identity.scope(),id=uuid4(),transaction_id=row.id,transaction_version=expected,snapshot_id=snap.id,stage_key=key,generation=row.row_version,stage_version=RULESET,evaluated_at=evaluated_at or utcnow(),actor_id=identity.actor_id)
+    job=Job(**identity.scope(),id=uuid4(),transaction_id=row.id,transaction_version=expected,snapshot_id=snap.id,stage_key=key,generation=row.row_version,stage_version=stage_version,evaluated_at=evaluated_at or utcnow(),actor_id=identity.actor_id)
     session.add(job);session.flush()
-    session.add(OutboxEvent(**identity.scope(),job_id=job.id,event_type='EVALUATION_REQUESTED',aggregate_id=row.id,aggregate_version=expected,payload={'job_id':str(job.id),'stage':RULESET}))
+    session.add(OutboxEvent(**identity.scope(),job_id=job.id,event_type='EVALUATION_REQUESTED',aggregate_id=row.id,aggregate_version=expected,payload={'job_id':str(job.id),'stage':stage_version}))
     audit(session,identity,'EVALUATION_REQUESTED',row.id,expected,reason,correlation,{'job_id':str(job.id),'snapshot_id':str(snap.id)})
     return {'job_id':str(job.id),'state':job.state,'transaction_id':str(row.id)}
 
@@ -160,6 +181,8 @@ def _build_context(session,identity,job,version):
         from app.db.document_models import ImportCell
         cells=session.scalars(scope_query(select(ImportCell),ImportCell,identity).where(ImportCell.row_id==source.id,ImportCell.column!='transaction_json')).all()
         data['import_cells']=[{'column':cell.column,'field_path':cell.field_path} for cell in cells]
+    from app.services.finance_controls import augment
+    data=augment(session,identity,version,data)
     return RuleContext.pin(**data)
 
 
@@ -170,7 +193,8 @@ def report_html(content):
         links=''.join('<li><a href="../../evidence/'+esc(e['id'])+'">'+esc(e['reference']['kind'])+' / '+esc(e['reference']['record_id'])+' / version '+esc(e['reference']['record_version'])+'</a></li>' for e in rule['evidence'])
         sections.append('<section><h2>'+esc(rule['rule_id'])+' · '+esc(rule['status'])+'</h2><p>Rule version '+esc(rule['version'])+' · effect '+esc(rule['decision_effect'])+'</p><p>'+esc(rule['reason'])+'</p><h3>Observed</h3><pre>'+esc(canonical_json(rule['observed']))+'</pre><h3>Expected / tolerance</h3><pre>'+esc(canonical_json({'expected':rule['expected'],'tolerance':rule['tolerance']}))+'</pre><h3>Evidence references</h3><ul>'+links+'</ul></section>')
     metadata={key:content.get(key) for key in ['schema_version','evaluation_id','evaluation_version','transaction_id','transaction_version','reference_snapshot_id','ruleset_version','decision_policy_version','completeness','input_digest','evaluated_at','supersedes_id','reason_codes']}
-    return '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Screening report</title><style>body{font:15px/1.5 system-ui;margin:2rem;color:#16324f}section{border-top:1px solid #ccd5df;margin-top:2rem;padding-top:1rem}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f6fa;padding:12px;font-size:12px}h1{font-size:24px}h2{font-size:18px}h3{font-size:14px}a{color:#185b8a;overflow-wrap:anywhere}</style><h1>'+esc(content['decision'])+' — Synthetic screening report</h1><p>Transaction '+esc(content['transaction_id'])+' · version '+esc(content['transaction_version'])+'</p><p>Eligibility at evaluation: '+esc(content['eligible'])+'. No payment execution.</p><p>RULES_ONLY · risk model NOT_CONFIGURED · STRUCTURED_SYNTHETIC. No source images or bounding boxes.</p><h2>Pinned evaluation metadata</h2><pre>'+esc(canonical_json(metadata))+'</pre><h2>Next actions</h2><ul>'+''.join('<li>'+esc(action)+'</li>' for action in content['next_actions'])+'</ul>'+''.join(sections)+'</html>'
+    sections.insert(0,'<section><h2>Waiver dispositions</h2><pre>'+esc(canonical_json(content.get('waiver_dispositions',[])))+'</pre><p>Original rule findings remain visible below.</p></section>' if content.get('waiver_dispositions') else '')
+    return '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Screening report</title><style>body{font:15px/1.5 system-ui;margin:2rem;color:#16324f}section{border-top:1px solid #ccd5df;margin-top:2rem;padding-top:1rem}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f6fa;padding:12px;font-size:12px}h1{font-size:24px}h2{font-size:18px}h3{font-size:14px}a{color:#185b8a;overflow-wrap:anywhere}</style><h1>'+esc(content['decision'])+' — Synthetic screening report</h1><p>Transaction '+esc(content['transaction_id'])+' · version '+esc(content['transaction_version'])+'</p><p>Eligibility at evaluation: '+esc(content['eligible'])+'. No payment execution.</p><p>RULES_ONLY · risk model NOT_CONFIGURED · Versioned source evidence is linked below.</p><h2>Pinned evaluation metadata</h2><pre>'+esc(canonical_json(metadata))+'</pre><h2>Next actions</h2><ul>'+''.join('<li>'+esc(action)+'</li>' for action in content['next_actions'])+'</ul>'+''.join(sections)+'</html>'
 
 
 def finalize(session,identity,job_id,lease_owner):
@@ -178,7 +202,7 @@ def finalize(session,identity,job_id,lease_owner):
     job=session.scalar(scope_query(select(Job),Job,identity).where(Job.id==job_id).with_for_update())
     if job is None:raise unavailable()
     if job.state=='SUCCEEDED':return job.result_evaluation_id
-    if job.stage!='EVALUATE' or job.stage_version!=RULESET:raise DomainError(409,'STAGE_VERSION_UNSUPPORTED','A compatible worker is required for this stage version.')
+    if job.stage!='EVALUATE' or job.stage_version not in (RULESET,'rules-p3-v1'):raise DomainError(409,'STAGE_VERSION_UNSUPPORTED','A compatible worker is required for this stage version.')
     if job.state!='RUNNING' or job.lease_owner!=lease_owner or job.lease_until<=utcnow():raise DomainError(409,'LEASE_LOST','The job lease is no longer valid.')
     transaction=get(session,Transaction,identity,job.transaction_id)
     if transaction.latest_version!=job.transaction_version or transaction.row_version!=job.generation:
@@ -190,11 +214,12 @@ def finalize(session,identity,job_id,lease_owner):
     evaluated_snapshot=snapshot_records(session,identity,[(UUID(r['id']),r['version']) for r in context_data['references'].values()])
     context_data['snapshot_id']=str(evaluated_snapshot.id)
     context=RuleContext.pin(**context_data)
-    from app.rules.document_sources import evaluate_sources
-    decision=evaluate_sources(context)
+    from app.rules.finance_phase3 import evaluate as evaluate_finance
+    decision=evaluate_finance(context)
+    selected_ruleset='rules-p3-v1' if context_data.get('finance_v3') else RULESET
     from app.rules.import_evidence import mapped_evidence
     decision=mapped_evidence(decision,context_data)
-    evaluation=Evaluation(**identity.scope(),id=uuid4(),transaction_id=transaction.id,transaction_version=version.version,reference_snapshot_id=evaluated_snapshot.id,ruleset_version=RULESET,decision_policy_version=DECISION_POLICY,evaluation_mode='RULES_ONLY',completeness=decision.completeness,decision=decision.decision,eligible=decision.eligible,input_digest=digest(context.encoded),evaluated_at=job.evaluated_at,supersedes_id=transaction.latest_evaluation_id)
+    evaluation=Evaluation(**identity.scope(),id=uuid4(),transaction_id=transaction.id,transaction_version=version.version,reference_snapshot_id=evaluated_snapshot.id,ruleset_version=selected_ruleset,decision_policy_version=DECISION_POLICY,evaluation_mode='RULES_ONLY',completeness=decision.completeness,decision=decision.decision,eligible=decision.eligible,input_digest=digest(context.encoded),evaluated_at=job.evaluated_at,supersedes_id=transaction.latest_evaluation_id)
     session.add(evaluation);session.flush()
     session.add(EvaluationInput(**identity.scope(),evaluation_id=evaluation.id,encoded=context.encoded,content_digest=digest(context.encoded)));session.flush()
     rules=[]
@@ -213,19 +238,25 @@ def finalize(session,identity,job_id,lease_owner):
                 reference={'kind':'HISTORICAL_AGGREGATE','record_id':reservation['id'],'record_version':1,'tenant_id':str(identity.tenant_id),'legal_entity_id':str(identity.legal_entity_id),'snapshot_id':str(evaluated_snapshot.id),'field_path':None,'document_id':None,'page':None,'bbox':None,'observed_value':None,'import_cell':None}
                 item=EvidenceObject(**identity.scope(),id=uuid4(),evaluation_id=evaluation.id,rule_result_id=UUID(body['result_id']),reference=reference);session.add(item);body['evidence'].append({'id':str(item.id),'reference':reference})
     release(session,identity,transaction.id)
-    if decision.eligible:reserve(session,identity,evaluation,version,context_data,decision)
+    if decision.eligible:
+        if context_data.get('finance_v3'):
+            from app.services.finance_controls import reserve as reserve_finance
+            reserve_finance(session,identity,evaluation,version,context_data,decision)
+        else:reserve(session,identity,evaluation,version,context_data,decision)
     if decision.decision!='PASS':
         review=ReviewCase(**identity.scope(),id=uuid4(),evaluation_id=evaluation.id,transaction_id=transaction.id,decision=decision.decision,branch=transaction.branch,reasons=[r.rule_id for r in decision.results if r.decision_effect!='NONE'],state='OPEN')
         session.add(review);session.flush()
         audit(session,identity,'REVIEW_CASE_CREATED',review.id,1,'Required controls need resolution',str(job.id),{'evaluation_id':str(evaluation.id),'transaction_id':str(transaction.id),'reason_codes':review.reasons})
-    content=projection({'schema_version':'report-p1-v2','evaluation_version':1,'reason_codes':[r.rule_id for r in decision.results if r.decision_effect!='NONE'],'evaluation_id':evaluation.id,'transaction_id':transaction.id,'transaction_version':version.version,'reference_snapshot_id':evaluated_snapshot.id,'ruleset_version':RULESET,'decision_policy_version':DECISION_POLICY,'evaluation_mode':'RULES_ONLY','extraction_mode':'STRUCTURED_SYNTHETIC','model_status':'NOT_CONFIGURED','completeness':decision.completeness,'decision':decision.decision,'eligible':decision.eligible,'input_digest':evaluation.input_digest,'evaluated_at':job.evaluated_at,'supersedes_id':evaluation.supersedes_id,'transaction':redact(version.payload),'rules':rules,'next_actions':[r.reason for r in decision.results if r.decision_effect!='NONE'] or ['Screening checks complete. Authorized human processing remains separate.'],'capacity_basis':capacity_refs})
+    content=projection({'schema_version':'report-p1-v2','evaluation_version':1,'reason_codes':[r.rule_id for r in decision.results if r.decision_effect!='NONE'],'evaluation_id':evaluation.id,'transaction_id':transaction.id,'transaction_version':version.version,'reference_snapshot_id':evaluated_snapshot.id,'ruleset_version':selected_ruleset,'decision_policy_version':DECISION_POLICY,'evaluation_mode':'RULES_ONLY','extraction_mode':'STRUCTURED_SYNTHETIC','model_status':'NOT_CONFIGURED','completeness':decision.completeness,'decision':decision.decision,'eligible':decision.eligible,'input_digest':evaluation.input_digest,'evaluated_at':job.evaluated_at,'supersedes_id':evaluation.supersedes_id,'transaction':redact(version.payload),'rules':rules,'next_actions':[r.reason for r in decision.results if r.decision_effect!='NONE'] or ['Screening checks complete. Authorized human processing remains separate.'],'capacity_basis':capacity_refs})
     if context_data.get('document_sources'):
         from app.rules.document_sources import DOCUMENT_RULE_VERSION
         content.update(extraction_mode='DOCUMENT_DERIVED',document_sources=context_data['document_sources'],
             normalizer_version=version.normalizer_version,document_rules_version=DOCUMENT_RULE_VERSION,schema_version='report-p2-v1')
+    if context_data.get('finance_v3'):
+        content.update(schema_version='report-p3-v1',finance_controls=projection(context_data['finance_v3']),waiver_dispositions=context_data['finance_v3'].get('waivers',[]))
     generated_html=report_html(content)
     if context_data.get('document_sources'):
-        generated_html=generated_html.replace('STRUCTURED_SYNTHETIC. No source images or bounding boxes.',
+        generated_html=generated_html.replace('Versioned source evidence is linked below.',
             'DOCUMENT_DERIVED. Authorized physical page evidence is available; field boxes are shown only where measured.')
     session.add(Report(**identity.scope(),evaluation_id=evaluation.id,content=content,html=generated_html,content_digest=digest(content)))
     if job.lease_until<=utcnow():raise DomainError(409,'LEASE_EXPIRED','Execution exceeded the durable lease deadline.')
@@ -242,7 +273,9 @@ def json_context(context):
 
 
 def redact(payload):
-    return {k:('[synthetic token redacted]' if k=='payment_account_token' and v else v) for k,v in payload.items()}
+    if isinstance(payload,list):return [redact(v) for v in payload]
+    if not isinstance(payload,dict):return payload
+    return {k:('[secure equality token redacted]' if k in ('payment_account_token','equality_token') and v else redact(v)) for k,v in payload.items()}
 
 
 def reserve(session,identity,evaluation,version,context,decision):
@@ -283,3 +316,18 @@ def transaction_list(session,identity,query):
     jobs=session.scalars(scope_query(select(Job).join(ranked,ranked.c.id==Job.id),Job,identity).where(ranked.c.position==1)).all()
     latest={job.transaction_id:job for job in jobs}
     return [transaction_projection(row,[current[row.id]],latest.get(row.id)) for row in rows]
+
+
+def authorized_report(identity,content):
+    """Employee reports retain own facts and aggregate controls, with peer detail masked."""
+    if 'EMPLOYEE' not in identity.roles or {'FINANCE_REVIEWER','AUDITOR','FINANCE_CONTROLLER'}&identity.roles:return content
+    import copy
+    safe=copy.deepcopy(content)
+    if safe.get('finance_controls'):
+        safe['finance_controls']['duplicates']=[{'classification':r['classification'],'disposition':r.get('disposition'),'cross_employee_details':'MASKED'} for r in safe['finance_controls'].get('duplicates',[])]
+        for key in ('allocations','receipt_usage'):safe['finance_controls'][key]=[{'amount':r.get('amount'),'kind':r.get('kind'),'state':r.get('state'),'cross_employee_details':'MASKED'} for r in safe['finance_controls'].get(key,[])]
+    for rule in safe['rules']:
+        if rule['rule_id'] in ('DUP-001','DUP-003','EXP-005','PAT-001'):
+            rule['observed']={'cross_employee_details':'MASKED','status':rule['status']}
+            rule['evidence']=[e for e in rule['evidence'] if e['reference']['kind']=='TRANSACTION' and e['reference']['record_id']==safe['transaction_id']]
+    return safe

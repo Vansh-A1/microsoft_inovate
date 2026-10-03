@@ -32,7 +32,7 @@ class Database:
 
     @contextmanager
     def session(self, identity):
-        with ScopedSession(self.engine, expire_on_commit=False, info={'identity': identity}) as session:
+        with ScopedSession(self.engine, expire_on_commit=False, info={'identity': identity, 'settings':getattr(self,'settings',None)}) as session:
             with session.begin():
                 yield session
 

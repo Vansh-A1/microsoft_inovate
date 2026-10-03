@@ -14,7 +14,7 @@ from app.services.finance import get, finalize, audit
 def claim(database,identity,now=None):
     now=now or utcnow()
     with database.session(identity) as session:
-        q=scope_query(select(Job),Job,identity).where(Job.stage=='EVALUATE',Job.stage_version==RULESET,or_(and_(Job.state.in_(['QUEUED','RETRYABLE']),Job.available_at<=now),and_(Job.state=='RUNNING',Job.lease_until<=now))).order_by(Job.created_at).with_for_update(skip_locked=True).limit(1)
+        q=scope_query(select(Job),Job,identity).where(Job.stage=='EVALUATE',Job.stage_version.in_([RULESET,'rules-p3-v1']),or_(and_(Job.state.in_(['QUEUED','RETRYABLE']),Job.available_at<=now),and_(Job.state=='RUNNING',Job.lease_until<=now))).order_by(Job.created_at).with_for_update(skip_locked=True).limit(1)
         job=session.scalar(q)
         if not job:return None
         if job.attempts>=job.maximum_attempts:
@@ -57,7 +57,7 @@ def main():
     from app.core.identity import authenticate
     from app.db.session import Database
     parser=argparse.ArgumentParser();parser.add_argument('--once',action='store_true');args=parser.parse_args()
-    settings=Settings.load();database=Database(settings.database_url)
+    settings=Settings.load();database=Database(settings.database_url);database.settings=settings
     from app.integrations.storage import LocalStorage
     from app.services.document_worker import run_once as run_document_once
     storage=LocalStorage(settings.storage_root)

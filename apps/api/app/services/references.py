@@ -50,12 +50,10 @@ def seed_references(session, identity):
     return snapshot(session,identity)
 
 
-def snapshot(session,identity):
-    from app.core.errors import DomainError
-    rows=session.execute(scope_query(select(ReferenceRecord.id,ReferenceRecord.version),ReferenceRecord,identity).where(ReferenceRecord.kind.not_in(['historical_transactions','matching_allocations'])).order_by(ReferenceRecord.id,ReferenceRecord.version).limit(2001)).all()
-    if len(rows)>2000:raise DomainError(503,'REFERENCE_LIMIT','Reference snapshot limit exceeded; configure a narrower catalog.')
-    latest={str(r.id):(r.id,r.version) for r in rows}
-    return snapshot_records(session,identity,list(latest.values()))
+def snapshot(session,identity,business_day=None):
+    from app.services.reference_imports import active_records
+    rows=active_records(session,identity,business_day).values()
+    return snapshot_records(session,identity,[(r.id,r.version) for r in rows])
 
 
 def snapshot_records(session,identity,records):

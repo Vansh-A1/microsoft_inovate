@@ -368,3 +368,4 @@ for kind in IMMUTABLE:
 
 # Register additive Phase-2 tables for Alembic without weakening Phase-1 models.
 from app.db import document_models  # noqa: E402,F401
+from app.db import finance_models  # noqa: E402,F401

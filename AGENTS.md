@@ -24,6 +24,8 @@ The supplied team-pack folder and ZIP are preserved original inputs. Use the `do
 
 The latest Phase-2 approval supersedes the prior stop-before-Phase-2 boundary: complete P2-01–P2-05 continuously, with coherent tested batches and no per-task approval stops. Preserve the Phase-1 finance application. Build secure intake, bounded native/visual/OCR preprocessing, remote TypeLLM contract integration, normalization/source corrections and attachment/import mappings. Do not repair GPU/Docker prerequisites, install/run SGLang, download VLM weights, provision cloud resources or begin Phase 3.
 
+The latest Phase-3 approval authorizes P3-01–P3-06 continuously, including additive schemas/dependencies, reference activation, matching, duplicate resolutions, employee controls, ledger concurrency and approval actions. Preserve legacy evaluated contexts and extraction limits. Run tested internal batches without approval stops. Do not begin Phase 4. Exactly one ordinary main push is authorized after the entire Phase-3 gate is verified; record authentication failure without repairing credentials or retrying.
+
 Operating loop:
 
 **INSPECT → PLAN → IMPLEMENT → TEST → SELF-REVIEW → DOCUMENT → REPORT → STOP**

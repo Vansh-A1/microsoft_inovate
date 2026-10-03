@@ -87,7 +87,9 @@ def mount(app,settings,database,storage,identity,writer,mutation):
     @app.get('/api/v1/documents')
     def listing(ctx=Depends(identity)):
         with database.session(ctx) as session:
-            rows=session.scalars(scope_query(select(Document),Document,ctx).order_by(Document.created_at.desc()).limit(100))
+            q=scope_query(select(Document),Document,ctx).order_by(Document.created_at.desc()).limit(100)
+            if 'EMPLOYEE' in ctx.roles and not {'FINANCE_REVIEWER','AUDITOR','FINANCE_CONTROLLER'}&ctx.roles:q=q.where(Document.actor_id==ctx.actor_id)
+            rows=session.scalars(q)
             return {'items':[{'id':str(d.id),'display_name':d.display_name,'source_type':d.source_type,'state':d.state,'last_error':d.last_error} for d in rows]}
 
     @app.get('/api/v1/documents/{document_id}')

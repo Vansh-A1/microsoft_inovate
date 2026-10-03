@@ -1,0 +1,4699 @@
+{
+  "records": [
+    {
+      "kind": "cost_centers",
+      "payload": {
+        "code": "DEMO-CC-WORKSHOP",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "e3da8a67-c816-5893-9447-35384e6248ef",
+        "name": "SYNTHETIC COST CENTER 1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "cost_centers",
+      "payload": {
+        "code": "DEMO-CC-WORKSHOP",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "a829e0ac-64a7-57fa-aea9-52881820cce0",
+        "name": "SYNTHETIC COST CENTER 2",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 01"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "1fe5ea0c-abe3-5c79-a4d1-b42bfd455d3b",
+        "legal_name": "SYNTHETIC SUPPLIER 01",
+        "payment_account_token": "SYNTHETIC_EQUALITY_01",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 02"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "0a1d0faa-d500-5148-b6d5-d6840d40b88c",
+        "legal_name": "SYNTHETIC SUPPLIER 02",
+        "payment_account_token": "SYNTHETIC_EQUALITY_02",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 03"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "acde9815-ef33-56cd-8821-ede416332052",
+        "legal_name": "SYNTHETIC SUPPLIER 03",
+        "payment_account_token": "SYNTHETIC_EQUALITY_03",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 04"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "15d3a9ad-c1df-5f58-b071-1452ce06d1d0",
+        "legal_name": "SYNTHETIC SUPPLIER 04",
+        "payment_account_token": "SYNTHETIC_EQUALITY_04",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 05"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "795bcb80-4082-5dee-a897-7f68e84d7a60",
+        "legal_name": "SYNTHETIC SUPPLIER 05",
+        "payment_account_token": "SYNTHETIC_EQUALITY_05",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 06"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "ae09cd11-6438-5699-ae2d-378111da2a95",
+        "legal_name": "SYNTHETIC SUPPLIER 06",
+        "payment_account_token": "SYNTHETIC_EQUALITY_06",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 07"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "24de03e4-be01-524c-bfe1-a3af8ae7c3c2",
+        "legal_name": "SYNTHETIC SUPPLIER 07",
+        "payment_account_token": "SYNTHETIC_EQUALITY_07",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 08"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "6a3531ce-f1a9-58e1-a90c-920113488ea4",
+        "legal_name": "SYNTHETIC SUPPLIER 08",
+        "payment_account_token": "SYNTHETIC_EQUALITY_08",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 09"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "1415f0cd-eab4-5c07-b00c-df8b7b5907b5",
+        "legal_name": "SYNTHETIC SUPPLIER 09",
+        "payment_account_token": "SYNTHETIC_EQUALITY_09",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 10"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "4087d3bc-e9c1-55dc-afe2-11ee018cf0e2",
+        "legal_name": "SYNTHETIC SUPPLIER 10",
+        "payment_account_token": "SYNTHETIC_EQUALITY_10",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 11"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "8153cc47-69ff-5937-b3c8-fd26ef95166a",
+        "legal_name": "SYNTHETIC SUPPLIER 11",
+        "payment_account_token": "SYNTHETIC_EQUALITY_11",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 12"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "61b6e829-78a4-56b6-a473-41cbf04a9142",
+        "legal_name": "SYNTHETIC SUPPLIER 12",
+        "payment_account_token": "SYNTHETIC_EQUALITY_12",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 13"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "18f571f0-391e-59e0-b2de-18d94e3001b9",
+        "legal_name": "SYNTHETIC SUPPLIER 13",
+        "payment_account_token": "SYNTHETIC_EQUALITY_13",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 14"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "e485c320-bb58-537f-96ac-0e633a32051c",
+        "legal_name": "SYNTHETIC SUPPLIER 14",
+        "payment_account_token": "SYNTHETIC_EQUALITY_14",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 15"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "8c071187-193e-5954-9dd3-7c9d9bf59f71",
+        "legal_name": "SYNTHETIC SUPPLIER 15",
+        "payment_account_token": "SYNTHETIC_EQUALITY_15",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 16"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "63f6dbed-3a9f-5841-8122-e1d35f3d7676",
+        "legal_name": "SYNTHETIC SUPPLIER 16",
+        "payment_account_token": "SYNTHETIC_EQUALITY_16",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 17"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "5ebc7694-5e8a-520e-8a61-389ce61b9b34",
+        "legal_name": "SYNTHETIC SUPPLIER 17",
+        "payment_account_token": "SYNTHETIC_EQUALITY_17",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 18"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "159ce14d-0902-5133-8b70-e5ada042f752",
+        "legal_name": "SYNTHETIC SUPPLIER 18",
+        "payment_account_token": "SYNTHETIC_EQUALITY_18",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "vendors",
+      "payload": {
+        "aliases": [
+          "SYNTHETIC SUPPLIER ALIAS 19"
+        ],
+        "approved_categories": [
+          "SUPPLIES"
+        ],
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "7dc5126d-b7bc-50a0-b25f-736444bed1df",
+        "legal_name": "SYNTHETIC SUPPLIER 19",
+        "payment_account_token": "SYNTHETIC_EQUALITY_19",
+        "payment_account_version": "demo-account-v1",
+        "status": "ACTIVE_APPROVED",
+        "synthetic": true,
+        "tax_identifier": "DEMO-NONREG-TAX-001",
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E04",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "dbd6ab16-6684-54a9-93da-e06d157814f2",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 04",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E05",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "adf17a1e-9c4a-5850-98b3-3e70d6c84f9d",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 05",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E06",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "f0d98dfc-8a0b-555d-b8ee-7e999a598913",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 06",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E07",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "06f2ac11-5f5d-5260-b892-8251bd7dec20",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 07",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E08",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "739fb973-a0c0-5e17-8f16-2e8d7c6302cb",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 08",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E09",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "24f7413f-fd6c-55b5-978c-928a7d144081",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 09",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E10",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "e927104a-537c-5e7f-be0a-08c73725d7ad",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 10",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E11",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "1d8c885d-e6dc-568e-a9fa-5a9b4fddf3e1",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 11",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E12",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "787890e9-5101-5608-9078-386f7acc8d6d",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 12",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E13",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "5ef93036-f5e7-576e-8152-f79a6703f7b7",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 13",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E14",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "17c820c7-2517-50ae-be16-59fa9652b7e9",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 14",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E15",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "e65f2ea3-0d74-5cf7-af7c-003b02eddd96",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 15",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E16",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "066054cd-577b-517c-814f-600c0c0c29a9",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 16",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E17",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "c0bcdbf6-8355-51c8-8eae-465a9321ffe8",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 17",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E18",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "a9d87227-8264-5e19-8522-53f90e5a1418",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 18",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E19",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "b894d6d4-fc62-55f4-85a5-b3bc1c86a2b0",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 19",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E20",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "99787d90-f813-526f-bd4e-2a4907ff5d19",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 20",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E21",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "71a2ea92-779d-5b0c-a003-fa6c3ea67e31",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 21",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E22",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "277b49ff-51d2-58b8-aa58-a35f69349245",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 22",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E23",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "3242f2dc-dad3-5d9c-b266-a923ccd2ce03",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 23",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E24",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "6b2201ae-cd31-5ad6-aa60-f53296bb6733",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 24",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E25",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "4faeff6f-6b10-54d0-a1d3-9f93deb3e0be",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 25",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E26",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "af513c0f-5005-50fc-9d6c-ce0b53d37884",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 26",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E27",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "033454c1-e8af-5649-acb0-0171f8d1d8e5",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 27",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E28",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "0277edb8-7aee-5142-86f7-82bc62420193",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 28",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "employees",
+      "payload": {
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "country": "IN",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "employee_number": "SYNTHETIC-E29",
+        "employment_from": "2025-01-01",
+        "employment_to": null,
+        "grade": "G1",
+        "id": "e43e02e0-5da9-528f-9878-c5f0d59291ac",
+        "manager_id": "51000000-0000-4000-8000-000000000003",
+        "name": "SYNTHETIC EMPLOYEE 29",
+        "roles": [
+          "EMPLOYEE"
+        ],
+        "status": "ACTIVE",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "71179a3f-7a72-5a0c-8236-8af3af25eb01",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "0a1d0faa-d500-5148-b6d5-d6840d40b88c",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "5fce48c5-35f0-54b2-b9b2-8b16019175b8",
+        "ordered_quantity": "100.0000",
+        "po_id": "71179a3f-7a72-5a0c-8236-8af3af25eb01",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "0a1d0faa-d500-5148-b6d5-d6840d40b88c",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "c15e59c9-2069-51ea-96ff-b3a48e39809d",
+        "po_id": "71179a3f-7a72-5a0c-8236-8af3af25eb01",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "09662678-a97d-54be-93be-6053d171167e",
+        "po_id": "71179a3f-7a72-5a0c-8236-8af3af25eb01",
+        "po_line_id": "5fce48c5-35f0-54b2-b9b2-8b16019175b8",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-002",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "a7077959-595c-534f-8440-b8c34948f44f",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "acde9815-ef33-56cd-8821-ede416332052",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "17c82631-fd1a-555b-a83c-7e2a9946345a",
+        "ordered_quantity": "100.0000",
+        "po_id": "a7077959-595c-534f-8440-b8c34948f44f",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "acde9815-ef33-56cd-8821-ede416332052",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "c8e1277b-3e9c-5cf1-bfff-616d7567b3a9",
+        "po_id": "a7077959-595c-534f-8440-b8c34948f44f",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "07620cb2-f47d-55b5-bd56-9e980011f6af",
+        "po_id": "a7077959-595c-534f-8440-b8c34948f44f",
+        "po_line_id": "17c82631-fd1a-555b-a83c-7e2a9946345a",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-003",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "77789da6-efc2-5d2e-a10c-05ae4adb9980",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "15d3a9ad-c1df-5f58-b071-1452ce06d1d0",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "eef73063-b319-5098-b4dc-7cd255cc35c4",
+        "ordered_quantity": "100.0000",
+        "po_id": "77789da6-efc2-5d2e-a10c-05ae4adb9980",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "15d3a9ad-c1df-5f58-b071-1452ce06d1d0",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "e388fa0c-0322-5348-831e-2eec735a3972",
+        "po_id": "77789da6-efc2-5d2e-a10c-05ae4adb9980",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "d929f6df-50a5-53ed-8697-a5b5f6b9048d",
+        "po_id": "77789da6-efc2-5d2e-a10c-05ae4adb9980",
+        "po_line_id": "eef73063-b319-5098-b4dc-7cd255cc35c4",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-004",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "db0b9c98-5b63-5e41-be81-7cedfba80202",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "795bcb80-4082-5dee-a897-7f68e84d7a60",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "eafae984-3b75-5a3f-ab28-3c5a34407e27",
+        "ordered_quantity": "100.0000",
+        "po_id": "db0b9c98-5b63-5e41-be81-7cedfba80202",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "795bcb80-4082-5dee-a897-7f68e84d7a60",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "8f581e36-7e12-50b7-8cdc-5c9b5cbeb19f",
+        "po_id": "db0b9c98-5b63-5e41-be81-7cedfba80202",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "9d6df162-5d16-57a2-9087-34045a6244a6",
+        "po_id": "db0b9c98-5b63-5e41-be81-7cedfba80202",
+        "po_line_id": "eafae984-3b75-5a3f-ab28-3c5a34407e27",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-005",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "d117543d-09ad-565e-b733-3881ee3366a9",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "ae09cd11-6438-5699-ae2d-378111da2a95",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "95bffe93-b753-59df-9e5b-444d8ba91662",
+        "ordered_quantity": "100.0000",
+        "po_id": "d117543d-09ad-565e-b733-3881ee3366a9",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "ae09cd11-6438-5699-ae2d-378111da2a95",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "30a444f4-652b-55c1-b291-439ad1aa6eac",
+        "po_id": "d117543d-09ad-565e-b733-3881ee3366a9",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "c1d4bfba-6f70-5965-b6d8-5c146c8198d6",
+        "po_id": "d117543d-09ad-565e-b733-3881ee3366a9",
+        "po_line_id": "95bffe93-b753-59df-9e5b-444d8ba91662",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-006",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "8cdebc93-7eb1-5711-91f1-19f5deba978b",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "24de03e4-be01-524c-bfe1-a3af8ae7c3c2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "8debbba0-462f-5606-a5b2-1f814e12aa56",
+        "ordered_quantity": "100.0000",
+        "po_id": "8cdebc93-7eb1-5711-91f1-19f5deba978b",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "24de03e4-be01-524c-bfe1-a3af8ae7c3c2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "a711560a-59b0-5ee9-aa30-1f899ae3dd8a",
+        "po_id": "8cdebc93-7eb1-5711-91f1-19f5deba978b",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "82664c89-eec6-54aa-b7d8-e665506fc10c",
+        "po_id": "8cdebc93-7eb1-5711-91f1-19f5deba978b",
+        "po_line_id": "8debbba0-462f-5606-a5b2-1f814e12aa56",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-007",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "81c4f23e-4162-5b25-89a4-23769923c116",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "6a3531ce-f1a9-58e1-a90c-920113488ea4",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "2edc051d-a43d-5fd2-a97a-0bfcf1c00f60",
+        "ordered_quantity": "100.0000",
+        "po_id": "81c4f23e-4162-5b25-89a4-23769923c116",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "6a3531ce-f1a9-58e1-a90c-920113488ea4",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "fc990efc-35f9-5dd1-8b03-204ad004b499",
+        "po_id": "81c4f23e-4162-5b25-89a4-23769923c116",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "84a51f0e-9ae3-514a-b620-9705c1cd0030",
+        "po_id": "81c4f23e-4162-5b25-89a4-23769923c116",
+        "po_line_id": "2edc051d-a43d-5fd2-a97a-0bfcf1c00f60",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-008",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "7d260500-5e83-552e-9bab-85929d362fa5",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "1415f0cd-eab4-5c07-b00c-df8b7b5907b5",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "c7552f8e-b0e6-58ae-897f-480f68ab17c0",
+        "ordered_quantity": "100.0000",
+        "po_id": "7d260500-5e83-552e-9bab-85929d362fa5",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "1415f0cd-eab4-5c07-b00c-df8b7b5907b5",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "36e88c3f-6bfe-5ddc-b940-85cbff62052a",
+        "po_id": "7d260500-5e83-552e-9bab-85929d362fa5",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "0d7cd2db-336b-57c9-a52b-e57830a5a7e1",
+        "po_id": "7d260500-5e83-552e-9bab-85929d362fa5",
+        "po_line_id": "c7552f8e-b0e6-58ae-897f-480f68ab17c0",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-009",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "48300183-6ba9-510f-9106-8671968d0d1b",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "4087d3bc-e9c1-55dc-afe2-11ee018cf0e2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "bb05d1bb-7026-583c-abc3-ebe3e4c47ec2",
+        "ordered_quantity": "100.0000",
+        "po_id": "48300183-6ba9-510f-9106-8671968d0d1b",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "4087d3bc-e9c1-55dc-afe2-11ee018cf0e2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "03479220-7050-5e9c-9b9a-b4859dbdf5ff",
+        "po_id": "48300183-6ba9-510f-9106-8671968d0d1b",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "52b0d10a-de65-5c07-b5a8-77edd73db543",
+        "po_id": "48300183-6ba9-510f-9106-8671968d0d1b",
+        "po_line_id": "bb05d1bb-7026-583c-abc3-ebe3e4c47ec2",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-010",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "f675a57b-d31e-5b6a-9c09-1f62138e4462",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "8153cc47-69ff-5937-b3c8-fd26ef95166a",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "ee619e95-dcd0-56a8-8d63-a62e787c4bd8",
+        "ordered_quantity": "100.0000",
+        "po_id": "f675a57b-d31e-5b6a-9c09-1f62138e4462",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "8153cc47-69ff-5937-b3c8-fd26ef95166a",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "86aa7628-8aac-5e45-924e-0dfd4aec307f",
+        "po_id": "f675a57b-d31e-5b6a-9c09-1f62138e4462",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "e22cdcc7-b2b4-5ced-b697-3436f9856459",
+        "po_id": "f675a57b-d31e-5b6a-9c09-1f62138e4462",
+        "po_line_id": "ee619e95-dcd0-56a8-8d63-a62e787c4bd8",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-011",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "687fa3ea-bfea-5782-b747-9b8d4c20ed25",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "61b6e829-78a4-56b6-a473-41cbf04a9142",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "2b1b5bfc-bd34-5ce7-bbde-a5296967c42f",
+        "ordered_quantity": "100.0000",
+        "po_id": "687fa3ea-bfea-5782-b747-9b8d4c20ed25",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "61b6e829-78a4-56b6-a473-41cbf04a9142",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "b39233e0-466d-5869-a10e-2e39e9db4fe8",
+        "po_id": "687fa3ea-bfea-5782-b747-9b8d4c20ed25",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "29fad8ed-ae42-504e-a3d0-810f83f3edc9",
+        "po_id": "687fa3ea-bfea-5782-b747-9b8d4c20ed25",
+        "po_line_id": "2b1b5bfc-bd34-5ce7-bbde-a5296967c42f",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-012",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "872b24ed-5df5-5710-bb17-56e5fe9e1b3f",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "18f571f0-391e-59e0-b2de-18d94e3001b9",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "c2b3e62c-3fa8-59d6-a7ee-8a563c2f044b",
+        "ordered_quantity": "100.0000",
+        "po_id": "872b24ed-5df5-5710-bb17-56e5fe9e1b3f",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "18f571f0-391e-59e0-b2de-18d94e3001b9",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "f2ddea37-5fcf-54cf-8f55-1de562149be0",
+        "po_id": "872b24ed-5df5-5710-bb17-56e5fe9e1b3f",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "7d8cb258-3e5d-5379-98b0-42ea626bf53d",
+        "po_id": "872b24ed-5df5-5710-bb17-56e5fe9e1b3f",
+        "po_line_id": "c2b3e62c-3fa8-59d6-a7ee-8a563c2f044b",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-013",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "7e31b5d0-512b-5f9c-a11a-d26541f89694",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "e485c320-bb58-537f-96ac-0e633a32051c",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "369bb9f7-737e-5260-bd92-99cdd339e5d7",
+        "ordered_quantity": "100.0000",
+        "po_id": "7e31b5d0-512b-5f9c-a11a-d26541f89694",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "e485c320-bb58-537f-96ac-0e633a32051c",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "be0ecffa-08f0-583c-bb09-5cfaf73e8e9c",
+        "po_id": "7e31b5d0-512b-5f9c-a11a-d26541f89694",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "b6e55116-2250-59eb-9f1d-ae0c9f22fee8",
+        "po_id": "7e31b5d0-512b-5f9c-a11a-d26541f89694",
+        "po_line_id": "369bb9f7-737e-5260-bd92-99cdd339e5d7",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-014",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "01693f1b-ca48-570c-a63f-12695d77d7f4",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "8c071187-193e-5954-9dd3-7c9d9bf59f71",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "c31f5f66-2b7b-5e69-ad47-254f9dd193c2",
+        "ordered_quantity": "100.0000",
+        "po_id": "01693f1b-ca48-570c-a63f-12695d77d7f4",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "8c071187-193e-5954-9dd3-7c9d9bf59f71",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "07cadbbc-5ba1-5ade-9e97-bc5a28da0a1a",
+        "po_id": "01693f1b-ca48-570c-a63f-12695d77d7f4",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "4e7ac2be-ca16-5e09-b195-6c345e8413cf",
+        "po_id": "01693f1b-ca48-570c-a63f-12695d77d7f4",
+        "po_line_id": "c31f5f66-2b7b-5e69-ad47-254f9dd193c2",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-015",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "2b04a8c1-a1dd-5b9f-a248-05732e4c229e",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "63f6dbed-3a9f-5841-8122-e1d35f3d7676",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "cbc53a65-bda6-5453-bc02-76515782fcd5",
+        "ordered_quantity": "100.0000",
+        "po_id": "2b04a8c1-a1dd-5b9f-a248-05732e4c229e",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "63f6dbed-3a9f-5841-8122-e1d35f3d7676",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "7ce18063-61a6-5ef1-832e-3677f3088caf",
+        "po_id": "2b04a8c1-a1dd-5b9f-a248-05732e4c229e",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "7f05acf4-68ed-5da1-a8ed-e6c8beb36ae9",
+        "po_id": "2b04a8c1-a1dd-5b9f-a248-05732e4c229e",
+        "po_line_id": "cbc53a65-bda6-5453-bc02-76515782fcd5",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-016",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "fc8e8df6-3b11-50db-8125-0b215562a7f9",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "5ebc7694-5e8a-520e-8a61-389ce61b9b34",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "43747005-567c-545d-ae9f-aa096d729a7a",
+        "ordered_quantity": "100.0000",
+        "po_id": "fc8e8df6-3b11-50db-8125-0b215562a7f9",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "5ebc7694-5e8a-520e-8a61-389ce61b9b34",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "974b3a21-9c19-510a-aea2-142adb21ed3a",
+        "po_id": "fc8e8df6-3b11-50db-8125-0b215562a7f9",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "d0034936-f352-5b34-8c11-4f312bc7fe0c",
+        "po_id": "fc8e8df6-3b11-50db-8125-0b215562a7f9",
+        "po_line_id": "43747005-567c-545d-ae9f-aa096d729a7a",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-017",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "79074155-80e3-53cc-9234-cd3699d1e5a7",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "159ce14d-0902-5133-8b70-e5ada042f752",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "d11e4799-3e36-59bb-9c25-3125d26648b4",
+        "ordered_quantity": "100.0000",
+        "po_id": "79074155-80e3-53cc-9234-cd3699d1e5a7",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "159ce14d-0902-5133-8b70-e5ada042f752",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "c728110a-6808-5a17-8088-dcad542fe5e6",
+        "po_id": "79074155-80e3-53cc-9234-cd3699d1e5a7",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "8765fc9d-361b-56ad-9a07-efdf8ddc9914",
+        "po_id": "79074155-80e3-53cc-9234-cd3699d1e5a7",
+        "po_line_id": "d11e4799-3e36-59bb-9c25-3125d26648b4",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-018",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "07b9f527-8c0e-5de5-9fef-c40a512eaefa",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "7dc5126d-b7bc-50a0-b25f-736444bed1df",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "bde4056e-508a-5725-8235-74b060cf66ca",
+        "ordered_quantity": "100.0000",
+        "po_id": "07b9f527-8c0e-5de5-9fef-c40a512eaefa",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "7dc5126d-b7bc-50a0-b25f-736444bed1df",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "55274260-1e57-5ee1-bee3-f0353f8b111c",
+        "po_id": "07b9f527-8c0e-5de5-9fef-c40a512eaefa",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "659b7ec6-c42a-508d-a69a-acffbc606f8f",
+        "po_id": "07b9f527-8c0e-5de5-9fef-c40a512eaefa",
+        "po_line_id": "bde4056e-508a-5725-8235-74b060cf66ca",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-019",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "2ad60438-92f6-5633-a565-c247e1af5ec6",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "1fe5ea0c-abe3-5c79-a4d1-b42bfd455d3b",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "058d1a7e-a3c6-5745-b044-015ea2779200",
+        "ordered_quantity": "100.0000",
+        "po_id": "2ad60438-92f6-5633-a565-c247e1af5ec6",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "1fe5ea0c-abe3-5c79-a4d1-b42bfd455d3b",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "bfa04fe9-dd62-5379-8480-29078626060b",
+        "po_id": "2ad60438-92f6-5633-a565-c247e1af5ec6",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "82abaa5c-3aad-50e8-baef-da2a34b4a092",
+        "po_id": "2ad60438-92f6-5633-a565-c247e1af5ec6",
+        "po_line_id": "058d1a7e-a3c6-5745-b044-015ea2779200",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-020",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "b43ccacc-71f3-5dec-bfd8-e1eddcf29a57",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "0a1d0faa-d500-5148-b6d5-d6840d40b88c",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "b8f71473-48b4-5605-a683-f49e316f5103",
+        "ordered_quantity": "100.0000",
+        "po_id": "b43ccacc-71f3-5dec-bfd8-e1eddcf29a57",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "0a1d0faa-d500-5148-b6d5-d6840d40b88c",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "35c2fb70-a3f7-5b25-b506-f7fb94f18569",
+        "po_id": "b43ccacc-71f3-5dec-bfd8-e1eddcf29a57",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "b29c83b1-51e1-56c3-9982-a50a101ee8ef",
+        "po_id": "b43ccacc-71f3-5dec-bfd8-e1eddcf29a57",
+        "po_line_id": "b8f71473-48b4-5605-a683-f49e316f5103",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-021",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "071f246a-4562-5dbf-a5da-d51db79731b5",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "acde9815-ef33-56cd-8821-ede416332052",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "deef7d34-247c-5513-9082-02e1c6e400ca",
+        "ordered_quantity": "100.0000",
+        "po_id": "071f246a-4562-5dbf-a5da-d51db79731b5",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "acde9815-ef33-56cd-8821-ede416332052",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "b61d3ece-7a7a-5bcc-bb67-e70ee82840ff",
+        "po_id": "071f246a-4562-5dbf-a5da-d51db79731b5",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "8e96254e-40ff-55ec-80e5-41e3f21abbbc",
+        "po_id": "071f246a-4562-5dbf-a5da-d51db79731b5",
+        "po_line_id": "deef7d34-247c-5513-9082-02e1c6e400ca",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-022",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "d341d1af-73ee-535e-bfe3-afef15b5a508",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "15d3a9ad-c1df-5f58-b071-1452ce06d1d0",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "fe4fed56-65eb-5c6f-b78f-72aace7b2cbf",
+        "ordered_quantity": "100.0000",
+        "po_id": "d341d1af-73ee-535e-bfe3-afef15b5a508",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "15d3a9ad-c1df-5f58-b071-1452ce06d1d0",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "5768a41d-50bf-5f75-a561-3e9e6f34e663",
+        "po_id": "d341d1af-73ee-535e-bfe3-afef15b5a508",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "df80e3fb-99e7-5ce1-8dd3-ec64a61a8510",
+        "po_id": "d341d1af-73ee-535e-bfe3-afef15b5a508",
+        "po_line_id": "fe4fed56-65eb-5c6f-b78f-72aace7b2cbf",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-023",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "dd399ae2-3872-5a3b-8aa5-cc2ad056c9f6",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "795bcb80-4082-5dee-a897-7f68e84d7a60",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "f7c90677-bc75-5acc-81d5-4e1ddca4c182",
+        "ordered_quantity": "100.0000",
+        "po_id": "dd399ae2-3872-5a3b-8aa5-cc2ad056c9f6",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "795bcb80-4082-5dee-a897-7f68e84d7a60",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "8966d7f4-9e17-5afd-bfe7-aa814fdf75d7",
+        "po_id": "dd399ae2-3872-5a3b-8aa5-cc2ad056c9f6",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "71537c9c-651b-50d1-9fd3-8c39e3bb7254",
+        "po_id": "dd399ae2-3872-5a3b-8aa5-cc2ad056c9f6",
+        "po_line_id": "f7c90677-bc75-5acc-81d5-4e1ddca4c182",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-024",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "8f44a2fb-4009-5887-80cb-16f343bebc2b",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "ae09cd11-6438-5699-ae2d-378111da2a95",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "825c9aad-f233-53a9-bf6a-b3e70075f21d",
+        "ordered_quantity": "100.0000",
+        "po_id": "8f44a2fb-4009-5887-80cb-16f343bebc2b",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "ae09cd11-6438-5699-ae2d-378111da2a95",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "9fbb48a9-60de-5eef-a74e-27b50f99a172",
+        "po_id": "8f44a2fb-4009-5887-80cb-16f343bebc2b",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "2a29c145-2024-560d-a4c7-2862852213c3",
+        "po_id": "8f44a2fb-4009-5887-80cb-16f343bebc2b",
+        "po_line_id": "825c9aad-f233-53a9-bf6a-b3e70075f21d",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-025",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "85af2348-3ba4-5186-b6a8-af48ad333e96",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "24de03e4-be01-524c-bfe1-a3af8ae7c3c2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "a271700b-b191-5f5e-8c1e-97c7048d240f",
+        "ordered_quantity": "100.0000",
+        "po_id": "85af2348-3ba4-5186-b6a8-af48ad333e96",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "24de03e4-be01-524c-bfe1-a3af8ae7c3c2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "89aa8931-cd2f-5fc2-8bc3-3e9d2ec4fe71",
+        "po_id": "85af2348-3ba4-5186-b6a8-af48ad333e96",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "b3531238-e6c3-56a5-88ff-ccb7ca5902ca",
+        "po_id": "85af2348-3ba4-5186-b6a8-af48ad333e96",
+        "po_line_id": "a271700b-b191-5f5e-8c1e-97c7048d240f",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-026",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "a887f48f-79a6-56af-9af5-f32bdaa7ea74",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "6a3531ce-f1a9-58e1-a90c-920113488ea4",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "4bd2802d-8534-59fd-a4ee-98ec6f347546",
+        "ordered_quantity": "100.0000",
+        "po_id": "a887f48f-79a6-56af-9af5-f32bdaa7ea74",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "6a3531ce-f1a9-58e1-a90c-920113488ea4",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "abd06f19-4bae-59bc-a0b3-0df7e4270f17",
+        "po_id": "a887f48f-79a6-56af-9af5-f32bdaa7ea74",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "07efb745-f218-5906-9711-2d1f32984d38",
+        "po_id": "a887f48f-79a6-56af-9af5-f32bdaa7ea74",
+        "po_line_id": "4bd2802d-8534-59fd-a4ee-98ec6f347546",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-027",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "2b458d2e-2092-5036-95d9-4d9a03a01de3",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "1415f0cd-eab4-5c07-b00c-df8b7b5907b5",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "44c1b71c-d5d6-5038-b303-45660ee985c8",
+        "ordered_quantity": "100.0000",
+        "po_id": "2b458d2e-2092-5036-95d9-4d9a03a01de3",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "1415f0cd-eab4-5c07-b00c-df8b7b5907b5",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "c33eb52e-0423-51d0-8669-84c2687123e8",
+        "po_id": "2b458d2e-2092-5036-95d9-4d9a03a01de3",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "88933ca5-e353-5a32-b8cf-f47526b605a3",
+        "po_id": "2b458d2e-2092-5036-95d9-4d9a03a01de3",
+        "po_line_id": "44c1b71c-d5d6-5038-b303-45660ee985c8",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-028",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "16059fb4-afd5-5c1a-b83a-e1f89a0e2991",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "4087d3bc-e9c1-55dc-afe2-11ee018cf0e2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "d8e4eaf4-946d-5636-8f4c-817a69a61a2d",
+        "ordered_quantity": "100.0000",
+        "po_id": "16059fb4-afd5-5c1a-b83a-e1f89a0e2991",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "4087d3bc-e9c1-55dc-afe2-11ee018cf0e2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "0b6a6617-979f-596f-8fbc-a09d2be79736",
+        "po_id": "16059fb4-afd5-5c1a-b83a-e1f89a0e2991",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "d3e9b915-ec98-5ce1-bc93-047c5c7357c8",
+        "po_id": "16059fb4-afd5-5c1a-b83a-e1f89a0e2991",
+        "po_line_id": "d8e4eaf4-946d-5636-8f4c-817a69a61a2d",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-029",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "b1bed9fe-db10-5920-910c-83e5f0ca0949",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "8153cc47-69ff-5937-b3c8-fd26ef95166a",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "4187aa7d-4527-50d7-bfe7-b828d18dc2a4",
+        "ordered_quantity": "100.0000",
+        "po_id": "b1bed9fe-db10-5920-910c-83e5f0ca0949",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "8153cc47-69ff-5937-b3c8-fd26ef95166a",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "95a32c4e-5a0d-5b17-86d7-65475696cd63",
+        "po_id": "b1bed9fe-db10-5920-910c-83e5f0ca0949",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "3da4df93-0a04-5d98-97ce-22d2ae23456f",
+        "po_id": "b1bed9fe-db10-5920-910c-83e5f0ca0949",
+        "po_line_id": "4187aa7d-4527-50d7-bfe7-b828d18dc2a4",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-030",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "8795fecd-0095-5d03-86f7-895a09e59ec9",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "61b6e829-78a4-56b6-a473-41cbf04a9142",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "6c01b533-e3d2-5ecf-954b-d9436354b3d0",
+        "ordered_quantity": "100.0000",
+        "po_id": "8795fecd-0095-5d03-86f7-895a09e59ec9",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "61b6e829-78a4-56b6-a473-41cbf04a9142",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "6f7fbada-e0b5-5bab-9368-b24f570eae86",
+        "po_id": "8795fecd-0095-5d03-86f7-895a09e59ec9",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "56d1c868-228d-529e-a8e0-5ed8c86308f1",
+        "po_id": "8795fecd-0095-5d03-86f7-895a09e59ec9",
+        "po_line_id": "6c01b533-e3d2-5ecf-954b-d9436354b3d0",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-031",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "a176f511-2a82-5e63-b4c7-06f9ad38ac7f",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "18f571f0-391e-59e0-b2de-18d94e3001b9",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "bd0e8745-3149-5da2-8d01-a7d0eac3dd4c",
+        "ordered_quantity": "100.0000",
+        "po_id": "a176f511-2a82-5e63-b4c7-06f9ad38ac7f",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "18f571f0-391e-59e0-b2de-18d94e3001b9",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "9c3ab1c7-7487-5ef1-a6da-62a6102da141",
+        "po_id": "a176f511-2a82-5e63-b4c7-06f9ad38ac7f",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "579b9bd9-8143-59f4-87e2-e91a198d4f55",
+        "po_id": "a176f511-2a82-5e63-b4c7-06f9ad38ac7f",
+        "po_line_id": "bd0e8745-3149-5da2-8d01-a7d0eac3dd4c",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-032",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "78755b5d-27bc-5ab0-85de-9e17e0926c51",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "e485c320-bb58-537f-96ac-0e633a32051c",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "061dbca1-4b6a-56c2-a987-dc031be75f18",
+        "ordered_quantity": "100.0000",
+        "po_id": "78755b5d-27bc-5ab0-85de-9e17e0926c51",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "e485c320-bb58-537f-96ac-0e633a32051c",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "dc8f3fbc-ab99-5176-b2bc-6faf0f14f161",
+        "po_id": "78755b5d-27bc-5ab0-85de-9e17e0926c51",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "2f10502a-247c-5d24-9117-720981422c37",
+        "po_id": "78755b5d-27bc-5ab0-85de-9e17e0926c51",
+        "po_line_id": "061dbca1-4b6a-56c2-a987-dc031be75f18",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-033",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "4df41715-411b-5035-ae56-1ac238544384",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "8c071187-193e-5954-9dd3-7c9d9bf59f71",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "721bb0b0-6334-536a-a92e-5c96316d5ab7",
+        "ordered_quantity": "100.0000",
+        "po_id": "4df41715-411b-5035-ae56-1ac238544384",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "8c071187-193e-5954-9dd3-7c9d9bf59f71",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "237f615a-7d98-5326-b9ee-aaf0c5f3c50e",
+        "po_id": "4df41715-411b-5035-ae56-1ac238544384",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "b110aacd-f074-579a-9cc9-261a3b6e68b9",
+        "po_id": "4df41715-411b-5035-ae56-1ac238544384",
+        "po_line_id": "721bb0b0-6334-536a-a92e-5c96316d5ab7",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-034",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "775461d3-3bfc-5ca7-9804-82dd237f9eea",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "63f6dbed-3a9f-5841-8122-e1d35f3d7676",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "39f6f202-a211-5957-b8b3-bbcb12df6915",
+        "ordered_quantity": "100.0000",
+        "po_id": "775461d3-3bfc-5ca7-9804-82dd237f9eea",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "63f6dbed-3a9f-5841-8122-e1d35f3d7676",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "ff72af2e-add9-515b-a241-39bf892a8d02",
+        "po_id": "775461d3-3bfc-5ca7-9804-82dd237f9eea",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "0deba42c-0861-5c04-868d-f1466aec10e6",
+        "po_id": "775461d3-3bfc-5ca7-9804-82dd237f9eea",
+        "po_line_id": "39f6f202-a211-5957-b8b3-bbcb12df6915",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-035",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "be9a27d7-e76d-5ed4-8ed9-31a84f8e85f9",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "5ebc7694-5e8a-520e-8a61-389ce61b9b34",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "3e0a4e21-0298-56db-aa10-0c30eb5fd657",
+        "ordered_quantity": "100.0000",
+        "po_id": "be9a27d7-e76d-5ed4-8ed9-31a84f8e85f9",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "5ebc7694-5e8a-520e-8a61-389ce61b9b34",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "fa1c5f48-13a9-5a89-9537-f9649de13f72",
+        "po_id": "be9a27d7-e76d-5ed4-8ed9-31a84f8e85f9",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "52e6ab46-8baf-5828-acb2-6f8326f0892f",
+        "po_id": "be9a27d7-e76d-5ed4-8ed9-31a84f8e85f9",
+        "po_line_id": "3e0a4e21-0298-56db-aa10-0c30eb5fd657",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-036",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "df991b52-043b-5279-a7cb-ec104e7d79ed",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "159ce14d-0902-5133-8b70-e5ada042f752",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "ace9d7d2-4850-557b-b805-ce29f4288be5",
+        "ordered_quantity": "100.0000",
+        "po_id": "df991b52-043b-5279-a7cb-ec104e7d79ed",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "159ce14d-0902-5133-8b70-e5ada042f752",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "d04a637e-fb51-509f-bd63-f93b4058ccb7",
+        "po_id": "df991b52-043b-5279-a7cb-ec104e7d79ed",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "80724628-7483-508c-a2f0-d73a97ef18c8",
+        "po_id": "df991b52-043b-5279-a7cb-ec104e7d79ed",
+        "po_line_id": "ace9d7d2-4850-557b-b805-ce29f4288be5",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-037",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "ea12bb78-ce3d-52dc-8b9a-56684fbe4c39",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "7dc5126d-b7bc-50a0-b25f-736444bed1df",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "d0900422-b5f8-5c93-b36f-cfb33249c341",
+        "ordered_quantity": "100.0000",
+        "po_id": "ea12bb78-ce3d-52dc-8b9a-56684fbe4c39",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "7dc5126d-b7bc-50a0-b25f-736444bed1df",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "d55fd50a-f280-5d7f-9405-86935f5f7aa6",
+        "po_id": "ea12bb78-ce3d-52dc-8b9a-56684fbe4c39",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "1434f61c-849e-5431-85f5-69a08f05bef7",
+        "po_id": "ea12bb78-ce3d-52dc-8b9a-56684fbe4c39",
+        "po_line_id": "d0900422-b5f8-5c93-b36f-cfb33249c341",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-038",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "08832125-b4e8-5cd5-b2f8-95b77e474d01",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "1fe5ea0c-abe3-5c79-a4d1-b42bfd455d3b",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "a78460f9-f74c-5013-9f3e-f1faab860b72",
+        "ordered_quantity": "100.0000",
+        "po_id": "08832125-b4e8-5cd5-b2f8-95b77e474d01",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "1fe5ea0c-abe3-5c79-a4d1-b42bfd455d3b",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "67e0347f-b8c4-5570-a17e-b67a9f378972",
+        "po_id": "08832125-b4e8-5cd5-b2f8-95b77e474d01",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "4043f3d1-d7ee-5198-8e22-2a8718e8c466",
+        "po_id": "08832125-b4e8-5cd5-b2f8-95b77e474d01",
+        "po_line_id": "a78460f9-f74c-5013-9f3e-f1faab860b72",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-039",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "624730a6-ffb4-57dd-93e3-096fa7c01626",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "0a1d0faa-d500-5148-b6d5-d6840d40b88c",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "a9b7c576-f91f-5a51-af1d-fcc00e04a697",
+        "ordered_quantity": "100.0000",
+        "po_id": "624730a6-ffb4-57dd-93e3-096fa7c01626",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "0a1d0faa-d500-5148-b6d5-d6840d40b88c",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "0e875edf-dfbd-5938-9eca-7f721a7f635b",
+        "po_id": "624730a6-ffb4-57dd-93e3-096fa7c01626",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "046415c1-51c2-580c-a431-c6e9693ac352",
+        "po_id": "624730a6-ffb4-57dd-93e3-096fa7c01626",
+        "po_line_id": "a9b7c576-f91f-5a51-af1d-fcc00e04a697",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-040",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "abb39fbd-97a2-55d1-a263-5965be4014fe",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "acde9815-ef33-56cd-8821-ede416332052",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "b8c7cc6f-5ce0-5c51-afc8-d745e2d8201f",
+        "ordered_quantity": "100.0000",
+        "po_id": "abb39fbd-97a2-55d1-a263-5965be4014fe",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "acde9815-ef33-56cd-8821-ede416332052",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "0e3a785d-7000-5969-b531-b97aa21bdd01",
+        "po_id": "abb39fbd-97a2-55d1-a263-5965be4014fe",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "2ade8504-fdff-50f1-a2f1-aa5add5b0d9e",
+        "po_id": "abb39fbd-97a2-55d1-a263-5965be4014fe",
+        "po_line_id": "b8c7cc6f-5ce0-5c51-afc8-d745e2d8201f",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-041",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "80f983ee-579e-56d0-821a-b4729096643b",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "15d3a9ad-c1df-5f58-b071-1452ce06d1d0",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "fbe869dc-ae83-5abf-aa4f-f038aa283ec1",
+        "ordered_quantity": "100.0000",
+        "po_id": "80f983ee-579e-56d0-821a-b4729096643b",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "15d3a9ad-c1df-5f58-b071-1452ce06d1d0",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "ba4aa818-5292-5737-ad83-a00ac0aa1150",
+        "po_id": "80f983ee-579e-56d0-821a-b4729096643b",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "ef1df035-00a6-53fb-9957-5a3c2d5e87af",
+        "po_id": "80f983ee-579e-56d0-821a-b4729096643b",
+        "po_line_id": "fbe869dc-ae83-5abf-aa4f-f038aa283ec1",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-042",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "c38ef9e8-a23a-51d5-a9c3-74f2b4382dff",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "795bcb80-4082-5dee-a897-7f68e84d7a60",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "b31db8d7-fd90-5414-b0dd-02b99f1530f4",
+        "ordered_quantity": "100.0000",
+        "po_id": "c38ef9e8-a23a-51d5-a9c3-74f2b4382dff",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "795bcb80-4082-5dee-a897-7f68e84d7a60",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "2dfbd19d-3d66-5fb0-8182-fd88ba6320bc",
+        "po_id": "c38ef9e8-a23a-51d5-a9c3-74f2b4382dff",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "9f56759a-9794-5b24-a06c-e7ef88e0d8a5",
+        "po_id": "c38ef9e8-a23a-51d5-a9c3-74f2b4382dff",
+        "po_line_id": "b31db8d7-fd90-5414-b0dd-02b99f1530f4",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-043",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "a03f0799-b8c4-5a48-aa74-93ae463d243b",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "ae09cd11-6438-5699-ae2d-378111da2a95",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "2bba0682-1210-54ad-b83d-d2e95b90c476",
+        "ordered_quantity": "100.0000",
+        "po_id": "a03f0799-b8c4-5a48-aa74-93ae463d243b",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "ae09cd11-6438-5699-ae2d-378111da2a95",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "616aa6ea-fc50-5cbf-ad92-49d660565f67",
+        "po_id": "a03f0799-b8c4-5a48-aa74-93ae463d243b",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "5c205284-2974-56a1-974f-28c1ffc701cf",
+        "po_id": "a03f0799-b8c4-5a48-aa74-93ae463d243b",
+        "po_line_id": "2bba0682-1210-54ad-b83d-d2e95b90c476",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-044",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "4d93a404-600e-5bb5-b6b3-acf58fa99ddf",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "24de03e4-be01-524c-bfe1-a3af8ae7c3c2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "a5dddfc5-fbdf-54e7-afd3-8f1d45b09752",
+        "ordered_quantity": "100.0000",
+        "po_id": "4d93a404-600e-5bb5-b6b3-acf58fa99ddf",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "24de03e4-be01-524c-bfe1-a3af8ae7c3c2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "94627bdc-21b5-514f-8d8e-690a074cd4c2",
+        "po_id": "4d93a404-600e-5bb5-b6b3-acf58fa99ddf",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "e761bb9e-e1f3-5c08-b206-b7859f9925d8",
+        "po_id": "4d93a404-600e-5bb5-b6b3-acf58fa99ddf",
+        "po_line_id": "a5dddfc5-fbdf-54e7-afd3-8f1d45b09752",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-045",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "30ddda69-8046-5ea8-997f-ee19b7918fb3",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "6a3531ce-f1a9-58e1-a90c-920113488ea4",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "b746d35a-fd28-59fc-91d6-b21459c02bd5",
+        "ordered_quantity": "100.0000",
+        "po_id": "30ddda69-8046-5ea8-997f-ee19b7918fb3",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "6a3531ce-f1a9-58e1-a90c-920113488ea4",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "e5e35c00-61da-5761-90d5-77f03fa570f5",
+        "po_id": "30ddda69-8046-5ea8-997f-ee19b7918fb3",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "9174e9e3-c40b-507c-844e-03a124c7e999",
+        "po_id": "30ddda69-8046-5ea8-997f-ee19b7918fb3",
+        "po_line_id": "b746d35a-fd28-59fc-91d6-b21459c02bd5",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-046",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "076750dd-1686-5bf9-88c3-d51f6c017172",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "1415f0cd-eab4-5c07-b00c-df8b7b5907b5",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "acb64bd7-6d58-5770-b5e7-f5203dfbba81",
+        "ordered_quantity": "100.0000",
+        "po_id": "076750dd-1686-5bf9-88c3-d51f6c017172",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "1415f0cd-eab4-5c07-b00c-df8b7b5907b5",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "b10efcb2-9b6a-51d9-8e78-c56ddc544e29",
+        "po_id": "076750dd-1686-5bf9-88c3-d51f6c017172",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "65b053b1-80c7-5fb0-8655-94b9d3ed69e1",
+        "po_id": "076750dd-1686-5bf9-88c3-d51f6c017172",
+        "po_line_id": "acb64bd7-6d58-5770-b5e7-f5203dfbba81",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-047",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "9b0efa80-e782-50c0-98a1-496d5631cc3e",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "4087d3bc-e9c1-55dc-afe2-11ee018cf0e2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "3475019b-2bc9-570d-8b93-60703b188d65",
+        "ordered_quantity": "100.0000",
+        "po_id": "9b0efa80-e782-50c0-98a1-496d5631cc3e",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "4087d3bc-e9c1-55dc-afe2-11ee018cf0e2",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "bc5c8ebd-cadf-5ba9-ab27-78351897e821",
+        "po_id": "9b0efa80-e782-50c0-98a1-496d5631cc3e",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "77fd29d5-190c-5b16-a25f-74f92716e7f9",
+        "po_id": "9b0efa80-e782-50c0-98a1-496d5631cc3e",
+        "po_line_id": "3475019b-2bc9-570d-8b93-60703b188d65",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-048",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "365b49e8-71c8-507d-92d1-5d5dfd6e484e",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "8153cc47-69ff-5937-b3c8-fd26ef95166a",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "faf612e1-47e7-5cfa-8fd1-6a30aba59bf0",
+        "ordered_quantity": "100.0000",
+        "po_id": "365b49e8-71c8-507d-92d1-5d5dfd6e484e",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "8153cc47-69ff-5937-b3c8-fd26ef95166a",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "e5e65be4-1284-5404-a376-7cd18bd51632",
+        "po_id": "365b49e8-71c8-507d-92d1-5d5dfd6e484e",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "e5136f8e-ea69-5bca-840e-cc2edb1f48fd",
+        "po_id": "365b49e8-71c8-507d-92d1-5d5dfd6e484e",
+        "po_line_id": "faf612e1-47e7-5cfa-8fd1-6a30aba59bf0",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "purchase_orders",
+      "payload": {
+        "approval_policy_id": "63000000-0000-4000-8000-000000000001",
+        "approved_ceiling_amount": "1000000.00",
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "category": "SUPPLIES",
+        "currency": "INR",
+        "display_number": "SYNTHETIC-PO-049",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "29f821a9-a60a-5c9d-a1f7-73ed36b16b61",
+        "status": "APPROVED_OPEN",
+        "synthetic": true,
+        "vendor_id": "61b6e829-78a4-56b6-a473-41cbf04a9142",
+        "version": 1
+      }
+    },
+    {
+      "kind": "po_lines",
+      "payload": {
+        "budget_id": "61000000-0000-4000-8000-000000000001",
+        "currency": "INR",
+        "description": "DEMO workshop widgets",
+        "id": "13adf8cc-b095-5835-b542-cc0cca26ff4c",
+        "ordered_quantity": "100.0000",
+        "po_id": "29f821a9-a60a-5c9d-a1f7-73ed36b16b61",
+        "synthetic": true,
+        "tax_basis": "EXCLUSIVE",
+        "tax_rate": "0.18",
+        "tolerance": {
+          "label": "DEMO zero tolerance",
+          "operator": "MAX",
+          "price_absolute_amount": "0.00",
+          "price_relative_rate": "0.00",
+          "quantity_tolerance": "0.0000"
+        },
+        "unit_price": "1000.00",
+        "uom": "EA",
+        "vendor_id": "61b6e829-78a4-56b6-a473-41cbf04a9142",
+        "version": 1
+      }
+    },
+    {
+      "kind": "goods_receipts",
+      "payload": {
+        "display_number": "DEMO-GRN-001",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "id": "089a25a0-c350-579a-bc71-456642f32e8c",
+        "po_id": "29f821a9-a60a-5c9d-a1f7-73ed36b16b61",
+        "received_date": "2026-09-08",
+        "source_system": "SYNTHETIC_JSON",
+        "source_version": "demo-grn-v1",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "grn_lines",
+      "payload": {
+        "accepted_quantity": "100.0000",
+        "goods_receipt_id": "76000000-0000-4000-8000-000000000001",
+        "id": "60f8427b-9862-5052-922f-92e2c2bc4e38",
+        "po_id": "29f821a9-a60a-5c9d-a1f7-73ed36b16b61",
+        "po_line_id": "13adf8cc-b095-5835-b542-cc0cca26ff4c",
+        "received_quantity": "85.0000",
+        "returned_quantity": "0.0000",
+        "reversed_quantity": "0.0000",
+        "synthetic": true,
+        "uom": "EA",
+        "version": 1
+      }
+    },
+    {
+      "kind": "budgets",
+      "payload": {
+        "basis": "GROSS",
+        "category": "SUPPLIES",
+        "code": "DEMO-BUDGET-SUPPLIES",
+        "cost_center_id": "52000000-0000-4000-8000-000000000001",
+        "covered_categories": [
+          "SUPPLIES"
+        ],
+        "currency": "USD",
+        "department": "DEMO-ENGINEERING",
+        "effective_from": "2026-01-01",
+        "effective_to": "2027-01-01",
+        "fiscal_period": "2026",
+        "id": "b7d5f039-dad0-56ee-97e6-8752e2283d74",
+        "ledger": [
+          {
+            "amount": "100000.00",
+            "currency": "USD",
+            "entry_type": "ALLOCATION",
+            "id": "22cfaec8-9fb0-5b4a-a537-11f7b0a32274"
+          }
+        ],
+        "project": "DEMO-WORKSHOP",
+        "synthetic": true,
+        "version": 1
+      }
+    },
+    {
+      "kind": "fx_rates",
+      "payload": {
+        "business_date": "2026-09-28",
+        "convention": "TARGET_PER_SOURCE",
+        "from_currency": "USD",
+        "id": "cfca8538-34a9-5ada-b700-39dab88e9b5e",
+        "rate": "83.00",
+        "source_note": "Fictional explicit demonstration rate; no market-price claim.",
+        "synthetic": true,
+        "to_currency": "INR",
+        "version": 1
+      }
+    }
+  ],
+  "source_system": "SYNTHETIC_PHASE3_SCALE",
+  "source_version": "v1",
+  "synthetic": true
+}

@@ -31,6 +31,8 @@ class Strict(BaseModel):
 
 class Line(Strict):
     id: UUID | None = None
+    contract_line_id: UUID | None = None
+    service_acceptance_id: UUID | None = None
     po_line_id: UUID | None = None
     grn_line_id: UUID | None = None
     quantity: Amount | None = None
@@ -54,6 +56,7 @@ class ExpenseItem(Strict):
     claimed_amount: Amount | None = None
     receipt_total_amount: Amount | None = None
     eligible_nights: Amount | None = None
+    eligible_business_amount: Amount | None = None
     company_paid_amount: Amount | None = None
     applied_advance_amount: Amount | None = None
 
@@ -72,6 +75,14 @@ class Canonical(Strict):
     category: str | None = None
     source_document_id: UUID | None = None
     payment_account_token: str | None = None  # synthetic equality token; never a bank-master update
+    contract_id: UUID | None = None
+    service_from: ISODate | None = None
+    service_to: ISODate | None = None
+    fiscal_period: str | None = None
+    merchant: str | None = None
+    receipt_number: str | None = None
+    attendees: list[str] = Field(default_factory=list,max_length=100)
+    travel_class: str | None = None
     po_id: UUID | None = None
     budget_id: UUID | None = None
     cost_center_id: UUID | None = None

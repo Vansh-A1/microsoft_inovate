@@ -24,7 +24,7 @@ def create_app(settings=None,database=None):
     settings=settings or Settings.load();database=database or Database(settings.database_url);storage=LocalStorage(settings.storage_root)
     app=FastAPI(title='AP Exception Assistant',version='1.0.0',description='Synthetic development / RULES_ONLY / no payment execution')
     app.add_middleware(BoundedBody)
-    app.state.database=database;app.state.settings=settings
+    app.state.database=database;app.state.settings=settings;database.settings=settings
     @app.exception_handler(HTTPException)
     async def http_error(request,exc):
         return JSONResponse(status_code=exc.status_code,content={'error':{'code':'HTTP_'+str(exc.status_code),'message':'Request route or method is unavailable.' if exc.status_code in (404,405) else 'Request could not be processed.','details':{},'retryable':False},'correlation_id':getattr(request.state,'correlation','')})
@@ -60,7 +60,7 @@ def create_app(settings=None,database=None):
     def ready():
         try:
             with database.engine.connect() as conn:version=conn.scalar(text('SELECT version_num FROM alembic_version'))
-            if version!='0004_documents':raise ValueError()
+            if version!='0005_finance':raise ValueError()
         except Exception:raise DomainError(503,'NOT_READY','Apply the database migration before serving requests.',retryable=True) from None
         return {'status':'ready','database':'PostgreSQL','migration':version}
     @app.get('/api/v1/me')
@@ -68,6 +68,7 @@ def create_app(settings=None,database=None):
     @app.get('/api/v1/references')
     def references(ctx=Depends(identity)):
         with database.session(ctx) as session:
+            if not {'FINANCE_REVIEWER','AUDITOR','REFERENCE_ADMIN'}&ctx.roles:raise DomainError(403,'FORBIDDEN','Finance reference access is required.')
             return {'records':[{'id':str(r.id),'version':r.version,'kind':r.kind,'label':r.label,'payload':finance.redact(r.payload)} for r in session.scalars(scope_query(select(ReferenceRecord),ReferenceRecord,ctx)) if r.kind!='historical_transactions']}
     @app.get('/api/v1/development/templates/{branch}')
     def template(branch:str,ctx=Depends(identity)):
@@ -84,7 +85,9 @@ def create_app(settings=None,database=None):
     @app.get('/api/v1/overview')
     def overview(ctx=Depends(identity)):
         with database.session(ctx) as session:
-            rows=session.execute(scope_query(select(Transaction.decision,func.count()).group_by(Transaction.decision),Transaction,ctx)).all()
+            q=scope_query(select(Transaction.decision,func.count()).group_by(Transaction.decision),Transaction,ctx)
+            if 'EMPLOYEE' in ctx.roles and not {'FINANCE_REVIEWER','AUDITOR','FINANCE_CONTROLLER'}&ctx.roles:q=q.join(TransactionVersion,TransactionVersion.transaction_id==Transaction.id).where(TransactionVersion.version==Transaction.latest_version,TransactionVersion.party_id==ctx.actor_id)
+            rows=session.execute(q).all()
             counts={decision or 'PENDING':count for decision,count in rows}
             return {'counts':counts,'total':sum(counts.values())}
     @app.get('/api/v1/transactions')
@@ -94,6 +97,7 @@ def create_app(settings=None,database=None):
         if not 1<=limit<=200:raise DomainError(400,'FILTER_INVALID','Limit must be 1–200.')
         with database.session(ctx) as session:
             q=scope_query(select(Transaction),Transaction,ctx).order_by(Transaction.created_at.desc()).limit(limit)
+            if 'EMPLOYEE' in ctx.roles and not {'FINANCE_REVIEWER','AUDITOR','FINANCE_CONTROLLER'}&ctx.roles:q=q.join(TransactionVersion,TransactionVersion.transaction_id==Transaction.id).where(TransactionVersion.version==Transaction.latest_version,TransactionVersion.party_id==ctx.actor_id)
             if decision:q=q.where(Transaction.decision==decision)
             if branch:q=q.where(Transaction.branch==branch)
             return {'items':finance.transaction_list(session,ctx,q)}
@@ -116,18 +120,19 @@ def create_app(settings=None,database=None):
         with database.session(ctx) as session:
             row=finance.get(session,Evaluation,ctx,record_id);transaction=finance.get(session,Transaction,ctx,row.transaction_id)
             report=session.scalar(scope_query(select(Report),Report,ctx).where(Report.evaluation_id==row.id))
-            return report.content|{'current_eligible':transaction.eligible and transaction.latest_evaluation_id==row.id,'current_version':transaction.latest_version}
+            return finance.authorized_report(ctx,report.content)|{'current_eligible':transaction.eligible and transaction.latest_evaluation_id==row.id,'current_version':transaction.latest_version}
     @app.get('/api/v1/evaluations/{record_id}/report')
     def report(record_id:UUID,format:str='json',ctx=Depends(identity)):
         with database.session(ctx) as session:
             finance.get(session,Evaluation,ctx,record_id);row=session.scalar(scope_query(select(Report),Report,ctx).where(Report.evaluation_id==record_id))
-            if format=='html':return HTMLResponse(row.html,headers={'Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'self'"})
+            if format=='html':return HTMLResponse(finance.report_html(finance.authorized_report(ctx,row.content)) if 'EMPLOYEE' in ctx.roles and not {'FINANCE_REVIEWER','AUDITOR'}&ctx.roles else row.html,headers={'Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'self'"})
             if format!='json':raise DomainError(400,'FORMAT_INVALID','Use json or html.')
-            return row.content
+            return finance.authorized_report(ctx,row.content)
     @app.get('/api/v1/evidence/{record_id}')
     def evidence(record_id:UUID,ctx=Depends(identity)):
         with database.session(ctx) as session:
             row=finance.get(session,EvidenceObject,ctx,record_id);r=row.reference;rid=UUID(r['record_id']);kind=r['kind'];value=None
+            if 'EMPLOYEE' in ctx.roles and not {'FINANCE_REVIEWER','AUDITOR','FINANCE_CONTROLLER'}&ctx.roles and kind=='HISTORICAL_AGGREGATE':return {'id':str(row.id),'reference':{'kind':kind},'source':{'cross_employee_details':'MASKED'},'source_image_available':False,'bbox':None}
             if kind=='DOCUMENT_FIELD':
                 from app.db.document_models import DocumentVersion
                 original=session.scalar(scope_query(select(DocumentVersion),DocumentVersion,ctx).where(DocumentVersion.id==rid,DocumentVersion.version==r['record_version']))
@@ -155,6 +160,9 @@ def create_app(settings=None,database=None):
                     if reservation:value=projection({'id':reservation.id,'evaluation_id':reservation.evaluation_id,'transaction_id':reservation.transaction_id,'reference_id':reservation.reference_id,'amount':reservation.amount,'quantity':reservation.quantity,'state':reservation.state})
                     else:
                         version=session.scalar(scope_query(select(TransactionVersion),TransactionVersion,ctx).where(TransactionVersion.transaction_id==rid,TransactionVersion.version==r['record_version']));value=finance.redact(version.payload) if version else None
+            if value is None:
+                from app.services.finance_controls import evidence as control_evidence
+                value=control_evidence(session,ctx,rid)
             if value is None:raise DomainError(404,'EVIDENCE_UNAVAILABLE','The referenced scoped fact is unavailable.')
             return {'id':str(row.id),'reference':r,'source':value,'source_image_available':False,'bbox':None}
     @app.get('/api/v1/reviews')
@@ -162,6 +170,7 @@ def create_app(settings=None,database=None):
         if minimum_age_days<0 or minimum_age_days>3650:raise DomainError(400,'FILTER_INVALID','Age must be 0–3650 days.')
         with database.session(ctx) as session:
             q=scope_query(select(ReviewCase),ReviewCase,ctx).where(ReviewCase.state=='OPEN',ReviewCase.created_at<=utcnow()-timedelta(days=minimum_age_days)).order_by(ReviewCase.created_at).limit(200)
+            if 'EMPLOYEE' in ctx.roles and not {'FINANCE_REVIEWER','AUDITOR','FINANCE_CONTROLLER'}&ctx.roles:q=q.join(TransactionVersion,TransactionVersion.transaction_id==ReviewCase.transaction_id).join(Transaction,Transaction.id==ReviewCase.transaction_id).where(TransactionVersion.version==Transaction.latest_version,TransactionVersion.party_id==ctx.actor_id)
             if decision:q=q.where(ReviewCase.decision==decision)
             if branch:q=q.where(ReviewCase.branch==branch)
             return {'items':[projection({'id':r.id,'transaction_id':r.transaction_id,'evaluation_id':r.evaluation_id,'decision':r.decision,'branch':r.branch,'reasons':r.reasons,'created_at':r.created_at}) for r in session.scalars(q) if not reason or reason in r.reasons]}
@@ -169,6 +178,7 @@ def create_app(settings=None,database=None):
     def audit(object_id:UUID|None=None,ctx=Depends(identity)):
         with database.session(ctx) as session:
             q=scope_query(select(AuditEvent),AuditEvent,ctx).order_by(AuditEvent.sequence).limit(200)
+            if 'EMPLOYEE' in ctx.roles and not {'FINANCE_REVIEWER','AUDITOR','FINANCE_CONTROLLER'}&ctx.roles:q=q.where(AuditEvent.actor_id==ctx.actor_id)
             if object_id:q=q.where(AuditEvent.object_id==object_id)
             return {'items':[projection({'id':r.id,'sequence':r.sequence,'action':r.action,'object_id':r.object_id,'version':r.object_version,'actor_id':r.actor_id,'reason':r.reason,'correlation_id':r.correlation_id,'created_at':r.created_at,'previous_hash':r.previous_hash,'event_hash':r.event_hash}) for r in session.scalars(q)]}
     @app.post('/api/v1/imports/preview',status_code=201)
@@ -192,4 +202,8 @@ def create_app(settings=None,database=None):
         with database.session(ctx) as session:return imports.detail(session,ctx,record_id)
     from app.documents.routes import mount
     mount(app,settings,database,storage,identity,writer,mutation)
+    from app.finance_routes import mount as mount_finance_controls
+    mount_finance_controls(app,database,identity,mutation)
+    from app.finance_routes import mount_controls
+    mount_controls(app,database,identity,mutation)
     return app

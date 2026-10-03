@@ -1,0 +1,29 @@
+{
+  "files": [
+    {
+      "bytes": 152397,
+      "path": "catalog.json",
+      "sha256": "ab425cd956be0c138cc958ce5cd8a64ff7978b4bf78ac0ac75ef7435e21c2145"
+    },
+    {
+      "bytes": 477643,
+      "path": "transactions.json",
+      "sha256": "d497d847bffeb250b3cac9330fdef64462b86de02d39e7ab96b05ca56332acfd"
+    }
+  ],
+  "generator": "scripts/seed/finance_catalog.py",
+  "source_note": "Scale inputs do not assert finance eligibility; missing source evidence must remain unresolved.",
+  "synthetic": true,
+  "totals_with_original_catalog": {
+    "cost_centers": 3,
+    "currencies": [
+      "INR",
+      "USD"
+    ],
+    "employees": 30,
+    "po_lines": 50,
+    "transactions": 200,
+    "vendors": 20
+  },
+  "version": "phase3-fixtures-v1"
+}
