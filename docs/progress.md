@@ -27,7 +27,7 @@ fresh evaluation produced score 91.214299 / ANOMALY_ESCALATION / REVIEW with no
 mandatory rule escalation. Default new scopes retain RULES_ONLY/null score;
 mandatory HOLD remains authoritative. See [exit review](phase5_exit_review.md),
 [runbook](runbooks/phase5-local.md) and [model card](../ml/model_card.md).
-Publication is separate. No Phase-6 work began.
+Publication is authentication-blocked after the single ordinary main push; all verified work is retained in clean local commits. No Phase-6 work began.
 
 ## Phase 4 complete locally — stop before Phase 5
 
@@ -1073,3 +1073,13 @@ history was erased.
 Next approved work: none. **Stop before Phase 6.** Representative supervised data
 and pilot infrastructure require their own authorization. Publication is recorded
 after the single authorized consolidated push; no credentials will be repaired.
+
+### Phase-5 publication result
+
+`GIT_TERMINAL_PROMPT=0 git -c core.askPass= push -u origin main` returned **exit 128**
+after the complete local fallback gate and clean phase commits. Attempted SHA:
+`6b84cd4f3bd0aee018aedd3793b99759e4006c34`. Safe error: `fatal: could not read Username for
+'https://github.com': terminal prompts disabled`. No authentication repair, retry,
+alternate transport, credential disclosure or force-push occurred. Remote branch
+SHA and published file set cannot be verified after failed publication. A local
+documentation-only commit records this external blocker; no verified code changed.

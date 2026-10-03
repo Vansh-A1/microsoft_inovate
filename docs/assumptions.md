@@ -236,3 +236,9 @@ remote SHA/file-set verification remains unavailable.
   request evaluation. No online learning, automatic retraining, automatic promotion
   or institutional ML-data authorization exists. VLM runtime remains externally
   deferred. No Phase-6 deployment work has begun.
+
+Phase-5 publication observation: the single authorized ordinary main push of
+verified `6b84cd4f3bd0aee018aedd3793b99759e4006c34` returned exit 128 because the HTTPS username
+could not be read with terminal prompts disabled. The local fallback exit is
+complete; publication and remote SHA/file-set verification remain blocked. No
+credential changes, retries, alternate publication or force-push occurred.

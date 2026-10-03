@@ -98,6 +98,10 @@ and artifact outages with null score/explicit REVIEW/HOLD.
   monitoring acceptance criteria and pilot infrastructure remain unapproved inputs.
 - Phase 6 has not begun. The next task requires separate Phase-6 authorization.
 
-Publication: not yet attempted for Phase 5. Exactly one consolidated ordinary main
-push is authorized after the local gate. Prior phase authentication failures were
-not repaired or retried.
+Publication: the single authorized ordinary main push of verified `6b84cd4f3bd0aee018aedd3793b99759e4006c34`
+returned exit 128: Git could not read the HTTPS username with terminal prompts
+disabled. **LOCAL COMPLETE; GITHUB PUBLICATION BLOCKED BY AUTHENTICATION.**
+No credentials were changed, push retried, alternate publication attempted or
+force-push used. Remote SHA/published file-set verification is unavailable because
+the push failed. This result is retained in a subsequent documentation-only local
+commit; code remains the verified phase snapshot. Prior failures were not retried.
