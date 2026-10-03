@@ -1,10 +1,14 @@
 # Implementation progress
 
+## Phase 4 complete locally — stop before Phase 5
+
+Direct approval authorized P4-01–P4-04 continuously. All four tasks and the local exit gate are complete: existing review ownership/optimistic conflicts, retained correction/resolution and eligibility lifecycle, safe recovery/reconciliation/replay, accessible operations/timeline/private exports. The final full gate passed 720 Python tests and 27 actual-backend browser tests, with TypeScript/build/migration/integrity checks passing. Publication is recorded separately below. No Phase-5 ML or inference infrastructure work began.
+
 ## Project status
 
 - Session date: 2026-10-02–03 (Asia/Kolkata).
-- Current phase: **PHASE 2 COMPLETE LOCALLY — Real document ingestion and extraction**, with explicitly approved enterprise-runtime deferral; Phase 0 and Phase 1 remain complete.
-- Current task: **P2-01–P2-05 locally verified; publication is separately recorded. Stop before Phase 3.**
+- Current phase: **PHASE 4 COMPLETE LOCALLY — Human workflow and operational reliability**; Phases 0–3 and the preserved enterprise-runtime deferral remain intact.
+- Current task: **P4-01–P4-04 and local exit gate complete. Stop before Phase 5; separate approval required for the next phase.**
 - P0-01: **COMPLETE LOCALLY**; the single consolidated phase push failed authentication; remote publication remains blocked.
 - P0-02: **COMPLETE**; tested Money/currency, states and evidence foundation.
 - P0-03: **COMPLETE**; reproducible synthetic references and independent golden expectations.
@@ -15,15 +19,15 @@
 - Development extraction: **ACTUAL NATIVE_TEXT / LOCAL_OCR** plus preserved FIXTURE replay; enterprise target **OPTIMIZED SHARED VLM INFERENCE SERVICE**, runtime explicitly deferred.
 - Phase 1: **COMPLETE LOCALLY**; preserved as the Phase-2 finance baseline.
 
-The [Phase-0 exit review](phase0_exit_review.md) preserves the explicit runtime qualification. The [Phase-1 exit review](phase1_exit_review.md) records the working product and full-release limits. [T01–T42 coverage](test_coverage.md) is 22 implemented/passing, 11 partial and 9 unimplemented. Historical work records below describe the approval/status at each checkpoint; this current disposition supersedes their prior stop/parent-incomplete statements. No original record or specification is rewritten to suggest a passed real spike.
+The [Phase-0 exit review](phase0_exit_review.md) preserves the explicit runtime qualification. The [Phase-1 exit review](phase1_exit_review.md) records the working product and full-release limits. [T01–T42 coverage](test_coverage.md) is 38 implemented/passing, 2 partial and 2 not implemented — Phase 5. Historical work records below describe the approval/status at each checkpoint; this current disposition supersedes their prior stop/parent-incomplete statements. No original record or specification is rewritten to suggest a passed real spike.
 
 ## Phase checklist
 
 - [x] Phase 0 — Contracts and feasibility (local exit criteria satisfied; real runtime explicitly deferred, publication separately reported).
 - [x] Phase 1 — Rules-first vertical slice for both branches (local exit passed; Git publication separately recorded).
 - [x] Phase 2 — Real document ingestion and extraction (local exit passed; shared enterprise VLM execution explicitly deferred).
-- [ ] Phase 3 — Complete finance matching and controls.
-- [ ] Phase 4 — Human workflow and operational reliability.
+- [x] Phase 3 — Complete finance matching and controls (local exit verified; authentication-blocked publication).
+- [x] Phase 4 — Human workflow and operational reliability (local exit passed; publication separately recorded).
 - [ ] Phase 5 — Measured ML and explanations.
 - [ ] Phase 6 — Azure pilot and handoff.
 
@@ -887,3 +891,88 @@ intact. The owned API/worker/production web continue at http://127.0.0.1:3000.
 Next recommended major batch is Phase-4 reviewer ownership/version conflicts,
 dependency inspection, reconciliation and audit replay; recommendation only.
 **Phase 4 has not begun. Waiting for approval to begin Phase 4.**
+
+## Phase-4 tested internal batches and completed local gate
+
+P4-01/P4-02 extend existing review_cases, retain immutable actions, guard legacy
+claimed-case mutations, append source/canonical corrections, invalidate material
+eligibility and approvals, preserve supersession, and compensate cancellation.
+P4-03 extends retained jobs with safe classified/bounded failures, operations-only
+manual recovery, minimal health, bounded reconciliation and pinned digest replay.
+P4-04 adds operational dashboard, server-filtered/paged queues and transactions,
+typed reviewer/receipt inputs, timeline and permissioned private JSON/HTML/CSV.
+
+Executed internal checkpoints: initial workflow 7 passed; expanded actual-document
+workflow 10 passed; correction/cancellation/authority/reconciliation suite 12 passed
+and one failure identifying a completed-generation increment, then targeted repair
+1 passed. Final reliability/eligibility boundaries: 16 passed in 397.78s, exit 0.
+The wider 69-case finance batch found one historical JSON contract regression;
+restored historical response and its targeted immutability test passed. Intermediate
+browser runs identified stale primary review selection, selector ambiguity, missing
+await of persisted approval creation and a fixed-seed assumption beyond the bounded
+list. Repairs preserve assertions against actual records and source evidence.
+The final regression/build/UI inspection completed successfully as recorded below.
+
+Benchmark: actual 100 computed fictional transactions in an isolated migrated
+schema, disposed after measurement. Median queue 18.470 ms, detail 3.095 ms, audit
+3.439 ms, dashboard 6.762 ms, assignment 46.968 ms, CSV generation 72.753 ms and
+reconciliation 690.823 ms; one correction/reevaluation sample 631.204 ms and one
+cancellation sample 49.628 ms. Warm local single-process samples, no production SLA.
+EXPLAIN ANALYZE covers scoped queue/owner/audit/job predicates. Existing scoped
+indexes and one ownership index suffice for this measured dataset; no speculative
+index collection was added.
+
+The approval reviewer rejected widening existing development identities. The safer
+authorized setup creates separate scope-bound fictional operational, audit and
+review-manager identities and leaves existing roles unchanged. No credential,
+permission, driver/Docker or production infrastructure repair occurred.
+
+Final self-review found that exhausted temporary preprocessing failures could enter
+QUARANTINED instead of recoverable FAILED_FINAL. The worker now preserves transient
+classification and the last successful stage. The actual PostgreSQL recovery test
+passed (exit 0, 1 passed, 24.31s): three automatic timeouts, one authorized manual
+cycle, restored preprocessing, one READY document and one page artifact. Permanent
+corrupt input remains quarantined. The final 720-case regression includes this fix.
+The final owned stack was restarted; minimal live/ready and the operations page
+responded 200. An initial smoke used the unprefixed health URL and received 404;
+the established `/api/v1/health/` routes passed without adding duplicate routes.
+
+### Phase-4 final verification and exit
+
+The fresh final command `.venv/bin/pytest -q` returned **exit 0: 720 passed,
+1 upstream Starlette/httpx deprecation warning, 1452.86s (24m12s)**, zero failures
+or skips. This is the complete final code, including the transient document recovery
+fix; earlier interrupted runs are not passing gates. The ignored log is
+`generated/reports/pytest-phase4-exit-final.txt`.
+
+`npm --prefix apps/web run test:e2e` returned **exit 0: 27 passed, 1.6m**, zero
+retries, against the real API/worker/production web. The final browser screenshots
+were inspected for operational counts, dead-letter failure details, correction/
+audit timeline and retained reports; laptop/mobile/error/empty/focus checks passed.
+`npm --prefix apps/web run typecheck`, `run build` and `run generate:api` returned
+exit 0. The independent server identity check returned exit 0, 1 passed.
+
+`.venv/bin/alembic -c apps/api/alembic.ini current` and `check` returned exit 0:
+`0006_workflow` head, no new upgrade operations. Fresh isolated database migration,
+base downgrade/re-upgrade, constraints, immutable history, precision, RLS and
+tenant boundaries pass in the full suite. `.venv/bin/python -m pip check` returned
+exit 0. Original source, synthetic finance and extraction SHA-256 manifests passed
+with exit 0; the working spec is byte-identical to the retained source. All five
+prior migrations and both original finance evaluators remain unchanged.
+
+The final local-link check found 124 resolving targets. Scope/ignore/credential-
+signature review examined 43 intended changed files and found no private runtime
+artifacts or detected credentials. `git diff --check` and staged whitespace checks
+returned exit 0. This limited scan is not a production security certification.
+
+P4-01, P4-02, P4-03 and P4-04 are complete locally. The specification exit is
+verified: a reviewer resolves an exception while retaining its original decision,
+and failure/retry/reconciliation tests produce no duplicate financial effects.
+See [the final exit review](phase4_exit_review.md) and
+[local operational runbook](runbooks/phase4-local.md). External enterprise VLM,
+scanner, server-side PDF exports, real organization identity/policies/deployment
+and production availability guarantees remain explicitly outside this gate.
+T01–T42: 38 implemented/passing, 2 partial, 2 not implemented — Phase 5.
+
+Local implementation commits are `c07e6ad` and `81b7c96`. The next task is Phase 5
+only after separate approval. No Phase-5 implementation began.

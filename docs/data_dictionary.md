@@ -292,3 +292,32 @@ Eight additions are REF-001, DUP-001, DUP-003, EXP-002, EXP-004, EXP-005, EXP-00
 and PAT-001. Existing control IDs keep their meaning while their configured scope
 expands. Reports retain original results plus finance_controls and waiver_dispositions.
 Risk remains RULES_ONLY / NOT_CONFIGURED with no score or model probability.
+
+## Phase-4 workflow and operational facts
+
+The additive head is `0006_workflow`: 49 business tables plus Alembic. The original
+47 tables and all retained facts remain. New tables have forced scoped RLS and
+ORM/direct-SQL immutability. No authoritative money column or numeric precision
+changes. See [ADR-0012](adr/0012-versioned-review-and-operational-recovery.md).
+
+| Record/field | Meaning |
+|---|---|
+| review_cases.owner_id | Trusted reviewer actor, nullable for unassigned. It is not supplied authority. |
+| review_cases.row_version / updated_at | Positive optimistic write version and timestamp; accepted ownership/action changes increment the version. |
+| review_actions | Immutable case/review-version/transaction-version-bound action, actor, reason code/comment, evidence and redacted old/new facts or requested input. Unique scoped case/version. |
+| operation_records | Immutable scoped operation-key digest, kind, object UUID, actor, timestamp and safe details; replay, reconciliation, retry and private report-export snapshots. |
+| jobs / document_jobs.failure_retryable | Explicit safe failure classification; permanent failures do not become retryable just because the provider is absent. |
+| first_failure_at / last_failure_at | Retained first/last failure timestamps; successful recovery does not erase attempt history. |
+| manual_retries | At most two service-authorized extra execution cycles; total attempt counter never resets. |
+| current_eligible | Derived eligibility over latest facts/evaluation, state, current references/policy, waiver expiry and required reservations. Separate from immutable evaluation.eligible. |
+| evaluation_status | CURRENT, SUPERSEDED or STALE read projection; no mutation of retained screening decision. |
+| current_eligibility_as_of | Explicit measurement timestamp for an authorized export snapshot. |
+| next_actions | Deterministic control-to-action labels. They do not clear a control or assert approval. |
+
+Stored OPEN means unassigned; ASSIGNED and AWAITING_INFORMATION retain owner.
+RESOLVED closes the human exception after fresh eligibility. SUPERSEDED retains a
+previous review/evaluation. CANCELLED preserves history and prevents admission.
+Operational job display maps RUNNING/RETRYABLE/FAILED/SUCCEEDED to
+PROCESSING/FAILED_RETRYABLE/DEAD_LETTER/COMPLETED without rewriting old facts.
+CSV escaping changes only exported cells. Original document/field/import evidence
+remains unmodified. New export artifact UUIDs resolve only through authorized routes.

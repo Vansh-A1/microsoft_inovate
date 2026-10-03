@@ -2,9 +2,9 @@
 
 This is the implementation coverage tracker for T01–T42 in [specification section 22.2](AP_Exception_Assistant_Codex_Spec.md#222-mandatory-test-cases). Scenarios and expected results are copied from that table; they describe required behavior, not executed tests.
 
-**Current Phase-3 scenario status: 36 IMPLEMENTED + PASSING; 4 PARTIALLY IMPLEMENTED; 2 NOT IMPLEMENTED.** The preserved Phase-1 gate executed 569 Python tests (488 preserved Phase-0 + 44 pure rules + 37 PostgreSQL integration) and 11 live-browser tests, with zero failures or skips. This is supported synthetic development coverage, not a full production release gate.
+**Current Phase-4 scenario status: 38 IMPLEMENTED + PASSING; 2 PARTIALLY IMPLEMENTED; 2 NOT IMPLEMENTED — PHASE 5.** The preserved Phase-1 gate executed 569 Python tests (488 preserved Phase-0 + 44 pure rules + 37 PostgreSQL integration) and 11 live-browser tests, with zero failures or skips. This is supported synthetic development coverage, not a full production release gate.
 
-The original scenario and expected-result text is preserved below. A partial row means some supporting behavior exists but the complete scenario has not been proved. Target phases retain the original planning assignments; Phase 1 implements only the minimal safe subset. See the [Phase-3 exit review](phase3_exit_review.md) for current gates and limits. Phase-2 extraction and its external VLM deferral are preserved.
+The original scenario and expected-result text is preserved below. A partial row means some supporting behavior exists but the complete scenario has not been proved. Target phases retain the original planning assignments; Phase 1 implements only the minimal safe subset. See the [Phase-4 exit review](phase4_exit_review.md) for current gates and limits. Phase-2 extraction and its external VLM deferral are preserved.
 
 Test references: **PG** = [PostgreSQL integration](../apps/api/tests/integration/test_vertical_slice.py); **RULES** = [pure rules](../apps/api/tests/test_rules_phase1.py); **UI** = [live browser flows](../apps/web/tests/workspace.spec.ts). Each named test below was executed; unsupported cases are never promoted from fixture availability.
 
@@ -37,27 +37,27 @@ Test references: **PG** = [PostgreSQL integration](../apps/api/tests/integration
 | T25 | Two concurrent bills compete for same accepted GRN capacity | No over-allocation; losing case reevaluated | Phase 3 | IMPLEMENTED + PASSING | PG `test_concurrent_admission_never_overallocates[GRN]`: one PASS, one HOLD, active capacity remains within 50. |
 | T26 | Mandatory approval absent or insufficient authority | HOLD, exact missing step/authority evidence | Phase 1 / 3 | IMPLEMENTED + PASSING | PG golden `vendor/approval_pending`, `test_insufficient_approver_authority_is_persisted_hold`; UI new submissions lack authority and HOLD. |
 | T27 | Submitter tries self-approval or forged approver ID | Rejected and audited | Phase 3 / 4 | IMPLEMENTED + PASSING | PG self-approval 403 with immutable REJECTED action/audit; forged actor DTO 422; ordered authenticated roles and authority enforced. Validation rejection does not fabricate an approval action. |
-| T28 | Amount materially changes after approval | Old approval invalidated and eligibility recomputed | Phase 3 / 4 | IMPLEMENTED + PASSING | PG `test_revision_invalidates_approved_version_and_capacity`. |
-| T29 | Critical extraction unknown or provider disagreement | REVIEW; no invented amount/vendor/currency | Phase 2 | PARTIALLY IMPLEMENTED | Actual missing/conflicting/native/OCR observations and mocked TypeLLM disagreements retain ambiguity; normalizer/source commit blocks unresolved critical facts. Document drafts use NEEDS_INPUT without a finance decision; the complete live-model REVIEW scenario remains deferred. |
+| T28 | Amount materially changes after approval | Old approval invalidated and eligibility recomputed | Phase 3 / 4 | IMPLEMENTED + PASSING | PG `test_revision_invalidates_approved_version_and_capacity` and `test_material_amount_change_requires_new_authority_chain_and_retains_old_approvals`: 50,000→150,000 retains historical authority but requires the fresh Manager/Director chain. |
+| T29 | Critical extraction unknown or provider disagreement | REVIEW; no invented amount/vendor/currency | Phase 2 / 4 | IMPLEMENTED + PASSING | P2 real native/OCR and mocked TypeLLM disagreement abstentions plus PG `test_native_unknown_and_unsupported_credit_route_to_review_without_source_invention`: actual missing-total PDF NEEDS_INPUT, attached source DOC-001 UNKNOWN/REVIEW, no automatic PASS or invented amount. Live VLM quality remains explicitly deferred. |
 | T30 | Low ML score but mandatory rule failure | HOLD remains | Phase 1 / 5 | PARTIALLY IMPLEMENTED | RULES `test_precedence` proves mandatory HOLD dominance; no ML score path exists to exercise the complete scenario. |
-| T31 | High ML score, otherwise complete controls | REVIEW, model explanation separate from rule evidence | Phase 5 | NOT IMPLEMENTED | Later-phase behavior; no executed complete scenario. |
+| T31 | High ML score, otherwise complete controls | REVIEW, model explanation separate from rule evidence | Phase 5 | NOT IMPLEMENTED — PHASE 5 | No real ML exists; no executed complete scenario. |
 | T32 | Model disabled in authorized RULES_ONLY mode | No score; rules may PASS | Phase 1 / 5 | IMPLEMENTED + PASSING | All eight PG golden flows assert NOT_CONFIGURED, no risk_score; eligible clean cases PASS. |
-| T33 | Required model/reference unavailable | Explicit degraded/incomplete state and configured REVIEW/HOLD | Phase 1 / 4 / 5 | PARTIALLY IMPLEMENTED | Missing required reference/context fails closed and HTTP database readiness is explicit; a required-model mode/outage scenario is deferred. |
-| T34 | SHAP raw margin contributions | Additivity against margin; no false probability-point labels | Phase 5 | NOT IMPLEMENTED | Later-phase behavior; no executed complete scenario. |
-| T35 | Request accesses another tenant's document/evaluation/export | Access denied/no sensitive disclosure | Phase 1 / 4 | IMPLEMENTED + PASSING | PG `test_auth_scope_and_database_rls` plus P2 intake/finance/mapped-cell tests cover physical originals/pages/field evidence and foreign scope under forced RLS. |
-| T36 | Reviewer submits against stale transaction version | 409; no overwritten newer data | Phase 4 | IMPLEMENTED + PASSING | PG `test_idempotent_create_revision_and_evaluate` asserts stale correction and evaluation both 409. |
+| T33 | Required model/reference unavailable | Explicit degraded/incomplete state and configured REVIEW/HOLD | Phase 1 / 4 / 5 | PARTIALLY IMPLEMENTED | Required references fail closed; actual scanned document with absent configured enterprise assets retains PREPROCESS, DEPENDENCY_UNAVAILABLE, failed extraction and no canonical transaction/PASS. Optional runtime absence is truthful. A required finance-risk ML mode remains absent until Phase 5; no score/empty success substitutes. |
+| T34 | SHAP raw margin contributions | Additivity against margin; no false probability-point labels | Phase 5 | NOT IMPLEMENTED — PHASE 5 | No real ML exists; no executed complete scenario. |
+| T35 | Request accesses another tenant's document/evaluation/export | Access denied/no sensitive disclosure | Phase 1 / 4 | IMPLEMENTED + PASSING | PG `test_auth_scope_and_database_rls` plus P2 intake/finance/mapped-cell tests cover physical originals/pages/field evidence and foreign scope under forced RLS. Phase-4 `test_operational_authorization_scope_export_replay_and_formula_escape` denies cross-scope review/audit/export and unauthorized export/retry/cancellation. |
+| T36 | Reviewer submits against stale transaction version | 409; no overwritten newer data | Phase 4 | IMPLEMENTED + PASSING | PG `test_idempotent_create_revision_and_evaluate` rejects stale correction/evaluation. `test_exception_resolution_retains_original_decision_and_two_reviewer_conflict` retains A's review v4→v5 resolution and rejects B's stale write with 409; synchronized competing claims admit one owner. |
 | T37 | Worker crashes and retries finalization | One ledger effect and one logical decision commit | Phase 1 / 4 | IMPLEMENTED + PASSING | PG `test_worker_recovers_expired_lease_and_effects_are_idempotent`, `test_retry_pass_has_one_capacity_effect`; P2 `test_expired_document_lease_does_not_duplicate_pages_or_stages` proves stale document finalization rejection. |
 | T38 | Audit persistence fails | Eligibility-changing transaction does not commit | Phase 1 / 4 | IMPLEMENTED + PASSING | PG `test_atomic_audit_failure_rolls_back_creation`, `test_audit_failure_blocks_pass_and_all_effects`. |
-| T39 | Credit note or unsupported multi-document layout in MVP | Recognized unsupported path, REVIEW rather than forced positive bill | Phase 2 | PARTIALLY IMPLEMENTED | RULES `test_credit_currency_and_scope_incomplete_abstain` covers credit type; actual uncertain invoice bundles use NEEDS_INPUT and cannot commit or auto-split. Full REVIEW/resolution workflow remains deferred. |
+| T39 | Credit note or unsupported multi-document layout in MVP | Recognized unsupported path, REVIEW rather than forced positive bill | Phase 2 / 4 | IMPLEMENTED + PASSING | PG `test_native_unknown_and_unsupported_credit_route_to_review_without_source_invention` evaluates explicitly identified unsupported CREDIT_NOTE with complete prerequisites to SYS-001 UNKNOWN/REVIEW. P2 uncertain bundle retains NEEDS_INPUT and prevents silent splitting. Credit accounting remains unsupported. |
 | T40 | Policy gap/overlap or stale master import | UNKNOWN/ERROR with evidence; no permissive fallback | Phase 3 | IMPLEMENTED + PASSING | Pure gap/overlap/stale cases retain UNKNOWN; staging rejects overlap/band gaps; PG stale activated sources prevent PASS, resolve exact evidence and preserve old pinned PASS. |
 | T41 | Malicious receipt says to ignore policy | Text treated as data; controls unchanged | Phase 2 | IMPLEMENTED + PASSING | Actual instruction-bearing synthetic invoice and receipt PDFs: `test_embedded_instructions_have_no_extraction_authority` and PG `test_document_instructions_cannot_clear_approval_or_mutate_master` retain printed amounts, mandatory approval HOLD and unchanged vendor master. Remote prompt safety is separately contract-tested; no live-model claim. |
 | T42 | Retained evaluation replay after policy changes | Original pinned result reproduced; new policy produces separate evaluation | Phase 4 | IMPLEMENTED + PASSING | PG exact DISTINCT/policy replay and retained reference replay reproduce original pinned decisions after reference changes; fresh evaluation uses separate current versions. Legacy evaluator is byte-unchanged. |
 
-Core deterministic, concurrency, and security cases remain mandatory. Optional later-phase functionality may be explicitly unsupported under the specification, but must not enable unsafe PASS. Supported Phase-3 deterministic scenarios work; the complete production release and four partial/two ML scenarios remain incomplete.
+Core deterministic, concurrency, and security cases remain mandatory. Optional later-phase functionality may be explicitly unsupported under the specification, but must not enable unsafe PASS. Supported Phase-3 deterministic scenarios work; the complete production release and two partial/two ML scenarios remain incomplete.
 
 ## Historical Phase-0 supporting coverage
 
-The sections below preserve the Phase-0 disposition when those checks ran. Statements that no finance engine existed or all 42 rows were unimplemented describe that historical checkpoint; the Phase-3 matrix above is current.
+The sections below preserve the Phase-0 disposition when those checks ran. Statements that no finance engine existed or all 42 rows were unimplemented describe that historical checkpoint; the Phase-4 matrix above is current.
 
 ### P0-02 supporting tests
 
@@ -153,3 +153,33 @@ Final staged review also found and closed a disabled-demo-cookie selection path.
 module boundary test (1 passed); final typecheck/build and all 23 live browser
 checks passed again after the repair. This Node check is separate from browser
 and Python counts. No new finance or extraction behavior changed.
+
+## Phase-4 executed workflow coverage
+
+[PostgreSQL tests](../apps/api/tests/integration/test_workflow_phase4.py) cover
+review-version conflicts, simultaneous ownership, source-linked correction with
+actual PDF re-verification and fresh approval, immutable old decisions, cancellation
+and exact nonzero compensation, scoped review/audit/export authorization, forged
+actors, safe private CSV, pinned PASS/HOLD/REVIEW replay, retry classification and
+exhaustion, bounded manual recovery of transient document preprocessing to one READY
+document, stale worker rejection, audit rollback, delayed outbox, cancelled
+reservation and missing projection repair, retained orphan evidence, critical
+source UNKNOWN, unsupported credit and actual required enterprise dependency failure.
+New company-payment proof makes current eligibility stale and cannot consume old
+reservations. New workflow facts reject SQL mutation. The original Phase-3 suite
+retains authority/waiver/self-approval/stale approvals and financial concurrency.
+
+[Browser tests](../apps/web/tests/workflow.spec.ts) use the actual running backend
+for claim, source evidence, stale form 409, correction/reassessment, approval and
+resolution, retained reports, separate auditor exports, permanent dead-letter
+inspection, scoped dependency/reconciliation, filters and error/empty/focus states.
+The original receipt flow now uses typed linked-item amount/quantity inputs.
+API transaction pagination retains the original three-query batching check.
+Exact final commands/counts belong in the exit review and progress after execution.
+
+The final Phase-4 aggregate returned exit 0: **720 passed in 1452.86s**, zero
+failures/skips, one upstream deprecation warning. The final actual-backend browser
+gate returned exit 0: **27 passed, 1.6m**, no retries. TypeScript, production build,
+OpenAPI generation and migration drift checks returned exit 0. These totals preserve
+the Phase-3 baseline and include 16 new PostgreSQL workflow tests. Phase 5 is not
+implemented; the tracker deliberately remains 38 complete, 2 partial and 2 absent.

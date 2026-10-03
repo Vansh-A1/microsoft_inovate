@@ -158,3 +158,30 @@ verified `34a0c2345333cf29c1d0e08aa9e787687bdd1b5d` returned exit 128 because Gi
 could not obtain the HTTPS username with terminal prompts disabled. No retry,
 credential repair, alternate publication or force push occurred. Remote SHA/file-set
 verification is unavailable; local completion is distinct from publication.
+
+## Phase-4 operational boundary
+
+- Reuse the existing review and durable-job systems, with additive owner/version
+  and immutable action/operation facts. Optimistic conflict handling uses the
+  existing scoped finance lock; no separate reviewer service or payment flow.
+- Current eligibility is derived separately. Master/authority/commercial source
+  version changes, new company-payment evidence, expiry and invalid reservations
+  make retained PASS stale; historical results remain unchanged. Freshness checks
+  conservatively inspect the retained scoped reference catalog, so some unrelated
+  reference revisions can require reevaluation. No source-wide permission bypass.
+- Manual recovery is limited to classified transient failures and two additional
+  three-attempt cycles. Required VLM assets/runtime remain externally deferred.
+  NOT_CONFIGURED scanner/risk/VLM status is never CLEAN, zero risk or success.
+- Reconciliation is a bounded local inspector with guarded repairs. Missing
+  reports/originals/previews need retained artifact recovery; orphan objects and
+  pending user finalization are preserved and surfaced. No retention periods,
+  deletion sweep, production backup restoration or worker heartbeat is claimed.
+- JSON/HTML/CSV exports use scoped explicit export permission, private snapshots,
+  digest checks and audit. PDF generation remains deferred without a separately
+  verified renderer; source values are not changed by CSV escaping.
+- Separate fictional operational/admin, auditor and review-manager identities
+  preserve existing roles. Production identity/role provisioning and retention
+  policies remain external inputs. No Phase-5 ML exists.
+- Warm local performance over 100 computed synthetic cases is measured by the
+  Phase-4 benchmark. It does not establish production throughput, SLA or inference
+  performance.
