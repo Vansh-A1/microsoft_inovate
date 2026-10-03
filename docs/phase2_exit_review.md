@@ -110,3 +110,15 @@ human input. No hidden reasoning or fabricated confidence is stored.
 No Phase-3 matching, fuzzy/image duplicate decision, shared-receipt allocation,
 advanced acceptance/approval workflow, ML or deployment work was introduced.
 Next task requires separate approval: **Phase 3**, beginning with P3-01.
+
+## Publication and stop boundary
+
+Verified implementation is committed locally at `87e24ca`, following A/B commit
+`e9a22da`. Exactly one normal consolidated main push returned exit 128 because
+Git could not obtain the HTTPS username with terminal prompts disabled. No push
+retry, credential repair or force push occurred. Automatic approval review blocked
+a subsequent read-only branch check under the no-retry instruction; it did not
+execute and no further network attempt occurred. Remote SHA/file-set publication
+is not verified or claimed. A documentation-only follow-up preserves this outcome.
+The local exit is complete with the approved enterprise-runtime deferral. Phase 3
+has not begun; P3-01 requires separate approval.

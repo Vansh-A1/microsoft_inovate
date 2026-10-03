@@ -96,3 +96,11 @@ claim or fixture fact does not prove a receipt. Multi-document roles and page
 ranges exist; automatic invoice segmentation, shared receipt allocation and
 duplicate decisions remain Phase-3/later work. Current scanner/parser/English OCR
 and manual verification are local development boundaries, not production approval.
+
+Phase-2 publication observation: the single consolidated normal main push of
+verified implementation `87e24ca` returned exit 128 (HTTPS username unavailable,
+terminal prompts disabled). No credential changes, push retry or alternate
+publication occurred. Approval review blocked a later read-only remote branch
+check under the no-retry instruction before execution. No further network attempt
+occurred. Local completion is distinct from remote publication; remote SHA/file-set
+verification is not claimed. See progress for the recorded outcome.

@@ -673,7 +673,7 @@ provider modes remain distinct. Phase 3 has not begun.
 | `sha256sum -c docs/source_inputs.sha256`, `data/synthetic/fixtures.sha256`, `data/extraction_spike/fixtures.sha256`, `data/documents_phase2/fixtures.sha256` (each separate command) | Exit 0 each; all 9/23/11/15 pinned files OK. |
 | `cmp AP_Exception_Assistant_6_Person_Team_Pack/AP_Exception_Assistant_Codex_Spec.md docs/AP_Exception_Assistant_Codex_Spec.md` | Exit 0; specification byte-identical. |
 | Inline Python preservation/documentation/OpenAPI/secret audit | Exit 0; 65 earlier contract/extractor/test/corpus/core-rule/migration files untouched, all 42 scenario/expectation strings preserved, local links resolve, saved API matches, private credentials/common secret signatures absent from trackable text and runtime/originals/build/results ignored. |
-| `git diff --check` | Exit 0; whitespace clean. Staged review/commit/publication follow below. |
+| `git diff --check` | Exit 0; whitespace clean. Staged review/commit/publication are recorded below. |
 
 The final coverage guard was added after the aggregate run and tested directly
 against the actual malformed-row pipeline and commit rejection. No rule engine or
@@ -688,6 +688,27 @@ TypeLLM/SGLang/model/latency/VRAM/cascade/quantization remain externally deferre
 No driver/Docker/model/cloud experiment was repeated. No production readiness or
 full T01–T42 release claim is made. Next task: separately approved **P3-01**; stop.
 
-Publication: one consolidated Phase-2 main push remains to be attempted under the
-standing direct request after clean local commits; no retry/credential repair if
-it fails. Actual result will be recorded without exposing credentials.
+### Phase-2 commits and publication outcome
+
+A/B checkpoint: `e9a22da`, secure intake/preprocessing/provider/normalization
+pipeline. Verified C/D/exit implementation: `87e24ca91172b790a23c1057685f6d93df5e394a`,
+message `feat: connect source-verified documents to finance and reviewer workflows`.
+Staged review executed: 44 intended files, no unstaged changes, 216 resolving
+local links/anchors, matching actual OpenAPI and whitespace checks; credential and
+original-source reviews were clean. Both commit commands returned exit 0. Local
+main was clean before publication.
+
+Exactly one consolidated authorized Phase-2 push was executed:
+`GIT_TERMINAL_PROMPT=0 git -c core.askPass= push origin main`.
+It returned **exit 128**: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`.
+
+**Phase 2 complete locally; GitHub publication remains blocked by HTTPS
+authentication.** No push retry, credential/configuration repair, alternate
+publication path or force push was attempted. Automatic approval review rejected
+a subsequent read-only `git ls-remote --heads origin main` before execution,
+interpreting it as another remote attempt under the no-retry instruction. No
+workaround or further network check occurred. Remote SHA/published file-set
+verification is unavailable and not claimed. The verified local commits remain
+intact; a documentation-only follow-up records the actual result. The owned
+API/worker/production web remain running at http://127.0.0.1:3000.
+Next task: **P3-01**, only with separate approval; Phase 3 has not begun.
