@@ -6,9 +6,9 @@ The assistant screens vendor invoices and employee expense claims against verifi
 
 ## Development status
 
-**Phase 4 complete locally — human workflow and operational reliability.** Versioned review ownership, source-linked correction/resolution, current eligibility, compensating cancellation, bounded recovery/replay, operations dashboard and private report exports extend the preserved finance controls. Final verification: 720 Python tests, 27 live-browser tests, TypeScript and production build passed. See [progress](docs/progress.md), the [Phase-4 runbook](docs/runbooks/phase4-local.md) and [exit review](docs/phase4_exit_review.md) for actual gates and limitations. Phase 5 has not begun.
+**Phase 5 complete locally in rules-plus-anomaly mode.** Twenty point-in-time business features, transparent statistical factors, immutable adjudication/PASS audits/datasets and independently governed artifacts/shadow/activation/rollback extend the preserved finance product. Available data is synthetic with no representative adjudicated labels: supervised classification, calibration and SHAP remain deferred. See [progress](docs/progress.md), the [Phase-5 runbook](docs/runbooks/phase5-local.md), [model card](ml/model_card.md) and [exit review](docs/phase5_exit_review.md) for actual checks and limitations. Verification: 753 full-suite Python tests plus the final 38-test intelligence batch cover all 758 collected backend cases; 31 full browser tests and four final focused flows passed, along with TypeScript/build/drift. Phase 6 has not begun.
 
-The original Phase-0 contracts, fixture adapters, synthetic corpora and Phase-1 pure finance engine remain intact. **STRUCTURED_SYNTHETIC** and separate P0 **FIXTURE** remain available; actual document runs identify **NATIVE_TEXT / LOCAL_OCR** and source-derived reports **DOCUMENT_DERIVED**. Document facts require explicit human source verification; unresolved critical fields cannot PASS. Finance risk is **RULES_ONLY / NOT_CONFIGURED**, with no score. Real TypeLLM/SGLang/VLM execution remains deferred under the recorded infrastructure gate; its remote adapter boundary is implemented and contract-tested. No GPU configuration change, VLM download, payment execution or Phase-5 work was performed.
+The original contracts, fixture adapters, synthetic corpora and deterministic finance engine remain intact. **STRUCTURED_SYNTHETIC** and separate P0 **FIXTURE** remain available; actual document runs identify **NATIVE_TEXT / LOCAL_OCR**, and source-derived reports **DOCUMENT_DERIVED**. Document facts require explicit human source verification; unresolved critical fields cannot PASS. The synthetic local scope is explicitly **RULES_PLUS_ANOMALY**; new scopes default to **RULES_ONLY / NOT_CONFIGURED / null score**. Statistical scores are not exception probabilities and cannot clear mandatory HOLD. Real TypeLLM/SGLang/VLM execution remains deferred under the recorded infrastructure gate; its remote boundary remains contract-tested. No GPU configuration change, VLM download, payment execution or Phase-6 work was performed.
 
 The seeded demos compute clean vendor PASS, paid duplicate HOLD, clean employee PASS, daily meal REVIEW and missing approval HOLD. Ordinary submissions cannot assert approval authority; new examples commonly HOLD until a trusted chain exists. This is a synthetic local development product, not a production pilot.
 
@@ -41,11 +41,12 @@ Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finan
 │   ├── app/extraction/             # fixture, native/OCR and remote TypeLLM boundaries
 │   ├── app/documents/              # bounded processing, typed limits, normalization
 │   ├── app/core, db, schemas/       # trusted context, relational persistence, intake
-│   ├── app/rules, services/         # pure controls, worker, reports, imports
-│   ├── migrations/                 # five versioned PostgreSQL migrations
+│   ├── app/rules, services, risk/   # pure controls, worker, intelligence sidecar
+│   ├── migrations/                 # eight versioned PostgreSQL migrations
 │   └── tests/                      # original 488 tests plus rules and PostgreSQL integration
 ├── apps/web/                       # Next.js client, private API proxy, Playwright tests
 ├── packages/api-client/            # generated OpenAPI contract
+├── ml/                             # public feature/label/gate contracts and model card
 ├── data/
 │   ├── synthetic/                 # reference JSON, README and fixture checksums
 │   ├── golden_cases/              # vendor/employee finance expectations and manifest
@@ -65,7 +66,7 @@ Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finan
 │   ├── inference_architecture.md
 │   ├── phase0_exit_review.md
 │   ├── source_inputs.sha256
-│   └── adr/                       # ADR-0001–0011
+│   └── adr/                       # ADR-0001–0013
 ├── AP_Exception_Assistant_6_Person_Team_Pack/
 │   ├── AP_Exception_Assistant_Codex_Spec.md
 │   ├── AP_Exception_Assistant_6_Person_Work_Plan.md

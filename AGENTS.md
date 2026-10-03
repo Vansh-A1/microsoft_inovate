@@ -30,6 +30,8 @@ Operating loop:
 
 The latest Phase-4 approval authorizes P4-01–P4-04 continuously: existing review ownership/actions, eligibility lifecycle, bounded retries/reconciliation/replay and accessible operational UI/exports. Additive migrations and necessary support are within that approved scope. Test coherent batches, preserve historical finance/extraction behavior, and stop before Phase 5. No GPU/inference infrastructure work is authorized.
 
+The latest Phase-5 approval authorizes P5-01–P5-05 continuously, with additive scoped schemas, point-in-time features, transparent anomaly signals, governed feedback/datasets, explicit model lifecycle and compatible evaluation/report/UI integration. Representative adjudicated labels are a mandatory supervised-training gate; synthetic routing labels do not justify a classifier or SHAP. Complete the rules/anomaly alternative when that gate fails. Preserve retained evaluations and deterministic rules. Stop before Phase 6; no GPU/VLM infrastructure or online learning.
+
 **INSPECT → PLAN → IMPLEMENT → TEST → SELF-REVIEW → DOCUMENT → REPORT → STOP**
 
 ## Financial integrity

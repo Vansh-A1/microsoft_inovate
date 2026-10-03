@@ -1,14 +1,43 @@
 # Implementation progress
 
+## Phase 5 complete locally — rules plus anomaly; stop before Phase 6
+
+Direct approval authorized P5-01–P5-05 continuously and the specification's honest
+rules/anomaly-only exit when representative supervised data is absent. The full
+Python suite passed **753 tests** (exit 0); after the final five cases were added,
+the stable 38-test intelligence batch and two actual-source cases passed (exit 0).
+All **758 currently collected backend cases** are covered by those executed runs;
+758 is not claimed as the count of one full-suite invocation. The full real-backend
+browser suite passed **31 tests**, and the final four changed intelligence flows
+passed again. TypeScript/build/drift/contracts/source preservation also passed.
+
+Twenty point-in-time features, transparent statistical factors, evidenced feedback,
+PASS audit sampling, grouped chronological manifests, offline runs/data gate,
+private registry/shadow/activation/rollback, monitoring and separate reports/UI are
+implemented. Entry inventory returned exit 0: 200 synthetic vendor inputs, no
+adjudicated training labels, 129 transactions/142 versions, 218 evaluations,
+174 reviews and 24 actions. Five history references and the generated 10k corpus
+are synthetic. No authorized representative labels exist:
+**SUPERVISED_TRAINING_NOT_JUSTIFIED**. No classifier, probability, calibration or
+SHAP was fabricated. P5-03/P5-04's supervised behavior is explicitly deferred.
+
+The local synthetic scope is explicitly **RULES_PLUS_ANOMALY / AVAILABLE**,
+configuration 39, after independent approval and actual shadow scores. An actual
+fresh evaluation produced score 91.214299 / ANOMALY_ESCALATION / REVIEW with no
+mandatory rule escalation. Default new scopes retain RULES_ONLY/null score;
+mandatory HOLD remains authoritative. See [exit review](phase5_exit_review.md),
+[runbook](runbooks/phase5-local.md) and [model card](../ml/model_card.md).
+Publication is separate. No Phase-6 work began.
+
 ## Phase 4 complete locally — stop before Phase 5
 
 Direct approval authorized P4-01–P4-04 continuously. All four tasks and the local exit gate are complete: existing review ownership/optimistic conflicts, retained correction/resolution and eligibility lifecycle, safe recovery/reconciliation/replay, accessible operations/timeline/private exports. The final full gate passed 720 Python tests and 27 actual-backend browser tests, with TypeScript/build/migration/integrity checks passing. Publication is recorded separately below. No Phase-5 ML or inference infrastructure work began.
 
 ## Project status
 
-- Session date: 2026-10-02–03 (Asia/Kolkata).
-- Current phase: **PHASE 4 COMPLETE LOCALLY — Human workflow and operational reliability**; Phases 0–3 and the preserved enterprise-runtime deferral remain intact.
-- Current task: **P4-01–P4-04 and local exit gate complete. Stop before Phase 5; separate approval required for the next phase.**
+- Session date: 2026-10-02–04 (Asia/Kolkata).
+- Current phase: **PHASE 5 COMPLETE LOCALLY — Measured statistical intelligence and governance**; Phases 0–3 and the preserved enterprise-runtime deferral remain intact.
+- Current task: **P5-01–P5-05 local fallback exit complete. Stop before Phase 6; separate approval required.**
 - P0-01: **COMPLETE LOCALLY**; the single consolidated phase push failed authentication; remote publication remains blocked.
 - P0-02: **COMPLETE**; tested Money/currency, states and evidence foundation.
 - P0-03: **COMPLETE**; reproducible synthetic references and independent golden expectations.
@@ -19,7 +48,7 @@ Direct approval authorized P4-01–P4-04 continuously. All four tasks and the lo
 - Development extraction: **ACTUAL NATIVE_TEXT / LOCAL_OCR** plus preserved FIXTURE replay; enterprise target **OPTIMIZED SHARED VLM INFERENCE SERVICE**, runtime explicitly deferred.
 - Phase 1: **COMPLETE LOCALLY**; preserved as the Phase-2 finance baseline.
 
-The [Phase-0 exit review](phase0_exit_review.md) preserves the explicit runtime qualification. The [Phase-1 exit review](phase1_exit_review.md) records the working product and full-release limits. [T01–T42 coverage](test_coverage.md) is 38 implemented/passing, 2 partial and 2 not implemented — Phase 5. Historical work records below describe the approval/status at each checkpoint; this current disposition supersedes their prior stop/parent-incomplete statements. No original record or specification is rewritten to suggest a passed real spike.
+The [Phase-0 exit review](phase0_exit_review.md) preserves the explicit runtime qualification. The [Phase-1 exit review](phase1_exit_review.md) records the working product and full-release limits. [T01–T42 coverage](test_coverage.md) is 39 implemented/passing, 1 partial and 2 deferred by the supervised-data gate. Historical work records below describe the approval/status at each checkpoint; this current disposition supersedes their prior stop/parent-incomplete statements. No original record or specification is rewritten to suggest a passed real spike.
 
 ## Phase checklist
 
@@ -28,7 +57,7 @@ The [Phase-0 exit review](phase0_exit_review.md) preserves the explicit runtime 
 - [x] Phase 2 — Real document ingestion and extraction (local exit passed; shared enterprise VLM execution explicitly deferred).
 - [x] Phase 3 — Complete finance matching and controls (local exit verified; authentication-blocked publication).
 - [x] Phase 4 — Human workflow and operational reliability (local exit passed; publication separately recorded).
-- [ ] Phase 5 — Measured ML and explanations.
+- [x] Phase 5 — Measured intelligence/explanations: explicit rules/anomaly-only exit; supervised model and SHAP deferred for representative-data gate.
 - [ ] Phase 6 — Azure pilot and handoff.
 
 ### Phase 0 tasks
@@ -1000,3 +1029,47 @@ or further remote check was attempted. Remote branch SHA and published file-set
 verification are unavailable and not claimed. This documentation-only follow-up
 records the observed outcome. The final owned API/worker/web are running at
 http://127.0.0.1:3000. Stop before Phase 5; separate approval is required.
+
+## P5-01–P5-05 continuous implementation record
+
+| Batch | Behavior, files and verification |
+|---|---|
+| P5-01 | `app/risk/features.py`/`anomaly.py`: cutoff/current/version/currency leakage guards, median/MAD/cold starts, explicit missing operands and actual score direction. Initial pure batch: 22 passed, exit 0. Canonical/evaluation integration uses the original enqueue reference snapshot, cutoff ledger events and branch-specific actual source observations. |
+| P5-02 | `app/risk/datasets.py`, `services/intelligence.py`, `db/risk_models.py`: immutable taxonomy adjudication with owner/version/source checks, stable PASS audits, connected temporal groups and synthetic representative gate. Core first batch: 33 passed, exit 0; expanded backend batch: 64 passed, exit 0. No correction or PASS routing became an automatic label. |
+| P5-03 | Data inventory/gate, frozen schemas/manifests and reproducible offline run metadata; supervised requests persist SUPERVISED_DEFERRED and produce no model. Current statistical artifacts are private verified JSON, not learned weights or production-generalization evidence. Public contracts/model card live under `ml/`. |
+| P5-04 | Separate combiner/report/feature factors plus `apps/web/src/app/intelligence.tsx`: actual high statistical score escalates PASS→REVIEW, actual score 0 cannot clear mandatory HOLD, required unavailable artifact/model remains null/explicit. Compatible retained replay is tested. No unsupported calibration, probability, SHAP or T31/T34 was manufactured. |
+| P5-05 | Independent ML author/governor, append-only events/deployments, shadow prerequisite, explicit activation/rollback, configuration freshness and actual monitoring. Optimistic two-governor conflict has one accepted action and one 409. Manual offline proposal only; no auto-training or online learning. |
+
+### Final verification commands and actual results
+
+| Command/check | Exit and result |
+|---|---|
+| `.venv/bin/pytest -q apps/api/tests` | 0; 753 passed, one existing Starlette/httpx deprecation warning, 2637.19 s. Collected before the last five integration cases were added. |
+| `.venv/bin/pytest -q apps/api/tests/test_risk_phase5.py apps/api/tests/integration/test_intelligence_phase5.py` (stable final code) | 0; 38 passed (22 pure + 16 PostgreSQL), one warning, 403.68 s. Includes all five newly collected cases and final outage status checks. |
+| `.venv/bin/pytest -q apps/api/tests/integration/test_document_finance.py` | 0; 7 passed, one warning, 241.08 s. |
+| `.venv/bin/pytest -q apps/api/tests/integration/test_document_finance.py -k real_document_to_finance` (final source checks) | 0; 2 passed, 5 deselected, one warning, 63.98 s. Actual PDF/receipt quality uses four correct critical source observations. |
+| `.venv/bin/pytest --collect-only -q apps/api/tests` | 0; 758 collected; collection is not itself a passing execution. All current cases are covered by the full/final affected runs above. |
+| `PATH="$PWD/runtime/tools/node-v24.21.0-linux-x64/bin:$PATH" npm --prefix apps/web run test:e2e` | 0; 31 passed, 2.1 min. Core flows use actual backend; deliberate error/empty state tests inject only those UI responses. |
+| Same npm command with `-- tests/intelligence.spec.ts` (stable final code) | 0; 4 passed, 20.6 s. Live adjudication, governance permissions/gate/shadow/activation/rollback/outage and responsive/error/empty flows; inspected screenshots. |
+| `npm --prefix apps/web run typecheck` with bundled Node PATH | 0; TypeScript passes. |
+| `npm --prefix apps/web run build` with bundled Node PATH | 0; production build passes. |
+| `PYTHONPATH=apps/api .venv/bin/alembic -c apps/api/alembic.ini check` | 0; no new upgrade operations. Fresh migrated PostgreSQL schemas, scoped constraints, 61 forced-RLS business tables and immutable SQL writes verified by integration tests. Live head is 0008_intelligence_audit. |
+| `.venv/bin/python -m pip check` | 0; no broken requirements. No new ML/model runtime dependency installed. |
+| OpenAPI and public feature contract comparison against actual code | 0; exact matches. Generated TypeScript contract is retained. |
+| `sha256sum -c` for original inputs, synthetic, extraction spike and documents_phase2 manifests; spec `cmp` | 0; all 9/23/11/15 hashes match and working spec is byte-identical to original. |
+| `git diff --exit-code HEAD -- apps/api/app/rules apps/api/app/domain` | 0; deterministic rule/domain modules unchanged. |
+| `.venv/bin/python scripts/benchmark/intelligence_phase5.py` | 0; owned temporary 10k synthetic schema, cutoff reproducibility assertion and real query plan. Query median/p95 328.732/351.310 ms; feature build 138.161/139.970 ms; score 0.001/0.006 ms. No classifier/generalization metrics. |
+| Governed final development activation and fresh actual evaluation | 0; configuration 39 RULES_PLUS_ANOMALY/AVAILABLE, score 91.214299, REVIEW with ANOMALY_ESCALATION and all deterministic rule effects NONE. |
+
+Failures were repaired before closure: early fixture monetary/source identity problems,
+PASS audit constraint (new frozen migration), asynchronous browser notices/ownership
+refresh, stale sidebar mode, and a test that wrongly expected a per-claim ratio
+for a daily taxi allowance. The final taxi ratio remains explicitly missing; a real
+supported per-night hotel case verifies a usable policy denominator. Branch-specific
+source field names were corrected and retested with actual documents. Incompatible
+intermediate development artifacts remain historical and unavailable; no retained
+history was erased.
+
+Next approved work: none. **Stop before Phase 6.** Representative supervised data
+and pilot infrastructure require their own authorization. Publication is recorded
+after the single authorized consolidated push; no credentials will be repaired.
