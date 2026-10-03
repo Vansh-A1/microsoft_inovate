@@ -2,7 +2,7 @@
 from datetime import timedelta
 from typing import Annotated
 from uuid import UUID, uuid4
-from fastapi import FastAPI, Depends, Header, UploadFile, File, Request
+from fastapi import FastAPI, Depends, Header, UploadFile, File, Form, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, HTMLResponse
 from starlette.exceptions import HTTPException
@@ -53,7 +53,9 @@ def create_app(settings=None,database=None):
             response,code=finance.idempotent(session,ctx,request.url.path,key,body,status,lambda:operation(session))
         return JSONResponse(status_code=code,content=response)
     @app.get('/api/v1/health/live')
-    def live():return {'status':'alive','mode':'RULES_ONLY','extraction':'STRUCTURED_SYNTHETIC','model_status':'NOT_CONFIGURED'}
+    def live():return {'status':'alive','mode':'RULES_ONLY','extraction':'STRUCTURED_SYNTHETIC','model_status':'NOT_CONFIGURED',
+        'document_pipeline':'document-pipeline-v1','document_providers':{'native_text':'AVAILABLE','ocr':'CONFIGURED' if settings.document_providers.ocr_executable else 'NOT_CONFIGURED',
+            'enterprise_vlm':'CONFIGURED_UNVERIFIED' if settings.document_providers.endpoint else 'NOT_CONFIGURED'},'malware':'NOT_CONFIGURED','enterprise_runtime':'DEFERRED_EXTERNAL_HOST'}
     @app.get('/api/v1/health/ready')
     def ready():
         try:
@@ -126,12 +128,25 @@ def create_app(settings=None,database=None):
     def evidence(record_id:UUID,ctx=Depends(identity)):
         with database.session(ctx) as session:
             row=finance.get(session,EvidenceObject,ctx,record_id);r=row.reference;rid=UUID(r['record_id']);kind=r['kind'];value=None
+            if kind=='DOCUMENT_FIELD':
+                from app.db.document_models import DocumentVersion
+                original=session.scalar(scope_query(select(DocumentVersion),DocumentVersion,ctx).where(DocumentVersion.id==rid,DocumentVersion.version==r['record_version']))
+                if original:
+                    from app.services import documents
+                    document=documents.detail(session,ctx,rid)
+                    return {'id':str(row.id),'reference':r,'source':{'original':document['original'],'observations':document['observations'],'draft':document['draft']},
+                        'document':document,'source_image_available':bool(document['pages']) and document['state']!='QUARANTINED',
+                        'preview_url':f'/api/v1/documents/{rid}/pages/{r["page"]}/preview' if r.get('page') else None,'bbox':r.get('bbox')}
             if kind=='TRANSACTION':
                 version=session.scalar(scope_query(select(TransactionVersion),TransactionVersion,ctx).where(TransactionVersion.transaction_id==rid,TransactionVersion.version==r['record_version']));value=finance.redact(version.payload) if version else None
             elif kind=='APPROVAL':
                 a=finance.get(session,ApprovalRecord,ctx,rid);value=projection({'id':a.id,'actor_id':a.actor_id,'role':a.role,'state':a.state,'transaction_version':a.transaction_version,'approved_at':a.approved_at})
             elif kind=='IMPORT_CELL':
                 source=finance.get(session,ImportRow,ctx,rid);value={'raw_values':source.raw_values,'row_digest':source.row_digest,'sheet':source.sheet,'row_number':source.row_number}
+                from app.db.document_models import ImportCell
+                locator=r.get('import_cell') or {}
+                cell=session.scalar(scope_query(select(ImportCell),ImportCell,ctx).where(ImportCell.row_id==rid,ImportCell.column==locator.get('column')))
+                if cell:value['cell']={'column':cell.column,'field_path':cell.field_path,'raw_value':cell.raw_value,'parsed_value':cell.parsed_value,'validation':cell.validation}
             else:
                 reference=session.scalar(scope_query(select(ReferenceRecord),ReferenceRecord,ctx).where(ReferenceRecord.id==rid,ReferenceRecord.version==r['record_version']))
                 if reference:value=finance.redact(reference.payload)
@@ -157,8 +172,17 @@ def create_app(settings=None,database=None):
             if object_id:q=q.where(AuditEvent.object_id==object_id)
             return {'items':[projection({'id':r.id,'sequence':r.sequence,'action':r.action,'object_id':r.object_id,'version':r.object_version,'actor_id':r.actor_id,'reason':r.reason,'correlation_id':r.correlation_id,'created_at':r.created_at,'previous_hash':r.previous_hash,'event_hash':r.event_hash}) for r in session.scalars(q)]}
     @app.post('/api/v1/imports/preview',status_code=201)
-    async def preview(request:Request,file:UploadFile=File(...),ctx=Depends(writer),key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):
+    async def preview(request:Request,file:UploadFile=File(...),mapping_json:str|None=Form(None),defaults_json:str|None=Form(None),date_order:str|None=Form(None),ctx=Depends(writer),key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):
         content=await file.read(2*1024*1024+1);filename=file.filename or 'upload.csv'
+        if mapping_json:
+            import json
+            from app.services import import_mapping
+            try:
+                mapping=json.loads(mapping_json);defaults=Canonical.model_validate(json.loads(defaults_json or '{}')).model_dump(mode='json')
+                if not isinstance(mapping,dict) or any(not isinstance(k,str) or not isinstance(v,str) for k,v in mapping.items()) or date_order not in (None,'DMY','MDY'):raise ValueError()
+            except (ValueError,TypeError):raise DomainError(422,'MAPPING_INVALID','Supply an explicit column-to-field mapping, canonical defaults and optional DMY/MDY date order.') from None
+            return mutation(request,ctx,key,{'filename':filename,'digest':digest(content.hex()),'mapping':mapping,'defaults':defaults,'date_order':date_order},201,
+                lambda s:import_mapping.preview(s,ctx,storage,filename,content,mapping,defaults,date_order,request.state.correlation))
         return mutation(request,ctx,key,{'filename':filename,'digest':digest(content.hex())},201,lambda s:imports.preview(s,ctx,storage,filename,content,request.state.correlation))
     @app.post('/api/v1/imports/{record_id}/commit')
     def import_commit(record_id:UUID,request:Request,ctx=Depends(writer),key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):

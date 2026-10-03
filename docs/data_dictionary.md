@@ -207,6 +207,36 @@ Transaction processing uses P0 RECEIVED/QUEUED/PROCESSING/FAILED_RETRYABLE/FAILE
 | document_jobs / document_outbox | Additive document-specific durable stage/version/generation/key/attempt/lease/result metadata and delivery marker. Existing finance job schema remains strict. |
 | extraction_runs / field_observations | Immutable attempt/provider/schema/template/runtime metadata and explicit PRESENT/MISSING/ILLEGIBLE/AMBIGUOUS/NOT_APPLICABLE raw strings with actual scoped page/box sources. No finance or hidden reasoning fields. |
 | document_drafts | Immutable NORMALIZE/VALIDATE candidates, per-field source observation/rule/steps/status trace and unresolved/arithmetic/source findings. Money is decimal string; dates are business dates. |
-| transaction_documents / source_corrections / import_cells | Scoped append-only linkage/correction/cell foundations; canonical/UI integration is the next batch. |
+| transaction_documents | Immutable canonical-version-to-document-version links, INVOICE/RECEIPT/PO/SUPPORT role, actual one-based page range, optional verified-fact/draft pins. Multiple documents can link to one transaction. |
+| source_corrections | Immutable actor/reason/current canonical version, old/new raw/canonical values, real observation/correction IDs and page reference. Corrected field boxes remain null; extracted history is unchanged. |
+| import_cells | Immutable batch/sheet/row/column/field/raw/parsed/validation evidence, including invalid formula/numeric cells. Rule evidence resolves to the actual originating cell. |
 
 Quality fields name their measurements: Laplacian variance, mean luminance 0–255, dark/light pixel fractions, native character count/density and preview dimensions. Coordinate/quality floats are not financial values. The routing-v1 sidecar is separate from strict extraction-v1. PDF coordinates use actual display rotation; image OCR boxes map through inverse EXIF orientation into normalized original-page coordinates. Unknown boxes are null. Crop/deskew are not fabricated.
+
+### Source and normalization semantics
+
+EXTRACTED observations, NORMALIZED candidates, CANONICAL submitted versions,
+HUMAN_CORRECTED traces/actor/reason and MASTER/REFERENCE facts have different
+authority. HUMAN_VERIFIED_DOCUMENT records pin actual document/draft/canonical
+revisions and pages; factual verification does not create a finance approval.
+Source corrections retain real observation IDs and their own immutable correction
+record. New evaluations supersede current eligibility while old reports remain.
+
+Number keys retain conservative text and aggressive candidates without I/O
+substitution or removing leading zeros. Currency requires a supported explicit
+code. Raw money becomes exact Decimal-derived strings; missing tax remains
+unknown. Dimensionless quantity/rate/night values reject currency units or guessed
+percentage scaling. Ambiguous dates require explicit DMY/MDY or correction; local
+business dates remain distinct from UTC events. Normalizer currency support does
+not extend the established bounded INR finance policy.
+
+| Version | Responsibility |
+|---|---|
+| document-pipeline-v1 | Stable scope/document/revision/generation/stage idempotency and lease guards. |
+| document-processor-v1 | Bounded parsing, immutable pages/transforms and defined quality measurements. |
+| extraction-v1 | Preserved strict provider-independent observation/result contract. |
+| extraction-routing-v1 | Separate native/OCR/enterprise paths/status/attempts/segmentation/fallback metadata. |
+| typellm-document-v1 + prompt hash | Observable string/state questions, no finance authority/private reasoning. |
+| document-normalizer-v1 | Observation-linked normalization/validation and canonical provenance. |
+| document-source-v1 | Physical DOC-001 reconciliation; core rules-p1-v7 remains unchanged. |
+| report-p2-v1 | Document-derived metadata/links; structured report-p1-v2 remains supported. |

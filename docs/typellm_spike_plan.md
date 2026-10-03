@@ -395,3 +395,30 @@ Real runtime execution is BLOCKED_EXTERNAL_PREREQUISITE; fixture adapter and pro
 All proposed component/model/container/client selections above are **RESEARCH PIN**, with **PRODUCTION APPROVED PIN: NONE**. Qwen3.5-4B remains image-unverified; upstream text evidence is not a production approval. A later separately authorized host/service experiment must establish compatible GPU/runtime access and safety prerequisites before executing a controlled visual benchmark; this task does not repair the developer host or substitute another stack/model.
 
 The accepted [optimized enterprise architecture](inference_architecture.md) keeps TypeLLM/VLM/SGLang behind the existing provider-independent boundary, with CPU-friendly clients/control plane, shared persistent GPU serving, native-text fast path, bounded real pages/crops, small-model-first/stronger fallback, async durable jobs, tested batching and independent worker scaling. Quantization and full-cascade benchmarks are future work; no quality/latency/throughput is invented. Finance-user laptops need no inference runtime. The [final matrix](extraction_compatibility.md#p0-05-final-compatibility-matrix) consolidates limitations; the [exit review](phase0_exit_review.md) records accepted Phase-0 qualification and the Phase-1 approval boundary.
+
+## Phase-2 application integration update — 2026-10-03
+
+The historical research pins and external runtime observations above are preserved.
+Phase 2 now implements bounded CPU preprocessing and native-first routing, actual
+English CPU OCR, raw observations/normalization/source corrections and a remote
+TypeLLMExtractionAdapter. The optional pinned 0.5.1 SDK generate contract uses flat
+state/string questions and application-managed bounded page/row requests. Its
+real wheel schema compiler accepted 42 flat header questions without inference.
+Mocked generate tests exercise null/float/authority/timeout/disagreement behavior.
+The transport requires an approved endpoint/model and preprovisioned local tokenizer
+assets, with local-only loading; no tokenizer/model download or local serving occurs.
+
+Actual CPU document results identify NATIVE_TEXT or LOCAL_OCR. FIXTURE replay is
+separate and is never a provider-outage substitute. Routing/status metadata lives
+in extraction-routing-v1 beside the unchanged strict extraction-v1 contract.
+Unknown critical facts and uncertain table/segmentation coverage require input;
+manual source verification remains mandatory for document-derived screening.
+The router never chooses PASS/REVIEW/HOLD. The Phase-1 engine remains authoritative.
+
+No enterprise model/endpoint is configured here. Live TypeLLM/SGLang/VLM execution,
+GPU latency/VRAM/quality, production model selection, stronger model fallback,
+actual crops, batching and quantization remain explicitly deferred to suitable
+separately authorized infrastructure. The NVIDIA/Docker prerequisites were not
+retested or repaired. Native/OCR synthetic measurements establish no live-model
+accuracy. See the [Phase-2 exit review](phase2_exit_review.md) and
+[local runbook](runbooks/phase2-local.md) for implemented behavior and limits.

@@ -40,9 +40,9 @@ async def store_bytes(database, identity, upload_id, storage, chunks, limits, co
         if upload.state not in ('OPEN','UPLOADED') or upload.expires_at <= utcnow():
             raise DomainError(409,'UPLOAD_CLOSED','Upload is closed or expired.')
         doc = get(session,Document,identity,upload.document_id)
-        try: key, checksum, size = await storage.ingest(identity,chunks,maximum=limits.maximum_bytes)
-        except ValueError as exc:
-            code = str(exc) if str(exc) in ('DOCUMENT_SIZE_LIMIT','EMPTY_DOCUMENT') else 'UPLOAD_FAILED'
+        try: key, checksum, size = await storage.ingest(identity,chunks,maximum=limits.maximum_bytes,timeout_seconds=limits.upload_receive_timeout_seconds)
+        except (ValueError,TimeoutError) as exc:
+            code = 'UPLOAD_TIMEOUT' if isinstance(exc,TimeoutError) else str(exc) if str(exc) in ('DOCUMENT_SIZE_LIMIT','EMPTY_DOCUMENT') else 'UPLOAD_FAILED'
             if upload.state=='OPEN': upload.state='QUARANTINED';doc.state='QUARANTINED';doc.last_error=code
             audit(session,identity,'UPLOAD_REJECTED',doc.id,1,'Bounded binary intake rejected',correlation,{'code':code})
             return {'id':str(doc.id),'state':doc.state,'error':code}

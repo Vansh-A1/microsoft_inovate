@@ -25,11 +25,14 @@ def test_two_step_original_hash_server_keys_replay_and_cross_tenant(environment)
     first=client.post(url,headers=key);assert first.status_code==202,first.text
     assert first.json()['state']=='QUEUED' and first.json()['finance_decision'] is None
     assert client.post(url,headers=key).json()==first.json()
-    assert client.get(f'/api/v1/documents/{s["document_id"]}/original').content==original
+    assert client.get(f'/api/v1/documents/{s["document_id"]}/original').status_code==409
     with db.session(ctx) as session:
         row=session.scalar(select(DocumentVersion));assert row.version==1 and row.byte_size==len(original)
         assert row.storage_key.endswith(str(__import__('uuid').UUID(row.storage_key.split('/')[-1])))
         assert session.query(DocumentJob).count()==1
+    from test_document_pipeline import drain
+    drain(environment)
+    assert client.get(f'/api/v1/documents/{s["document_id"]}/original').content==original
     for suffix in ('','/original','/pages/1/preview'):
         assert client.get(f'/api/v1/documents/{s["document_id"]}{suffix}',headers={'Authorization':'Bearer test-second'}).status_code==404
 

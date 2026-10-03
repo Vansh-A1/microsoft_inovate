@@ -44,7 +44,7 @@ class TesseractOCRAdapter:
         self.executable=str(Path(executable).resolve());self.data_directory=str(Path(data_directory).resolve())
         self.library_directory=library_directory;self.timeout_seconds=min(30,timeout_seconds)
         if not Path(self.executable).is_file() or not Path(self.data_directory,'eng.traineddata').is_file():raise DocumentFailure('OCR_NOT_CONFIGURED')
-        env=dict(os.environ)
+        env={'PATH':os.defpath,'LANG':'C.UTF-8','OMP_THREAD_LIMIT':'1'}
         if library_directory:env['LD_LIBRARY_PATH']=str(Path(library_directory).resolve())
         try:
             checked=subprocess.run([self.executable,'--version'],capture_output=True,env=env,timeout=3,check=True)
@@ -54,7 +54,7 @@ class TesseractOCRAdapter:
         except (subprocess.SubprocessError,ValueError,OSError):raise DocumentFailure('OCR_NOT_CONFIGURED') from None
 
     def recognize(self,path,transform):
-        env=dict(os.environ,OMP_THREAD_LIMIT='1')
+        env={'PATH':os.defpath,'LANG':'C.UTF-8','OMP_THREAD_LIMIT':'1'}
         if self.library_directory:env['LD_LIBRARY_PATH']=str(Path(self.library_directory).resolve())
         try:
             process=subprocess.run([self.executable,str(Path(path).resolve()),'stdout','--tessdata-dir',self.data_directory,

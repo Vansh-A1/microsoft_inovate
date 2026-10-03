@@ -11,6 +11,7 @@ from app.domain.extraction import DocumentBundle, DocumentPage, DocumentSourceTy
 from app.extraction.native import NativeTextExtractionAdapter, HEADER_FIELDS, reconcile
 from app.extraction.typellm import TypeLLMExtractionAdapter, questions
 from app.extraction.ocr import original_box
+from app.documents.normalizer import normalized_value
 
 
 def extracted(name):
@@ -69,6 +70,11 @@ def test_ambiguous_dates_explicit_locale_and_conservative_keys():
     assert normalize_date('03/04/2026','MDY')=='2026-03-04'
     assert number_keys(' inv 00128 ')['candidate']=='INV00128'
     assert number_keys('IO-001')['candidate']=='IO001'
+
+
+@pytest.mark.parametrize('field,raw',[('lines.0.quantity','INR 20'),('lines.0.tax_rate','18%'),('eligible_nights','₹2')])
+def test_dimensionless_values_cannot_be_money_or_guess_percentage(field,raw):
+    with pytest.raises(NormalizationError):normalized_value(field,raw,'INR')
 
 
 def provider_data():

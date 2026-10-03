@@ -3,8 +3,8 @@
 ## Project status
 
 - Session date: 2026-10-02–03 (Asia/Kolkata).
-- Current phase: **PHASE 2 IN PROGRESS — Real document ingestion and extraction**; Phase 0 remains complete with external-runtime deferral.
-- Current task: **P2-01–P2-05 continuously approved; secure intake and bounded document processing first**.
+- Current phase: **PHASE 2 COMPLETE LOCALLY — Real document ingestion and extraction**, with explicitly approved enterprise-runtime deferral; Phase 0 and Phase 1 remain complete.
+- Current task: **P2-01–P2-05 locally verified; publication is separately recorded. Stop before Phase 3.**
 - P0-01: **COMPLETE LOCALLY**; the single consolidated phase push failed authentication; remote publication remains blocked.
 - P0-02: **COMPLETE**; tested Money/currency, states and evidence foundation.
 - P0-03: **COMPLETE**; reproducible synthetic references and independent golden expectations.
@@ -12,16 +12,16 @@
 - P0-05: **COMPLETE FEASIBILITY CONSOLIDATION**; final compatibility matrix, research pins and honest unverified/blocked/deferred limitations.
 - P0-06: **COMPLETE DESIGN DECISIONS**; identity, effective policy, durable jobs, private storage, RULES_ONLY risk and optimized shared inference.
 - Real inference runtime: **BLOCKED_EXTERNAL_PREREQUISITE**; observed BLOCKED_DRIVER and BLOCKED_DOCKER_ACCESS, ENVIRONMENT_FAILURE, IMAGE_PATH_NOT_RUN.
-- Development extraction: **VERIFIED FIXTURE ADAPTER**; enterprise target **OPTIMIZED SHARED VLM INFERENCE SERVICE**.
-- Phase 1: **COMPLETE LOCALLY**; all mandatory local exit criteria satisfied. Phase 2 has not begun.
+- Development extraction: **ACTUAL NATIVE_TEXT / LOCAL_OCR** plus preserved FIXTURE replay; enterprise target **OPTIMIZED SHARED VLM INFERENCE SERVICE**, runtime explicitly deferred.
+- Phase 1: **COMPLETE LOCALLY**; preserved as the Phase-2 finance baseline.
 
-The [Phase-0 exit review](phase0_exit_review.md) preserves the explicit runtime qualification. The [Phase-1 exit review](phase1_exit_review.md) records the working product and full-release limits. [T01–T42 coverage](test_coverage.md) is 21 implemented/passing, 11 partial and 10 unimplemented. Historical work records below describe the approval/status at each checkpoint; this current disposition supersedes their prior stop/parent-incomplete statements. No original record or specification is rewritten to suggest a passed real spike.
+The [Phase-0 exit review](phase0_exit_review.md) preserves the explicit runtime qualification. The [Phase-1 exit review](phase1_exit_review.md) records the working product and full-release limits. [T01–T42 coverage](test_coverage.md) is 22 implemented/passing, 11 partial and 9 unimplemented. Historical work records below describe the approval/status at each checkpoint; this current disposition supersedes their prior stop/parent-incomplete statements. No original record or specification is rewritten to suggest a passed real spike.
 
 ## Phase checklist
 
 - [x] Phase 0 — Contracts and feasibility (local exit criteria satisfied; real runtime explicitly deferred, publication separately reported).
 - [x] Phase 1 — Rules-first vertical slice for both branches (local exit passed; Git publication separately recorded).
-- [ ] Phase 2 — Real document ingestion and extraction.
+- [x] Phase 2 — Real document ingestion and extraction (local exit passed; shared enterprise VLM execution explicitly deferred).
 - [ ] Phase 3 — Complete finance matching and controls.
 - [ ] Phase 4 — Human workflow and operational reliability.
 - [ ] Phase 5 — Measured ML and explanations.
@@ -589,3 +589,105 @@ Actual Tesseract 5.3.4 + English asset were SHA-verified and extracted under ign
 TypeLLM 0.5.1 wheel's real schema compiler accepted 42 flat state/raw header questions, without inference. Mocked generate responses exercise string money, null ambiguity, invalid authority/float responses, timeout and disagreement. SDK client/runtime/model execution remains externally deferred. Optional client installation and approved preprovisioned tokenizer are documented requirements, not attempted inference. Malware NOT_CONFIGURED is preserved and required scanning fails closed. No model confidence/accuracy or GPU performance is claimed.
 
 P2-01/P2-02 core behavior is locally verified; P2-03 independent boundary and P2-04 normalization are implemented. Remaining current batch: source-verified canonical linkage/corrections, mapped import evidence, attachments and running-browser UI. Phase 2 is not yet complete. Continue within the existing continuous approval; no Phase-3 work or publication yet.
+
+## Phase-2 batches C/D — source facts, imports and reviewer UI
+
+Implemented source-verified canonical creation/revisions and automatic evaluations,
+immutable correction actor/reason/old/new/page traces, multiple attachment roles,
+actual receipt UUID validation, mapped CSV/XLSX cell evidence, authenticated source
+and field evidence lookup, upload/status/page/box/zoom/correction/attachment UI.
+OpenAPI and generated TypeScript match the current application. The original
+pure Phase-1 engine/ruleset/rule versions remain unchanged. New document-source
+DOC-001 reconciliation is an isolated pure extension; mapped evidence changes no
+screening result. Old structured paths and immutable reports remain supported.
+
+Automatic approval review rejected an earlier global ruleset/per-rule version
+change because it risked changing established Phase-1 finance behavior. That patch
+was not applied. The accepted smaller integration confines new source semantics
+to physical document contexts and preserves core calculations/versions. No user
+permission stop or rejected-action workaround was required.
+
+Targeted verification (all executed exit 0 after repairs): 44 Phase-1 pure finance
+checks (0.11s); six physical-document finance checks (49.27s); four mapped-import
+checks (32.26s); two lease/scanner checks (15.25s); 44 parser/extraction pure checks
+(1.20s). A strengthened instruction-bearing invoice and actual generated receipt
+finance check also passed (1 test, 17.06s): printed amounts, missing approval HOLD,
+and unchanged nonempty vendor-master records. Initial failures in the new finance
+and import tests were incorrect test operands/selectors, repaired against actual
+behavior; the 37 original PostgreSQL checks passed in the combined mapping run.
+
+First new browser run: 13 passed / 3 failed (duplicate Next alert/text matches and
+an exact label selector); corrected semantic/scoped selectors. Rerun: 16 passed
+in 38.6s. Final production rebuild includes image zoom without changing box mapping;
+refreshed owned services and browser suite: **16 passed, 0 failed, 0 skipped, 41.9s**.
+Desktop source/actual highlight, employee case and 390-pixel document list were
+visually inspected. Loading/error/quarantine/ambiguous date/multi-page/no-box paths
+use real API data; only explicit outage UI tests intercept selected responses.
+TypeScript and production webpack build exited 0. Pip check and Alembic drift check
+exited 0; no broken dependencies/new migration operations.
+
+First complete expanded Python run: **640 passed / 1 failed**, 634.70s. The new
+no-provider test inherited the operator's configured local OCR from private
+settings, producing NEEDS_INPUT instead of the intended DEPENDENCY_UNAVAILABLE.
+Made test provider configuration explicit; the complete document-stage suite then
+passed **10 tests**, 137.73s. The corrected full suite is running; no pending result
+is claimed passed. Private developer OCR settings and application semantics remain
+unchanged by this test isolation fix.
+
+The actual CPU corpus benchmark exited 0: 14 sources, 7 READY / 5 NEEDS_INPUT /
+2 PROCESSING_FAILURE; all clean native critical fields 6/6 and clean receipt/photo/
+scan fields 4/4 match independently printed ground truth. Unreadable image retains
+0/4 with input required. Actual per-source CPU timings 0.085895–0.371405s concern
+this single small synthetic run only, not a service SLA or live VLM metric. Generated
+reports/screenshots/original uploads stay ignored. All original 9/23/11 checksum
+sets and the new 15-file corpus pass; specification byte comparison passes. Local
+Markdown audit resolves 212 links/anchors and retains all 42 scenario/expectation
+strings. T41 CPU document instruction behavior is now implemented/tested; remaining
+full release scope stays explicit (22 implemented, 11 partial, 9 unimplemented).
+
+Current next action: finish the corrected full regression, staged review and
+[Phase-2 exit review](phase2_exit_review.md), commit verified work, then make one
+consolidated normal phase push under the standing user request. Do not repair
+credentials/retry after authentication failure. Stop before Phase 3.
+
+## Phase-2 final local exit — COMPLETE, enterprise runtime explicitly deferred
+
+All P2-01–P2-05 and the three specification exit criteria are locally satisfied
+under the explicit runtime qualification in the direct approval. PDFs/photos now
+produce immutable versioned source-linked facts and both branches reach the
+existing finance application after validated human source verification. Critical
+uncertainty and unsafe files cannot automatically PASS. Fixture/native/OCR/remote
+provider modes remain distinct. Phase 3 has not begun.
+
+| Executed command/check | Exact result |
+|---|---|
+| `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider --tb=short` | Exit 0; **641 passed, 0 failed, 0 skipped**, 554.98s. Preserves all 569 baseline checks and adds 72 actual document/provider/normalization/integration checks. One upstream TestClient deprecation warning. |
+| `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest apps/api/tests/integration/test_document_finance.py::test_document_instructions_cannot_clear_approval_or_mutate_master -q -p no:cacheprovider --tb=short` | Exit 0; 1 passed, 17.06s, actual malicious invoice and receipt cannot create approvals/change master. A repeat of one test, not another distinct suite count. |
+| `PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest apps/api/tests/integration/test_document_finance.py::test_bundle_and_quarantine_cannot_commit_or_attach -q -p no:cacheprovider --tb=short` | Exit 0; 1 passed, 18.38s, after the final narrow coverage guard. Source confirmation cannot dismiss retained TABLE_COVERAGE_UNCERTAIN/TABLE_ROW_LIMIT findings; unsupported partial rows require clearer input. Core finance formulas/versions unchanged. |
+| `npm run generate:api --prefix apps/web` | Exit 0; saved actual OpenAPI and generated TypeScript match. |
+| `npm run typecheck --prefix apps/web` and `npm run build --prefix apps/web` | Exit 0 each; strict TypeScript and production webpack build, including original-coordinate source box zoom. |
+| `PLAYWRIGHT_BROWSERS_PATH="$PWD/runtime/playwright" npm run test:e2e --prefix apps/web` | Exit 0; **16 passed, 0 failed, 0 skipped**, 41.9s. Includes all 11 original checks. Live API/worker/production UI; actual uploads and revisions retained. |
+| `.venv/bin/python -m pip check` | Exit 0; no broken requirements. |
+| `.venv/bin/alembic -c apps/api/alembic.ini check` | Exit 0; no schema drift. Full PG suite also tests fresh setup, isolated downgrade/upgrade, 35 total tables including Alembic, precision/constraints and forced RLS. No meaningful development data reset. |
+| `.venv/bin/python scripts/benchmark/documents_phase2.py` | Exit 0; 14 actual sources, seven ready/five needs input/two parser rejection cases. Clean native 6/6 and receipt/scan/photo 4/4 independent critical fields. Generated report ignored; VLM/GPU metrics unavailable. |
+| `sha256sum -c docs/source_inputs.sha256`, `data/synthetic/fixtures.sha256`, `data/extraction_spike/fixtures.sha256`, `data/documents_phase2/fixtures.sha256` (each separate command) | Exit 0 each; all 9/23/11/15 pinned files OK. |
+| `cmp AP_Exception_Assistant_6_Person_Team_Pack/AP_Exception_Assistant_Codex_Spec.md docs/AP_Exception_Assistant_Codex_Spec.md` | Exit 0; specification byte-identical. |
+| Inline Python preservation/documentation/OpenAPI/secret audit | Exit 0; 65 earlier contract/extractor/test/corpus/core-rule/migration files untouched, all 42 scenario/expectation strings preserved, local links resolve, saved API matches, private credentials/common secret signatures absent from trackable text and runtime/originals/build/results ignored. |
+| `git diff --check` | Exit 0; whitespace clean. Staged review/commit/publication follow below. |
+
+The final coverage guard was added after the aggregate run and tested directly
+against the actual malformed-row pipeline and commit rejection. No rule engine or
+other behavior changed. Browser source/page/mobile screenshots were inspected;
+unknown boxes remain absent and zoom scales measured boxes with the page image.
+
+See [Phase-2 exit review](phase2_exit_review.md), [local document runbook](runbooks/phase2-local.md),
+[ADR-0010](adr/0010-phase2-document-lineage-and-provider-boundary.md), glossary and
+coverage. Scanner remains NOT_CONFIGURED, native layout support is conservative,
+English OCR measurements are synthetic, source verification is manual, and live
+TypeLLM/SGLang/model/latency/VRAM/cascade/quantization remain externally deferred.
+No driver/Docker/model/cloud experiment was repeated. No production readiness or
+full T01–T42 release claim is made. Next task: separately approved **P3-01**; stop.
+
+Publication: one consolidated Phase-2 main push remains to be attempted under the
+standing direct request after clean local commits; no retry/credential repair if
+it fails. Actual result will be recorded without exposing credentials.

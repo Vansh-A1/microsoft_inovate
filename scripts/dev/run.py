@@ -8,6 +8,9 @@ PYTHON=ROOT/'.venv/bin/python';NODE=ROOT/'runtime/tools/node-v24.21.0-linux-x64/
 
 def main():
     env=dict(os.environ);env['PYTHONPATH']=str(ROOT/'apps/api');env['PATH']=str(NODE)+':'+env.get('PATH','')
+    sys.path.insert(0,str(ROOT/'apps/api'))
+    from app.core.config import Settings
+    env['AP_DOCUMENT_MAXIMUM_BYTES']=str(Settings.load().document_limits.maximum_bytes)
     children=[]
     try:
         commands=[([PYTHON,'-m','uvicorn','app.main:create_app','--factory','--host','127.0.0.1','--port','8000','--no-access-log'],ROOT),([PYTHON,'-m','app.services.worker'],ROOT),([NODE/'npm','start'],ROOT/'apps/web')]

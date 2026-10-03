@@ -57,6 +57,7 @@ def extract(doc,identity,page_data,storage,providers):
         'fallback':'HUMAN_REVIEW','model_quality':'NOT_MEASURED'}
     visual=[p for p in page_data if p['route']!='NATIVE_TEXT_AVAILABLE']
     if not visual:
+        if providers.endpoint:routing['vlm_status']='CONFIGURED_NOT_NEEDED'
         routing['paths']=['NATIVE_TEXT'];return native,diagnostics,routing
     ocr=UnconfiguredOCRAdapter()
     if providers.ocr_executable:
@@ -166,7 +167,7 @@ def record_failure(database,identity,job_id,owner,work,exc,started):
         retry=exc.retryable and job.attempts<job.maximum_attempts
         job.state='RETRYABLE' if retry else 'FAILED';job.last_error=exc.code;job.lease_until=None;job.updated_at=utcnow();job.available_at=utcnow()+timedelta(seconds=2**job.attempts)
         quarantined=job.stage=='PREPROCESS' and exc.code not in ('MALWARE_NOT_CONFIGURED','MALWARE_SCAN_UNAVAILABLE','PARSER_TIMEOUT','PARSER_RESOURCE_FAILURE')
-        unavailable='NOT_CONFIGURED' in exc.code or exc.code in ('TOKENIZER_NOT_PROVISIONED','TYPELLM_CLIENT_NOT_INSTALLED')
+        unavailable='NOT_CONFIGURED' in exc.code or exc.code in ('TOKENIZER_NOT_PROVISIONED','TYPELLM_CLIENT_NOT_INSTALLED','TYPELLM_CLIENT_VERSION_UNSUPPORTED')
         doc.state='FAILED_RETRYABLE' if retry else ('QUARANTINED' if quarantined else ('DEPENDENCY_UNAVAILABLE' if unavailable else 'NEEDS_INPUT'))
         doc.last_error=exc.code
         if job.stage=='EXTRACT':s.add(ExtractionRun(**identity.scope(),document_id=doc.id,document_version=1,job_id=job.id,attempt=job.attempts,

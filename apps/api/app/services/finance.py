@@ -49,21 +49,22 @@ def idempotent(session,identity,endpoint,key,body,status,operation):
     return response,status
 
 
-def create_transaction(session,identity,payload,reason,correlation,transaction_id=None):
+def create_transaction(session,identity,payload,reason,correlation,transaction_id=None,*,normalizer_version='structured-p1-v1'):
     scope_lock(session,identity)
     row=Transaction(**identity.scope(),id=transaction_id or uuid4(),branch=payload['branch'],latest_version=1,row_version=1,processing_state='RECEIVED',eligible=False)
     session.add(row);session.flush()
-    append_version(session,identity,row,payload,1,reason)
+    append_version(session,identity,row,payload,1,reason,normalizer_version=normalizer_version)
     audit(session,identity,'TRANSACTION_CREATED',row.id,1,reason,correlation,{'branch':row.branch})
     return {'id':str(row.id),'version':1,'processing_state':row.processing_state}
 
 
-def append_version(session,identity,row,payload,version,reason):
+def append_version(session,identity,row,payload,version,reason,*,normalizer_version='structured-p1-v1'):
     payload=dict(payload)
     for field in ['lines','items']:
         payload[field]=[dict(item,id=item.get('id') or str(uuid5(row.id,f'{field}:{i}'))) for i,item in enumerate(payload.get(field,[]),1)]
     vendor=row.branch=='VENDOR_INVOICE';amount=payload.get('total_amount' if vendor else 'requested_amount');day=payload.get('invoice_date' if vendor else 'expense_date');party=payload.get('vendor_id' if vendor else 'employee_id')
     fact=TransactionVersion(**identity.scope(),transaction_id=row.id,version=version,payload=payload,total_amount=Decimal(amount) if amount is not None else None,currency=payload.get('currency'),business_date=date.fromisoformat(day) if day else None,party_id=UUID(party) if party else None,number_key=number_key(payload.get('invoice_number' if vendor else 'claim_number')),content_digest=digest(payload),author_id=identity.actor_id,change_reason=reason)
+    fact.normalizer_version=normalizer_version
     session.add(fact);session.flush();return fact
 
 
@@ -72,13 +73,16 @@ def release(session,identity,transaction_id):
     session.execute(scope_query(update(ReviewCase),ReviewCase,identity).where(ReviewCase.transaction_id==transaction_id,ReviewCase.state=='OPEN').values(state='SUPERSEDED'))
 
 
-def revise(session,identity,record_id,data,correlation):
+def revise(session,identity,record_id,data,correlation,*,normalizer_version='structured-p1-v1',copy_document_links=True):
     scope_lock(session,identity);row=get(session,Transaction,identity,record_id)
     if row.latest_version!=data['expected_version']:raise DomainError(409,'STALE_VERSION','Refresh the case before revising.')
     if row.branch!=data['transaction']['branch']:raise DomainError(409,'BRANCH_IMMUTABLE','Create a separate transaction for a different branch.')
     release(session,identity,row.id)
     row.latest_version+=1;row.row_version+=1;row.eligible=False;row.decision=None;row.processing_state='RECEIVED'
-    append_version(session,identity,row,data['transaction'],row.latest_version,data['reason'])
+    append_version(session,identity,row,data['transaction'],row.latest_version,data['reason'],normalizer_version=normalizer_version)
+    if copy_document_links:
+        from app.services.document_facts import copy_links
+        copy_links(session,identity,row.id,row.latest_version-1,row.latest_version)
     audit(session,identity,'TRANSACTION_REVISED',row.id,row.latest_version,data['reason'],correlation)
     return {'id':str(row.id),'version':row.latest_version,'processing_state':row.processing_state}
 
@@ -106,6 +110,8 @@ def build_context(session,identity,job,version):
 
 def _build_context(session,identity,job,version):
     p=version.payload;refs=pinned(session,identity,job.snapshot_id);vendor=p['branch']=='VENDOR_INVOICE'
+    from app.services.document_facts import source_context
+    refs,document_sources,document_valid=source_context(session,identity,version,refs)
     # Exact predicates use scope/party/number/currency/amount/date index, not a global history scan.
     duplicate_refs=[];duplicates=[]
     if vendor and all(v is not None for v in [version.party_id,version.number_key,version.total_amount,version.currency,version.business_date]):
@@ -147,7 +153,14 @@ def _build_context(session,identity,job,version):
     q=scope_query(select(ApprovalRecord),ApprovalRecord,identity).where(ApprovalRecord.transaction_id==version.transaction_id,ApprovalRecord.transaction_version==version.version).order_by(ApprovalRecord.sequence)
     approvals=[{'id':str(a.id),'version':1,'transaction_version':a.transaction_version,'policy_id':str(a.policy_id),'policy_version':a.policy_version,'actor_id':str(a.actor_id),'role':a.role,'sequence':a.sequence,'state':a.state,'approved_at':a.approved_at.isoformat()} for a in session.scalars(q)]
     source=session.scalar(scope_query(select(ImportRow),ImportRow,identity).where(ImportRow.transaction_id==version.transaction_id))
-    return RuleContext.pin(transaction=p,transaction_id=str(version.transaction_id),transaction_version=version.version,tenant_id=str(identity.tenant_id),legal_entity_id=str(identity.legal_entity_id),author_id=str(version.author_id),snapshot_id=str(job.snapshot_id),references=refs,duplicates=duplicate_refs+duplicates,daily_history=daily,receipt_conflicts=conflicts,capacity=capacity,capacity_evidence=capacity_evidence,po_commitment_used=commitments,approvals=approvals,evaluated_at=job.evaluated_at.isoformat(),context_complete=True,import_source={'id':str(source.id),'batch_id':str(source.batch_id),'sheet':source.sheet,'row_number':source.row_number} if source else None)
+    core_context=RuleContext.pin(transaction=p,transaction_id=str(version.transaction_id),transaction_version=version.version,tenant_id=str(identity.tenant_id),legal_entity_id=str(identity.legal_entity_id),author_id=str(version.author_id),snapshot_id=str(job.snapshot_id),references=refs,duplicates=duplicate_refs+duplicates,daily_history=daily,receipt_conflicts=conflicts,capacity=capacity,capacity_evidence=capacity_evidence,po_commitment_used=commitments,approvals=approvals,evaluated_at=job.evaluated_at.isoformat(),context_complete=True,import_source={'id':str(source.id),'batch_id':str(source.batch_id),'sheet':source.sheet,'row_number':source.row_number} if source else None)
+    data=json_context(core_context)
+    data.update(document_sources=document_sources,document_source_validation=document_valid)
+    if source:
+        from app.db.document_models import ImportCell
+        cells=session.scalars(scope_query(select(ImportCell),ImportCell,identity).where(ImportCell.row_id==source.id,ImportCell.column!='transaction_json')).all()
+        data['import_cells']=[{'column':cell.column,'field_path':cell.field_path} for cell in cells]
+    return RuleContext.pin(**data)
 
 
 def report_html(content):
@@ -176,7 +189,11 @@ def finalize(session,identity,job_id,lease_owner):
     context_data=json_context(context)
     evaluated_snapshot=snapshot_records(session,identity,[(UUID(r['id']),r['version']) for r in context_data['references'].values()])
     context_data['snapshot_id']=str(evaluated_snapshot.id)
-    context=RuleContext.pin(**context_data);decision=evaluate(context)
+    context=RuleContext.pin(**context_data)
+    from app.rules.document_sources import evaluate_sources
+    decision=evaluate_sources(context)
+    from app.rules.import_evidence import mapped_evidence
+    decision=mapped_evidence(decision,context_data)
     evaluation=Evaluation(**identity.scope(),id=uuid4(),transaction_id=transaction.id,transaction_version=version.version,reference_snapshot_id=evaluated_snapshot.id,ruleset_version=RULESET,decision_policy_version=DECISION_POLICY,evaluation_mode='RULES_ONLY',completeness=decision.completeness,decision=decision.decision,eligible=decision.eligible,input_digest=digest(context.encoded),evaluated_at=job.evaluated_at,supersedes_id=transaction.latest_evaluation_id)
     session.add(evaluation);session.flush()
     session.add(EvaluationInput(**identity.scope(),evaluation_id=evaluation.id,encoded=context.encoded,content_digest=digest(context.encoded)));session.flush()
@@ -202,7 +219,15 @@ def finalize(session,identity,job_id,lease_owner):
         session.add(review);session.flush()
         audit(session,identity,'REVIEW_CASE_CREATED',review.id,1,'Required controls need resolution',str(job.id),{'evaluation_id':str(evaluation.id),'transaction_id':str(transaction.id),'reason_codes':review.reasons})
     content=projection({'schema_version':'report-p1-v2','evaluation_version':1,'reason_codes':[r.rule_id for r in decision.results if r.decision_effect!='NONE'],'evaluation_id':evaluation.id,'transaction_id':transaction.id,'transaction_version':version.version,'reference_snapshot_id':evaluated_snapshot.id,'ruleset_version':RULESET,'decision_policy_version':DECISION_POLICY,'evaluation_mode':'RULES_ONLY','extraction_mode':'STRUCTURED_SYNTHETIC','model_status':'NOT_CONFIGURED','completeness':decision.completeness,'decision':decision.decision,'eligible':decision.eligible,'input_digest':evaluation.input_digest,'evaluated_at':job.evaluated_at,'supersedes_id':evaluation.supersedes_id,'transaction':redact(version.payload),'rules':rules,'next_actions':[r.reason for r in decision.results if r.decision_effect!='NONE'] or ['Screening checks complete. Authorized human processing remains separate.'],'capacity_basis':capacity_refs})
-    session.add(Report(**identity.scope(),evaluation_id=evaluation.id,content=content,html=report_html(content),content_digest=digest(content)))
+    if context_data.get('document_sources'):
+        from app.rules.document_sources import DOCUMENT_RULE_VERSION
+        content.update(extraction_mode='DOCUMENT_DERIVED',document_sources=context_data['document_sources'],
+            normalizer_version=version.normalizer_version,document_rules_version=DOCUMENT_RULE_VERSION,schema_version='report-p2-v1')
+    generated_html=report_html(content)
+    if context_data.get('document_sources'):
+        generated_html=generated_html.replace('STRUCTURED_SYNTHETIC. No source images or bounding boxes.',
+            'DOCUMENT_DERIVED. Authorized physical page evidence is available; field boxes are shown only where measured.')
+    session.add(Report(**identity.scope(),evaluation_id=evaluation.id,content=content,html=generated_html,content_digest=digest(content)))
     if job.lease_until<=utcnow():raise DomainError(409,'LEASE_EXPIRED','Execution exceeded the durable lease deadline.')
     transaction.latest_evaluation_id=evaluation.id;transaction.processing_state='COMPLETED';transaction.decision=decision.decision;transaction.eligible=decision.eligible;transaction.row_version+=1
     job.state='SUCCEEDED';job.result_evaluation_id=evaluation.id;job.lease_until=None;job.updated_at=utcnow();job.last_error=None

@@ -79,3 +79,30 @@ Image classification **IMAGE_PATH_NOT_RUN**; text smoke NOT RUN. No container/cl
 **RESEARCH PIN:** TypeLLM 0.5.1, SGLang 0.5.21, source SHAs, container `lmsysorg/sglang@sha256:2dbe4c7f53230b09aaa8fa41891c13c51d9d2e253f486a70822aaf08783fff75`, proposed `Qwen/Qwen3.5-4B` revision `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`, and planned client versions in the unchanged spike plan. They are reproducible research inputs, not an installed lockfile or successful inference tuple.
 
 **PRODUCTION APPROVED PIN: NONE.** Real image quality/latency/VRAM, null/row/money/failure mappings, supported quantization/cascade, package/license inventory and privacy/operational gates must pass on suitable separately approved infrastructure. No assumption was filled by inventing a successful provider result. Qualified P0-05 completion records those findings and deferrals; it does not promote them to verification.
+
+## Phase-2 application integration update — 2026-10-03
+
+The historical research pins and external runtime observations above are preserved.
+Phase 2 now implements bounded CPU preprocessing and native-first routing, actual
+English CPU OCR, raw observations/normalization/source corrections and a remote
+TypeLLMExtractionAdapter. The optional pinned 0.5.1 SDK generate contract uses flat
+state/string questions and application-managed bounded page/row requests. Its
+real wheel schema compiler accepted 42 flat header questions without inference.
+Mocked generate tests exercise null/float/authority/timeout/disagreement behavior.
+The transport requires an approved endpoint/model and preprovisioned local tokenizer
+assets, with local-only loading; no tokenizer/model download or local serving occurs.
+
+Actual CPU document results identify NATIVE_TEXT or LOCAL_OCR. FIXTURE replay is
+separate and is never a provider-outage substitute. Routing/status metadata lives
+in extraction-routing-v1 beside the unchanged strict extraction-v1 contract.
+Unknown critical facts and uncertain table/segmentation coverage require input;
+manual source verification remains mandatory for document-derived screening.
+The router never chooses PASS/REVIEW/HOLD. The Phase-1 engine remains authoritative.
+
+No enterprise model/endpoint is configured here. Live TypeLLM/SGLang/VLM execution,
+GPU latency/VRAM/quality, production model selection, stronger model fallback,
+actual crops, batching and quantization remain explicitly deferred to suitable
+separately authorized infrastructure. The NVIDIA/Docker prerequisites were not
+retested or repaired. Native/OCR synthetic measurements establish no live-model
+accuracy. See the [Phase-2 exit review](phase2_exit_review.md) and
+[local runbook](runbooks/phase2-local.md) for implemented behavior and limits.

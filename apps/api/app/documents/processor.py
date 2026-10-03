@@ -125,8 +125,9 @@ class DocumentProcessor:
     def __init__(self, limits=None): self.limits = limits or DocumentLimits()
 
     def process(self, path):
-        env = dict(os.environ, OPENBLAS_NUM_THREADS='1', OMP_NUM_THREADS='1', OMP_THREAD_LIMIT='1')
-        env['PYTHONPATH'] = str(Path(__file__).resolve().parents[2]) + os.pathsep + env.get('PYTHONPATH', '')
+        # Parsers receive no application credentials or inherited provider tokens.
+        env = {'PATH':os.defpath,'LANG':'C.UTF-8','OPENBLAS_NUM_THREADS':'1','OMP_NUM_THREADS':'1','OMP_THREAD_LIMIT':'1',
+            'PYTHONPATH':str(Path(__file__).resolve().parents[2])}
         try:
             result = subprocess.run([sys.executable, '-m', 'app.documents.processor', str(Path(path).resolve()),
                 json.dumps(asdict(self.limits))], capture_output=True, env=env,

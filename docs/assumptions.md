@@ -80,3 +80,19 @@ Phase-1 publication observation: the single authorized normal main push of verif
 ## Phase-2 verified CPU document boundary
 
 Native extraction supports explicit labeled headers and pipe-delimited tables; arbitrary layout completeness is not claimed. Unknown coverage, date/currency ambiguity and disagreements remain unresolved. Actual PyMuPDF/Pillow/OpenCV versions are pinned in the lock. Project-local Tesseract 5.3.4 provides English CPU OCR; this is independently replaceable and can be absent (NOT_CONFIGURED). The 15-file actual synthetic corpus is a bounded development benchmark, not production accuracy evidence. Malware scanning is NOT_CONFIGURED in development; requiring it blocks processing. Source verification remains manual for document-derived finance eligibility. TypeLLM real service/model execution and all GPU metrics remain explicitly deferred; no driver/Docker/model provisioning occurred. Private blob orphans after rollback remain possible and are not silently treated as finalized documents.
+
+Physical facts require trusted source confirmation and reference mapping. The
+development UI supplies editable synthetic reference choices; it cannot assert
+approvals. Source verification appends immutable facts linked to actual document
+and transaction revisions. Critical corrections are re-normalized/validated and
+reevaluated; raw observations and old evaluations remain intact. Other mandatory
+controls can still HOLD or REVIEW. The Phase-1 engine is unchanged; separately
+versioned DOC source reconciliation applies only to physical contexts.
+
+Mapped imports require text money cells; numeric Excel money is rejected rather
+than recovered through a binary float. Formulas remain raw invalid evidence and
+are never executed. Actual linked document IDs are mandatory; a boolean attachment
+claim or fixture fact does not prove a receipt. Multi-document roles and page
+ranges exist; automatic invoice segmentation, shared receipt allocation and
+duplicate decisions remain Phase-3/later work. Current scanner/parser/English OCR
+and manual verification are local development boundaries, not production approval.

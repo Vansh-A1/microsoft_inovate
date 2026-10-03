@@ -31,7 +31,7 @@ the unchanged strict extraction-v1 result.
 
 Document-derived screening requires explicit human source verification during
 Phase 2. This is factual verification, not approval authority. Verified facts
-will be immutable scoped reference records bound to physical document revisions
+are immutable scoped reference records bound to physical document revisions
 and canonical versions. Finance controls, approvals and capacity effects remain
 authoritative. This permits a useful CPU vertical slice without claiming
 production extraction quality or clearing ambiguity using a fabricated score.
@@ -41,3 +41,11 @@ failures require visible user input or a provider. Quarantine has no screening
 decision. More advanced models, table layouts, segmentation and auto-pass quality
 require later measured work, not a fixture fallback. No Phase-3 matching logic is
 introduced.
+
+The Phase-1 pure engine and its versions remain unchanged. A separately versioned
+pure document-source extension changes DOC-001 reconciliation only on physical
+source contexts, maps actual evidence and cannot override other mandatory checks.
+Mapped cell evidence adds provenance without changing screening. Automatic approval
+review rejected an earlier proposal to change global ruleset/per-rule versions
+because it risked altering established Phase-1 behavior. The accepted narrower
+integration preserves that behavior and confines new semantics to document sources.

@@ -6,9 +6,9 @@ The assistant screens vendor invoices and employee expense claims against verifi
 
 ## Development status
 
-**Phase 1 complete locally — executable rules-first slice for both branches.** FastAPI, PostgreSQL, durable jobs, immutable evaluations/evidence, deterministic JSON/HTML reports and the Next.js review workspace run locally with real persisted data. The approved scope is P1-01–P1-06; final verification and publication are recorded in [progress](docs/progress.md) and the [Phase-1 exit review](docs/phase1_exit_review.md).
+**Phase 2 complete locally — actual document ingestion and extraction.** Actual PDF/PNG/JPEG intake, preserved originals, native PDF text, CPU OCR, versioned observations/normalization, source corrections and attachment/import evidence extend the working Phase-1 application. The approved scope is P2-01–P2-05; exact verification and publication are recorded in [progress](docs/progress.md) and the [Phase-2 exit review](docs/phase2_exit_review.md).
 
-The original Phase-0 contracts, fixture adapters and synthetic corpora remain intact. Extraction is **STRUCTURED_SYNTHETIC** for this slice; the separate P0 **FIXTURE** adapter remains available. Finance risk is **RULES_ONLY / NOT_CONFIGURED**, with no score, live VLM or ML dependency. Real TypeLLM/GPU execution remains deferred under the recorded infrastructure gate. No inference installation, model download, payment execution or Phase 2 work was performed.
+The original Phase-0 contracts, fixture adapters, synthetic corpora and Phase-1 pure finance engine remain intact. **STRUCTURED_SYNTHETIC** and separate P0 **FIXTURE** remain available; actual document runs identify **NATIVE_TEXT / LOCAL_OCR** and source-derived reports **DOCUMENT_DERIVED**. Document facts require explicit human source verification; unresolved critical fields cannot PASS. Finance risk is **RULES_ONLY / NOT_CONFIGURED**, with no score. Real TypeLLM/SGLang/VLM execution remains deferred under the recorded infrastructure gate; its remote adapter boundary is implemented and contract-tested. No GPU configuration change, VLM download, payment execution or Phase-3 work was performed.
 
 The seeded demos compute clean vendor PASS, paid duplicate HOLD, clean employee PASS, daily meal REVIEW and missing approval HOLD. Ordinary submissions cannot assert approval authority; new examples commonly HOLD until a trusted chain exists. This is a synthetic local development product, not a production pilot.
 
@@ -26,7 +26,7 @@ The intended CPU-friendly control plane contains the Next.js/TypeScript client, 
 
 The [accepted inference design](docs/inference_architecture.md) uses reliable native text → cheap structured extraction → small VLM if needed → stronger fallback if needed → unresolved facts/human review. It supports bounded actual pages/crops, persistent resident models, safe scoped caching, supported batching, async jobs and independently scaled inference workers; autoscaling and quantization are later benchmarked options. Neither the router nor the VLM decides finance PASS/REVIEW/HOLD. Money remains raw string → trusted normalization → Decimal/currency, with honest uncertainty and no invented source boxes.
 
-Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finance-risk-baseline.md): no ML risk score or fake zero risk. Document-extraction VLM is a separate concern. The CPU application services are implemented; live extraction remains future work.
+Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finance-risk-baseline.md): no ML risk score or fake zero risk. Document-extraction VLM is a separate concern. The CPU application services and actual native/OCR extraction are implemented; shared VLM runtime execution remains deferred.
 
 ## Current repository layout
 
@@ -38,17 +38,19 @@ Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finan
 ├── pytest.ini
 ├── apps/api/
 │   ├── app/domain/                 # states, Money/currency, evidence, extraction contracts
-│   ├── app/extraction/             # Protocol, fixture adapter, synthetic comparison
+│   ├── app/extraction/             # fixture, native/OCR and remote TypeLLM boundaries
+│   ├── app/documents/              # bounded processing, typed limits, normalization
 │   ├── app/core, db, schemas/       # trusted context, relational persistence, intake
 │   ├── app/rules, services/         # pure controls, worker, reports, imports
-│   ├── migrations/                 # three versioned PostgreSQL migrations
+│   ├── migrations/                 # four versioned PostgreSQL migrations
 │   └── tests/                      # original 488 tests plus rules and PostgreSQL integration
 ├── apps/web/                       # Next.js client, private API proxy, Playwright tests
 ├── packages/api-client/            # generated OpenAPI contract
 ├── data/
 │   ├── synthetic/                 # reference JSON, README and fixture checksums
 │   ├── golden_cases/              # vendor/employee finance expectations and manifest
-│   └── extraction_spike/          # structured inputs/annotations, responses, own checksums
+│   ├── extraction_spike/          # preserved structured replay corpus
+│   └── documents_phase2/          # actual synthetic PDF/PNG/JPEG and independent ground truth
 ├── scripts/benchmark/extraction_spike.py
 ├── scripts/dev/, scripts/seed/      # isolated bootstrap, supervisor, trusted demo seed
 ├── docs/
@@ -62,7 +64,7 @@ Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finan
 │   ├── inference_architecture.md
 │   ├── phase0_exit_review.md
 │   ├── source_inputs.sha256
-│   └── adr/                       # ADR-0001–0009
+│   └── adr/                       # ADR-0001–0010
 ├── AP_Exception_Assistant_6_Person_Team_Pack/
 │   ├── AP_Exception_Assistant_Codex_Spec.md
 │   ├── AP_Exception_Assistant_6_Person_Work_Plan.md
@@ -95,12 +97,13 @@ The `docs/` specification is the implementation reference, copied byte-for-byte 
 
 ## Run locally
 
-See the [tested local runbook](docs/runbooks/phase1-local.md) for prerequisites, private identities, imports, tests, process control, backup boundaries and limits. The automated tool bootstrap targets Ubuntu 24.04 x86_64 and runs as an ordinary user:
+See the [Phase-1 setup](docs/runbooks/phase1-local.md) and [Phase-2 document runbook](docs/runbooks/phase2-local.md) for prerequisites, private identities, source verification, imports, tests and limits. The automated tool bootstrap targets Ubuntu 24.04 x86_64 and runs as an ordinary user:
 
 ```bash
 python3 scripts/dev/bootstrap.py
 .venv/bin/alembic -c apps/api/alembic.ini upgrade head
 .venv/bin/python scripts/seed/phase1.py
+.venv/bin/python scripts/dev/setup_ocr.py
 export PATH="$PWD/runtime/tools/node-v24.21.0-linux-x64/bin:$PATH"
 npm run --prefix apps/web build
 .venv/bin/python scripts/dev/run.py
@@ -116,13 +119,15 @@ PLAYWRIGHT_BROWSERS_PATH="$PWD/runtime/playwright" npm run --prefix apps/web tes
 sha256sum -c docs/source_inputs.sha256
 sha256sum -c data/synthetic/fixtures.sha256
 sha256sum -c data/extraction_spike/fixtures.sha256
+sha256sum -c data/documents_phase2/fixtures.sha256
+.venv/bin/python scripts/benchmark/documents_phase2.py
 python3 scripts/benchmark/extraction_spike.py --dataset data/extraction_spike --output generated/reports/extraction-fixture.json
 ```
 
-The PostgreSQL integration suite uses separate migrated test schemas. Browser tests use the running application and retain their synthetic UI-TEST records. Imports have a single `transaction_json` text column; CSV/XLSX previews preserve invalid rows, and commit queues only valid rows. No approval write surface exists in this phase. Corrections append canonical versions; evaluation requests are asynchronous and idempotent; reports remain immutable after supersession.
+The PostgreSQL integration suite uses separate migrated test schemas. Browser tests use the running application and retain synthetic records. CSV/XLSX supports the existing `transaction_json` column and explicit column mapping with retained raw/parsed cell evidence. Invalid rows and formulas remain visible; commit queues valid rows. Actual receipt links require stored document UUIDs. No approval write surface exists. Source corrections append canonical versions and evaluations; reports remain immutable after supersession. Original files and derived previews stay private outside Git.
 
 The harness replays structured responses, compares each critical field, preserves abstentions, and measures row coverage/value agreement and source-locator availability. Its generated report is ignored by Git. Perfect fixture agreement is expected by construction and says nothing about visual extraction or production accuracy; absent boxes/latency remain unavailable. See the extraction dataset README for denominators and limitations.
 
 The root `pytest.ini` supplies test discovery and import paths. Python dependencies and npm packages are locked and installed locally. The original standard-library domain/extraction modules were not rewritten. The [coverage tracker](docs/test_coverage.md) separates implemented supported scenarios from partial and deferred later-phase cases; synthetic tests do not establish visual accuracy, company-policy correctness or production readiness.
 
-Repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate). The single consolidated Phase-1 main push failed HTTPS authentication (exit 128); verified commits remain local and no retry or credential repair was attempted. The actual outcome is recorded in progress. Phase 2 requires new approval.
+Repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate). Prior phase pushes failed HTTPS authentication; publication outcomes are recorded in progress. Phase 2 is continuously approved; stop before Phase 3.

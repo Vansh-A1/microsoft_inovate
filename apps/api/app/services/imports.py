@@ -67,7 +67,12 @@ def preview(session,identity,storage,filename,content,correlation):
     batch=ImportBatch(**identity.scope(),id=uuid4(),actor_id=identity.actor_id,filename=PurePath(filename).name[:160],format=kind,object_key=key,content_digest=hashed,row_count=len(rows))
     session.add(batch);session.flush()
     for sheet,number,raw,payload,errors in rows:
-        session.add(ImportRow(**identity.scope(),batch_id=batch.id,sheet=sheet,row_number=number,raw_values=raw,row_digest=digest(raw),canonical_payload=payload,validation_errors=errors))
+        row=ImportRow(**identity.scope(),id=uuid4(),batch_id=batch.id,sheet=sheet,row_number=number,raw_values=raw,row_digest=digest(raw),canonical_payload=payload,validation_errors=errors)
+        session.add(row);session.flush()
+        from app.db.document_models import ImportCell
+        session.add(ImportCell(**identity.scope(),row_id=row.id,batch_id=batch.id,sheet=sheet,row_number=number,column='transaction_json',field_path='transaction_json',
+            raw_value=str(raw['transaction_json']) if raw['transaction_json'] is not None else None,parsed_value=json.dumps(payload) if payload is not None else None,
+            validation={'state':'INVALID' if errors else 'VALID','errors':errors}))
     session.flush();audit(session,identity,'IMPORT_PREVIEWED',batch.id,1,'Synthetic import validated without dropping invalid rows',correlation,{'rows':len(rows)})
     return detail(session,identity,batch.id)
 
@@ -75,7 +80,10 @@ def preview(session,identity,storage,filename,content,correlation):
 def detail(session,identity,batch_id):
     batch=get(session,ImportBatch,identity,batch_id)
     rows=session.scalars(scope_query(select(ImportRow),ImportRow,identity).where(ImportRow.batch_id==batch_id).order_by(ImportRow.sheet,ImportRow.row_number)).all()
-    return {'id':str(batch.id),'filename':batch.filename,'format':batch.format,'state':batch.state,'row_count':batch.row_count,'valid_count':sum(not r.validation_errors for r in rows),'invalid_count':sum(bool(r.validation_errors) for r in rows),'rows':[{'id':str(r.id),'sheet':r.sheet,'row_number':r.row_number,'raw_values':r.raw_values,'errors':r.validation_errors,'transaction_id':str(r.transaction_id) if r.transaction_id else None} for r in rows]}
+    from app.db.document_models import ImportCell
+    cells=session.scalars(scope_query(select(ImportCell),ImportCell,identity).where(ImportCell.batch_id==batch_id)).all()
+    return {'id':str(batch.id),'filename':batch.filename,'format':batch.format,'state':batch.state,'row_count':batch.row_count,'valid_count':sum(not r.validation_errors for r in rows),'invalid_count':sum(bool(r.validation_errors) for r in rows),'rows':[{'id':str(r.id),'sheet':r.sheet,'row_number':r.row_number,'raw_values':r.raw_values,'errors':r.validation_errors,'transaction_id':str(r.transaction_id) if r.transaction_id else None,
+        'cells':[{'column':c.column,'field_path':c.field_path,'raw_value':c.raw_value,'parsed_value':c.parsed_value,'validation':c.validation} for c in cells if c.row_id==r.id]} for r in rows]}
 
 
 def commit(session,identity,batch_id,correlation):
@@ -86,6 +94,8 @@ def commit(session,identity,batch_id,correlation):
         if row.validation_errors:continue
         created=create_transaction(session,identity,row.canonical_payload,'Imported synthetic structured row',correlation)
         row.transaction_id=created['id'];session.flush()
+        from app.services.import_mapping import link_import_documents
+        link_import_documents(session,identity,row,__import__('uuid').UUID(created['id']))
         enqueue(session,identity,row.transaction_id,1,'Evaluate imported row',correlation,f'import:{row.id}')
     batch.state='COMMITTED';audit(session,identity,'IMPORT_COMMITTED',batch.id,1,'Valid rows committed; invalid rows retained',correlation)
     return detail(session,identity,batch_id)

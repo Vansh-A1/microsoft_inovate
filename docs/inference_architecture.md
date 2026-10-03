@@ -147,3 +147,30 @@ The observed developer host does not need to be repaired to complete Phase 0. It
 ## Decision records and closure
 
 [Identity](adr/0003-trusted-identity-and-record-keys.md), [effective policy](adr/0004-effective-versioned-policy-selection.md), [jobs](adr/0005-durable-jobs-and-isolated-workers.md), [storage](adr/0006-private-original-and-derived-storage.md), [RULES_ONLY](adr/0007-rules-only-finance-risk-baseline.md) and [enterprise inference](adr/0008-optimized-enterprise-inference.md) are accepted design decisions, not deployed capabilities. [Phase-0 exit review](phase0_exit_review.md) records qualified closure and deferred suitable-host benchmarks. This document creates no Phase-1 implementation.
+
+## Phase-2 application integration update — 2026-10-03
+
+The historical research pins and external runtime observations above are preserved.
+Phase 2 now implements bounded CPU preprocessing and native-first routing, actual
+English CPU OCR, raw observations/normalization/source corrections and a remote
+TypeLLMExtractionAdapter. The optional pinned 0.5.1 SDK generate contract uses flat
+state/string questions and application-managed bounded page/row requests. Its
+real wheel schema compiler accepted 42 flat header questions without inference.
+Mocked generate tests exercise null/float/authority/timeout/disagreement behavior.
+The transport requires an approved endpoint/model and preprovisioned local tokenizer
+assets, with local-only loading; no tokenizer/model download or local serving occurs.
+
+Actual CPU document results identify NATIVE_TEXT or LOCAL_OCR. FIXTURE replay is
+separate and is never a provider-outage substitute. Routing/status metadata lives
+in extraction-routing-v1 beside the unchanged strict extraction-v1 contract.
+Unknown critical facts and uncertain table/segmentation coverage require input;
+manual source verification remains mandatory for document-derived screening.
+The router never chooses PASS/REVIEW/HOLD. The Phase-1 engine remains authoritative.
+
+No enterprise model/endpoint is configured here. Live TypeLLM/SGLang/VLM execution,
+GPU latency/VRAM/quality, production model selection, stronger model fallback,
+actual crops, batching and quantization remain explicitly deferred to suitable
+separately authorized infrastructure. The NVIDIA/Docker prerequisites were not
+retested or repaired. Native/OCR synthetic measurements establish no live-model
+accuracy. See the [Phase-2 exit review](phase2_exit_review.md) and
+[local runbook](runbooks/phase2-local.md) for implemented behavior and limits.

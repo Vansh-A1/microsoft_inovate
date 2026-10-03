@@ -14,6 +14,7 @@ class DocumentLimits:
     parser_timeout_seconds: int = 30
     parser_memory_bytes: int = 1536 * 1024 * 1024
     upload_lifetime_seconds: int = 3600
+    upload_receive_timeout_seconds: int = 60
     malware_required: bool = False
 
     def __post_init__(self):

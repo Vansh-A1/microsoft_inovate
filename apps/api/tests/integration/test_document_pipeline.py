@@ -7,7 +7,7 @@ from app.core.config import ROOT
 from app.documents.config import ProviderSettings
 from app.db.document_models import DocumentJob, DocumentPage, ExtractionRun, Observation, DocumentDraft
 from app.integrations.storage import LocalStorage
-from app.services.document_worker import run_once
+from app.services.document_worker import run_once,claim,load_work,perform,persist
 from app.services.documents import detail
 from test_document_intake import upload,headers
 
@@ -15,7 +15,8 @@ from test_document_intake import upload,headers
 def drain(environment,providers=None,scanner=None):
     db,ctx,other,client,cfg=environment
     settings=client.app.state.settings
-    if providers:settings=replace(settings,document_providers=providers)
+    # Provider tests must not inherit an operator's optional OCR/remote settings.
+    settings=replace(settings,document_providers=providers or ProviderSettings())
     for _ in range(10):
         if not run_once(db,ctx,LocalStorage(settings.storage_root),settings,scanner):break
 
@@ -71,3 +72,31 @@ def test_real_cpu_ocr_photo_actual_strings_and_original_boxes(environment):
     assert data['extraction_runs'][0]['metadata']['provider_id']=='LOCAL_OCR'
     source=next(o for o in data['observations'] if o['field_path']=='total_amount')['source']
     assert source['page']==1 and source['bbox'] is not None
+
+
+def test_expired_document_lease_does_not_duplicate_pages_or_stages(environment):
+    from datetime import timedelta
+    from app.core.serialization import utcnow
+    from app.documents.malware import UnconfiguredMalwareAdapter
+    db,ctx,other,client,cfg=environment;s,_=upload(client)
+    client.post(f'/api/v1/uploads/{s["id"]}/finalize',headers=headers())
+    jid,owner,actor=claim(db,ctx);work=load_work(db,ctx,jid);settings=client.app.state.settings;storage=LocalStorage(settings.storage_root)
+    output=perform(work,ctx,storage,settings,UnconfiguredMalwareAdapter())
+    with db.session(ctx) as session:
+        job=session.scalar(select(DocumentJob).where(DocumentJob.id==jid));job.lease_until=utcnow()-timedelta(seconds=1)
+    new_id,new_owner,actor=claim(db,ctx);assert new_id==jid and new_owner!=owner
+    persist(db,ctx,jid,owner,work,output,utcnow())
+    with db.session(ctx) as session:assert session.scalar(select(func.count()).select_from(DocumentPage))==0
+    persist(db,ctx,jid,new_owner,work,output,utcnow());drain(environment)
+    data=client.get('/api/v1/documents/'+s['document_id']).json()
+    assert data['state']=='READY' and len(data['pages'])==1 and len(data['jobs'])==5
+    assert data['jobs'][0]['attempts']==2
+
+
+def test_required_scanner_fails_closed_not_clean(environment):
+    db,ctx,other,client,cfg=environment;s,_=upload(client)
+    client.post(f'/api/v1/uploads/{s["id"]}/finalize',headers=headers())
+    settings=client.app.state.settings;settings=replace(settings,document_limits=replace(settings.document_limits,malware_required=True))
+    assert run_once(db,ctx,LocalStorage(settings.storage_root),settings)
+    data=client.get('/api/v1/documents/'+s['document_id']).json()
+    assert data['state']=='DEPENDENCY_UNAVAILABLE' and data['last_error']=='MALWARE_NOT_CONFIGURED' and not data['pages']

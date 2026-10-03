@@ -40,6 +40,7 @@ class SDKTransport:
                 from typellm import TypeLLMClient
                 from transformers import AutoTokenizer
             except ImportError:raise DocumentFailure('TYPELLM_CLIENT_NOT_INSTALLED') from None
+            if version('typellm')!='0.5.1':raise DocumentFailure('TYPELLM_CLIENT_VERSION_UNSUPPORTED')
             # Provisioned assets only. Do not discover/download a remote tokenizer.
             tokenizer=AutoTokenizer.from_pretrained(str(path.resolve()),local_files_only=True,trust_remote_code=False)
             self.client=TypeLLMClient(self.config.endpoint,model=self.config.model,tokenizer=str(path.resolve()),

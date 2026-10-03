@@ -69,6 +69,8 @@ def normalized_value(field,raw,currency=None,date_order=None):
     if name=='currency':return normalize_currency(raw),['trim','uppercase','supported_currency_allowlist']
     if name in AMOUNTS:
         # Quantities/rates are dimensionless, but still authoritative decimal strings.
+        if name in ('quantity','tax_rate','eligible_nights') and (not isinstance(raw,str) or re.search(r'[A-Za-z₹$€£¥]',raw)):
+            raise NormalizationError('DIMENSIONLESS_VALUE_HAS_UNIT')
         return normalize_money(raw,'INR' if name in ('quantity','tax_rate','eligible_nights') else currency),['NFKC','validate_explicit_units','validate_grouping','Decimal_from_string']
     if name.endswith('_date'):return normalize_date(raw,date_order),['explicit_date_order' if date_order else 'unambiguous_date_only','ISO_business_date']
     value=' '.join(unicodedata.normalize('NFKC',raw).strip().split())

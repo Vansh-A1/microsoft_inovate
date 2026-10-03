@@ -11,8 +11,8 @@ Native invoice, two-page invoice with repeated headers, native receipt, scan PDF
 scan PNG, EXIF-rotated JPEG, unreadable low-resolution image, ambiguous date,
 missing/conflicting total, uncertain two-invoice bundle, document instructions,
 encrypted PDF and corrupt PDF exercise processing and explicit uncertainty.
-The password fixture uses obsolete deterministic encryption solely for rejection
-tests. It is not a storage-encryption example. The synthetic table uses an explicit
+The password fixture is a pinned encrypted rejection seed, preserved on
+regeneration because MuPDF randomizes encrypted IDs. It is not a storage-encryption example. The synthetic table uses an explicit
 pipe-delimited layout so native parsing can be verified within its bounded scope.
 
 Rendered native/multi-page PDFs and the oriented photograph were visually checked
