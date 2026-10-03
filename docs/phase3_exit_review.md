@@ -207,3 +207,10 @@ external/later work. Publication status and exact final commits belong in progre
 Recommended next approved batch: Phase-4 reviewer ownership/version conflict,
 dependency/dead-letter inspection, reconciliation and audit replay with immutable
 decisions/effects. Recommendation only; **Phase 4 has not begun**.
+
+Publication: the single authorized normal main push of verified implementation
+`34a0c2345333cf29c1d0e08aa9e787687bdd1b5d` returned exit 128 (HTTPS username unavailable,
+terminal prompts disabled). Backend implementation is `e82803f`; UI/repairs/verified
+exit is `34a0c23`. Verified local main was clean before that push. No retry or
+credential repair occurred, and remote SHA/published file verification is not
+claimed. A documentation-only follow-up records this outcome.

@@ -860,3 +860,30 @@ returned exit 0 (compile 711 ms). Restarted the owned production server and ran
 all browser cases again: **23 passed, 72.343 s**, exit 0, no failures/skips/flaky.
 The Node check is separate from the 704 Python and 23 browser totals. Backend
 finance/extraction code did not change after the completed aggregate.
+
+### Phase-3 commits and publication outcome
+
+Coherent local main commits:
+
+- `e82803f` — Implement versioned Phase 3 finance controls and atomic allocations.
+- `34a0c2345333cf29c1d0e08aa9e787687bdd1b5d` — Connect Phase 3 reviewer workflows and verify finance exit gates.
+
+Final staged review examined 33 intended files (32 before the server-identity
+regression check), whitespace, private ignores, original source preservation,
+credential patterns and absent user invoice content. Actual OpenAPI matches
+its saved 45-path contract. Both implementation commits returned exit 0; main was
+clean before publication. No history was rewritten.
+
+Exactly one authorized command executed:
+`GIT_TERMINAL_PROMPT=0 git -c core.askPass= push origin main`.
+It returned **exit 128**: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`.
+
+**Phase 3 complete locally; GitHub publication remains blocked by HTTPS
+authentication.** No retry, credential repair, force push, alternate publication
+path or further remote check was attempted. Remote branch SHA/published file set
+verification is unavailable and not claimed. A documentation-only follow-up
+records the actual failure. Verified implementation and private runtime data remain
+intact. The owned API/worker/production web continue at http://127.0.0.1:3000.
+Next recommended major batch is Phase-4 reviewer ownership/version conflicts,
+dependency inspection, reconciliation and audit replay; recommendation only.
+**Phase 4 has not begun. Waiting for approval to begin Phase 4.**

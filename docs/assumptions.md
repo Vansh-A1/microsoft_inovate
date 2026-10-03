@@ -152,3 +152,9 @@ transactions in its disposable schema. Reported local warm measurements are
 descriptive, not a production SLA. Native/OCR and TypeLLM boundaries are preserved;
 live enterprise VLM remains **DEFERRED — BLOCKED EXTERNAL PREREQUISITE**. No GPU,
 Docker, cloud, ML, SLA/review leases or Phase-4 operations were introduced.
+
+Phase-3 publication observation: one explicitly authorized normal main push of
+verified `34a0c2345333cf29c1d0e08aa9e787687bdd1b5d` returned exit 128 because Git
+could not obtain the HTTPS username with terminal prompts disabled. No retry,
+credential repair, alternate publication or force push occurred. Remote SHA/file-set
+verification is unavailable; local completion is distinct from publication.
