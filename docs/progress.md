@@ -712,3 +712,33 @@ verification is unavailable and not claimed. The verified local commits remain
 intact; a documentation-only follow-up records the actual result. The owned
 API/worker/production web remain running at http://127.0.0.1:3000.
 Next task: **P3-01**, only with separate approval; Phase 3 has not begun.
+
+## User-provided invoice image check — 2026-10-03
+
+User explicitly authorized a local extraction test of an attached invoice image.
+No new phase, model provisioning or extraction-code change was authorized or made.
+The actual authenticated running API create/upload/finalize flow and durable worker
+processed its unchanged PNG original. The result was **NEEDS_INPUT**, LOCAL_OCR /
+Tesseract 5.3.4, PARTIAL extraction, ENTERPRISE_VLM NOT_CONFIGURED, no canonical
+transaction or screening decision. All **21 header observations were MISSING**
+and **zero line rows** mapped; critical and table-coverage findings remained input.
+Original SHA-256 matched the supplied bytes. The normalizer did not guess values.
+
+A diagnostic call through the same installed OCRAdapter, on the preserved derived
+preview, read the printed subtotal, tax, total, PO/due-date text, descriptions and
+payment terms. Invoice identifier punctuation, invoice date separator and one
+line amount were wrong. Token readability is not complete field/row accuracy.
+The current mapper requires colon-labeled headers and explicit pipe tables; this
+ordinary spatial invoice layout is outside its tested parser coverage. This test
+confirms the previously recorded conservative-layout limitation and failure-closed
+behavior, not successful general invoice extraction or a live VLM result.
+
+Command: authorized inline Python using existing Settings/httpx upload/status API,
+then scoped DocumentPage/LocalStorage/TesseractOCRAdapter diagnostic and comparison
+assertions; all command exits 0. No automated-suite rerun was needed for unchanged
+code. Supplied pixels, personal/source text and detailed raw/normalized outputs
+remain in ignored private runtime storage with 0600 files; they are not fixtures,
+logs, Git content or remote provider inputs. No publication attempt occurred.
+Next technical responsibility, if separately requested: improve measured ordinary
+layout header/table mapping within the extraction boundary, or connect the
+separately approved suitable enterprise inference service. Phase 3 has not begun.
