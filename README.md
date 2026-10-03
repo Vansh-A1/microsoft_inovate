@@ -2,104 +2,39 @@
 
 Accounts-Payable Exception Assistant · Microsoft Innovate 2026 · AI BATTALION 1 · Team ID 152
 
-The assistant screens vendor invoices and employee expense claims against verified evidence, versioned finance rules, reference records, budgets, and approvals. Every finding must explain which control applies and which source or matched record supports it.
+The application screens vendor invoices and employee claims using source evidence, versioned finance rules, matching, approvals and budgets. It produces **PASS / REVIEW / HOLD**, preserves the original decision and shows the next action. It executes no payments.
 
-## Development status
+Phase 6 delivers the local application and release/handoff artifacts under an explicit external-infrastructure fallback. This is a **synthetic development demonstration**, not a deployed production pilot. Final verified results and acceptance dispositions are in the [Phase-6 exit review](docs/phase6_exit_review.md); [capability matrix](docs/release_matrix.md) distinguishes completed work from actual cloud/VLM/data gates.
 
-**Phase 5 complete locally in rules-plus-anomaly mode.** Twenty point-in-time business features, transparent statistical factors, immutable adjudication/PASS audits/datasets and independently governed artifacts/shadow/activation/rollback extend the preserved finance product. Available data is synthetic with no representative adjudicated labels: supervised classification, calibration and SHAP remain deferred. See [progress](docs/progress.md), the [Phase-5 runbook](docs/runbooks/phase5-local.md), [model card](ml/model_card.md) and [exit review](docs/phase5_exit_review.md) for actual checks and limitations. Verification: 753 full-suite Python tests plus the final 38-test intelligence batch cover all 758 collected backend cases; 31 full browser tests and four final focused flows passed, along with TypeScript/build/drift. Phase 6 has not begun.
+## Finance Workspace
 
-The original contracts, fixture adapters, synthetic corpora and deterministic finance engine remain intact. **STRUCTURED_SYNTHETIC** and separate P0 **FIXTURE** remain available; actual document runs identify **NATIVE_TEXT / LOCAL_OCR**, and source-derived reports **DOCUMENT_DERIVED**. Document facts require explicit human source verification; unresolved critical fields cannot PASS. The synthetic local scope is explicitly **RULES_PLUS_ANOMALY**; new scopes default to **RULES_ONLY / NOT_CONFIGURED / null score**. Statistical scores are not exception probabilities and cannot clear mandatory HOLD. Real TypeLLM/SGLang/VLM execution remains deferred under the recorded infrastructure gate; its remote boundary remains contract-tested. No GPU configuration change, VLM download, payment execution or Phase-6 work was performed.
+Use an ordinary browser: **Upload invoice or receipt → Processing → inspect source facts → verify/map business references → Result**. The default screen leads with unresolved checks and plain next actions. Source previews, corrections, ownership, approvals, queue, audit and report are available; rule IDs/full facts are expandable details. Both vendor and employee records persist. A missing/ambiguous critical fact, missing dependency, stale approval or insufficient capacity cannot silently PASS.
 
-The seeded demos compute clean vendor PASS, paid duplicate HOLD, clean employee PASS, daily meal REVIEW and missing approval HOLD. Ordinary submissions cannot assert approval authority; new examples commonly HOLD until a trusted chain exists. This is a synthetic local development product, not a production pilot.
+PASS means current screening eligibility at the recorded snapshot, not paid. REVIEW needs uncertainty/judgment resolved. HOLD blocks eligibility until a mandatory condition is resolved. Processing, human ownership and approvals are separate states. Historical reports remain immutable after correction, cancellation or supersession.
 
-Screening terminology:
+## Admin Console
 
-- **PASS:** eligible under the configured screening and approval policy at the recorded snapshot; it does not mean paid.
-- **REVIEW:** uncertainty, a correction, or judgment needs human examination.
-- **HOLD:** a mandatory control or condition must be resolved before eligibility.
+Administration has separate navigation and permissions. Typed business forms edit supported allowance/effective-date/approval-band/delegation/master fields through validated drafts and new reference versions; budgets use audited ledger adjustments. A policy administrator cannot activate vendor/budget masters. The future hotel allowance demonstration retains 8,000 and creates 9,000 from 2026-11-01, with actor/reason/time. Model author/governor and operational health permissions remain separate. There is no arbitrary code/SQL or set-PASS control.
 
-Processing status and human review/approval status are separate from these screening decisions.
+## Architecture and modes
 
-## Architecture
+[Architecture](docs/architecture.md) and [data flow](docs/data_flow.md) explain the CPU Next.js/FastAPI/PostgreSQL/private storage/leased worker application and separate future enterprise inference plane. Finance laptops need no GPU/CUDA/weights/TypeLLM/SGLang.
 
-The intended CPU-friendly control plane contains the Next.js/TypeScript client, FastAPI/Pydantic API, PostgreSQL, deterministic Python finance rules, approvals, budgets, review/audit/reporting and durable jobs/outbox. A separate shared enterprise inference plane contains preprocessing/router, TypeLLM, compatible VLM, SGLang and GPU workers/caches. **Finance-user laptops do not require GPU/VLM runtime.** They need supported browser/client access; no CUDA, weights, TypeLLM, SGLang or GPU Docker.
+| Area | Current status |
+|---|---|
+| Deterministic finance | 28 controls; Decimal/currency, source coverage, vendor/employee, duplicates, PO/contract/GRN/service, policy, offsets/shared receipts, budgets and approvals. |
+| Actual documents | PyMuPDF native text/pages and local Tesseract CPU OCR; bounded parsing, preserved originals, uncertainty and source-linked human verification. |
+| TypeLLM | Provider-independent remote adapter implemented/contract-tested; money is extracted as strings. |
+| VLM / SGLang | DEFERRED_EXTERNAL: suitable separately approved runtime absent; no GPU/driver/Docker repairs or weights download. |
+| Intelligence | RULES_ONLY (NOT_CONFIGURED/null score) or governed RULES_PLUS_ANOMALY with 20 PIT features and transparent statistical factors. Statistical scores are not probabilities. |
+| Classifier / SHAP | DEFERRED_DATA: representative independently adjudicated labels required; no fabricated training/metrics/attribution. |
+| Azure | Private CPU Bicep/CI/deployment definitions locally validated; provisioning, image builds, hosted SSO/Blob and pilot recovery/rollback remain externally gated. |
 
-The [accepted inference design](docs/inference_architecture.md) uses reliable native text → cheap structured extraction → small VLM if needed → stronger fallback if needed → unresolved facts/human review. It supports bounded actual pages/crops, persistent resident models, safe scoped caching, supported batching, async jobs and independently scaled inference workers; autoscaling and quantization are later benchmarked options. Neither the router nor the VLM decides finance PASS/REVIEW/HOLD. Money remains raw string → trusted normalization → Decimal/currency, with honest uncertainty and no invented source boxes.
+The anomaly layer may escalate PASS to REVIEW and cannot clear mandatory HOLD. Shadow scoring, feedback/datasets, registry, explicit promotion/rollback and monitoring remain separate from VLM extraction. Historical code-bound artifacts remain unchanged; incompatible artifacts require a newly governed compatible candidate.
 
-Initial Phase-1 finance-risk mode is [RULES_ONLY](docs/adr/0007-rules-only-finance-risk-baseline.md): no ML risk score or fake zero risk. Document-extraction VLM is a separate concern. The CPU application services and actual native/OCR extraction are implemented; shared VLM runtime execution remains deferred.
+## Local setup
 
-## Current repository layout
-
-```text
-.
-├── README.md
-├── AGENTS.md
-├── .gitignore
-├── pytest.ini
-├── apps/api/
-│   ├── app/domain/                 # states, Money/currency, evidence, extraction contracts
-│   ├── app/extraction/             # fixture, native/OCR and remote TypeLLM boundaries
-│   ├── app/documents/              # bounded processing, typed limits, normalization
-│   ├── app/core, db, schemas/       # trusted context, relational persistence, intake
-│   ├── app/rules, services, risk/   # pure controls, worker, intelligence sidecar
-│   ├── migrations/                 # eight versioned PostgreSQL migrations
-│   └── tests/                      # original 488 tests plus rules and PostgreSQL integration
-├── apps/web/                       # Next.js client, private API proxy, Playwright tests
-├── packages/api-client/            # generated OpenAPI contract
-├── ml/                             # public feature/label/gate contracts and model card
-├── data/
-│   ├── synthetic/                 # reference JSON, README and fixture checksums
-│   ├── golden_cases/              # vendor/employee finance expectations and manifest
-│   ├── extraction_spike/          # preserved structured replay corpus
-│   ├── documents_phase2/          # actual synthetic PDF/PNG/JPEG and independent ground truth
-│   └── finance_phase3/            # additive reference catalog and 200 unverified scale inputs
-├── scripts/benchmark/extraction_spike.py
-├── scripts/dev/, scripts/seed/      # isolated bootstrap, supervisor, trusted demo seed
-├── docs/
-│   ├── AP_Exception_Assistant_Codex_Spec.md
-│   ├── progress.md
-│   ├── assumptions.md
-│   ├── data_dictionary.md
-│   ├── test_coverage.md
-│   ├── extraction_compatibility.md
-│   ├── typellm_spike_plan.md
-│   ├── inference_architecture.md
-│   ├── phase0_exit_review.md
-│   ├── source_inputs.sha256
-│   └── adr/                       # ADR-0001–0013
-├── AP_Exception_Assistant_6_Person_Team_Pack/
-│   ├── AP_Exception_Assistant_Codex_Spec.md
-│   ├── AP_Exception_Assistant_6_Person_Work_Plan.md
-│   └── AP_Team_Task_Briefs/
-└── AP_Exception_Assistant_6_Person_Team_Pack.zip
-```
-
-## Documentation
-
-- [Implementation specification](docs/AP_Exception_Assistant_Codex_Spec.md)
-- [Repository working rules](AGENTS.md)
-- [Progress and verified results](docs/progress.md)
-- [Assumptions and external inputs](docs/assumptions.md)
-- [Baseline domain glossary](docs/data_dictionary.md)
-- [T01–T42 implementation coverage](docs/test_coverage.md)
-- [Repository and specification authority decision](docs/adr/0001-repository-and-specification-authority.md)
-- [Supplied six-person work plan](AP_Exception_Assistant_6_Person_Team_Pack/AP_Exception_Assistant_6_Person_Work_Plan.md)
-- [Original-input checksums](docs/source_inputs.sha256)
-- [Synthetic reference inventory and validation](data/synthetic/README.md)
-- [Golden case inventory and expectations](data/golden_cases/README.md)
-- [Extraction cases and harness](data/extraction_spike/README.md)
-- [Verified-source provider checklist and unresolved runtime gates](docs/extraction_compatibility.md)
-- [Exact conditional TypeLLM/SGLang experiment plan](docs/typellm_spike_plan.md)
-- [String-only money extraction boundary](docs/adr/0002-extraction-money-and-provider-boundary.md)
-- [Optimized enterprise inference and deployment profiles](docs/inference_architecture.md)
-- [Phase-0 exit criteria, acceptance review and deferrals](docs/phase0_exit_review.md)
-- [Identity](docs/adr/0003-trusted-identity-and-record-keys.md), [policy selection](docs/adr/0004-effective-versioned-policy-selection.md), [durable jobs](docs/adr/0005-durable-jobs-and-isolated-workers.md), [private storage](docs/adr/0006-private-original-and-derived-storage.md), [risk mode](docs/adr/0007-rules-only-finance-risk-baseline.md), [inference ADR](docs/adr/0008-optimized-enterprise-inference.md)
-
-The `docs/` specification is the implementation reference, copied byte-for-byte from the preserved source pack. The original folder and ZIP are intentionally version controlled as project inputs. The ADR explains their relationship; do not edit the originals or silently diverge from the specification.
-
-## Run locally
-
-See the [Phase-1 setup](docs/runbooks/phase1-local.md), [Phase-2 document runbook](docs/runbooks/phase2-local.md) and [Phase-3 finance runbook](docs/runbooks/phase3-local.md) for prerequisites, private identities, source verification, imports, tests and limits. The automated tool bootstrap targets Ubuntu 24.04 x86_64 and runs as an ordinary user:
+The supplied ordinary-user bootstrap targets Ubuntu 24.04 x86_64 with Python 3.13.11, Node 24.21.0 and PostgreSQL 16.15. Language dependencies are locked. These established setup/start commands were validated for this project; preserve an existing private database/settings rather than reset them:
 
 ```bash
 python3 scripts/dev/bootstrap.py
@@ -107,30 +42,48 @@ python3 scripts/dev/bootstrap.py
 .venv/bin/python scripts/seed/phase1.py
 .venv/bin/python scripts/dev/setup_ocr.py
 .venv/bin/python scripts/dev/setup_finance_identities.py
+.venv/bin/python scripts/dev/setup_workflow_identities.py
+.venv/bin/python scripts/dev/setup_intelligence_identities.py
+.venv/bin/python scripts/dev/setup_release_identities.py
 export PATH="$PWD/runtime/tools/node-v24.21.0-linux-x64/bin:$PATH"
-npm run --prefix apps/web build
+npm --prefix apps/web run build
 .venv/bin/python scripts/dev/run.py
 ```
 
-Open [AP Review Desk](http://127.0.0.1:3000). API docs: [OpenAPI](http://127.0.0.1:8000/docs). All three application processes bind loopback; PostgreSQL runs on port 55432. Credentials remain in ignored 0600 private files. The application role cannot bypass forced row-level tenant/entity policies. The Next proxy injects the trusted development token server-side; request bodies cannot supply scope, role, approval or outcome authority. This is not production SSO.
+Open [Finance Workspace](http://127.0.0.1:3000); API docs are at http://127.0.0.1:8000/docs. The supervisor starts the loopback API, worker and web; Ctrl+C stops its own children. PostgreSQL uses :55432. Migrations through `0008_intelligence_audit` are explicit and never run by workers. Private development identity/settings files are ignored and 0600; browser JSON cannot supply scope/actor/approval authority. Enterprise mode disables demo selection and requires verified identity/private storage/TLS configuration.
+
+For separate backend/frontend startup details, database/seed troubleshooting and browser prerequisites, use the validated [Phase-1 setup](docs/runbooks/phase1-local.md) and [Phase-6 runbook](docs/runbooks/phase6-local.md). [Phase-2](docs/runbooks/phase2-local.md), [Phase-3](docs/runbooks/phase3-local.md), [Phase-4](docs/runbooks/phase4-local.md) and [Phase-5](docs/runbooks/phase5-local.md) retain their original stage-specific instructions.
+
+## Tests and demo
+
+With the application running and the project Node PATH/Chromium configured:
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider
-npm run --prefix apps/web typecheck
-PLAYWRIGHT_BROWSERS_PATH="$PWD/runtime/playwright" npm exec --prefix apps/web -- playwright install chromium
-PLAYWRIGHT_BROWSERS_PATH="$PWD/runtime/playwright" npm run --prefix apps/web test:e2e
+.venv/bin/pytest -q apps/api/tests
+npm --prefix apps/web run typecheck
+PLAYWRIGHT_BROWSERS_PATH="$PWD/runtime/playwright" npm --prefix apps/web run test:e2e
+.venv/bin/alembic -c apps/api/alembic.ini check
+.venv/bin/python scripts/release/contracts.py
+.venv/bin/pip check
+.venv/bin/python scripts/release/source_security.py
+.venv/bin/python scripts/release/secret_scan.py
 sha256sum -c docs/source_inputs.sha256
 sha256sum -c data/synthetic/fixtures.sha256
 sha256sum -c data/extraction_spike/fixtures.sha256
 sha256sum -c data/documents_phase2/fixtures.sha256
-.venv/bin/python scripts/benchmark/documents_phase2.py
-python3 scripts/benchmark/extraction_spike.py --dataset data/extraction_spike --output generated/reports/extraction-fixture.json
+.venv/bin/python scripts/release/restore_drill.py
 ```
 
-The PostgreSQL integration suite uses separate migrated test schemas. Browser tests use the running application and retain synthetic records. CSV/XLSX supports the existing `transaction_json` column and explicit column mapping with retained raw/parsed cell evidence. Invalid rows and formulas remain visible; commit queues valid rows. Actual receipt links require stored document UUIDs. Case detail provides ordered approval, duplicate resolution, authorized receipt share and explicit waiver actions; the server checks configured identity, authority and current version. Source corrections append canonical versions and evaluations; reports remain immutable after supersession. Original files and derived previews stay private outside Git. Review writes bind owner/review/transaction versions, and stale writes return 409. Operational views show actual persisted workload/failures; bounded recovery and audit replay preserve history. Private JSON/HTML/CSV download requires explicit exporter/auditor permission; PDF export remains deferred. Source correction and receipt-share inputs are typed; technical JSON remains optional.
+Use **Synthetic finance workspace** to upload `data/documents_phase2/vendor_native.pdf`, inspect/verify source and see the real evaluated result. Use **Synthetic policy administrator** for the separate future-allowance demonstration. Retained clean vendor/employee, duplicate, partial GRN, allowance, shared receipt, approval and capacity scenarios are exercised by real backend/browser tests. New submissions require actual authorized approval actions; no fixture authority is accepted from clients. [Demo/recovery instructions](docs/runbooks/phase6-local.md) explain correction/report/audit and governed anomaly demonstration.
 
-The harness replays structured responses, compares each critical field, preserves abstentions, and measures row coverage/value agreement and source-locator availability. Its generated report is ignored by Git. Perfect fixture agreement is expected by construction and says nothing about visual extraction or production accuracy; absent boxes/latency remain unavailable. See the extraction dataset README for denominators and limitations.
+CSV/XLSX supports explicit mapping with retained raw/parsed cell evidence and the established `transaction_json` development format. Formulas are rejected. JSON/HTML/CSV reports require scoped permission; CSV exports escape executable prefixes. PDF report export remains deferred. Source documents/derived pages are private; a spreadsheet attachment flag is not a receipt link.
 
-The root `pytest.ini` supplies test discovery and import paths. Python dependencies and npm packages are locked and installed locally. The original standard-library domain/extraction modules were not rewritten. The [coverage tracker](docs/test_coverage.md) separates implemented supported scenarios from partial and deferred later-phase cases; synthetic tests do not establish visual accuracy, company-policy correctness or production readiness.
+## Deployment and handoff
 
-Repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate). The single authorized Phase-4 consolidated main push failed HTTPS authentication (exit 128). Phase 4 is complete locally; publication remains blocked. Verified commits are preserved, with no retry or credential repair. See progress for the actual publication outcome; remote SHA/file-set verification is unavailable.
+One Azure Bicep implementation and separate CPU Dockerfiles are under `infra/azure` and `deploy`. `.github/workflows/validate.yml` defines tests/builds/scans/immutable artifact checksums; protected manual `pilot.yml` binds reviewed release inputs and separates migration/deployment from PR validation. Neither workflow has been claimed successful on GitHub or Azure. Current Docker authorization prevents local image builds; actual cloud inputs are absent.
+
+Follow the [enterprise pilot gate](docs/runbooks/enterprise-pilot.md), [backup/recovery](docs/runbooks/recovery.md), [failure operations](docs/runbooks/failure-operations.md), [security review](docs/security_release_review.md) and [measured performance](docs/performance_phase6.md). No cloud spend, institutional data, real malware scanner, production model or GPU deployment is authorized by local validation.
+
+The original team-pack folder/ZIP and all fixtures remain preserved. The byte-identical working specification is [docs/AP_Exception_Assistant_Codex_Spec.md](docs/AP_Exception_Assistant_Codex_Spec.md), governed by [ADR-0001](docs/adr/0001-repository-and-specification-authority.md). See [progress](docs/progress.md), [assumptions](docs/assumptions.md), [dictionary](docs/data_dictionary.md), [T01–T42 coverage](docs/test_coverage.md), [inference architecture](docs/inference_architecture.md), [compatibility](docs/extraction_compatibility.md), [model card](ml/model_card.md) and [release ADR](docs/adr/0014-enterprise-release-boundaries.md).
+
+Repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate), branch main. Phase-6 publication outcome/final commits are recorded in the exit review and progress after the one authorized push. Credentials are never repaired or retried by this delivery.

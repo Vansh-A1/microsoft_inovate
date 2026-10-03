@@ -242,3 +242,13 @@ verified `6b84cd4f3bd0aee018aedd3793b99759e4006c34` returned exit 128 because th
 could not be read with terminal prompts disabled. The local fallback exit is
 complete; publication and remote SHA/file-set verification remain blocked. No
 credential changes, retries, alternate publication or force-push occurred.
+
+## Phase-6 approved local delivery assumptions
+
+- Phase 6 authorizes P6-01–P6-04 together and permits explicit local delivery when cloud inputs are absent. No suitable Azure subscription/region/permissions/spend ceiling/approved identities/residency/private runner is available; actual provisioning, hosted authentication/Blob validation, container builds/publication and cloud recovery/rollback remain external gates.
+- Bicep is the single Azure definition. Private CPU control services use managed identities/Key Vault and private data endpoints. Tenant/entity membership and worker scopes are approved server inputs; development identities are forbidden in enterprise mode. Actual network/TLS/EasyAuth/egress behavior must be tested on authorized infrastructure.
+- Required database TLS and non-bypass business roles are enforced. Real Blob reads verify remote metadata/hash rather than trust a stale cache. Configured-but-unverified dependencies remain explicit. Ordinary finance reviewers cannot read infrastructure health.
+- Business administration reuses immutable reference versions and typed existing ledger services. It cannot overwrite historical reports, edit arbitrary code or grant PASS. POLICY_ADMIN cannot activate masters or budgets, including replay after permission revocation.
+- Local restore validation covers an actual disposable copy and private object hashes. Cloud point-in-time/object recovery remains a separate gate. No organization-specific retention period, SLA, spend, FX rate or production model has been invented.
+- The existing code-bound anomaly artifact became incompatible with the release storage integration; an explicit governed RULES_ONLY deployment preserved all old scores. Compatible candidates/shadow/activation/rollback continue through existing governance. No classifier/SHAP or online learning is introduced.
+- The single authorized ordinary main push occurs only after final local verification. Authentication failure is recorded without credential repair, retry, alternate publication or force-push.

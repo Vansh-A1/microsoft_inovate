@@ -384,3 +384,13 @@ adjudications form binary targets; correction-only/insufficient labels are exclu
 All current manifests remain SYNTHETIC_DEVELOPMENT and fail the representative
 supervised gate. See [model card](../ml/model_card.md) and
 [runbook](runbooks/phase5-local.md) for score and governance semantics.
+
+## Phase-6 release boundaries
+
+- **Business configuration draft:** existing ReferenceBatch with source_system BUSINESS_ADMIN, expected current reference version, typed allowlisted changes and actor/reason. Existing validator and activation append a ReferenceRecord version. No new table or executable rule store.
+- **Policy administrator:** POLICY_ADMIN may stage/activate expense, approval, delegation and waiver policy kinds only. REFERENCE_ADMIN retains master/reference authority; LEDGER_ADMIN uses existing budget adjustment events. Current permissions are checked before idempotent cached responses.
+- **Enterprise membership:** server-owned mapping from verified Entra object identity to application tenant/entity/actor/roles. Token-supplied roles and client scope are not authoritative. Worker scopes are separately server-configured.
+- **Private cloud artifact:** existing UUID-scoped storage key and SHA-256, preserved with immutable Blob upload and verified private CPU materialization. Original keys remain distinct from page/report/model keys. Cache availability is not remote availability.
+- **Operational health:** minimal public live/ready response versus permissioned dependency state. CONFIGURED_UNVERIFIED is not AVAILABLE; NOT_CONFIGURED malware is not CLEAN.
+- **Request telemetry:** route template, method, status, duration_ms, correlation_id. No raw URL/query, token, body, financial/source content or exception text.
+- **Release approval:** private operator inputs including subscription/resource group/region/spend/identity/network/residency/GPU disposition and recovery/auth/rollback checks; binds a full release commit and reviewed parameter SHA-256. The dispatcher verifies the active account and target before migrations/deployment. It is not a model, policy or payment approval.

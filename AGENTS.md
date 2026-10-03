@@ -84,3 +84,5 @@ The latest Phase-5 approval authorizes P5-01–P5-05 continuously, with additive
 - Review staged files, ignore rules, source preservation, and whitespace before committing. Preserve existing history; never force-push without explicit authorization.
 - If identity/authentication/push permission is unavailable, keep safe verified local work, record the safe error, and report the blocker. Do not alter credentials or expose tokens.
 - Verify the remote branch, commit SHA, and published file set after a push; the push output alone is insufficient.
+
+The latest Phase-6 approval authorizes P6-01–P6-04 continuously: separate Finance/Admin experiences, typed versioned configuration, Azure Bicep/CPU release artifacts, CI/CD, local security/load/recovery validation and final handoff. Additive scoped support is authorized. Actual cloud provisioning requires subscription, region, permissions, spend ceiling, approved identities/network/residency inputs; it remains deferred when absent. Preserve all historical exit reviews and external VLM/supervised deferrals. Exactly one normal main push after the complete Phase-6 local gate; no credential repair/retry.

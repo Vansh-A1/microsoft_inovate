@@ -1083,3 +1083,39 @@ after the complete local fallback gate and clean phase commits. Attempted SHA:
 alternate transport, credential disclosure or force-push occurred. Remote branch
 SHA and published file set cannot be verified after failed publication. A local
 documentation-only commit records this external blocker; no verified code changed.
+
+## Phase-6 approved continuous scope and verification plan
+
+P6-01–P6-04 are authorized together. Goal: a clear Finance Workspace, separately authorized business Admin Console, deployable CPU control-plane definitions, governed delivery pipeline, actual local recovery/security/performance checks and final handoff. Expected files: existing web components/API/reference services, narrowly scoped authentication/configuration/release helpers, `infra/azure/`, `.github/workflows/`, CPU Dockerfiles, release tests, ADR and handoff documents. Preserve finance rules, reference/evaluation history and original fixtures.
+
+Verification plan: meaningful PostgreSQL policy-version/authorization tests; real-backend browser finance/admin/document flow and viewport checks; contract tests for external deployment boundaries; Bicep compilation; full backend/browser/strict TypeScript/build, fresh migrations and drift, OpenAPI consistency, dependency/source/security checks; owned local restore and concurrency/performance exercises. No Azure provisioning without required inputs; no GPU work or supervised classifier/SHAP. The completed supported local results follow.
+
+### P6-01 — Local infrastructure and operational boundaries complete
+
+Files: `infra/azure/`, `deploy/`, `apps/api/app/core/{config,enterprise_identity,observability}.py`, `integrations/blob_storage.py`, database session and existing worker/storage service integration; `docs/adr/0014-enterprise-release-boundaries.md` and enterprise/failure/recovery runbooks. Bicep defines private CPU Container Apps/PostgreSQL/Blob/Key Vault/registry/DNS/logging and separate narrowly scoped identities. Entra RS256 server memberships, required TLS, managed-identity immutable private storage with remote hash verification and content-free telemetry are implemented. Development and enterprise configuration are explicit. Ordinary finance reviewers cannot read infrastructure health. No new business schema or finance-rule replacement.
+
+Verification: both Bicep templates compile without warnings (0.47.16, exit 0); 12 pure signed-token/Blob/TLS cases and the real PostgreSQL enterprise submitter context pass in the final release suite. Live cloud resources, EasyAuth/API token exchange, Blob/egress/managed identities, monitoring acceptance and private network behavior are **DEFERRED_EXTERNAL**, not proved by mocks. Known inference runtime remains external; no driver/Docker repair.
+
+### P6-02 — Delivery artifacts complete locally
+
+Files: `.github/workflows/{validate,pilot}.yml`, CPU Dockerfiles/ignore rules, action pins and `scripts/release/{contracts,ci_database,deployment_gate,pilot_dispatch,check_artifacts,install_bicep}.py`. CI defines locked restore, lint/domain types, real-database tests, frontend tests/build, migrations/drift, generated contract checks, dependency/source/secret checks and separate CPU image artifact checksums. Protected manual pilot release requires private approvals, reviewed commit/parameter digest, exact target account/group/region, immutable image references and explicit migrations; rollback skips destructive DDL.
+
+Verification: YAML/pins and 11 shell blocks pass, approval mismatches fail before migration/deployment, Bicep compiles and missing approval returns expected exit 1. Actual standalone web build/server health passes. Current Docker authorization prevents image builds; hosted CI/registry/staging/rollback and disposable hosted CI bootstrap are **DEFERRED_EXTERNAL**. No image digest, workflow success or Azure rollout is invented.
+
+### P6-03 — Local security, integrity, performance and recovery complete
+
+Files: `apps/api/tests/test_release_boundaries.py`, `tests/integration/test_release_phase6.py`, narrow existing workflow test updates, release scanner/restore/persistence helpers, benchmark scripts and security/performance runbooks. Four eight-way PostgreSQL batches verify budget, GRN, duplicate and shared-receipt admission with retry count stability. Actual on-behalf enterprise submission uses enabled server authority; disabling it yields a new HOLD and retains the prior report. Existing audit/tenant/evidence/approval/waiver/stale-write/cancellation/retry/reconciliation/replay controls remain covered.
+
+Verification: full backend **777 passed, 2550.42 s**, final affected release suite **21 passed, 152.39 s**, unique current collection **779**; no failed/skipped cases. Counts are separate. Dependency integrity/known-vulnerability checks and Gitleaks zero-finding/redacted positive probe pass. A disposable restore verifies 62 tables/61 forced-RLS, 362 transactions, 392 reports, 5,047 audit-chain entries and 263 object hashes in **167.846 s**, source unchanged. Real document report/version/evaluation survives API/worker/web restart. Actual machine/scope/samples/timings and unmeasured targets are in [performance](performance_phase6.md). No penetration test, cloud RTO/RPO or VLM throughput is claimed.
+
+### P6-04 — Finance/Admin demonstrations and handoff complete
+
+Files: existing web workspace/documents/finance controls, new `admin.tsx`/`business-facts.tsx`/minimal health, source/case business forms, strict generated contract, release and loaded viewport browser cases; handoff-quality README, architecture/data flow, capability matrix, exit review and runbooks. Finance navigation leads with upload/source verification, plain unresolved result/next actions, evidence/review/report; internal IDs/rule JSON are optional. Read-only observed fields use source corrections; business reference mapping/revisions use forms. Separate typed Admin drafts retain old versions, actor/reason/time and effective dates; no arbitrary SQL/code/set-PASS or policy-admin vendor/budget bypass.
+
+Verification: actual-backend **36 browser tests passed, 2.7 min**, no retries; strict TypeScript/normal production build pass. Loaded Finance/Admin views inspected at 1280/1024/390 with keyboard/labels/focus and existing error/loading/empty tests. A real PDF goes through upload/process/verification/canonical/HOLD/audit/report/reload. Future hotel 8,000→9,000 change retains reports and integration verifies both effective-date sides and 409 conflict. Original team pack/ZIP/spec and 9/23/11/15 manifest entries pass; historical Phase-0–5 exits and finance rule/domain modules remain unchanged.
+
+### Final Phase-6 command record and disposition
+
+The [exit review](phase6_exit_review.md) records exact full/focused/backend/browser/static/migration/contract/security/recovery commands and AC01–AC20. Original T01–T42 scenario text remains preserved: **39 complete, T30 partial, T31/T34 data-deferred**. Statistical anomaly is measured; no classifier, calibrated probability or SHAP is manufactured. AC17 is data-deferred and AC20 requires an actual deployed pilot. Other ACs satisfy the documented supported local scope, including explicit unmeasured performance targets.
+
+**PHASE 6 COMPLETE LOCALLY — CLOUD PROVISIONING DEFERRED EXTERNAL INPUT.** No institutional data, live VLM, GPU provisioning, cloud spending, production-readiness certification or payments. Next task: **none; STOP after delivery**. External gates require separately supplied/approved infrastructure, policies, identities and representative labels. Publication result is recorded below after exactly one authorized normal main push.
