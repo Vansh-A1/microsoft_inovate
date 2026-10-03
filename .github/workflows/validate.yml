@@ -1,0 +1,116 @@
+name: Release validation
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    services:
+      postgres:
+        image: postgres:16.15
+        env:
+          POSTGRES_PASSWORD: ci_disposable_only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 10
+    env:
+      CI: 'true'
+      AP_CI_ADMIN_DATABASE_URL: postgresql://postgres:ci_disposable_only@127.0.0.1:5432/postgres
+      PYTHONPATH: apps/api
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/runtime/playwright
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with: {python-version: '3.13.11'}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '24.21.0', cache: npm, cache-dependency-path: apps/web/package-lock.json}
+      - name: Restore pinned application and check tools
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install -r apps/api/requirements.lock
+          python -m venv runtime/release-tools
+          runtime/release-tools/bin/pip install ruff==0.14.0 mypy==1.18.2 pip-audit==2.9.0 PyYAML==6.0.3
+          npm --prefix apps/web ci
+      - name: Disposable database and reviewed migrations
+        run: |
+          .venv/bin/python scripts/release/ci_database.py
+          .venv/bin/python scripts/dev/setup_ocr.py
+          .venv/bin/alembic -c apps/api/alembic.ini upgrade head
+          .venv/bin/alembic -c apps/api/alembic.ini check
+          .venv/bin/python scripts/seed/phase1.py
+          .venv/bin/python scripts/dev/setup_finance_identities.py
+          .venv/bin/python scripts/dev/setup_workflow_identities.py
+          .venv/bin/python scripts/dev/setup_intelligence_identities.py
+          .venv/bin/python scripts/dev/setup_release_identities.py
+      - name: Backend lint, domain types and full real-database tests
+        run: |
+          runtime/release-tools/bin/ruff check apps/api/app --select E9,F63,F7,F82
+          runtime/release-tools/bin/mypy apps/api/app/domain --ignore-missing-imports
+          .venv/bin/python -m compileall -q apps/api/app
+          .venv/bin/pytest -q apps/api/tests
+      - name: OpenAPI and generated client
+        run: |
+          .venv/bin/python scripts/release/contracts.py
+          npm --prefix apps/web run generate:api
+          git diff --exit-code -- packages/api-client/openapi.json apps/web/src/lib/api-schema.ts
+      - name: Frontend strict types and production build
+        run: |
+          npm --prefix apps/web run typecheck
+          npm --prefix apps/web run build
+          PLAYWRIGHT_BROWSERS_PATH="$PWD/runtime/playwright" npm exec --prefix apps/web -- playwright install --with-deps chromium
+      - name: Browser against actual backend and worker
+        run: |
+          .venv/bin/python -m uvicorn app.main:create_app --factory --host 127.0.0.1 --port 8000 --no-access-log > runtime/api-ci.log 2>&1 &
+          API_PID=$!
+          .venv/bin/python -m app.services.worker > runtime/worker-ci.log 2>&1 &
+          WORKER_PID=$!
+          AP_ENABLE_DEMO_IDENTITIES=1 npm --prefix apps/web start > runtime/web-ci.log 2>&1 &
+          WEB_PID=$!
+          trap 'kill "$API_PID" "$WORKER_PID" "$WEB_PID" || true' EXIT
+          .venv/bin/python scripts/release/wait_local.py
+          npm --prefix apps/web run test:e2e
+      - name: Dependency, secret and source integrity
+        run: |
+          .venv/bin/pip check
+          runtime/release-tools/bin/pip-audit -r apps/api/requirements.lock --no-deps --disable-pip
+          npm --prefix apps/web audit --audit-level=moderate
+          .venv/bin/python scripts/release/source_security.py
+          .venv/bin/python scripts/release/secret_scan.py
+          sha256sum -c docs/source_inputs.sha256
+          sha256sum -c data/synthetic/fixtures.sha256
+          sha256sum -c data/extraction_spike/fixtures.sha256
+          sha256sum -c data/documents_phase2/fixtures.sha256
+      - name: Bicep compile and private deployment contracts
+        run: |
+          .venv/bin/python scripts/release/install_bicep.py
+          runtime/tools/bicep/bicep build infra/azure/foundation.bicep --outfile runtime/foundation.json
+          runtime/tools/bicep/bicep build infra/azure/release.bicep --outfile runtime/release.json
+      - name: Build separate CPU images and immutable artifact checksums
+        run: |
+          docker pull python:3.13.11-slim-bookworm
+          docker pull node:24.21.0-bookworm-slim
+          PYTHON_BASE=$(docker inspect --format '{{index .RepoDigests 0}}' python:3.13.11-slim-bookworm)
+          NODE_BASE=$(docker inspect --format '{{index .RepoDigests 0}}' node:24.21.0-bookworm-slim)
+          docker build --build-arg PYTHON_IMAGE="$PYTHON_BASE" -f deploy/Dockerfile.api -t ap-api:${{ github.sha }} .
+          docker build --build-arg NODE_IMAGE="$NODE_BASE" -f deploy/Dockerfile.web -t ap-web:${{ github.sha }} .
+          printf '%s\n%s\n' "$PYTHON_BASE" "$NODE_BASE" > runtime/base-images.txt
+          docker save ap-api:${{ github.sha }} ap-web:${{ github.sha }} -o runtime/cpu-images.tar
+          sha256sum runtime/cpu-images.tar runtime/foundation.json runtime/release.json > runtime/artifact-checksums.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: cpu-release-${{ github.sha }}
+          path: |
+            runtime/cpu-images.tar
+            runtime/artifact-checksums.txt
+            runtime/base-images.txt
+            runtime/foundation.json
+            runtime/release.json
+          retention-days: 7

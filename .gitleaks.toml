@@ -1,0 +1,9 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Reviewed synthetic fixture-validation prose, not a usable API credential."
+condition = "AND"
+paths = ['''(^|/)data/synthetic/README\.md$''']
+regexTarget = "line"
+regexes = ['''\[fixture_support\.py\].*test-only standard-library support''']

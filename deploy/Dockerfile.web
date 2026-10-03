@@ -1,0 +1,16 @@
+ARG NODE_IMAGE=node:24.21.0-bookworm-slim
+FROM ${NODE_IMAGE} AS build
+WORKDIR /srv/apps/web
+ENV NEXT_TELEMETRY_DISABLED=1 AP_BUILD_STANDALONE=1
+COPY apps/web/package.json apps/web/package-lock.json ./
+RUN npm ci
+COPY apps/web/ ./
+RUN npm run typecheck && npm run build
+FROM ${NODE_IMAGE} AS runtime
+WORKDIR /srv/apps/web
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 AP_ENVIRONMENT=enterprise HOSTNAME=0.0.0.0 PORT=3000
+COPY --from=build --chown=node:node /srv/apps/web/.next/standalone/ ./
+COPY --from=build --chown=node:node /srv/apps/web/.next/static/ ./.next/static/
+USER node
+EXPOSE 3000
+CMD ["node","server.js"]

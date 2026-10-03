@@ -1,0 +1,17 @@
+.git
+.venv
+runtime
+**/node_modules
+**/.next
+**/.env*
+**/__pycache__
+**/.pytest_cache
+output
+reports
+exports
+uploads
+storage
+*.zip
+AP_Exception_Assistant_6_Person_Team_Pack
+**/*.pem
+**/*.key

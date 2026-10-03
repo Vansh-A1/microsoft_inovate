@@ -1,0 +1,13 @@
+# Release workflow resolves this version to a digest and records it in image metadata.
+ARG PYTHON_IMAGE=python:3.13.11-slim-bookworm
+FROM ${PYTHON_IMAGE}
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 AP_ENVIRONMENT=enterprise PYTHONPATH=/srv/apps/api AP_STORAGE_ROOT=/var/lib/ap-cache
+WORKDIR /srv
+RUN apt-get update && apt-get install -y --no-install-recommends tesseract-ocr ca-certificates && rm -rf /var/lib/apt/lists/*
+COPY apps/api/requirements.lock /srv/requirements.lock
+RUN pip install --no-cache-dir -r requirements.lock && pip check
+COPY apps/api /srv/apps/api
+RUN useradd --uid 10001 --create-home ap && mkdir -p /var/lib/ap-cache && chown ap:ap /var/lib/ap-cache
+USER 10001:10001
+EXPOSE 8000
+CMD ["python","-m","uvicorn","app.main:create_app","--factory","--host","0.0.0.0","--port","8000","--no-access-log"]
