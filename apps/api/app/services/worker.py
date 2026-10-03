@@ -19,7 +19,8 @@ def _claim_once(database,identity,now=None):
         job=session.scalar(q)
         if not job:return None
         if job.attempts>=job.maximum_attempts:
-            job.state='FAILED';job.last_error='ATTEMPTS_EXHAUSTED';job.lease_until=None;job.updated_at=now
+            from app.services.operations import mark_failure
+            mark_failure(job,'ATTEMPTS_EXHAUSTED',True,now)
             transaction=get(session,Transaction,identity,job.transaction_id)
             if transaction.latest_version==job.transaction_version and transaction.row_version==job.generation:transaction.processing_state=ProcessingState.FAILED_FINAL.value;transaction.eligible=False
             audit(session,identity,'JOB_FAILED',job.id,1,'Maximum execution attempts exhausted',str(job.id));return (None,None,None)
@@ -51,13 +52,15 @@ def run_once(database,identity):
     execution_identity=Identity(identity.tenant_id,identity.legal_entity_id,actor,identity.roles,identity.label)
     try:
         with database.session(execution_identity) as session:finalize(session,execution_identity,job_id,owner)
-    except Exception:
+    except Exception as exc:
         # Never persist provider/driver text, SQL, credentials or uploaded values as errors.
         with database.session(execution_identity) as session:
             scope_lock(session,execution_identity)
             job=get(session,Job,execution_identity,job_id)
             if job.state=='RUNNING' and job.lease_owner==owner:
-                job.state='FAILED' if job.attempts>=job.maximum_attempts else 'RETRYABLE';job.last_error='EXECUTION_FAILED';job.lease_until=None;job.available_at=utcnow()+timedelta(seconds=2**job.attempts);job.updated_at=utcnow()
+                from app.services.operations import classify_failure,mark_failure
+                code,retryable=classify_failure(exc)
+                mark_failure(job,code,retryable,utcnow())
                 transaction=get(session,Transaction,execution_identity,job.transaction_id)
                 if transaction.latest_version==job.transaction_version and transaction.row_version==job.generation:
                     transaction.processing_state=ProcessingState.FAILED_FINAL.value if job.state=='FAILED' else ProcessingState.FAILED_RETRYABLE.value;transaction.eligible=False

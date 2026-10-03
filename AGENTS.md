@@ -28,6 +28,8 @@ The latest Phase-3 approval authorizes P3-01–P3-06 continuously, including add
 
 Operating loop:
 
+The latest Phase-4 approval authorizes P4-01–P4-04 continuously: existing review ownership/actions, eligibility lifecycle, bounded retries/reconciliation/replay and accessible operational UI/exports. Additive migrations and necessary support are within that approved scope. Test coherent batches, preserve historical finance/extraction behavior, and stop before Phase 5. No GPU/inference infrastructure work is authorized.
+
 **INSPECT → PLAN → IMPLEMENT → TEST → SELF-REVIEW → DOCUMENT → REPORT → STOP**
 
 ## Financial integrity

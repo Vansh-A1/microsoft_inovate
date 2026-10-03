@@ -129,11 +129,15 @@ class Revision(Strict):
     expected_version: int = Field(ge=1)
     reason: str = Field(min_length=3, max_length=500)
     transaction: Canonical
+    review_case_id: UUID | None = None
+    expected_review_version: int | None = Field(default=None,ge=1)
 
 
 class EvaluationRequest(Strict):
     expected_version: int = Field(ge=1)
     reason: str = Field(min_length=3, max_length=500)
+    review_case_id: UUID | None = None
+    expected_review_version: int | None = Field(default=None,ge=1)
 
 
 def fixture_canonical(transaction):

@@ -227,9 +227,14 @@ class ReviewCase(Scoped, Identified, Base):
     branch: Mapped[str] = mapped_column(String(32))
     reasons: Mapped[list] = mapped_column(J)
     state: Mapped[str] = mapped_column(String(24), default='OPEN')
+    owner_id: Mapped[UUID | None] = mapped_column(Uuid)
+    row_version: Mapped[int] = mapped_column(Integer, default=1)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     __table_args__ = scoped(fk('evaluations','evaluation_id'), fk('transactions','transaction_id'),
         UniqueConstraint('tenant_id','legal_entity_id','evaluation_id'),
         CheckConstraint("decision IN ('REVIEW','HOLD')"),
+        CheckConstraint('row_version > 0'),
+        Index('ix_review_owner', 'tenant_id','legal_entity_id','owner_id','state','created_at','id'),
         Index('ix_review_queue', 'tenant_id','legal_entity_id','state','decision','created_at'))
 
 
@@ -274,6 +279,10 @@ class Job(Scoped, Identified, Base):
     available_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     last_error: Mapped[str | None] = mapped_column(String(64))
+    failure_retryable: Mapped[bool] = mapped_column(Boolean, default=False)
+    first_failure_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    last_failure_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    manual_retries: Mapped[int] = mapped_column(Integer, default=0)
     result_evaluation_id: Mapped[UUID | None] = mapped_column(Uuid)
     evaluated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     actor_id: Mapped[UUID] = mapped_column(Uuid)
@@ -369,3 +378,4 @@ for kind in IMMUTABLE:
 # Register additive Phase-2 tables for Alembic without weakening Phase-1 models.
 from app.db import document_models  # noqa: E402,F401
 from app.db import finance_models  # noqa: E402,F401
+from app.db import workflow_models  # noqa: E402,F401

@@ -38,6 +38,8 @@ class DocumentCommit(Strict):
     date_order: Literal['DMY','MDY'] | None = None
     transaction_id: UUID | None = None
     expected_version: int | None = Field(default=None,ge=1)
+    review_case_id: UUID | None = None
+    expected_review_version: int | None = Field(default=None,ge=1)
 
     @model_validator(mode='after')
     def bounded_identity(self):
@@ -54,6 +56,8 @@ class Attachment(Strict):
     first_page: int = Field(default=1,ge=1,le=30)
     last_page: int | None = Field(default=None,ge=1,le=30)
     reason: str = Field(min_length=3,max_length=500)
+    review_case_id: UUID | None = None
+    expected_review_version: int | None = Field(default=None,ge=1)
 
 
 def mount(app,settings,database,storage,identity,writer,mutation):

@@ -53,16 +53,14 @@ def create_app(settings=None,database=None):
             response,code=finance.idempotent(session,ctx,request.url.path,key,body,status,lambda:operation(session))
         return JSONResponse(status_code=code,content=response)
     @app.get('/api/v1/health/live')
-    def live():return {'status':'alive','mode':'RULES_ONLY','extraction':'STRUCTURED_SYNTHETIC','model_status':'NOT_CONFIGURED',
-        'document_pipeline':'document-pipeline-v1','document_providers':{'native_text':'AVAILABLE','ocr':'CONFIGURED' if settings.document_providers.ocr_executable else 'NOT_CONFIGURED',
-            'enterprise_vlm':'CONFIGURED_UNVERIFIED' if settings.document_providers.endpoint else 'NOT_CONFIGURED'},'malware':'NOT_CONFIGURED','enterprise_runtime':'DEFERRED_EXTERNAL_HOST'}
+    def live():return {'status':'alive'}
     @app.get('/api/v1/health/ready')
     def ready():
         try:
             with database.engine.connect() as conn:version=conn.scalar(text('SELECT version_num FROM alembic_version'))
-            if version!='0005_finance':raise ValueError()
-        except Exception:raise DomainError(503,'NOT_READY','Apply the database migration before serving requests.',retryable=True) from None
-        return {'status':'ready','database':'PostgreSQL','migration':version}
+            if version!='0006_workflow':raise ValueError()
+        except Exception:raise DomainError(503,'NOT_READY','Required persistence is unavailable.',retryable=True) from None
+        return {'status':'ready'}
     @app.get('/api/v1/me')
     def me(ctx=Depends(identity)):return projection({'tenant_id':ctx.tenant_id,'legal_entity_id':ctx.legal_entity_id,'actor_id':ctx.actor_id,'roles':sorted(ctx.roles),'label':ctx.label,'development':True})
     @app.get('/api/v1/references')
@@ -91,16 +89,17 @@ def create_app(settings=None,database=None):
             counts={decision or 'PENDING':count for decision,count in rows}
             return {'counts':counts,'total':sum(counts.values())}
     @app.get('/api/v1/transactions')
-    def transactions(decision:str|None=None,branch:str|None=None,limit:int=100,ctx=Depends(identity)):
+    def transactions(decision:str|None=None,branch:str|None=None,limit:int=100,offset:int=0,ctx=Depends(identity)):
         if decision and decision not in ('PASS','REVIEW','HOLD'):raise DomainError(400,'FILTER_INVALID','Unknown screening decision.')
         if branch and branch not in ('VENDOR_INVOICE','EMPLOYEE_EXPENSE'):raise DomainError(400,'FILTER_INVALID','Unknown branch.')
-        if not 1<=limit<=200:raise DomainError(400,'FILTER_INVALID','Limit must be 1–200.')
+        if not 1<=limit<=200 or not 0<=offset<=100000:raise DomainError(400,'FILTER_INVALID','Use a limit of 1–200 and bounded offset.')
         with database.session(ctx) as session:
-            q=scope_query(select(Transaction),Transaction,ctx).order_by(Transaction.created_at.desc()).limit(limit)
+            q=scope_query(select(Transaction),Transaction,ctx).order_by(Transaction.created_at.desc(),Transaction.id.desc()).offset(offset).limit(limit+1)
             if 'EMPLOYEE' in ctx.roles and not {'FINANCE_REVIEWER','AUDITOR','FINANCE_CONTROLLER'}&ctx.roles:q=q.join(TransactionVersion,TransactionVersion.transaction_id==Transaction.id).where(TransactionVersion.version==Transaction.latest_version,TransactionVersion.party_id==ctx.actor_id)
             if decision:q=q.where(Transaction.decision==decision)
             if branch:q=q.where(Transaction.branch==branch)
-            return {'items':finance.transaction_list(session,ctx,q)}
+            items=finance.transaction_list(session,ctx,q)
+            return {'items':items[:limit],'next_offset':offset+limit if len(items)>limit else None}
     @app.get('/api/v1/transactions/{record_id}')
     def transaction(record_id:UUID,ctx=Depends(identity)):
         with database.session(ctx) as session:return finance.transaction_detail(session,ctx,record_id)
@@ -109,7 +108,12 @@ def create_app(settings=None,database=None):
         data=body.model_dump(mode='json');return mutation(request,ctx,key,data,201,lambda s:finance.revise(s,ctx,record_id,data,request.state.correlation))
     @app.post('/api/v1/transactions/{record_id}/evaluate',status_code=202)
     def evaluation(record_id:UUID,body:EvaluationRequest,request:Request,ctx=Depends(writer),key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):
-        data=body.model_dump(mode='json');return mutation(request,ctx,key,data,202,lambda s:finance.enqueue(s,ctx,record_id,body.expected_version,body.reason,request.state.correlation,key))
+        data=body.model_dump(mode='json')
+        def run(s):
+            finance.scope_lock(s,ctx)
+            finance.review_guard(s,ctx,finance.get(s,Transaction,ctx,record_id),data)
+            return finance.enqueue(s,ctx,record_id,body.expected_version,body.reason,request.state.correlation,key)
+        return mutation(request,ctx,key,data,202,run)
     @app.get('/api/v1/jobs/{record_id}')
     def job(record_id:UUID,ctx=Depends(identity)):
         with database.session(ctx) as session:
@@ -117,17 +121,18 @@ def create_app(settings=None,database=None):
             return projection({'id':row.id,'state':row.state,'stage':row.stage,'attempts':row.attempts,'maximum_attempts':row.maximum_attempts,'transaction_id':row.transaction_id,'transaction_version':row.transaction_version,'evaluation_id':row.result_evaluation_id,'last_error':row.last_error,'updated_at':row.updated_at})
     @app.get('/api/v1/evaluations/{record_id}')
     def evaluated(record_id:UUID,ctx=Depends(identity)):
-        with database.session(ctx) as session:
-            row=finance.get(session,Evaluation,ctx,record_id);transaction=finance.get(session,Transaction,ctx,row.transaction_id)
-            report=session.scalar(scope_query(select(Report),Report,ctx).where(Report.evaluation_id==row.id))
-            return finance.authorized_report(ctx,report.content)|{'current_eligible':transaction.eligible and transaction.latest_evaluation_id==row.id,'current_version':transaction.latest_version}
+        from app.services.operations import report_view
+        with database.session(ctx) as session:return report_view(session,ctx,record_id)
     @app.get('/api/v1/evaluations/{record_id}/report')
     def report(record_id:UUID,format:str='json',ctx=Depends(identity)):
+        from app.services.operations import report_view
         with database.session(ctx) as session:
-            finance.get(session,Evaluation,ctx,record_id);row=session.scalar(scope_query(select(Report),Report,ctx).where(Report.evaluation_id==record_id))
-            if format=='html':return HTMLResponse(finance.report_html(finance.authorized_report(ctx,row.content)) if 'EMPLOYEE' in ctx.roles and not {'FINANCE_REVIEWER','AUDITOR'}&ctx.roles else row.html,headers={'Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'self'"})
+            content=report_view(session,ctx,record_id)
+            if format=='html':return HTMLResponse(finance.report_html(content).replace('<h2>Pinned evaluation metadata</h2>', '<p>Evaluation status: '+content['evaluation_status']+'. Current eligibility: '+str(content['current_eligible'])+'.</p><h2>Pinned evaluation metadata</h2>'),headers={'Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'self'",'Cache-Control':'private, no-store'})
             if format!='json':raise DomainError(400,'FORMAT_INVALID','Use json or html.')
-            return finance.authorized_report(ctx,row.content)
+            # Preserve the original immutable JSON report contract. Live eligibility is
+            # a separate evaluation projection and is labeled in HTML/export snapshots.
+            return {k:v for k,v in content.items() if k not in ('current_eligible','evaluation_status','eligibility_reason','current_version','suggested_actions','current_eligibility_as_of')}
     @app.get('/api/v1/evidence/{record_id}')
     def evidence(record_id:UUID,ctx=Depends(identity)):
         with database.session(ctx) as session:
@@ -166,16 +171,13 @@ def create_app(settings=None,database=None):
             if value is None:raise DomainError(404,'EVIDENCE_UNAVAILABLE','The referenced scoped fact is unavailable.')
             return {'id':str(row.id),'reference':r,'source':value,'source_image_available':False,'bbox':None}
     @app.get('/api/v1/reviews')
-    def reviews(decision:str|None=None,branch:str|None=None,reason:str|None=None,minimum_age_days:int=0,ctx=Depends(identity)):
-        if minimum_age_days<0 or minimum_age_days>3650:raise DomainError(400,'FILTER_INVALID','Age must be 0–3650 days.')
-        with database.session(ctx) as session:
-            q=scope_query(select(ReviewCase),ReviewCase,ctx).where(ReviewCase.state=='OPEN',ReviewCase.created_at<=utcnow()-timedelta(days=minimum_age_days)).order_by(ReviewCase.created_at).limit(200)
-            if 'EMPLOYEE' in ctx.roles and not {'FINANCE_REVIEWER','AUDITOR','FINANCE_CONTROLLER'}&ctx.roles:q=q.join(TransactionVersion,TransactionVersion.transaction_id==ReviewCase.transaction_id).join(Transaction,Transaction.id==ReviewCase.transaction_id).where(TransactionVersion.version==Transaction.latest_version,TransactionVersion.party_id==ctx.actor_id)
-            if decision:q=q.where(ReviewCase.decision==decision)
-            if branch:q=q.where(ReviewCase.branch==branch)
-            return {'items':[projection({'id':r.id,'transaction_id':r.transaction_id,'evaluation_id':r.evaluation_id,'decision':r.decision,'branch':r.branch,'reasons':r.reasons,'created_at':r.created_at}) for r in session.scalars(q) if not reason or reason in r.reasons]}
+    def reviews(decision:str|None=None,branch:str|None=None,reason:str|None=None,minimum_age_days:int=0,owner:str|None=None,state:str|None=None,processing_state:str|None=None,minimum_amount:str|None=None,maximum_amount:str|None=None,limit:int=50,offset:int=0,ctx=Depends(identity)):
+        from app.services.operations import review_queue
+        with database.session(ctx) as session:return review_queue(session,ctx,decision=decision,branch=branch,reason=reason,minimum_age_days=minimum_age_days,owner=owner,state=state,processing_state=processing_state,minimum_amount=minimum_amount,maximum_amount=maximum_amount,limit=limit,offset=offset)
     @app.get('/api/v1/audit')
     def audit(object_id:UUID|None=None,ctx=Depends(identity)):
+        from app.services.operations import read_permission
+        if 'EMPLOYEE' not in ctx.roles:read_permission(ctx)
         with database.session(ctx) as session:
             q=scope_query(select(AuditEvent),AuditEvent,ctx).order_by(AuditEvent.sequence).limit(200)
             if 'EMPLOYEE' in ctx.roles and not {'FINANCE_REVIEWER','AUDITOR','FINANCE_CONTROLLER'}&ctx.roles:q=q.where(AuditEvent.actor_id==ctx.actor_id)
@@ -206,4 +208,6 @@ def create_app(settings=None,database=None):
     mount_finance_controls(app,database,identity,mutation)
     from app.finance_routes import mount_controls
     mount_controls(app,database,identity,mutation)
+    from app.workflow_routes import mount as mount_workflow
+    mount_workflow(app,settings,database,storage,identity,mutation)
     return app

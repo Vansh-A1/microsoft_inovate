@@ -93,6 +93,10 @@ class DocumentJob(Scoped, Identified, Base):
     actor_id: Mapped[UUID] = mapped_column(Uuid)
     correlation_id: Mapped[str] = mapped_column(String(64))
     last_error: Mapped[str | None] = mapped_column(String(64))
+    failure_retryable: Mapped[bool] = mapped_column(Boolean, default=False)
+    first_failure_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    last_failure_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    manual_retries: Mapped[int] = mapped_column(Integer, default=0)
     result_metadata: Mapped[dict] = mapped_column(J, default=dict)
     __table_args__ = scoped(document_fk(),UniqueConstraint('tenant_id','legal_entity_id','stage_key'),
         CheckConstraint("stage IN ('PREPROCESS','EXTRACT','NORMALIZE','VALIDATE','FINALIZE')"),

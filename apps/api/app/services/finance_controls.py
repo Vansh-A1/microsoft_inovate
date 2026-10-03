@@ -129,6 +129,7 @@ def resolve_duplicate(session,identity,comparison_id,data,correlation):
     from app.services import finance
     from app.services.reference_imports import require
     require(identity,'DUPLICATE_REVIEWER');finance.scope_lock(session,identity);r=finance.get(session,DuplicateComparison,identity,comparison_id);t=finance.get(session,Transaction,identity,r.transaction_id)
+    finance.require_active(t);finance.review_guard(session,identity,t,data)
     if t.latest_version!=data['expected_version'] or t.latest_version!=r.transaction_version:raise DomainError(409,'STALE_COMPARISON','Source transaction facts changed.')
     if r.candidate_type=='TRANSACTION':
         candidate=finance.get(session,Transaction,identity,r.candidate_id)
@@ -149,6 +150,7 @@ def share_receipt(session,identity,transaction_id,data,correlation):
     from app.services import finance
     from app.services.reference_imports import require
     require(identity,'RECEIPT_ALLOCATOR');finance.scope_lock(session,identity);t=finance.get(session,Transaction,identity,transaction_id)
+    finance.require_active(t);finance.review_guard(session,identity,t,data)
     if t.latest_version!=data['expected_version']:raise DomainError(409,'STALE_VERSION','Receipt allocation must target current facts.')
     version=session.scalar(scope_query(select(TransactionVersion),TransactionVersion,identity).where(TransactionVersion.transaction_id==t.id,TransactionVersion.version==t.latest_version));p=version.payload
     if D(data['amount'])<=0 or D(data['quantity'])<=0:raise DomainError(422,'RECEIPT_SHARE_POSITIVE','Allocated amount and quantity must be positive.')

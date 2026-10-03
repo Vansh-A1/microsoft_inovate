@@ -71,14 +71,20 @@ def allocate(session,identity,evaluation,version,kind,resource,amount,quantity,c
     old=session.scalar(scope_query(select(FinanceAllocation),FinanceAllocation,identity).where(FinanceAllocation.operation_key==key))
     if old:return old
     row=FinanceAllocation(**identity.scope(),transaction_id=version.transaction_id,transaction_version=version.version,evaluation_id=evaluation.id,kind=kind,resource_id=UUID(str(resource)),reference_id=UUID(reference['id']) if reference else None,reference_version=reference['version'] if reference else None,amount=D(amount),quantity=D(quantity),currency=currency,metadata_json=metadata or {},operation_key=key)
-    session.add(row);session.flush();session.add(AllocationEvent(**identity.scope(),allocation_id=row.id,action='RESERVED',actor_id=identity.actor_id,reason='Eligible finalization capacity admission'));session.flush();return row
+    session.add(row);session.flush();session.add(AllocationEvent(**identity.scope(),allocation_id=row.id,action='RESERVED',actor_id=identity.actor_id,reason='Eligible finalization capacity admission'));session.flush()
+    from app.services.finance import audit
+    audit(session,identity,'ALLOCATION_RESERVED',row.id,version.version,'Eligible finalization capacity admission','allocation:'+str(row.id),{'transaction_id':str(version.transaction_id),'evaluation_id':str(evaluation.id),'kind':kind,'amount':str(row.amount)})
+    return row
 
 def transition(session,identity,allocation,action,reason):
     state=states(session,identity,[allocation]).get(allocation.id)
     allowed={'RESERVED':{'CONSUMED','RELEASED'},'CONSUMED':{'REVERSED'}}
     if state==action:return False
     if action not in allowed.get(state,set()):raise DomainError(409,'ALLOCATION_TRANSITION','Consumed capacity requires a reversal; released capacity cannot be consumed.')
-    session.add(AllocationEvent(**identity.scope(),allocation_id=allocation.id,action=action,actor_id=identity.actor_id,reason=reason));session.flush();return True
+    session.add(AllocationEvent(**identity.scope(),allocation_id=allocation.id,action=action,actor_id=identity.actor_id,reason=reason));session.flush()
+    from app.services.finance import audit
+    audit(session,identity,'ALLOCATION_'+action,allocation.id,allocation.transaction_version,reason,'allocation:'+str(allocation.id),{'transaction_id':str(allocation.transaction_id),'kind':allocation.kind,'amount':str(allocation.amount)})
+    return True
 
 def release_transaction(session,identity,transaction_id,reason='Canonical version or evaluation superseded'):
     rows=session.scalars(scope_query(select(FinanceAllocation),FinanceAllocation,identity).where(FinanceAllocation.transaction_id==transaction_id)).all();latest=states(session,identity,rows)

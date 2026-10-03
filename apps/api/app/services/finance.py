@@ -88,11 +88,29 @@ def release(session,identity,transaction_id):
     from app.services.finance_ledger import release_transaction
     release_transaction(session,identity,transaction_id)
     session.execute(scope_query(update(CapacityReservation),CapacityReservation,identity).where(CapacityReservation.transaction_id==transaction_id,CapacityReservation.state=='ACTIVE').values(state='RELEASED'))
-    session.execute(scope_query(update(ReviewCase),ReviewCase,identity).where(ReviewCase.transaction_id==transaction_id,ReviewCase.state=='OPEN').values(state='SUPERSEDED'))
+    session.execute(scope_query(update(ReviewCase),ReviewCase,identity).where(ReviewCase.transaction_id==transaction_id,ReviewCase.state.in_(['OPEN','ASSIGNED','AWAITING_INFORMATION'])).values(state='SUPERSEDED',row_version=ReviewCase.row_version+1,updated_at=utcnow()))
+
+
+def require_active(row):
+    if row.processing_state=='CANCELLED':raise DomainError(409,'TRANSACTION_CANCELLED','This transaction is cancelled; its history remains available.')
+
+
+def review_guard(session,identity,row,data=None):
+    """Legacy mutation routes obey ownership once a case has been claimed."""
+    if session.info.get('review_authorized_transaction')==row.id:return
+    case=session.scalar(scope_query(select(ReviewCase),ReviewCase,identity).where(ReviewCase.transaction_id==row.id).order_by(ReviewCase.created_at.desc()).limit(1))
+    if not case or not case.owner_id or case.state in ('RESOLVED','CANCELLED'):return
+    if case.owner_id!=identity.actor_id:raise DomainError(403,'CASE_NOT_OWNED','The assigned reviewer must make this change.')
+    data=data or {}
+    if str(case.id)!=str(data.get('review_case_id')) or case.row_version!=data.get('expected_review_version'):
+        raise DomainError(409,'STALE_REVIEW_VERSION','Use the current owned review and expected review version.',details={'current_review_version':case.row_version,'review_case_id':str(case.id)})
+    session.info['review_authorized_transaction']=row.id
 
 
 def revise(session,identity,record_id,data,correlation,*,normalizer_version='structured-p1-v1',copy_document_links=True):
     scope_lock(session,identity);row=get(session,Transaction,identity,record_id)
+    require_active(row)
+    review_guard(session,identity,row,data)
     if row.latest_version!=data['expected_version']:raise DomainError(409,'STALE_VERSION','Refresh the case before revising.')
     if row.branch!=data['transaction']['branch']:raise DomainError(409,'BRANCH_IMMUTABLE','Create a separate transaction for a different branch.')
     release(session,identity,row.id)
@@ -102,11 +120,13 @@ def revise(session,identity,record_id,data,correlation,*,normalizer_version='str
         from app.services.document_facts import copy_links
         copy_links(session,identity,row.id,row.latest_version-1,row.latest_version)
     audit(session,identity,'TRANSACTION_REVISED',row.id,row.latest_version,data['reason'],correlation)
+    audit(session,identity,'ELIGIBILITY_INVALIDATED',row.id,row.latest_version,'Material revision requires fresh approvals, allocations and screening',correlation,{'previous_version':row.latest_version-1,'previous_evaluation_id':str(row.latest_evaluation_id) if row.latest_evaluation_id else None})
     return {'id':str(row.id),'version':row.latest_version,'processing_state':row.processing_state}
 
 
 def enqueue(session,identity,record_id,expected,reason,correlation,intent,evaluated_at=None):
     scope_lock(session,identity);row=get(session,Transaction,identity,record_id)
+    require_active(row)
     if row.latest_version!=expected:raise DomainError(409,'STALE_VERSION','Evaluation must target the latest version.')
     latest=session.scalar(scope_query(select(TransactionVersion),TransactionVersion,identity).where(TransactionVersion.transaction_id==row.id,TransactionVersion.version==expected))
     snap=snapshot(session,identity,latest.business_date.isoformat() if latest.business_date else None)
@@ -205,6 +225,8 @@ def finalize(session,identity,job_id,lease_owner):
     if job.stage!='EVALUATE' or job.stage_version not in (RULESET,'rules-p3-v1'):raise DomainError(409,'STAGE_VERSION_UNSUPPORTED','A compatible worker is required for this stage version.')
     if job.state!='RUNNING' or job.lease_owner!=lease_owner or job.lease_until<=utcnow():raise DomainError(409,'LEASE_LOST','The job lease is no longer valid.')
     transaction=get(session,Transaction,identity,job.transaction_id)
+    if transaction.processing_state=='CANCELLED':
+        job.state='CANCELLED';job.lease_until=None;job.updated_at=utcnow();return None
     if transaction.latest_version!=job.transaction_version or transaction.row_version!=job.generation:
         job.state='STALE';job.lease_until=None;job.updated_at=utcnow()
         audit(session,identity,'JOB_STALE',job.id,1,'A newer canonical version or evaluation request superseded this job',str(job.id));return None
@@ -244,7 +266,9 @@ def finalize(session,identity,job_id,lease_owner):
             reserve_finance(session,identity,evaluation,version,context_data,decision)
         else:reserve(session,identity,evaluation,version,context_data,decision)
     if decision.decision!='PASS':
+        previous_review=session.scalar(scope_query(select(ReviewCase),ReviewCase,identity).where(ReviewCase.transaction_id==transaction.id).order_by(ReviewCase.created_at.desc()).limit(1))
         review=ReviewCase(**identity.scope(),id=uuid4(),evaluation_id=evaluation.id,transaction_id=transaction.id,decision=decision.decision,branch=transaction.branch,reasons=[r.rule_id for r in decision.results if r.decision_effect!='NONE'],state='OPEN')
+        if previous_review and previous_review.owner_id and previous_review.state!='CANCELLED':review.owner_id=previous_review.owner_id;review.state='ASSIGNED'
         session.add(review);session.flush()
         audit(session,identity,'REVIEW_CASE_CREATED',review.id,1,'Required controls need resolution',str(job.id),{'evaluation_id':str(evaluation.id),'transaction_id':str(transaction.id),'reason_codes':review.reasons})
     content=projection({'schema_version':'report-p1-v2','evaluation_version':1,'reason_codes':[r.rule_id for r in decision.results if r.decision_effect!='NONE'],'evaluation_id':evaluation.id,'transaction_id':transaction.id,'transaction_version':version.version,'reference_snapshot_id':evaluated_snapshot.id,'ruleset_version':selected_ruleset,'decision_policy_version':DECISION_POLICY,'evaluation_mode':'RULES_ONLY','extraction_mode':'STRUCTURED_SYNTHETIC','model_status':'NOT_CONFIGURED','completeness':decision.completeness,'decision':decision.decision,'eligible':decision.eligible,'input_digest':evaluation.input_digest,'evaluated_at':job.evaluated_at,'supersedes_id':evaluation.supersedes_id,'transaction':redact(version.payload),'rules':rules,'next_actions':[r.reason for r in decision.results if r.decision_effect!='NONE'] or ['Screening checks complete. Authorized human processing remains separate.'],'capacity_basis':capacity_refs})
@@ -263,6 +287,7 @@ def finalize(session,identity,job_id,lease_owner):
     transaction.latest_evaluation_id=evaluation.id;transaction.processing_state='COMPLETED';transaction.decision=decision.decision;transaction.eligible=decision.eligible;transaction.row_version+=1
     job.state='SUCCEEDED';job.result_evaluation_id=evaluation.id;job.lease_until=None;job.updated_at=utcnow();job.last_error=None
     audit(session,identity,'EVALUATION_FINALIZED',transaction.id,version.version,'Deterministic rules evaluated',str(job.id),{'evaluation_id':str(evaluation.id),'decision':decision.decision,'input_digest':evaluation.input_digest})
+    if evaluation.supersedes_id:audit(session,identity,'EVALUATION_SUPERSEDED',evaluation.supersedes_id,1,'A new immutable evaluation is current',str(job.id),{'transaction_id':str(transaction.id),'superseded_by':str(evaluation.id)})
     audit(session,identity,'REPORT_GENERATED',evaluation.id,1,'Deterministic JSON and HTML materialized',str(job.id),{'content_digest':digest(content)})
     session.flush();return evaluation.id
 
@@ -302,7 +327,10 @@ def transaction_detail(session,identity,record_id):
     row=get(session,Transaction,identity,record_id)
     versions=session.scalars(scope_query(select(TransactionVersion),TransactionVersion,identity).where(TransactionVersion.transaction_id==row.id).order_by(TransactionVersion.version)).all()
     job=session.scalar(scope_query(select(Job),Job,identity).where(Job.transaction_id==row.id).order_by(Job.generation.desc(),Job.id.desc()).limit(1))
-    return transaction_projection(row,versions,job)
+    from app.services.operations import eligibility
+    output=transaction_projection(row,versions,job)
+    current=eligibility(session,identity,row)
+    return output|{'eligible':current['current_eligible'],'eligibility':current}
 
 
 def transaction_list(session,identity,query):
@@ -315,7 +343,13 @@ def transaction_list(session,identity,query):
     ranked=scope_query(select(Job.id,func.row_number().over(partition_by=Job.transaction_id,order_by=(Job.generation.desc(),Job.id.desc())).label('position')),Job,identity).where(Job.transaction_id.in_(ids)).subquery()
     jobs=session.scalars(scope_query(select(Job).join(ranked,ranked.c.id==Job.id),Job,identity).where(ranked.c.position==1)).all()
     latest={job.transaction_id:job for job in jobs}
-    return [transaction_projection(row,[current[row.id]],latest.get(row.id)) for row in rows]
+    from app.services.operations import eligibility
+    output=[]
+    for row in rows:
+        view=transaction_projection(row,[current[row.id]],latest.get(row.id))
+        live=eligibility(session,identity,row)
+        output.append(view|{'eligible':live['current_eligible'],'eligibility':live})
+    return output
 
 
 def authorized_report(identity,content):

@@ -64,4 +64,4 @@ def test_added_tables_force_rls_and_original_immutable(environment):
     with pytest.raises(DBAPIError):
         with db.session(ctx) as session:session.execute(text("UPDATE document_versions SET sha256='bad'"))
     with db.engine.connect() as conn:
-        assert conn.scalar(text("SELECT count(*) FROM pg_class WHERE relnamespace=current_schema()::regnamespace AND relkind='r' AND relrowsecurity AND relforcerowsecurity"))==47
+        assert conn.scalar(text("SELECT count(*) FROM pg_class WHERE relnamespace=current_schema()::regnamespace AND relkind='r' AND relrowsecurity AND relforcerowsecurity"))==49

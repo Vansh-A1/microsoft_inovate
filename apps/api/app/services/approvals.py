@@ -86,6 +86,7 @@ def state(session,identity,version,refs,exception_ids=None):
 
 def create_request(session,identity,transaction_id,expected,reason,correlation):
     finance.scope_lock(session,identity);t=finance.get(session,Transaction,identity,transaction_id)
+    finance.require_active(t)
     if t.latest_version!=expected:raise DomainError(409,'STALE_VERSION','Refresh before requesting approvals.')
     version=session.scalar(scope_query(select(TransactionVersion),TransactionVersion,identity).where(TransactionVersion.transaction_id==t.id,TransactionVersion.version==expected));refs={k:r.payload|{'_kind':r.kind} for k,r in active_records(session,identity).items()}
     p=version.payload;day=p.get('invoice_date' if p['branch']=='VENDOR_INVOICE' else 'expense_date');policy,steps,candidates=requirements(refs,p,day,current_exceptions(session,identity,version))
@@ -108,6 +109,7 @@ def view_request(session,identity,row,refs=None,version=None):
 
 def act(session,identity,request_id,data,correlation):
     finance.scope_lock(session,identity);row=finance.get(session,ApprovalRequest,identity,request_id);t=finance.get(session,Transaction,identity,row.transaction_id)
+    finance.require_active(t)
     if t.latest_version!=data['expected_version'] or t.latest_version!=row.transaction_version:raise DomainError(409,'STALE_APPROVAL','Facts changed; obtain a new approval request.')
     version=session.scalar(scope_query(select(TransactionVersion),TransactionVersion,identity).where(TransactionVersion.transaction_id==t.id,TransactionVersion.version==t.latest_version));refs={k:r.payload|{'_kind':r.kind} for k,r in active_records(session,identity).items()};policy=refs.get(str(row.policy_id))
     wanted=next((s for s in row.requirements if s['sequence']==data['sequence']),None)
@@ -134,6 +136,8 @@ def act(session,identity,request_id,data,correlation):
 
 def waive(session,identity,transaction_id,data,correlation):
     finance.scope_lock(session,identity);t=finance.get(session,Transaction,identity,transaction_id)
+    finance.require_active(t)
+    finance.review_guard(session,identity,t,data)
     if t.latest_version!=data['expected_version']:raise DomainError(409,'STALE_VERSION','Refresh before a waiver.')
     refs={k:r.payload|{'_kind':r.kind} for k,r in active_records(session,identity).items()};profiles=[r for r in refs.values() if r['_kind']=='finance_profiles'];profile=profiles[0] if len(profiles)==1 else None
     if not profile or data['rule_id'] not in profile['waivable_rules'] or not set(profile['waiver_roles'])&identity.roles:raise DomainError(403,'WAIVER_FORBIDDEN','This rule is nonwaivable or the actor lacks configured waiver authority.')

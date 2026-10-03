@@ -107,6 +107,7 @@ def corrected_draft(session,identity,document_id,body):
 
 def commit(session,identity,document_id,body,correlation):
     finance.scope_lock(session,identity)
+    if body.get('transaction_id'):finance.review_guard(session,identity,finance.get(session,Transaction,identity,UUID(body['transaction_id'])),body)
     doc,draft,candidate,traces,changes,first,last=corrected_draft(session,identity,document_id,body)
     payload=deepcopy(body['transaction']);vendor=payload['branch']=='VENDOR_INVOICE'
     if vendor != (doc.source_type=='VENDOR_INVOICE'):
@@ -169,6 +170,7 @@ def commit(session,identity,document_id,body,correlation):
 
 def attach(session,identity,transaction_id,body,correlation):
     finance.scope_lock(session,identity);transaction=finance.get(session,Transaction,identity,transaction_id)
+    finance.require_active(transaction);finance.review_guard(session,identity,transaction,body)
     if transaction.latest_version!=body['expected_version']:raise DomainError(409,'STALE_VERSION','Refresh the current transaction.')
     doc=finance.get(session,Document,identity,UUID(body['document_id']))
     if doc.state not in ('READY','NEEDS_INPUT','DEPENDENCY_UNAVAILABLE') or not documents.pages(session,identity,doc.id):

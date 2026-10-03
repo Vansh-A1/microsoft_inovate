@@ -121,7 +121,7 @@ def test_db_constraints_and_immutable_bulk_update(environment):
         with db.session(ctx) as s:s.add(ReviewCase(**ctx.scope(),transaction_id=uuid4(),evaluation_id=uuid4(),decision='HOLD',branch='VENDOR_INVOICE',reasons=[]));s.flush()
     detail=client.get('/api/v1/transactions/'+rid).json();assert detail['version']==1
     with db.engine.connect() as c:
-        assert c.scalar(text("SELECT count(*) FROM pg_class WHERE relnamespace=current_schema()::regnamespace AND relkind='r' AND relrowsecurity AND relforcerowsecurity"))==47
+        assert c.scalar(text("SELECT count(*) FROM pg_class WHERE relnamespace=current_schema()::regnamespace AND relkind='r' AND relrowsecurity AND relforcerowsecurity"))==49
         assert c.scalar(text("SELECT numeric_scale FROM information_schema.columns WHERE table_schema=current_schema() AND table_name='transaction_versions' AND column_name='total_amount'"))==6
 
 
@@ -221,7 +221,7 @@ def test_fresh_migrations_upgrade_downgrade_and_ready(environment):
     cfg.attributes['database_url']=url.render_as_string(hide_password=False)
     command.upgrade(cfg,'head');command.downgrade(cfg,'base');command.upgrade(cfg,'head')
     temporary=Database(url.render_as_string(hide_password=False))
-    with temporary.engine.connect() as conn:assert conn.scalar(text("SELECT count(*) FROM information_schema.tables WHERE table_schema=current_schema()"))==48
+    with temporary.engine.connect() as conn:assert conn.scalar(text("SELECT count(*) FROM information_schema.tables WHERE table_schema=current_schema()"))==50
     temporary.engine.dispose()
     with db.engine.begin() as conn:conn.execute(text(f'DROP SCHEMA "{schema}" CASCADE'))
 
@@ -426,3 +426,7 @@ def test_transaction_list_batches_current_facts_and_latest_jobs(environment):
     assert items[ids[0]]['versions'][0]['version']==2 and len(items[ids[0]]['versions'])==1
     assert items[ids[0]]['job']['id']==last_job
     assert len(client.get('/api/v1/transactions/'+ids[0]).json()['versions'])==2
+    first=client.get('/api/v1/transactions?limit=2').json();second=client.get('/api/v1/transactions?limit=2&offset=2').json()
+    assert first['next_offset']==2 and second['next_offset']==4
+    assert not {r['id'] for r in first['items']}&{r['id'] for r in second['items']}
+    assert client.get('/api/v1/transactions?offset=-1').status_code==400

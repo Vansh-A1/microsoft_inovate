@@ -34,7 +34,8 @@ def claim(database,identity):
         if job.generation!=doc.generation:
             job.state='STALE';job.lease_until=None;return (None,None,None)
         if job.attempts>=job.maximum_attempts:
-            job.state='FAILED';job.last_error='ATTEMPTS_EXHAUSTED';doc.state='FAILED_FINAL';doc.last_error=job.last_error
+            from app.services.operations import mark_failure
+            mark_failure(job,'ATTEMPTS_EXHAUSTED',True,now);doc.state='FAILED_FINAL';doc.last_error=job.last_error
             audit(s,identity,'DOCUMENT_JOB_FAILED',doc.id,1,'Document stage attempts exhausted',job.correlation_id)
             return (None,None,None)
         job.state='RUNNING';job.attempts+=1;job.lease_owner=uuid4();job.lease_until=now+timedelta(seconds=180);job.updated_at=now
@@ -168,10 +169,11 @@ def record_failure(database,identity,job_id,owner,work,exc,started):
         job=s.scalar(scope_query(select(DocumentJob),DocumentJob,identity).where(DocumentJob.id==job_id).with_for_update());doc=get(s,Document,identity,job.document_id)
         if job.state!='RUNNING' or job.lease_owner!=owner or job.generation!=doc.generation:return
         retry=exc.retryable and job.attempts<job.maximum_attempts
-        job.state='RETRYABLE' if retry else 'FAILED';job.last_error=exc.code;job.lease_until=None;job.updated_at=utcnow();job.available_at=utcnow()+timedelta(seconds=2**job.attempts)
-        quarantined=job.stage=='PREPROCESS' and exc.code not in ('MALWARE_NOT_CONFIGURED','MALWARE_SCAN_UNAVAILABLE','PARSER_TIMEOUT','PARSER_RESOURCE_FAILURE')
+        from app.services.operations import mark_failure
+        mark_failure(job,exc.code,exc.retryable,utcnow())
+        quarantined=not exc.retryable and job.stage=='PREPROCESS' and exc.code not in ('MALWARE_NOT_CONFIGURED','MALWARE_SCAN_UNAVAILABLE','PARSER_TIMEOUT','PARSER_RESOURCE_FAILURE')
         unavailable='NOT_CONFIGURED' in exc.code or exc.code in ('TOKENIZER_NOT_PROVISIONED','TYPELLM_CLIENT_NOT_INSTALLED','TYPELLM_CLIENT_VERSION_UNSUPPORTED')
-        doc.state='FAILED_RETRYABLE' if retry else ('QUARANTINED' if quarantined else ('DEPENDENCY_UNAVAILABLE' if unavailable else 'NEEDS_INPUT'))
+        doc.state='FAILED_RETRYABLE' if retry else ('FAILED_FINAL' if exc.retryable else ('QUARANTINED' if quarantined else ('DEPENDENCY_UNAVAILABLE' if unavailable else 'NEEDS_INPUT')))
         doc.last_error=exc.code
         if job.stage=='EXTRACT':s.add(ExtractionRun(**identity.scope(),document_id=doc.id,document_version=1,job_id=job.id,attempt=job.attempts,
             status='FAILED',adapter='document-router',metadata_json={'schema_version':SCHEMA_VERSION,'failure_code':exc.code},result={},started_at=started,completed_at=utcnow()))
@@ -189,5 +191,8 @@ def run_once(database,identity,storage,settings,scanner=None):
         output=perform(work,execution,storage,settings,scanner or UnconfiguredMalwareAdapter())
         persist(database,execution,job_id,owner,work,output,started)
     except DocumentFailure as exc:record_failure(database,execution,job_id,owner,work,exc,started)
-    except Exception:record_failure(database,execution,job_id,owner,work,DocumentFailure('DOCUMENT_EXECUTION_FAILED',retryable=True),started)
+    except Exception as exc:
+        from app.services.operations import classify_failure
+        code,retryable=classify_failure(exc)
+        record_failure(database,execution,job_id,owner,work,DocumentFailure(code,retryable=retryable),started)
     return True

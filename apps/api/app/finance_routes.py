@@ -52,6 +52,8 @@ def mount(app,database,identity,mutation):
 
 class CurrentReason(Reason):
     expected_version:int=Field(ge=1)
+    review_case_id:UUID|None=None
+    expected_review_version:int|None=Field(default=None,ge=1)
 class ApprovalCommand(CurrentReason):
     sequence:int=Field(ge=1,le=20)
     action:str=Field(pattern='^(APPROVED|DECLINED)$')
@@ -127,31 +129,28 @@ def mount_controls(app,database,identity,mutation):
             states=finance_ledger.states(s,ctx,owner_rows)
             expected={'CONSUMED':'RESERVED','RELEASED':'RESERVED','REVERSED':'CONSUMED'}[body.action]
             if any(states.get(a.id) not in (expected,body.action) for a in owner_rows):raise __import__('app.core.errors',fromlist=['DomainError']).DomainError(409,'ALLOCATION_TRANSITION','All owner resources must transition together; consumed capacity requires an explicit reversal.')
+            if body.action=='CONSUMED' and any(states.get(a.id)=='RESERVED' for a in owner_rows):
+                from app.services.operations import eligibility
+                t=finance.get(s,Transaction,ctx,r.transaction_id)
+                if t.latest_evaluation_id!=r.evaluation_id or not eligibility(s,ctx,t)['current_eligible']:
+                    raise __import__('app.core.errors',fromlist=['DomainError']).DomainError(409,'ELIGIBILITY_STALE','Fresh current screening and reservations are required before capacity consumption.')
             changed=False
             for owned in owner_rows:
                 did_change=finance_ledger.transition(s,ctx,owned,body.action,body.reason);changed=changed or did_change
                 if owned.kind=='BUDGET' and did_change:
                     budget={'id':str(owned.reference_id),'version':owned.reference_version,'currency':owned.currency};finance_ledger.event(s,ctx,budget,{'CONSUMED':'CONSUMPTION','RELEASED':'RELEASE','REVERSED':'REVERSAL'}[body.action],owned.amount,f'api-transition:{owned.id}:{body.action}',body.reason,allocation=owned,owner=str(owned.transaction_id),metadata={'commitment_coverage':owned.metadata_json.get('commitment_coverage','0')})
                     if body.action=='CONSUMED' and Decimal(owned.metadata_json.get('commitment_coverage','0'))>0:finance_ledger.event(s,ctx,budget,'COMMITMENT_TRANSFER',owned.metadata_json['commitment_coverage'],f'transfer:{owned.id}',body.reason,allocation=owned,owner=owned.metadata_json.get('po_id'))
-            finance.audit(s,ctx,'ALLOCATION_'+body.action,r.id,1,body.reason,request.state.correlation)
-            if body.action in ('RELEASED','REVERSED'):
+            if changed and body.action in ('RELEASED','REVERSED') and finance.get(s,Transaction,ctx,r.transaction_id).processing_state!='CANCELLED':
                 t=finance.get(s,Transaction,ctx,r.transaction_id);t.eligible=False;t.decision=None;t.processing_state='RECEIVED';t.row_version+=1
             return {'id':str(r.id),'state':body.action,'changed':changed}
         return mutation(request,ctx,key,data,200,operation)
     @app.post('/api/v1/transactions/{record_id}/cancellations')
     def cancel(record_id:UUID,body:CurrentReason,request:Request,ctx=Depends(identity),key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):
-        refs.require(ctx,'FINANCE_REVIEWER')
+        from app.services.reviews import cancel as cancel_transaction
         def operation(s):
-            finance.scope_lock(s,ctx);t,v=version(s,ctx,record_id)
-            if t.latest_version!=body.expected_version:raise __import__('app.core.errors',fromlist=['DomainError']).DomainError(409,'STALE_VERSION','Refresh before cancellation.')
-            allocations=s.scalars(scope_query(select(FinanceAllocation),FinanceAllocation,ctx).where(FinanceAllocation.transaction_id==t.id)).all();states=finance_ledger.states(s,ctx,allocations)
-            if any(states.get(a.id)=='CONSUMED' for a in allocations):raise __import__('app.core.errors',fromlist=['DomainError']).DomainError(409,'CONSUMED_ALLOCATION','Settled capacity requires an explicit reversal before cancellation.')
-            finance.release(s,ctx,t.id);t.eligible=False;t.decision=None;t.processing_state='CANCELLED';t.row_version+=1
-            from app.db.models import Job
-            for job in s.scalars(scope_query(select(Job),Job,ctx).where(Job.transaction_id==t.id,Job.state.in_(['QUEUED','RUNNING','RETRYABLE']))):job.state='CANCELLED';job.lease_until=None
-            finance.audit(s,ctx,'TRANSACTION_CANCELLED',t.id,t.latest_version,body.reason,request.state.correlation)
-            return {'id':str(t.id),'version':t.latest_version,'state':'CANCELLED'}
-        return mutation(request,ctx,key,body.model_dump(),200,operation)
+            finance.scope_lock(s,ctx);finance.review_guard(s,ctx,finance.get(s,Transaction,ctx,record_id),body.model_dump(mode='json'))
+            return cancel_transaction(s,ctx,record_id,body.expected_version,body.reason,request.state.correlation)
+        return mutation(request,ctx,key,body.model_dump(mode='json'),200,operation)
     @app.get('/api/v1/budgets/{budget_id}/ledger')
     def budget_ledger(budget_id:UUID,ctx=Depends(identity)):
         if not visible(ctx):refs.require(ctx,'AUDITOR')
