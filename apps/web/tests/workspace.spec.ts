@@ -6,8 +6,10 @@ const expense='30000000-0000-4000-8000-000000000008';
 test('overview shows actual persisted cases and has no browser token',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/');await expect(page.getByRole('heading',{name:'Screening overview'})).toBeVisible();
- // Invoice numbers are attributes; identify the retained seeded transaction by UUID.
- await expect(page.locator('a[href="/cases/30000000-0000-4000-8000-000000000001"]').filter({hasText:'DEMO-INV-CLEAN-001'})).toBeVisible();
+ // The overview is bounded and ordered by recency; compare an actual returned record by UUID.
+ const latest=(await (await page.request.get('/api/transactions?limit=25')).json()).items[0];
+ const facts=latest.versions.at(-1).payload;
+ await expect(page.locator('a[href="/cases/'+latest.id+'"]').filter({hasText:facts.invoice_number||facts.claim_number})).toBeVisible();
  await expect(page.getByText('NOT_CONFIGURED',{exact:false})).toBeVisible();
  await page.screenshot({path:'../../output/playwright/overview.png',fullPage:true});
  const browserStorage=await page.evaluate(()=>({...localStorage,...sessionStorage}));expect(Object.keys(browserStorage)).toHaveLength(0);expect(errors).toEqual([]);
@@ -25,7 +27,7 @@ for(const [id,outcome] of [[vendor,'PASS'],[employee,'PASS'],[duplicate,'HOLD'],
   await page.getByRole('link',{name:'View report'}).click();
   await expect(page.getByRole('heading',{name:'Screening report',exact:true})).toBeVisible();
   await expect(page.frameLocator('iframe').getByRole('heading',{name:new RegExp(outcome+' — Synthetic')})).toBeVisible();
-  await expect(page.getByRole('link',{name:'Download JSON'})).toBeVisible();
+  await expect(page.getByText('Report downloads require explicit export permission.')).toBeVisible();
   if(id===employee)await page.screenshot({path:'../../output/playwright/employee-report.png',fullPage:true});
  });
 }
