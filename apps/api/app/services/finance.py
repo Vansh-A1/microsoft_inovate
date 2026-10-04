@@ -47,7 +47,14 @@ def audit(session,identity,action,object_id,version,reason,correlation,payload=N
     data=projection({'id':event_id,'tenant_id':identity.tenant_id,'legal_entity_id':identity.legal_entity_id,'sequence':sequence,'actor_id':identity.actor_id,'action':action,'object_id':object_id,'object_version':version,'reason':reason,'correlation_id':correlation,'created_at':at,'payload':payload or {}})
     hashed=digest({'previous_hash':tenant.audit_hash,'event':data})
     session.add(AuditEvent(**identity.scope(),id=event_id,created_at=at,sequence=sequence,actor_id=identity.actor_id,action=action,object_id=object_id,object_version=version,reason=reason,correlation_id=correlation,previous_hash=tenant.audit_hash,event_hash=hashed,payload=payload or {}))
-    tenant.audit_sequence=sequence;tenant.audit_hash=hashed;session.flush()
+    tenant.audit_sequence=sequence;tenant.audit_hash=hashed
+    try:session.flush()
+    except Exception:
+        from app.core.observability import log
+        # No actor, source payload, DB/provider exception text or secret enters
+        # this signal. The failed business transaction still rolls back.
+        log.error('{"event":"audit_write_failed"}')
+        raise
 
 
 def idempotent(session,identity,endpoint,key,body,status,operation):

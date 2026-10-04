@@ -75,6 +75,9 @@ def create_app(settings=None,database=None):
     def template(branch:str,ctx=Depends(identity)):
         if not settings.development:raise DomainError(404,'NOT_FOUND','Development fixtures are unavailable.')
         if branch not in ('vendor','employee'):raise DomainError(400,'BRANCH_INVALID','Use vendor or employee.')
+        from app.demo_routes import prepared_template
+        prepared=prepared_template(ctx,branch)
+        if prepared is not None:return prepared
         from app.core.config import ROOT
         from app.schemas.canonical import fixture_canonical
         import json
@@ -220,4 +223,6 @@ def create_app(settings=None,database=None):
     mount_admin(app,database,identity,mutation)
     from app.core.observability import mount as mount_telemetry
     mount_telemetry(app)
+    from app.demo_routes import mount as mount_demo
+    mount_demo(app,settings,database,identity)
     return app

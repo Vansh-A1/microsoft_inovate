@@ -72,6 +72,10 @@ def mount(app,settings,database,storage,identity,mutation):
     @app.get('/api/v1/operations/dashboard')
     def dashboard(ctx=Depends(identity)):
         with database.session(ctx) as s:return operations.dashboard(s,ctx)
+    @app.get('/api/v1/operations/measurements')
+    def measurements(ctx=Depends(identity)):
+        from app.services.release_measurements import measurements as read_measurements
+        with database.session(ctx) as s:return read_measurements(s,ctx)
     @app.get('/api/v1/operations/jobs')
     def jobs(state:Literal['FAILED','RETRYABLE','RUNNING']='FAILED',limit:int=50,offset:int=0,ctx=Depends(identity)):
         with database.session(ctx) as s:return operations.jobs(s,ctx,state,limit,offset)

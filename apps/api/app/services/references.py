@@ -16,8 +16,10 @@ def number_key(value):
     return unicodedata.normalize('NFKC', value).strip().casefold() if value else None
 
 
-def seed_references(session, identity):
-    root = ROOT / 'data/synthetic/reference'
+def seed_references(session, identity, *, source_root=None):
+    # Server-side development seed only; no API accepts a source path. The
+    # hackathon pack remaps fixture identities into a separate synthetic scope.
+    root = source_root or ROOT / 'data/synthetic/reference'
     if not session.get(Tenant, identity.tenant_id):
         source = next(r for r in json.loads((root/'tenants.json').read_text())['records'] if r['id']==str(identity.tenant_id))
         session.add(Tenant(id=identity.tenant_id, name=source.get('name', 'Synthetic tenant')))

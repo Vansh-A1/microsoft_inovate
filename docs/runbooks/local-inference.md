@@ -156,6 +156,7 @@ Raw outputs and benchmark traces are private reports, not committed training row
 ```bash
 .venv/bin/python scripts/inference/local.py stop
 .venv/bin/python scripts/inference/local.py health
+.venv/bin/python scripts/inference/local.py restart
 ```
 
 After stop, health must fail rather than report AVAILABLE. `stop` verifies its
@@ -172,8 +173,10 @@ following removes **only this experimental runtime**, including its model/key:
 
 ```bash
 # Destructive, optional future cleanup; not performed by this task.
-rm -rf -- /data/vansh/microsoft_inovate/runtime/inference
+.venv/bin/python scripts/inference/local.py cleanup --confirm-remove-runtime
 ```
+
+The cleanup command refuses live owned services and an unsafe/symlink runtime location. The guarded command was tested without deleting the accepted runtime. See [hackathon lifecycle](hackathon-demo.md) for integrated start/stop/health.
 
 Never remove the established `runtime/dev`, private finance storage, database,
 `.venv`, source fixtures or original team pack as inference cleanup.

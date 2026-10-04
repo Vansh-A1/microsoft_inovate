@@ -74,7 +74,7 @@ test('multi-page navigation, explicit page-level row evidence and uncertain bund
 
 test('corrupt source quarantine, loading/error states and mobile document workspace',async({page})=>{
  await upload(page,'corrupt.pdf','VENDOR_INVOICE','QUARANTINED');
- await expect(page.locator('.error[role="status"]')).toContainText('CORRUPT_DOCUMENT');await expect(page.getByRole('link',{name:'Download preserved original'})).toHaveCount(0);
+ await expect(page.locator('.error[role="status"]')).toContainText('corrupt document');await expect(page.getByRole('link',{name:'Download preserved original'})).toHaveCount(0);
  await page.setViewportSize({width:390,height:844});await page.goto('/documents');
  await expect(page.getByRole('heading',{name:'Documents',exact:true})).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);

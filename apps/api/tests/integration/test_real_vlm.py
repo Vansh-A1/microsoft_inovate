@@ -84,6 +84,8 @@ def test_real_primary_upload_layout_rows_and_critical_uncertainty(environment,pr
 
 
 def test_real_scan_to_normalization_source_correction_and_finance(environment,providers):
+    from test_finance_phase3 import configured,approve,drain as drain_finance,report as finance_report
+    environment=configured(environment)
     source=ROOT/'data/documents_phase2/vendor_native.pdf'
     rendered=DocumentProcessor().process(source)['pages'][0]
     doc=uploaded(environment,base64.b64decode(rendered['preview_base64']),'real-vlm-synthetic-invoice.png','VENDOR_INVOICE',providers)
@@ -113,6 +115,13 @@ def test_real_scan_to_normalization_source_correction_and_finance(environment,pr
     assert retained['extraction_runs'][0]==run and retained['observations']==doc['observations']
     sources=client.get('/api/v1/transactions/'+created['id']+'/sources').json()
     assert sources['documents'][0]['verified'] and len(sources['corrections'][0]['changes'])==len(corrections)
+    old_id=report['evaluation_id']
+    approve(client,created['id']);drain_finance(db,ctx)
+    approved=finance_report(client,created['id'])
+    assert approved['decision']=='PASS' and len(approved['rules'])==28
+    assert approved['extraction_mode']=='DOCUMENT_DERIVED' and approved['normalizer_version']=='document-normalizer-v2'
+    assert next(r for r in approved['rules'] if r['rule_id']=='GRN-001')['status']=='PASS'
+    assert client.get('/api/v1/evaluations/'+old_id).json()['decision']=='HOLD'
 
 
 def test_actual_connection_outage_is_retryable_and_cannot_be_empty_success(environment,providers):

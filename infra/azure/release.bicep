@@ -18,12 +18,14 @@ param apiScope string
 @minValue(1)
 @maxValue(8)
 param maxReplicas int
-var serverSecrets = ['ap-database-url','ap-enterprise-config']
-var serverEnv = [
+@description('Enable only for an independently approved private TypeLLM gateway, with its credential already in Key Vault. No GPU resources or model license approval are implied.')
+param useApprovedInferenceGateway bool = false
+var serverSecrets = concat(['ap-database-url','ap-enterprise-config'],useApprovedInferenceGateway?['ap-typellm-gateway-token']:[])
+var serverEnv = concat([
   { name: 'AP_ENVIRONMENT', value: 'enterprise' }
   { name: 'AP_DATABASE_URL', secretRef: 'ap-database-url' }
   { name: 'AP_CONFIG_JSON', secretRef: 'ap-enterprise-config' }
-]
+],useApprovedInferenceGateway?[{ name: 'AP_TYPELLM_GATEWAY_TOKEN', secretRef: 'ap-typellm-gateway-token' }]:[])
 module api 'app.bicep' = { name: 'api', params: { name: '${prefix}-api', location: location, environmentId: environmentId, image: apiImage, registryId: registryId, registryHost: registryHost, vaultId: vaultId, vaultUri: vaultUri, blobContainerId: blobContainerId, service: 'api', env: serverEnv, secretNames: serverSecrets, maxReplicas: maxReplicas } }
 module worker 'app.bicep' = { name: 'worker', params: { name: '${prefix}-worker', location: location, environmentId: environmentId, image: apiImage, registryId: registryId, registryHost: registryHost, vaultId: vaultId, vaultUri: vaultUri, blobContainerId: blobContainerId, service: 'worker', env: serverEnv, secretNames: serverSecrets, command: ['python','-m','app.services.worker'], maxReplicas: 1 } }
 module web 'app.bicep' = { name: 'web', params: { name: '${prefix}-web', location: location, environmentId: environmentId, image: webImage, registryId: registryId, registryHost: registryHost, vaultId: vaultId, vaultUri: vaultUri, blobContainerId: blobContainerId, service: 'web', secretNames: ['ap-web-client-secret'], maxReplicas: maxReplicas, env: [{ name: 'AP_ENVIRONMENT', value: 'enterprise' },{ name: 'AP_API_ORIGIN', value: 'https://${api.outputs.fqdn}' },{ name: 'AP_WEB_ORIGIN', value: approvedWebOrigin }] } }

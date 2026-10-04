@@ -6,6 +6,20 @@ The application screens vendor invoices and employee claims using source evidenc
 
 Phase 6 delivers the local application and release/handoff artifacts under an explicit external-infrastructure fallback. The subsequent approved priority override establishes **real local VLM + TypeLLM invoice extraction** on the unchanged GPU driver. This is a development experiment, not a deployed production pilot. See the [real inference acceptance record](docs/real_vlm_acceptance.md), [Phase-6 exit review](docs/phase6_exit_review.md) and [capability matrix](docs/release_matrix.md).
 
+## Hackathon quick start
+
+With the established local database, finance environment, production web build and isolated inference runtime installed:
+
+```bash
+./scripts/start-demo.sh
+./scripts/demo-health.sh --require-vlm
+./scripts/prepare-demo.sh
+```
+
+Open [the walkthrough](http://127.0.0.1:3000/demo) and select **Hackathon finance reviewer**. Eight persisted examples cover actual visual extraction/TypeLLM and PO/GRN PASS, paid duplicates, partial delivery, clean/over-allowance expenses, shared receipts and immutable correction history. Results are computed by the existing engine. The separate synthetic scope preserves existing data and permissions; rerunning preparation reuses guarded operations.
+
+Stop with `./scripts/stop-demo.sh`; it retains PostgreSQL, evidence and model caches. Start CPU services with `./scripts/start-demo.sh --no-vlm` when no GPU is available; visual extraction reports provider unavailability. Use [the hackathon runbook](docs/runbooks/hackathon-demo.md) for prerequisites, recovery, identities and the measured limitations, and [the final project exit review](docs/final_project_exit_review.md) for release evidence and external gates.
+
 ## Finance Workspace
 
 Use an ordinary browser: **Upload invoice or receipt → Processing → inspect source facts → verify/map business references → Result**. The default screen leads with unresolved checks and plain next actions. Source previews, corrections, ownership, approvals, queue, audit and report are available; rule IDs/full facts are expandable details. Both vendor and employee records persist. A missing/ambiguous critical fact, missing dependency, stale approval or insufficient capacity cannot silently PASS.

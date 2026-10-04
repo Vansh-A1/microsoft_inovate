@@ -7,6 +7,10 @@ PYTHON=ROOT/'.venv/bin/python';NODE=ROOT/'runtime/tools/node-v24.21.0-linux-x64/
 
 
 def main():
+    # The demo lifecycle sends SIGTERM; unwind so independently sessioned
+    # API/worker/web children are stopped as they are for interactive Ctrl+C.
+    def stop(*_):raise KeyboardInterrupt()
+    signal.signal(signal.SIGTERM,stop)
     env=dict(os.environ);env['PYTHONPATH']=str(ROOT/'apps/api');env['PATH']=str(NODE)+':'+env.get('PATH','')
     sys.path.insert(0,str(ROOT/'apps/api'))
     from app.core.config import Settings

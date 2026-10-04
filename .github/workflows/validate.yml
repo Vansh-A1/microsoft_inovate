@@ -50,6 +50,7 @@ jobs:
           .venv/bin/python scripts/dev/setup_workflow_identities.py
           .venv/bin/python scripts/dev/setup_intelligence_identities.py
           .venv/bin/python scripts/dev/setup_release_identities.py
+          .venv/bin/python scripts/seed/hackathon.py prepare
       - name: Backend lint, domain types and full real-database tests
         run: |
           runtime/release-tools/bin/ruff check apps/api/app --select E9,F63,F7,F82

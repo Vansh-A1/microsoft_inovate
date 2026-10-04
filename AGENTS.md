@@ -13,6 +13,15 @@ The supplied team-pack folder and ZIP are preserved original inputs. Use the `do
 
 ## Scope and approval gates
 
+The latest 2026-10-04 final-project approval authorizes continuous Phase-5/6
+closure, final integration and hackathon release verification without task/phase
+approval stops. Preserve the accepted ADR-0015 BF16 runtime and host configuration.
+Complete the honest anomaly/governance outcome when supervised labels are absent.
+Add necessary local lifecycle, real-engine demo, security/observability/recovery
+and handoff support; live Azure requires approved external inputs. No routine
+questions, host changes, model switching, inference dependency upgrades, paid
+provisioning or credential repair. Publication remains separate from local work.
+
 - Work through Phases 0–6 in specification order, beginning with the earliest incomplete phase.
 - Work on one approved, bounded responsibility at a time. State its phase, task ID, goal, expected files, relevant requirements, and verification plan before implementing.
 - Substantial architecture changes, database changes, major dependencies, replacement/removal of existing systems, and entry into a new phase require explicit user approval.
