@@ -73,6 +73,8 @@ test('loading and API error states remain visible and actionable',async({page})=
  await page.goto('/transactions');await expect(page.getByRole('status')).toHaveText('Loading persisted records…');await expect(page.locator('tbody tr').first()).toBeVisible();
  await page.unroute('**/api/transactions?*');await page.route('**/api/transactions?*',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:{message:'API connection unavailable. Start the API and try again.'}})}));
  await page.reload();await expect(page.locator('.error[role=alert]')).toContainText('API connection unavailable');
+ await page.unroute('**/api/transactions?*');await page.reload();
+ await expect(page.locator('tbody tr').first()).toBeVisible();await expect(page.locator('.error[role=alert]')).toHaveCount(0);
 });
 test('proxy rejects a cross-origin mutation',async({request})=>{
  const result=await request.post('/api/transactions',{headers:{Origin:'https://untrusted.example','Idempotency-Key':'blocked-origin'},data:{branch:'VENDOR_INVOICE'}});

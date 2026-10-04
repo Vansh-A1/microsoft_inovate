@@ -38,6 +38,7 @@ test('actual skewed partial source keeps both unread cells and exact next questi
  const questions=doc.draft.findings.filter((f:{code:string;field:string})=>f.code==='SOURCE_CELL_UNREAD'&&f.field.startsWith('lines.1.'));
  expect(questions).toHaveLength(2);
  expect(questions.every((f:{message:string})=>f.message.includes('Braided file loops')&&f.message.includes('do not calculate'))).toBe(true);
+ for(const question of questions)await expect(page.getByText(question.message,{exact:true})).toBeVisible();
  await page.getByRole('button',{name:'lines.1.amount',exact:true}).click();
  await expect(page.getByLabel('Actual source bounding box')).toBeVisible();
  await page.screenshot({path:'../../output/playwright/cl10-partial-source-laptop.png'});
