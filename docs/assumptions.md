@@ -328,3 +328,32 @@ worker recovery fix keeps services alive, but does not establish throughput unde
 that load. Final functional browser checks run separately after the database suite;
 production storage/capacity acceptance and suitable-infrastructure load validation
 remain unproven. No host/database durability setting is weakened to accelerate tests.
+
+## CL-04/CL-05 measured continuation — 2026-10-04
+
+The twelve-source challenge was invented/frozen before tuning on 88f3559. Six
+reserved layouts were opened after tuning. Shared fictional vocabulary/values
+do not establish customer-distribution independence. Raw provider results and
+the supplied invoice remain private/ignored. h01 incomplete rows and h04 wrapped
+disagreement remain failures, not tuned-away reserved successes.
+
+The optional CPU experiment installed one isolated 25-package environment:
+RapidOCR 3.9.2/CPU ONNX Runtime 1.23.2, verified package/model hashes and actual
+CPU providers. Finance Python and ADR-0015 inference pins remain intact.
+Tesseract remains default; the private demo opts in reversibly. Explicit model
+paths/download guards are application controls, not an OS network sandbox.
+Upstream states Apache-2.0, but its advertised model-license file was unavailable;
+packaged/commercial attribution is not claimed complete. No larger GPU model,
+paid service, driver/configuration change or publication follows.
+
+Pipeline scores, CPU cold/warm, model startup/resident and actual upload/queue
+times are separate. Whole-device VRAM includes other processes. Missing accounting
+facts cannot become canonical from model totals/zeros. The CPU route improves
+three scans but still abstains on a reserved wrapped table. Business policies,
+actual identity/scanner acceptance and a representative lawful adjudicated corpus
+remain inputs; no universal accuracy/speed or production pilot is inferred.
+
+The brief executor disconnect did not interrupt existing measurements or the
+integration process; jobs were resumed/read, not duplicated. Only fictional
+screenshots were saved to Library using its documented direct fallback. No
+private invoice was transmitted. Temporary phone port 3001 remains closed.

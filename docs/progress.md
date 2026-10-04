@@ -1348,3 +1348,59 @@ no push or deployment is authorized.
 Next bounded responsibility requires independent lawful adjudicated invoice
 layouts and business-approved policies/identity/scanner/provider inputs for broader
 acceptance. This local hardening does not provision those inputs or publish the app.
+
+## CL-04/CL-05 — grounded extraction and measured CPU continuation
+
+Phase-6/final local hardening, completed 2026-10-04. Goal: improve native/scan
+association and current-model latency, preserve unsupported accounting facts and
+verify the actual judge workflow. Relevant requirements: source/provenance,
+Decimal/explicit currency, missing/ambiguous abstention, tenant/role boundaries,
+mandatory finance controls, immutable version/history and honest measurements.
+Files: native/layout/TypeLLM adapters, typed provider settings, isolated CPU bridge,
+worker provenance, frozen challenge/harness, source-form mapping, scoped tests,
+ADR-0017 and setup/validation documentation. No finance rules/domain/migration or
+inference dependency/driver change, additional renaming, rebuild, push or deployment.
+
+The twelve fictional sources were frozen on 88f3559 before tuning; six reserved
+layouts were opened afterwards. Printed headers improve 66/76→72/76 by default
+and 76/76 with optional CPU; checked core rows 68/100→80/100 and 88/100. Five
+required ambiguity checks abstain. Three scans avoid VLM. A landscape second row
+and wrapped-scan inventory/association still fail; their 12 missing/ambiguous row
+values remain honest failures. No representative accuracy or finance PASS follows.
+
+Optional RapidOCR 3.9.2/CPU ONNX Runtime 1.23.2 uses one separately installed
+25-package pinned/hash-verified environment, actual CPU provider attestation and
+private bounded resident stdio. Tesseract stays repository default; the private
+demo opts in reversibly. Raw/model-only row accounting is AMBIGUOUS/noncanonical.
+Native v4 retains unread fields as MISSING for existing audited source corrections.
+Visual QA found misleading template amounts in source forms despite safe API
+rejection; unknown source financial fields and eligible nights now stay blank.
+
+Actual cold/warm upload-to-document result: 5.021/4.282 s, NEEDS_INPUT, no finance
+decision. Current owned model cold startup 14.974 s, forced-VLM requests
+30.245/30.468 s; separate OCR+VLM requests 26.158/24.189 s. All retain source
+uncertainty. Timings/VRAM/CPU RSS and measurement limits are separate in
+[validation](clearledger_validation.md); no universal speed/memory claim.
+
+Executed: focused **121 passed / 3.30 s / exit 0**; scoped real PostgreSQL finance/
+security **55 / 893.66 s / exit 0**, then post-projection source/finance/actual CPU
+**20 / 301.18 s / exit 0**. Six real-model cases have passing evidence across
+**five pass/one raw-total assertion failure (176.63 s)** and the corrected affected
+**one pass (37.73 s)**; no fabricated single six-pass suite. Complete UI before
+the final form fix: **44 pass/one conditional skip/5.7 min**, final affected UI:
+**17 pass/one conditional skip/141.788 s**, exit 0/no retries. Actual Finance/Admin
+and source phone viewports inspected. Eight read-only judge cases retain current
+28-control outcomes/eligibility/citations and original correction HOLD.
+
+Typecheck/build, 361-file source scan, redacted Gitleaks/probe, API/release contracts,
+finance/CPU dependency checks, original/spec and all frozen source hashes pass.
+Failure history and source-code hashes are retained. Three fictional screenshots
+were saved to Library via its documented direct fallback and identity writeback;
+no private invoice was transmitted. Temporary phone port 3001 remains closed.
+
+Next bounded responsibility: independently adjudicated lawful invoice layouts
+with new frozen holdouts and approved source/business inputs for broader acceptance.
+h01/h04 may be diagnosed/tuned as spent layouts, never relabeled unseen. Actual
+identity/scanner, commercial attribution/stronger provider and cloud inputs remain
+separate. Preserve current local work and historical exit reviews; publication is
+not requested for ClearLedger.

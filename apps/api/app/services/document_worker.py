@@ -21,6 +21,27 @@ from app.extraction.ocr import TesseractOCRAdapter, UnconfiguredOCRAdapter
 from app.extraction.typellm import TypeLLMExtractionAdapter
 
 
+def ocr_configured(providers):
+    return bool(providers.ocr_executable or providers.ocr_backend=='RAPIDOCR_CPU_EXPERIMENTAL')
+
+
+def configured_ocr(providers,storage):
+    fallback=None
+    if providers.ocr_executable:
+        try:fallback=TesseractOCRAdapter(providers.ocr_executable,providers.ocr_data_directory or '',providers.ocr_library_directory)
+        except DocumentFailure:
+            if providers.ocr_backend!='RAPIDOCR_CPU_EXPERIMENTAL':raise
+    if providers.ocr_backend=='RAPIDOCR_CPU_EXPERIMENTAL':
+        from app.extraction.cpu_ocr import resident,FallbackOCR
+        try:return FallbackOCR(resident(providers.ocr_python,storage.root),fallback)
+        except DocumentFailure as error:
+            if fallback:
+                fallback.metadata={'candidate_failure':error.code,'fallback':'TESSERACT'}
+                return fallback
+            raise
+    return fallback or UnconfiguredOCRAdapter()
+
+
 def claim(database,identity):
     now=utcnow()
     with database.session(identity) as s:
@@ -104,21 +125,25 @@ def extract(doc,identity,page_data,storage,providers):
         if gaps:routing['sufficiency']='PRINTED_FACTS_MAPPED_REVIEW_REQUIRED'
         routing['paths']=['NATIVE_TEXT'];return native,diagnostics,routing
     ocr=UnconfiguredOCRAdapter()
-    if providers.ocr_executable:
-        ocr=TesseractOCRAdapter(providers.ocr_executable,providers.ocr_data_directory or '',providers.ocr_library_directory)
+    if ocr_configured(providers):
+        ocr=configured_ocr(providers,storage)
         routing['ocr_status']='CONFIGURED'
     ocr_pages=page_data;deadline=time.monotonic()+30
-    if providers.ocr_executable and visual:
+    if ocr_configured(providers) and visual:
         ocr_pages=[]
+        routing['ocr_provenance']=[]
         for p in page_data:
             if p not in visual:ocr_pages.append(p);continue
             if time.monotonic()>=deadline:raise DocumentFailure('OCR_DOCUMENT_TIME_LIMIT')
             ocr.timeout_seconds=max(1,min(15,int(deadline-time.monotonic())))
             recognized=ocr.recognize(storage.path(identity,p['preview_key']),p['transform'])
+            routing['ocr_provenance'].append({'page':p['page'],'provider':recognized.provider,'version':recognized.version,
+                'runtime':getattr(ocr,'metadata',{})})
             ocr_pages.append(p|{'native_text':recognized.text,'spans':list(recognized.spans)})
         ocr_adapter=NativeTextExtractionAdapter(ocr_pages)
         observed=ocr_adapter.extract(bundle_for(doc,identity,ocr_pages),SCHEMA_VERSION)
-        observed=replace(observed,metadata=replace(observed.metadata,provider_id='LOCAL_OCR',adapter_id='ocr-label-parser',model_id='tesseract-'+ocr.version))
+        engines='+'.join(sorted({p['provider']+'-'+p['version'] for p in routing['ocr_provenance']}))
+        observed=replace(observed,metadata=replace(observed.metadata,provider_id='LOCAL_OCR',adapter_id='ocr-label-parser',model_id=engines))
         native=reconcile(native,observed);native=replace(native,metadata=observed.metadata)
         diagnostics.extend(ocr_adapter.diagnostics);routing['paths'].append('LOCAL_OCR')
         routing['ocr_status']='SUCCEEDED'
@@ -138,13 +163,15 @@ def extract(doc,identity,page_data,storage,providers):
             trace=trace|{'preview_key':page.artifact_ref,'storage_key':key,
                 'page_transform':next(p['transform'] for p in page_data if p['page']==page.page)}
             return 'data:image/png;base64,'+base64.b64encode(content).decode(),trace
-        mapped_headers={}
+        mapped_headers={};printed_columns={}
+        from app.extraction.layout import table_columns
         for p in ocr_pages:
             per_page=NativeTextExtractionAdapter([p]).extract(bundle_for(doc,identity,[p]),SCHEMA_VERSION)
             mapped_headers[p['page']]=per_page.header_fields
+            printed_columns[p['page']]=table_columns(p)
         enterprise=TypeLLMExtractionAdapter(providers,
             image_loader=lambda p:'data:image/png;base64,'+base64.b64encode(storage.get(identity,p.artifact_ref)).decode(),row_image_loader=row_image,
-            header_observations=mapped_headers)
+            header_observations=mapped_headers,printed_columns=printed_columns)
         extracted=enterprise.extract(bundle_for(doc,identity,ocr_pages),SCHEMA_VERSION)
         # A model can read amounts but cannot establish accounting tax treatment
         # from their arithmetic or a sales-tax summary. Preserve the unsupported
@@ -155,6 +182,19 @@ def extract(doc,identity,page_data,storage,providers):
             extracted=replace(extracted,header_fields=tuple(replace(f,state=ObservationState.AMBIGUOUS,
                 diagnostic_note='Model-only tax treatment is unconfirmed; inspect an explicit source statement or apply an authorized policy.')
                 if f.field_path=='tax_basis' and f.state.value=='PRESENT' else f for f in extracted.header_fields))
+        from app.domain.extraction import ExtractionObservationState as ObservationState
+        accounting=frozenset(('discount_amount','net_amount','tax_rate','tax_amount','gross_amount'))
+        grounded_rows=[]
+        for index,row in enumerate(extracted.line_items):
+            independently_read={f.field_path:f for f in native.line_items[index].fields} if len(native.line_items)==len(extracted.line_items) else {}
+            fields=tuple(replace(f,state=ObservationState.AMBIGUOUS,
+                diagnostic_note='Model-only row accounting semantics are unconfirmed; inspect an explicit item column. Document totals and arithmetic do not establish row facts.')
+                if f.field_path in accounting and f.state is ObservationState.PRESENT and
+                    (f.field_path not in independently_read or independently_read[f.field_path].state is not ObservationState.PRESENT)
+                else f for f in row.fields)
+            grounded_rows.append(replace(row,fields=fields))
+        extracted=replace(extracted,line_items=tuple(grounded_rows))
+        enterprise.sidecar['accounting_grounding_version']='independent-item-column-v1'
         if native.line_items and extracted.line_items and len(native.line_items)!=len(extracted.line_items):
             from app.domain.extraction import to_data
             routing['row_count_disagreement']={'version':'provider-candidates-v1',
@@ -166,7 +206,7 @@ def extract(doc,identity,page_data,storage,providers):
     elif providers.endpoint:
         routing['vlm_status']='CONFIGURED_NOT_NEEDED'
         if gaps:routing['sufficiency']='PRINTED_FACTS_MAPPED_REVIEW_REQUIRED'
-    if visual and not providers.ocr_executable and not providers.endpoint:raise DocumentFailure('VISUAL_PROVIDER_NOT_CONFIGURED')
+    if visual and not ocr_configured(providers) and not providers.endpoint:raise DocumentFailure('VISUAL_PROVIDER_NOT_CONFIGURED')
     return native,diagnostics,routing
 
 
@@ -205,10 +245,10 @@ def perform(work,identity,storage,settings,scanner):
             providers=settings.document_providers
             for p in data['pages']:
                 candidate=p
-                if not p['native_text'].strip() and providers.ocr_executable:
+                if not p['native_text'].strip() and ocr_configured(providers):
                     remaining=int(deadline-time.monotonic())
                     if remaining<=0:raise DocumentFailure('OCR_DOCUMENT_TIME_LIMIT')
-                    ocr=TesseractOCRAdapter(providers.ocr_executable,providers.ocr_data_directory or '',providers.ocr_library_directory,timeout_seconds=min(15,remaining))
+                    ocr=configured_ocr(providers,storage);ocr.timeout_seconds=min(15,remaining)
                     text=ocr.recognize(storage.path(identity,p['preview_key']),p['transform'])
                     candidate=p|{'native_text':text.text,'spans':text.spans}
                 classification_pages.append(candidate)

@@ -26,7 +26,7 @@ def providers(monkeypatch):
     assert key.is_file(),'Start the isolated inference gateway first'
     monkeypatch.setenv(p.gateway_token_env,key.read_text().strip())
     assert GatewayTransport(p).health()['status']=='AVAILABLE'
-    return replace(p,ocr_executable=None,ocr_data_directory=None,ocr_library_directory=None)
+    return replace(p,ocr_executable=None,ocr_data_directory=None,ocr_library_directory=None,ocr_backend='TESSERACT',ocr_python=None)
 
 
 def uploaded(environment,content,name,source_type,providers):
@@ -73,10 +73,19 @@ def test_real_primary_upload_layout_rows_and_critical_uncertainty(environment,pr
         assert by['invoice_number']['state']=='AMBIGUOUS' and 'US-001' in by['invoice_number']['raw_value']
         assert doc['draft']['candidate']['invoice_number'] is None
     else:assert by['invoice_number']['raw_value']=='US-001'
-    assert by['total_amount']['raw_value']=='$154.06' and by['currency']['state']=='AMBIGUOUS'
+    if by['total_amount']['raw_value']!='$154.06':
+        assert with_ocr and by['total_amount']['state']=='AMBIGUOUS'
+        assert '$154.06' in by['total_amount']['raw_value'] and doc['draft']['candidate']['total_amount'] is None
+    assert by['currency']['state']=='AMBIGUOUS'
     expected=[('Front and rear brake cables','1','100.00','100.00'),('New set of pedal arms','2','15.00','30.00'),('Labor 3hrs','3','5.00','15.00')]
     assert [[by[f'lines.{i}.{f}']['raw_value'] for f in ('description','quantity','unit_price','amount')] for i in range(3)]==[list(row) for row in expected]
-    assert all(by[f'lines.{i}.amount']['source']['page']==1 and by[f'lines.{i}.amount']['source']['bbox'] is None for i in range(3))
+    assert all(by[f'lines.{i}.amount']['source']['page']==1 for i in range(3))
+    if not with_ocr:assert all(by[f'lines.{i}.amount']['source']['bbox'] is None for i in range(3))
+    else:
+        for i in range(3):
+            source=by[f'lines.{i}.amount']['source']
+            if source['bbox'] is not None:
+                assert all(0<=edge<=1 for edge in source['bbox'].values())
     assert doc['state']=='NEEDS_INPUT' and doc['finance_decision'] is None
     assert doc['draft']['candidate']['currency'] is None and doc['draft']['candidate']['invoice_date'] is None
     _,_,_,client,_=environment

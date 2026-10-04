@@ -37,7 +37,7 @@ def result(bundle,metadata,headers,rows=(),failure=None):
 
 
 class NativeTextExtractionAdapter:
-    metadata=AdapterMetadata('native-label-parser','2','NATIVE_TEXT',prompt_template_version='labeled-header-table-layout-v2')
+    metadata=AdapterMetadata('native-label-parser','4','NATIVE_TEXT',prompt_template_version='labeled-header-table-layout-v4')
     capabilities=AdapterCapabilities(True,True,True,False)
 
     def __init__(self, page_details=()):
@@ -62,6 +62,9 @@ class NativeTextExtractionAdapter:
                     # PyMuPDF sorted text may flatten independent columns into
                     # one line. Measured label regions own that page's mapping.
                     if field in layout_fields:table=False;continue
+                    from app.extraction.layout import key,HEADER_ALIASES
+                    if key(raw) in HEADER_ALIASES:
+                        self.diagnostics.append('HEADER_ASSOCIATION_UNCERTAIN');table=False;continue
                     matching=[s for s in spans if s['text'].strip()==line]
                     bbox=matching[0].get('bbox') if len(matching)==1 else None
                     seen[field].append(FieldObservation(field,State.PRESENT,raw,source=source(bundle,page.page,field,bbox,raw),
@@ -98,6 +101,11 @@ class NativeTextExtractionAdapter:
                 headers.append(FieldObservation(field,State.AMBIGUOUS,' | '.join(distinct),source=candidates[0].source,
                     diagnostic_note='Conflicting repeated labels across document pages; no value chosen.'))
                 if field in ('invoice_number','receipt_number'):self.diagnostics.append('SEGMENTATION_UNCERTAIN')
+        # A missing column must remain a reviewable observation, not disappear
+        # and let a demo/business template appear to supply the source fact.
+        rows=[replace(row,fields=row.fields+tuple(FieldObservation(field,State.MISSING,
+            diagnostic_note='No independently read item column established this fact; source review is required.')
+            for field in ROW_FIELDS if field not in {f.field_path for f in row.fields})) for row in rows]
         return result(bundle,self.metadata,headers,rows)
 
 

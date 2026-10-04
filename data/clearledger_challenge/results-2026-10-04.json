@@ -1,0 +1,1262 @@
+{
+  "version": "clearledger-challenge-public-metrics-v1",
+  "measured_date": "2026-10-04",
+  "limitations": [
+    "Fictional synthetic layouts; no customer-distribution accuracy claim.",
+    "Baseline on commit 88f3559 before tuning; six holdouts opened after tuning.",
+    "Resident model, sequential pipeline timing; excludes upload, database queue, UI and human approval.",
+    "Integrated first visual CPU request includes bridge startup. Whole-device VRAM includes resident weights and other processes.",
+    "Later timeout/invalid-response fixes do not change printed mapping; source code hashes describe each recorded run."
+  ],
+  "reports": [
+    {
+      "variant": "baseline",
+      "runs": [
+        {
+          "label": "baseline",
+          "code_commit": "88f3559094a83408147157c618a20271e19208b1"
+        },
+        {
+          "label": "baseline",
+          "code_commit": "88f3559094a83408147157c618a20271e19208b1"
+        }
+      ],
+      "cases": [
+        {
+          "id": "t01",
+          "split": "tuning",
+          "source_sha256": "e9a5e73a9b7eff6243a7005f6937f311e44642140ceb445c757f51d6fcbe2eea",
+          "seconds": 0.229,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 11967,
+          "vlm_calls": 0
+        },
+        {
+          "id": "t02",
+          "split": "tuning",
+          "source_sha256": "f145814698db79f852af9a2780011084b47bd07d167c88d9088f4b59cf3ba847",
+          "seconds": 67.789,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": true,
+            "invoice_date": false,
+            "currency": true,
+            "subtotal_amount": false,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": false,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13843,
+          "vlm_calls": 4
+        },
+        {
+          "id": "t03",
+          "split": "tuning",
+          "source_sha256": "0f3521086eda49acf2c8612257f81de73d85a43eba481263ccda792287fca769",
+          "seconds": 35.808,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 0,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13983,
+          "vlm_calls": 3
+        },
+        {
+          "id": "t04",
+          "split": "tuning",
+          "source_sha256": "4614dbe4a011221646613f2a71d13cb1349cff0ce6903d2bc802d82aa4086e75",
+          "seconds": 39.185,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": false,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": false
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13501,
+          "vlm_calls": 4
+        },
+        {
+          "id": "t05",
+          "split": "tuning",
+          "source_sha256": "61c582438b5e27a8f7f261f7950030c867ea26156dab34e173644ab820bd210b",
+          "seconds": 37.098,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": false,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": true,
+            "tax_basis": false,
+            "document_discount_amount": false,
+            "shipping_amount": true,
+            "other_charges_amount": false
+          },
+          "abstention_checks": {
+            "currency": true,
+            "invoice_date": true
+          },
+          "normalized_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13439,
+          "vlm_calls": 4
+        },
+        {
+          "id": "t06",
+          "split": "tuning",
+          "source_sha256": "e8a305a5dbde3b255f9e325e77c8006fb01e2425fa1dff70fbc9af094d89fda6",
+          "seconds": 0.091,
+          "failure": "CORRUPT_DOCUMENT",
+          "failure_expected": true,
+          "peak_whole_device_memory_mib": 12383,
+          "vlm_calls": 0
+        },
+        {
+          "id": "h01",
+          "split": "holdout",
+          "source_sha256": "f757c1372dbe77b06fe8109adb882142adb8c5cac55b62a317cf920540b00da9",
+          "seconds": 66.006,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": false
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14053,
+          "vlm_calls": 4
+        },
+        {
+          "id": "h02",
+          "split": "holdout",
+          "source_sha256": "4bc81d58fc7698ac3e45cf4ef9e037a6ac3a4b329dfd5d5d73c6176a692174f9",
+          "seconds": 0.622,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 12831,
+          "vlm_calls": 0
+        },
+        {
+          "id": "h03",
+          "split": "holdout",
+          "source_sha256": "bcad069d7c616c57cef2f034c20505020c55ccbae036931f046c9761f3842156",
+          "seconds": 38.03,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": false,
+            "invoice_date": false,
+            "currency": true,
+            "subtotal_amount": false,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": false,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13819,
+          "vlm_calls": 4
+        },
+        {
+          "id": "h04",
+          "split": "holdout",
+          "source_sha256": "9209e705214af0462b22085dccd00868e6edd3b2f04447b274d9131f85b48ff9",
+          "seconds": 38.304,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": false,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": false
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13649,
+          "vlm_calls": 4
+        },
+        {
+          "id": "h05",
+          "split": "holdout",
+          "source_sha256": "e89195dc51f4f7fa54adc91d12e153d85aa6d3d07c76cb5d15b33d51632e22f5",
+          "seconds": 0.285,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 16,
+          "row_checked": 16,
+          "expected_rows": 4,
+          "actual_rows": 4,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {
+            "invoice_number": true
+          },
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 12619,
+          "vlm_calls": 0
+        },
+        {
+          "id": "h06",
+          "split": "holdout",
+          "source_sha256": "945187c2c1fe0eeed36fa855e5987549e9b478f13bd0708fa4ce2ac051fd81ea",
+          "seconds": 0.197,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "abstention_checks": {
+            "currency": true,
+            "invoice_date": true
+          },
+          "normalized_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 12619,
+          "vlm_calls": 0
+        }
+      ]
+    },
+    {
+      "variant": "final-default",
+      "runs": [
+        {
+          "label": "final-default",
+          "code_commit": "88f3559094a83408147157c618a20271e19208b1"
+        },
+        {
+          "label": "final-default",
+          "code_commit": "88f3559094a83408147157c618a20271e19208b1"
+        }
+      ],
+      "cases": [
+        {
+          "id": "t01",
+          "split": "tuning",
+          "source_sha256": "e9a5e73a9b7eff6243a7005f6937f311e44642140ceb445c757f51d6fcbe2eea",
+          "seconds": 0.209,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 12855,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "t02",
+          "split": "tuning",
+          "source_sha256": "f145814698db79f852af9a2780011084b47bd07d167c88d9088f4b59cf3ba847",
+          "seconds": 0.207,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 12855,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "t03",
+          "split": "tuning",
+          "source_sha256": "0f3521086eda49acf2c8612257f81de73d85a43eba481263ccda792287fca769",
+          "seconds": 0.207,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 12855,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "t04",
+          "split": "tuning",
+          "source_sha256": "4614dbe4a011221646613f2a71d13cb1349cff0ce6903d2bc802d82aa4086e75",
+          "seconds": 33.752,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": false,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": false
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13855,
+          "vlm_calls": 4,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "t05",
+          "split": "tuning",
+          "source_sha256": "61c582438b5e27a8f7f261f7950030c867ea26156dab34e173644ab820bd210b",
+          "seconds": 33.277,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": false,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": true,
+            "tax_basis": false,
+            "document_discount_amount": false,
+            "shipping_amount": true,
+            "other_charges_amount": false
+          },
+          "abstention_checks": {
+            "currency": true,
+            "invoice_date": true
+          },
+          "normalized_checks": {},
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13915,
+          "vlm_calls": 4,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "t06",
+          "split": "tuning",
+          "source_sha256": "e8a305a5dbde3b255f9e325e77c8006fb01e2425fa1dff70fbc9af094d89fda6",
+          "seconds": 0.086,
+          "failure": "CORRUPT_DOCUMENT",
+          "failure_expected": true,
+          "peak_whole_device_memory_mib": 12949,
+          "vlm_calls": 0
+        },
+        {
+          "id": "h01",
+          "split": "holdout",
+          "source_sha256": "f757c1372dbe77b06fe8109adb882142adb8c5cac55b62a317cf920540b00da9",
+          "seconds": 45.835,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": false
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14495,
+          "vlm_calls": 4,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "h02",
+          "split": "holdout",
+          "source_sha256": "4bc81d58fc7698ac3e45cf4ef9e037a6ac3a4b329dfd5d5d73c6176a692174f9",
+          "seconds": 0.34,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13137,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "h03",
+          "split": "holdout",
+          "source_sha256": "bcad069d7c616c57cef2f034c20505020c55ccbae036931f046c9761f3842156",
+          "seconds": 34.051,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": false,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14151,
+          "vlm_calls": 4,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "h04",
+          "split": "holdout",
+          "source_sha256": "9209e705214af0462b22085dccd00868e6edd3b2f04447b274d9131f85b48ff9",
+          "seconds": 34.756,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": false,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": false
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14129,
+          "vlm_calls": 4,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "h05",
+          "split": "holdout",
+          "source_sha256": "e89195dc51f4f7fa54adc91d12e153d85aa6d3d07c76cb5d15b33d51632e22f5",
+          "seconds": 0.287,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 16,
+          "row_checked": 16,
+          "expected_rows": 4,
+          "actual_rows": 4,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {
+            "invoice_number": true
+          },
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {
+            "SEGMENTATION_UNCERTAIN": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13115,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "h06",
+          "split": "holdout",
+          "source_sha256": "945187c2c1fe0eeed36fa855e5987549e9b478f13bd0708fa4ce2ac051fd81ea",
+          "seconds": 0.209,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "abstention_checks": {
+            "currency": true,
+            "invoice_date": true
+          },
+          "normalized_checks": {},
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13115,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        }
+      ]
+    },
+    {
+      "variant": "integrated-rapid",
+      "runs": [
+        {
+          "label": "integrated-rapid",
+          "code_commit": "88f3559094a83408147157c618a20271e19208b1",
+          "code_sha256": {
+            "apps/api/app/extraction/layout.py": "59ad59e872c6a60d773f808651b1edfee6bc43aae6f4fe9d4d9c8feb2b0ce0bb",
+            "apps/api/app/extraction/native.py": "c127a0054fe54cfaa1a1542f587217da5eb82204cb1a3f502cb976c5a412b3bc",
+            "apps/api/app/extraction/typellm.py": "112f422112b37e0ba6fc58a840973b56985f77619196e268d834c744867a3659",
+            "apps/api/app/extraction/cpu_ocr.py": "d5562dffd319f2fb479944806036d0f18ffd01c3f9e0cdd1483336e6f6093364",
+            "apps/api/app/extraction/rapidocr_runtime.py": "428c1781bf457ff3950f6c484c4c7622e84f1ad3c0b7ef55f767c89b15bd9af8",
+            "apps/api/app/services/document_worker.py": "8f26ddb4c95269475cefaa2fdc6086618056ca2aaa74e7e1d162fbbf6e787d55"
+          }
+        },
+        {
+          "label": "integrated-rapid",
+          "code_commit": "88f3559094a83408147157c618a20271e19208b1",
+          "code_sha256": {
+            "apps/api/app/extraction/layout.py": "59ad59e872c6a60d773f808651b1edfee6bc43aae6f4fe9d4d9c8feb2b0ce0bb",
+            "apps/api/app/extraction/native.py": "c127a0054fe54cfaa1a1542f587217da5eb82204cb1a3f502cb976c5a412b3bc",
+            "apps/api/app/extraction/typellm.py": "112f422112b37e0ba6fc58a840973b56985f77619196e268d834c744867a3659",
+            "apps/api/app/extraction/cpu_ocr.py": "d5562dffd319f2fb479944806036d0f18ffd01c3f9e0cdd1483336e6f6093364",
+            "apps/api/app/extraction/rapidocr_runtime.py": "428c1781bf457ff3950f6c484c4c7622e84f1ad3c0b7ef55f767c89b15bd9af8",
+            "apps/api/app/services/document_worker.py": "8f26ddb4c95269475cefaa2fdc6086618056ca2aaa74e7e1d162fbbf6e787d55"
+          }
+        }
+      ],
+      "cases": [
+        {
+          "id": "t01",
+          "split": "tuning",
+          "source_sha256": "e9a5e73a9b7eff6243a7005f6937f311e44642140ceb445c757f51d6fcbe2eea",
+          "seconds": 0.222,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13555,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "t02",
+          "split": "tuning",
+          "source_sha256": "f145814698db79f852af9a2780011084b47bd07d167c88d9088f4b59cf3ba847",
+          "seconds": 0.25,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13555,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "t03",
+          "split": "tuning",
+          "source_sha256": "0f3521086eda49acf2c8612257f81de73d85a43eba481263ccda792287fca769",
+          "seconds": 0.238,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13555,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "t04",
+          "split": "tuning",
+          "source_sha256": "4614dbe4a011221646613f2a71d13cb1349cff0ce6903d2bc802d82aa4086e75",
+          "seconds": 1.804,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13555,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "t05",
+          "split": "tuning",
+          "source_sha256": "61c582438b5e27a8f7f261f7950030c867ea26156dab34e173644ab820bd210b",
+          "seconds": 1.46,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "abstention_checks": {
+            "currency": true,
+            "invoice_date": true
+          },
+          "normalized_checks": {},
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13555,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "t06",
+          "split": "tuning",
+          "source_sha256": "e8a305a5dbde3b255f9e325e77c8006fb01e2425fa1dff70fbc9af094d89fda6",
+          "seconds": 0.084,
+          "failure": "CORRUPT_DOCUMENT",
+          "failure_expected": true,
+          "peak_whole_device_memory_mib": 13555,
+          "vlm_calls": 0
+        },
+        {
+          "id": "h01",
+          "split": "holdout",
+          "source_sha256": "f757c1372dbe77b06fe8109adb882142adb8c5cac55b62a317cf920540b00da9",
+          "seconds": 45.792,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": false,
+            "po_reference": false
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 15131,
+          "vlm_calls": 4,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "h02",
+          "split": "holdout",
+          "source_sha256": "4bc81d58fc7698ac3e45cf4ef9e037a6ac3a4b329dfd5d5d73c6176a692174f9",
+          "seconds": 1.264,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13461,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "h03",
+          "split": "holdout",
+          "source_sha256": "bcad069d7c616c57cef2f034c20505020c55ccbae036931f046c9761f3842156",
+          "seconds": 1.531,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13461,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "h04",
+          "split": "holdout",
+          "source_sha256": "9209e705214af0462b22085dccd00868e6edd3b2f04447b274d9131f85b48ff9",
+          "seconds": 13.762,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 0,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {},
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14370,
+          "vlm_calls": 3,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "h05",
+          "split": "holdout",
+          "source_sha256": "e89195dc51f4f7fa54adc91d12e153d85aa6d3d07c76cb5d15b33d51632e22f5",
+          "seconds": 0.287,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 16,
+          "row_checked": 16,
+          "expected_rows": 4,
+          "actual_rows": 4,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true
+          },
+          "abstention_checks": {
+            "invoice_number": true
+          },
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "diagnostic_checks": {
+            "SEGMENTATION_UNCERTAIN": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13154,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        },
+        {
+          "id": "h06",
+          "split": "holdout",
+          "source_sha256": "945187c2c1fe0eeed36fa855e5987549e9b478f13bd0708fa4ce2ac051fd81ea",
+          "seconds": 0.208,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "absent_checks": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "abstention_checks": {
+            "currency": true,
+            "invoice_date": true
+          },
+          "normalized_checks": {},
+          "diagnostic_checks": {},
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13153,
+          "vlm_calls": 0,
+          "unsupported_row_canonical_count": 0
+        }
+      ]
+    }
+  ]
+}

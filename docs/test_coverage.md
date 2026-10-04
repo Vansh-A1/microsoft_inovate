@@ -280,3 +280,45 @@ cannot imply readiness, and retained reports remain checked. Earlier failures,
 repaired worker outage and concurrent-write limits are recorded in the hardening
 report. One nonfatal upstream Starlette/httpx warning accompanies backend runs;
 dependencies are not changed to silence it.
+
+## CL-04/CL-05 extraction continuation
+
+[Validation](clearledger_validation.md) and
+[fictional metrics](../data/clearledger_challenge/results-2026-10-04.json)
+retain six tuning/six reserved sources, literal/row scores, abstention/corruption,
+source hashes and observed failures. Truth enters only post-extraction scoring.
+These are not representative invoice accuracy or finance PASS checks.
+
+Final focused suite: **120 passed / 3.26 s / exit 0**. Scoped real PostgreSQL
+pipeline/finance/release/intake: **55 passed / 893.66 s / exit 0**. Actual isolated
+CPU: **3 passed / 32.07 s / exit 0**, using real CPU sessions, source boxes,
+child restart, fallback, tenant rejection and unresolved source-commit blocking.
+
+Actual Qwen suite: **5 passed / 1 failed / 176.63 s / exit 1**, followed by
+the affected combination **1 passed / 37.73 s / exit 0**. Its assertion now
+requires preserved ambiguity/no canonical total for independent raw spellings;
+no application safeguard was weakened. Six distinct cases have passing evidence
+across those runs, not a fictitious single six-pass suite. Current cold/first/
+resident VLM: 14.974/30.245/30.468 seconds; separate OCR+VLM: 26.158/24.189 seconds,
+all preserving unresolved finance facts. Read-only judge verification exits 0
+for eight computed current scenarios, eligibility, citations and source history.
+Historical full-suite results and T01–T42 are preserved; no new full-backend run
+is claimed. Final serial browser checks are recorded after execution.
+
+Final source-form review added explicit native MISSING row observations and
+cleared unsupported template amounts/units and eligible nights. Current focused
+run: **121 passed / 3.30 s / exit 0**. Post-change migrated source/finance/actual
+CPU integration: **20 passed / 301.18 s / exit 0**. The initial mock append created
+duplicate fields (**115 passed / five failed**); mocks now replace an observation,
+with duplicate rejection preserved.
+
+Complete browser before the form fix: **44 passed / one conditional outage skip /
+5.7 min / exit 0**. Final affected source/role/policy/viewport run: **17 passed /
+one conditional outage skip / 141.788 s / exit 0**, no retries. Assertions verify
+blank unprinted accounting/eligible-night values, measured source rectangles,
+retained wrapped-row disagreement, source corrections, vendor/expense finance
+submission, both roles and future hotel history/report preservation. Actual
+final laptop/phone screenshots were inspected. Typecheck/production build and
+source/secret/contracts/locked dependency/preservation checks pass. The conditional
+UI skip is not an actual outage pass; real refused-connection behavior is tested
+in the model suite. Exact commands and failure history are in the validation report.

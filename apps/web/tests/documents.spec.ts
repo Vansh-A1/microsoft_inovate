@@ -34,6 +34,7 @@ test('native PDF upload, actual field box, source verification and persisted fin
 test('actual photo OCR and employee source produce finance result without approval authority',async({page})=>{
  await upload(page,'receipt_photo.jpg','EMPLOYEE_RECEIPT');
  await expect(page.locator('.observation-table tr').filter({has:page.getByRole('button',{name:'total_amount',exact:true})})).toContainText('500.00');
+ await expect(page.getByLabel('eligible nights',{exact:true})).toHaveValue('');
  await page.getByRole('button',{name:'total_amount',exact:true}).click();await expect(page.getByLabel('Actual source bounding box')).toBeVisible();
  await page.getByLabel('Verification / correction reason').fill('Receipt photograph and expense details reviewed');
  await page.getByText('I reviewed the source pages and confirm the observable facts.').click();

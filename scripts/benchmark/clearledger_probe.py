@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import threading
@@ -34,7 +35,11 @@ def measure(action):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('file',type=Path);p.add_argument('--restart-owned-model',action='store_true');args=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('file',type=Path);p.add_argument('--restart-owned-model',action='store_true')
+    p.add_argument('--label');p.add_argument('--force-vlm',action='store_true');args=p.parse_args()
+    if args.label and not re.fullmatch('[a-z0-9-]{1,64}',args.label):raise SystemExit('Use a bounded lowercase measurement label')
+    target=ROOT/'runtime/clearledger'/((args.label+'.json') if args.label else ('cold-warm-probe.json' if args.restart_owned_model else 'resident-probe.json'))
+    if target.exists():raise SystemExit('Measurement exists; use a new label to preserve historical evidence')
     if not args.file.is_file():raise SystemExit('Supplied local file is unavailable')
     os.umask(0o077)
     from app.core.config import Settings
@@ -47,6 +52,10 @@ def main():
     from app.domain.extraction import to_data
     from demo import inference_health
     settings=Settings.load()
+    providers=settings.document_providers
+    if args.force_vlm:
+        from dataclasses import replace
+        providers=replace(providers,ocr_executable=None,ocr_data_directory=None,ocr_library_directory=None,ocr_backend='TESSERACT',ocr_python=None)
     os.environ[settings.document_providers.gateway_token_env]=(ROOT/'runtime/inference/gateway.key').read_text().strip()
     identity=Identity(uuid4(),uuid4(),uuid4(),frozenset({'FINANCE_REVIEWER'}),'Local supplied-source measurement')
     storage=LocalStorage(ROOT/'runtime/clearledger/storage')
@@ -54,7 +63,7 @@ def main():
         pages=DocumentProcessor().process(args.file)['pages']
         for page in pages:
             page['preview_key'],_=storage.put(identity,base64.b64decode(page.pop('preview_base64')),maximum=settings.document_limits.maximum_derived_bytes)
-        observed,diagnostics,routing=extract({'id':uuid4(),'source_type':'VENDOR_INVOICE'},identity,pages,storage,settings.document_providers)
+        observed,diagnostics,routing=extract({'id':uuid4(),'source_type':'VENDOR_INVOICE'},identity,pages,storage,providers)
         data=to_data(observed)
         observations=[o|{'id':str(uuid4())} for o in data['header_fields']]
         observations += [o|{'id':str(uuid4()),'field_path':f'lines.{row["row_index"]-1}.{o["field_path"]}'} for row in data['line_items'] for o in row['fields']]
@@ -78,9 +87,10 @@ def main():
         if inference_health()['status']!='AVAILABLE':raise SystemExit('Verified local model service is unavailable')
         results['resident_first_request']=measure(request)
     results['resident_subsequent_request']=measure(request)
-    target=ROOT/'runtime/clearledger'/('cold-warm-probe.json' if args.restart_owned_model else 'resident-probe.json')
     target.parent.mkdir(parents=True,exist_ok=True)
     target.write_text(json.dumps({'source_sha256':hashlib.sha256(args.file.read_bytes()).hexdigest(),
+        'force_vlm':args.force_vlm,'ocr_backend':providers.ocr_backend,
+        'code_sha256':{str(path.relative_to(ROOT)):hashlib.sha256(path.read_bytes()).hexdigest() for path in (ROOT/'apps/api/app/extraction/typellm.py',ROOT/'apps/api/app/services/document_worker.py')},
         'limitations':'One supplied invoice, no accuracy score. Startup includes pinned verification and weight loading; subsequent requests reuse the resident service. Whole-device GPU memory includes all processes. No old-code cold baseline exists.',
         'runs':results},indent=2)+'\n')
     for name,run in results.items():

@@ -10,6 +10,9 @@ forms. Open [ClearLedger locally](http://127.0.0.1:3000/login). The local entry 
 fictional server-configured identities; real organization SSO remains externally
 configured. Set `NEXT_PUBLIC_PRODUCT_NAME` before the web build to change the name.
 See [ClearLedger hardening and measured limits](docs/clearledger_hardening.md).
+The continued [twelve-layout validation](docs/clearledger_validation.md) records
+before/after benchmarks, actual cold/warm and upload/queue timings, remaining
+table failures and [optional isolated CPU OCR](docs/runbooks/cpu-ocr-experiment.md).
 
 Phase 6 delivers the local application and release/handoff artifacts under an explicit external-infrastructure fallback. The subsequent approved priority override establishes **real local VLM + TypeLLM invoice extraction** on the unchanged GPU driver. This is a development experiment, not a deployed production pilot. See the [real inference acceptance record](docs/real_vlm_acceptance.md), [Phase-6 exit review](docs/phase6_exit_review.md) and [capability matrix](docs/release_matrix.md).
 
@@ -25,7 +28,7 @@ With the established local database, finance environment, production web build a
 
 Open [the walkthrough](http://127.0.0.1:3000/demo) and select **Hackathon finance reviewer**. Eight persisted examples cover actual visual extraction/TypeLLM and PO/GRN PASS, paid duplicates, partial delivery, clean/over-allowance expenses, shared receipts and immutable correction history. Results are computed by the existing engine. The separate synthetic scope preserves existing data and permissions; rerunning preparation reuses guarded operations.
 
-Stop with `./scripts/stop-demo.sh`; it retains PostgreSQL, evidence and model caches. Start CPU services with `./scripts/start-demo.sh --no-vlm` when no GPU is available; visual extraction reports provider unavailability. Use [the hackathon runbook](docs/runbooks/hackathon-demo.md) for prerequisites, recovery, identities and the measured limitations, and [the final project exit review](docs/final_project_exit_review.md) for release evidence and external gates.
+Stop with `./scripts/stop-demo.sh`; it retains PostgreSQL, evidence and model caches. Start CPU services with `./scripts/start-demo.sh --no-vlm` when no GPU is available; visual inference reports provider unavailability. Independently configured OCR can still read sufficient printed facts; unresolved facts cannot imply finance clearance. Use [the hackathon runbook](docs/runbooks/hackathon-demo.md) for prerequisites, recovery, identities and measured limits, and [the final project exit review](docs/final_project_exit_review.md) for release evidence/external gates. `.venv/bin/python scripts/release/judge_verify.py` checks all eight current computed scenarios and retained source/correction evidence without changing them.
 
 ## Finance Workspace
 

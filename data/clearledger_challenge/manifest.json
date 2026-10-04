@@ -1,0 +1,500 @@
+{
+  "version": "clearledger-challenge-v1",
+  "created_before_tuning_commit": "88f3559094a83408147157c618a20271e19208b1",
+  "provenance": "Generated locally by this script with ReportLab/PyMuPDF/Pillow; all source facts invented. No downloaded or private invoices.",
+  "limitations": "Six tuning and six reserved layout families, not an independently sourced customer accuracy benchmark. Holdout expectations never enter inference.",
+  "cases": [
+    {
+      "id": "t01",
+      "split": "tuning",
+      "layout": "side",
+      "source_type": "VENDOR_INVOICE",
+      "path": "t01.pdf",
+      "headers": {
+        "vendor_name": "Fictional Willow Office Ltd",
+        "invoice_number": "CL-FICTION-1",
+        "invoice_date": "2026-09-17",
+        "currency": "INR",
+        "subtotal_amount": "200.00",
+        "tax_amount": "36.00",
+        "total_amount": "236.00"
+      },
+      "rows": [
+        {
+          "description": "Notebook cases",
+          "quantity": "2",
+          "unit_price": "75.00",
+          "amount": "150.00"
+        },
+        {
+          "description": "Archive folders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-09-17",
+        "total_amount": "236.00"
+      },
+      "sha256": "e9a5e73a9b7eff6243a7005f6937f311e44642140ceb445c757f51d6fcbe2eea"
+    },
+    {
+      "id": "t02",
+      "split": "tuning",
+      "layout": "stacked",
+      "source_type": "VENDOR_INVOICE",
+      "path": "t02.pdf",
+      "headers": {
+        "vendor_name": "Fictional Willow Office Ltd",
+        "invoice_number": "CL-FICTION-2",
+        "invoice_date": "2026-09-17",
+        "currency": "INR",
+        "subtotal_amount": "200.00",
+        "tax_amount": "36.00",
+        "total_amount": "236.00"
+      },
+      "rows": [
+        {
+          "description": "Notebook cases",
+          "quantity": "2",
+          "unit_price": "75.00",
+          "amount": "150.00"
+        },
+        {
+          "description": "Archive folders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-09-17",
+        "total_amount": "236.00"
+      },
+      "sha256": "f145814698db79f852af9a2780011084b47bd07d167c88d9088f4b59cf3ba847"
+    },
+    {
+      "id": "t03",
+      "split": "tuning",
+      "layout": "wrapped",
+      "source_type": "VENDOR_INVOICE",
+      "path": "t03.pdf",
+      "headers": {
+        "vendor_name": "Fictional Willow Office Ltd",
+        "invoice_number": "CL-FICTION-3",
+        "invoice_date": "2026-09-17",
+        "currency": "INR",
+        "subtotal_amount": "200.00",
+        "tax_amount": "36.00",
+        "total_amount": "236.00"
+      },
+      "rows": [
+        {
+          "description": "Notebook cases recycled paper",
+          "quantity": "2",
+          "unit_price": "75.00",
+          "amount": "150.00"
+        },
+        {
+          "description": "Archive folders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-09-17",
+        "total_amount": "236.00"
+      },
+      "sha256": "0f3521086eda49acf2c8612257f81de73d85a43eba481263ccda792287fca769"
+    },
+    {
+      "id": "t04",
+      "split": "tuning",
+      "layout": "grid",
+      "source_type": "VENDOR_INVOICE",
+      "path": "t04.png",
+      "headers": {
+        "vendor_name": "Fictional Willow Office Ltd",
+        "invoice_number": "CL-FICTION-4",
+        "invoice_date": "2026-09-17",
+        "currency": "INR",
+        "subtotal_amount": "200.00",
+        "tax_amount": "36.00",
+        "total_amount": "236.00"
+      },
+      "rows": [
+        {
+          "description": "Notebook cases",
+          "quantity": "2",
+          "unit_price": "75.00",
+          "amount": "150.00"
+        },
+        {
+          "description": "Archive folders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-09-17",
+        "total_amount": "236.00"
+      },
+      "sha256": "4614dbe4a011221646613f2a71d13cb1349cff0ce6903d2bc802d82aa4086e75"
+    },
+    {
+      "id": "t05",
+      "split": "tuning",
+      "layout": "sparse",
+      "source_type": "VENDOR_INVOICE",
+      "path": "t05.png",
+      "headers": {
+        "vendor_name": "Fictional Willow Office Ltd",
+        "invoice_number": "CL-FICTION-5",
+        "invoice_date": "03/04/2026",
+        "currency": "$",
+        "subtotal_amount": "200.00",
+        "tax_amount": "36.00",
+        "total_amount": "236.00"
+      },
+      "rows": [
+        {
+          "description": "Notebook cases",
+          "quantity": "2",
+          "unit_price": "75.00",
+          "amount": "150.00"
+        },
+        {
+          "description": "Archive folders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount"
+      ],
+      "abstain": [
+        "currency",
+        "invoice_date"
+      ],
+      "normalized": {},
+      "sha256": "61c582438b5e27a8f7f261f7950030c867ea26156dab34e173644ab820bd210b"
+    },
+    {
+      "id": "t06",
+      "split": "tuning",
+      "layout": "corrupt",
+      "source_type": "VENDOR_INVOICE",
+      "path": "t06.pdf",
+      "expected_failure": "CORRUPT_DOCUMENT",
+      "headers": {},
+      "rows": [],
+      "absent": [],
+      "abstain": [],
+      "sha256": "e8a305a5dbde3b255f9e325e77c8006fb01e2425fa1dff70fbc9af094d89fda6"
+    },
+    {
+      "id": "h01",
+      "split": "holdout",
+      "layout": "landscape",
+      "source_type": "VENDOR_INVOICE",
+      "path": "h01.pdf",
+      "headers": {
+        "vendor_name": "Fictional Willow Office Ltd",
+        "invoice_number": "CL-FICTION-7",
+        "invoice_date": "17 Sep 2026",
+        "currency": "EUR",
+        "subtotal_amount": "200.00",
+        "tax_amount": "36.00",
+        "total_amount": "236.00"
+      },
+      "rows": [
+        {
+          "description": "Notebook cases",
+          "quantity": "2",
+          "unit_price": "75.00",
+          "amount": "150.00"
+        },
+        {
+          "description": "Archive folders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "EUR",
+        "invoice_date": "2026-09-17",
+        "total_amount": "236.00"
+      },
+      "sha256": "f757c1372dbe77b06fe8109adb882142adb8c5cac55b62a317cf920540b00da9"
+    },
+    {
+      "id": "h02",
+      "split": "holdout",
+      "layout": "continuation",
+      "source_type": "VENDOR_INVOICE",
+      "path": "h02.pdf",
+      "headers": {
+        "vendor_name": "Fictional Willow Office Ltd",
+        "invoice_number": "CL-FICTION-8",
+        "invoice_date": "2026-09-17",
+        "currency": "INR",
+        "subtotal_amount": "150.00",
+        "tax_amount": "27.00",
+        "total_amount": "177.00"
+      },
+      "rows": [
+        {
+          "description": "Index dividers",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        },
+        {
+          "description": "Card holders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        },
+        {
+          "description": "Paper wallets",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-09-17",
+        "total_amount": "177.00"
+      },
+      "sha256": "4bc81d58fc7698ac3e45cf4ef9e037a6ac3a4b329dfd5d5d73c6176a692174f9"
+    },
+    {
+      "id": "h03",
+      "split": "holdout",
+      "layout": "cards",
+      "source_type": "VENDOR_INVOICE",
+      "path": "h03.png",
+      "headers": {
+        "vendor_name": "Fictional Willow Office Ltd",
+        "invoice_number": "CL-FICTION-9",
+        "invoice_date": "2026-09-17",
+        "currency": "USD",
+        "subtotal_amount": "200.00",
+        "tax_amount": "36.00",
+        "total_amount": "236.00"
+      },
+      "rows": [
+        {
+          "description": "Notebook cases",
+          "quantity": "2",
+          "unit_price": "75.00",
+          "amount": "150.00"
+        },
+        {
+          "description": "Archive folders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "USD",
+        "invoice_date": "2026-09-17",
+        "total_amount": "236.00"
+      },
+      "sha256": "bcad069d7c616c57cef2f034c20505020c55ccbae036931f046c9761f3842156"
+    },
+    {
+      "id": "h04",
+      "split": "holdout",
+      "layout": "wrapped_scan",
+      "source_type": "VENDOR_INVOICE",
+      "path": "h04.png",
+      "headers": {
+        "vendor_name": "Fictional Willow Office Ltd",
+        "invoice_number": "CL-FICTION-10",
+        "invoice_date": "2026-09-17",
+        "currency": "INR",
+        "subtotal_amount": "200.00",
+        "tax_amount": "36.00",
+        "total_amount": "236.00"
+      },
+      "rows": [
+        {
+          "description": "Notebook cases recycled paper",
+          "quantity": "2",
+          "unit_price": "75.00",
+          "amount": "150.00"
+        },
+        {
+          "description": "Archive folders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-09-17",
+        "total_amount": "236.00"
+      },
+      "sha256": "9209e705214af0462b22085dccd00868e6edd3b2f04447b274d9131f85b48ff9"
+    },
+    {
+      "id": "h05",
+      "split": "holdout",
+      "layout": "conflicting",
+      "source_type": "VENDOR_INVOICE",
+      "path": "h05.pdf",
+      "headers": {
+        "vendor_name": "Fictional Willow Office Ltd",
+        "invoice_date": "2026-09-17",
+        "currency": "INR",
+        "subtotal_amount": "200.00",
+        "tax_amount": "36.00",
+        "total_amount": "236.00"
+      },
+      "rows": [
+        {
+          "description": "Notebook cases",
+          "quantity": "2",
+          "unit_price": "75.00",
+          "amount": "150.00"
+        },
+        {
+          "description": "Archive folders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        },
+        {
+          "description": "Notebook cases",
+          "quantity": "2",
+          "unit_price": "75.00",
+          "amount": "150.00"
+        },
+        {
+          "description": "Archive folders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference"
+      ],
+      "abstain": [
+        "invoice_number"
+      ],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-09-17",
+        "total_amount": "236.00"
+      },
+      "required_diagnostics": [
+        "SEGMENTATION_UNCERTAIN"
+      ],
+      "sha256": "e89195dc51f4f7fa54adc91d12e153d85aa6d3d07c76cb5d15b33d51632e22f5"
+    },
+    {
+      "id": "h06",
+      "split": "holdout",
+      "layout": "ambiguous",
+      "source_type": "VENDOR_INVOICE",
+      "path": "h06.pdf",
+      "headers": {
+        "vendor_name": "Fictional Willow Office Ltd",
+        "invoice_number": "CL-FICTION-12",
+        "invoice_date": "03/04/2026",
+        "currency": "$",
+        "subtotal_amount": "200.00",
+        "tax_amount": "36.00",
+        "total_amount": "236.00"
+      },
+      "rows": [
+        {
+          "description": "Notebook cases",
+          "quantity": "2",
+          "unit_price": "75.00",
+          "amount": "150.00"
+        },
+        {
+          "description": "Archive folders",
+          "quantity": "1",
+          "unit_price": "50.00",
+          "amount": "50.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount"
+      ],
+      "abstain": [
+        "currency",
+        "invoice_date"
+      ],
+      "normalized": {},
+      "sha256": "945187c2c1fe0eeed36fa855e5987549e9b478f13bd0708fa4ce2ac051fd81ea"
+    }
+  ]
+}

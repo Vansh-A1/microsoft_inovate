@@ -9,7 +9,7 @@ from app.documents.processor import parse, DocumentFailure
 from app.documents.normalizer import Normalizer, normalize_money, normalize_date, number_keys, NormalizationError, validate_draft
 from app.domain.extraction import DocumentBundle, DocumentPage, DocumentSourceType, SCHEMA_VERSION, to_data, ExtractionObservationState as State
 from app.extraction.native import NativeTextExtractionAdapter, HEADER_FIELDS, reconcile
-from app.extraction.typellm import TypeLLMExtractionAdapter, questions
+from app.extraction.typellm import TypeLLMExtractionAdapter, questions,RECEIPT_ONLY
 from app.extraction.ocr import original_box
 from app.documents.normalizer import normalized_value
 
@@ -78,7 +78,9 @@ def test_dimensionless_values_cannot_be_money_or_guess_percentage(field,raw):
 
 
 def provider_data():
-    return {k:v for f in HEADER_FIELDS for k,v in ((f+'_state','MISSING'),(f+'_raw',None))}
+    # This helper's bundle is explicitly VENDOR_INVOICE, including receipt
+    # source filenames. A provider answers only the actual question contract.
+    return {k:v for f in HEADER_FIELDS if f not in RECEIPT_ONLY for k,v in ((f+'_state','MISSING'),(f+'_raw',None))}
 
 
 class MockTransport:

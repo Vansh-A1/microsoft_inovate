@@ -263,7 +263,7 @@ def dependencies(database,storage,settings,identity):
         provider=GatewayTransport(settings.document_providers).health()
     return {'database':db_state,'storage':storage_state,'job_executor':'DATABASE_LEASED_POLLING',
         'native_pdf':'AVAILABLE',
-        'ocr':'CONFIGURED' if settings.document_providers.ocr_executable else 'NOT_CONFIGURED',
+        'ocr':'CONFIGURED' if settings.document_providers.ocr_executable or settings.document_providers.ocr_backend=='RAPIDOCR_CPU_EXPERIMENTAL' else 'NOT_CONFIGURED',
         'enterprise_vlm':provider['status'],
         **{'extraction_'+k:v for k,v in provider.items() if k!='status'},
         'enterprise_runtime':'AVAILABLE' if provider['status']=='AVAILABLE' else 'DEFERRED_EXTERNAL_PREREQUISITE',

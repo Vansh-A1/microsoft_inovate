@@ -40,9 +40,15 @@ class ProviderSettings:
     ocr_executable: str | None = None
     ocr_data_directory: str | None = None
     ocr_library_directory: str | None = None
+    ocr_backend: str = 'TESSERACT'
+    ocr_python: str | None = None
 
     def __post_init__(self):
         import re
+        from pathlib import Path
+        if self.ocr_backend not in ('TESSERACT','RAPIDOCR_CPU_EXPERIMENTAL'):raise ValueError('Unsupported OCR backend')
+        if self.ocr_backend=='RAPIDOCR_CPU_EXPERIMENTAL' and not self.ocr_python:raise ValueError('Isolated pinned CPU OCR Python is required')
+        if self.ocr_python and not Path(self.ocr_python).is_absolute():raise ValueError('Use an absolute server-configured OCR Python path')
         if self.transport not in ('SDK','TYPELLM_GATEWAY'): raise ValueError('Unsupported extraction transport')
         if not re.fullmatch(r'[A-Z][A-Z0-9_]{0,79}',self.gateway_token_env): raise ValueError('Use a named gateway secret environment variable')
         if self.model_revision is not None and not re.fullmatch(r'[a-f0-9]{40}',self.model_revision): raise ValueError('Use a pinned model revision')

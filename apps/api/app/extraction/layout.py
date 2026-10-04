@@ -6,7 +6,7 @@ The legacy labeled/pipe parser remains intact. No arithmetic supplies raw facts.
 """
 import re
 
-VERSION = 'printed-layout-v1'
+VERSION = 'printed-layout-v2'
 HEADER_ALIASES = {
     'supplier': 'vendor_name', 'vendor': 'vendor_name', 'supplier name': 'vendor_name',
     'vendor name': 'vendor_name', 'merchant': 'merchant_name',
@@ -78,13 +78,77 @@ def label_at(row, index, aliases):
     return None
 
 
+def heading_columns(row):
+    found=[];cursor=0
+    while cursor<len(row):
+        heading=label_at(row,cursor,COLUMN_ALIASES)
+        if not heading:return None
+        count,field,parts=heading;found.append((field,union(parts)));cursor+=count
+    names=[field for field,_ in found]
+    if {'description','quantity','unit_price'}<=set(names) and set(names)&{'amount','net_amount','gross_amount'}:
+        return found
+    return None
+
+
+def table_columns(details):
+    """Independent printed schema, never row values supplied to a model."""
+    schemas=[tuple(field for field,_ in found) for row in groups(details) if (found:=heading_columns(row))]
+    if not schemas or any(len(set(s))!=len(s) or set(s)!=set(schemas[0]) for s in schemas):return None
+    return schemas[0]
+
+
+def stacked_headers(rows):
+    """Associate an all-label row with the immediately aligned value row.
+
+    Competing labels, large gaps, crossing columns or another label abstain.
+    The evidence box is the union of actual label/value regions, not a guess.
+    """
+    out=[];claimed=set()
+    for index,row in enumerate(rows[:-1]):
+        if index in claimed:continue
+        labels=[];cursor=0
+        while cursor<len(row):
+            hit=label_at(row,cursor,HEADER_ALIASES)
+            if not hit:break
+            count,field,parts=hit
+            if not any(':' in p['text'] or '#' in p['text'] for p in parts):break
+            labels.append((field,parts));cursor+=count
+        if cursor!=len(row) or not labels or len({f for f,_ in labels})!=len(labels):continue
+        values=rows[index+1]
+        gap=min(p['bbox']['y1'] for p in values)-max(p['bbox']['y2'] for p in row)
+        if not 0<=gap<=.04 or any(key(p['text']) in HEADER_ALIASES for p in values):continue
+        associations=[];used=[]
+        for n,(field,parts) in enumerate(labels):
+            left=parts[0]['bbox']['x1']
+            right=labels[n+1][1][0]['bbox']['x1']-.015 if n+1<len(labels) else 1
+            assigned=[p for p in values if left-.018<=p['bbox']['x1'] and p['bbox']['x2']<=right]
+            if not assigned or abs(assigned[0]['bbox']['x1']-left)>.03:break
+            used.extend(assigned)
+            associations.append((field,' '.join(p['text'].strip() for p in assigned),union(parts+assigned,source=True)))
+        if len(associations)==len(labels) and len(used)==len(values):
+            out.extend(associations);claimed.update((index,index+1))
+    return out,claimed
+
+
+def column_cells(row,columns):
+    bounds=[(a[1]['x2']+b[1]['x1'])/2 for a,b in zip(columns,columns[1:])]
+    cells=[[] for _ in columns];crossing=False
+    for span in row:
+        box=span['bbox'];center=(box['x1']+box['x2'])/2
+        cells[sum(center>=b for b in bounds)].append(span)
+        crossing |= any(box['x1']<b<box['x2'] for b in bounds)
+    return cells,crossing
+
+
 def printed_layout(details):
     """Return header candidates, measured table rows and explicit diagnostics."""
     rows = groups(details)
-    headers, items, diagnostics = [], [], []
+    headers, claimed = stacked_headers(rows)
+    items, diagnostics = [], []
     columns = None
     table_y = None
-    for row in rows:
+    for row_index,row in enumerate(rows):
+        if row_index in claimed:continue
         if any('|' in p['text'] for p in row):
             continue  # the retained parser owns pipe tables
         # Split actual inline colon spans; the same measured span remains the
@@ -97,17 +161,9 @@ def printed_layout(details):
             else:
                 expanded.append(p)
         # A complete recognized heading row starts a bounded table.
-        found = []
-        cursor = 0
-        while cursor < len(row):
-            heading = label_at(row, cursor, COLUMN_ALIASES)
-            if not heading:
-                break
-            count, field, parts = heading
-            found.append((field, union(parts)))
-            cursor += count
-        names = [field for field, _ in found]
-        if cursor == len(row) and {'description', 'quantity', 'unit_price'} <= set(names) and set(names) & {'amount', 'net_amount', 'gross_amount'}:
+        found = heading_columns(row)
+        if found:
+            names = [field for field, _ in found]
             if len(set(names)) != len(names):
                 diagnostics.append('TABLE_COVERAGE_UNCERTAIN')
                 columns = None
@@ -154,19 +210,23 @@ def printed_layout(details):
         if table_y is not None and min(p['bbox']['y1'] for p in row)-table_y > .08:
             columns = None
             continue
-        bounds = [(a[1]['x2'] + b[1]['x1']) / 2 for a, b in zip(columns, columns[1:])]
-        cells = [[] for _ in columns]
-        crossing = False
-        for span in row:
-            box = span['bbox']
-            center = (box['x1'] + box['x2']) / 2
-            index = sum(center >= b for b in bounds)
-            cells[index].append(span)
-            if any(box['x1'] < b < box['x2'] for b in bounds):
-                crossing = True
-        if not cells[0] or not any(cells[1:]):
-            # Footers and isolated text cannot become a payable row. A wrapped
-            # continuation is currently incomplete rather than silently appended.
+        cells,crossing=column_cells(row,columns)
+        description=next(i for i,(field,_) in enumerate(columns) if field=='description')
+        if cells[description] and not any(c for i,c in enumerate(cells) if i!=description) and not crossing and items and row_index+1<len(rows):
+            # A close description continuation must be followed by another
+            # complete numeric item under the same headings. Last-row notes and
+            # footers remain uncertain; no row is created from isolated text.
+            following,overlap=column_cells(rows[row_index+1],columns)
+            gap=min(p['bbox']['y1'] for p in row)-(table_y or 0)
+            next_gap=min(p['bbox']['y1'] for p in rows[row_index+1])-max(p['bbox']['y2'] for p in row)
+            if 0<=gap<=.025 and 0<=next_gap<=.06 and all(following) and not overlap and not heading_columns(rows[row_index+1]):
+                field,raw,box=items[-1][description]
+                continued=union(cells[description],source=True)
+                joined=union([{'bbox':box},{'bbox':continued}])
+                items[-1][description]=(field,raw+' '+' '.join(p['text'].strip() for p in cells[description]),joined)
+                table_y=max(p['bbox']['y2'] for p in row)
+                continue
+        if not cells[description] or not any(c for i,c in enumerate(cells) if i!=description):
             diagnostics.append('TABLE_COVERAGE_UNCERTAIN')
             columns = None
             continue

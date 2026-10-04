@@ -461,3 +461,17 @@ No table or migration is added; extraction-v1 and financial record semantics rem
 | NEXT_PUBLIC_PRODUCT_NAME | Public build-time UI name, default ClearLedger; no effect on financial state, roles or tenant scope. |
 | Human outcome labels | PASS→Ready for processing, REVIEW→Needs review, HOLD→On hold; processing/stale eligibility/approval remain separate and detailed original states accessible. |
 | worker_backoff | Allowlisted FINANCE/DOCUMENT stage and DATABASE_CONTENTION/DATABASE_UNAVAILABLE reason. No SQL, driver exception, document values, credential or success claim; existing durable lease/attempt semantics remain. |
+
+## CL-04/CL-05 extraction continuation
+
+| Field / version | Meaning and controls |
+|---|---|
+| printed-layout-v2 / labeled-header-table-layout-v4 | Measured stacked labels/values and bounded wrapped descriptions. Competing/crossing/incomplete rows abstain; unread native row fields remain explicit MISSING observations with no raw value/box. No fixture identity exceptions. |
+| document_providers.ocr_backend / ocr_python | TESSERACT default or explicit RAPIDOCR_CPU_EXPERIMENTAL with an absolute isolated interpreter. Server settings, not document authority. Finance/inference environments stay intact. |
+| routing.ocr_provenance | Actual per-page provider/version, package/model SHA/CPU sessions and measured initialization/RSS. Real fallback retains candidate failure and its actual provider. Configuration alone is not health. |
+| routing.enterprise.version | extraction-routing-v3; strict extraction-v1 unchanged. Purpose/independent-heading scope limits questions, never eligibility. |
+| question_scope_version / call_metrics | purpose-and-printed-columns-v1; actual fields, question/image counts and seconds. No prompt/source text or confidence. |
+| accounting_grounding_version | independent-item-column-v1. Uncorroborated row discount/net/tax/gross keeps raw AMBIGUOUS and no canonical value; totals/arithmetic are not proof. |
+| OCR_RUNTIME_PIN_MISMATCH / OCR_CPU_PROVIDER_REQUIRED | Startup attestation failure closes the child. An independently configured actual fallback records failure; no fabricated extraction. |
+| Challenge score | Literal observations/core rows on frozen fictional layouts. Distinct from canonical completeness, representative accuracy, source confirmation or PASS. |
+| Source-derived form defaults | Missing/ambiguous financial fields and unconfirmed eligible nights stay null/blank, even in development mode. Templates may offer explicit fictional business references; they cannot supply source amounts. |
