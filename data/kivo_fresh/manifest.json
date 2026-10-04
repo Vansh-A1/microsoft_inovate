@@ -1,0 +1,200 @@
+{
+  "version": "kivo-fresh-v1",
+  "frozen_before_measurement_commit": "20d6bf2c64d3b0e6df559abd1da21e12fd1903be",
+  "provenance": "Original invented CC0 ReportLab/PyMuPDF PDFs. Two NEW families, each native and raster-only; no downloads/private/company data.",
+  "limitations": "Four correlated sources, two family observations. Truth is post-output scoring only. First opened run spends this split; no tuning or real-company/general accuracy claim.",
+  "cases": [
+    {
+      "id": "k01",
+      "split": "holdout",
+      "family": "split_note",
+      "layout": "split_note",
+      "scanned": false,
+      "source_type": "VENDOR_INVOICE",
+      "path": "k01.pdf",
+      "sha256": "18a287d170819bcb6fc0b5b528f958f9ce364bf06db9a202a454d3b1e66f5a4c",
+      "headers": {
+        "vendor_name": "Fictional Juniper Supply Lab",
+        "invoice_number": "KIVO-PROBE-001",
+        "invoice_date": "2026-10-04",
+        "currency": "EUR",
+        "subtotal_amount": "48.50",
+        "tax_amount": "0.00",
+        "total_amount": "48.50"
+      },
+      "rows": [
+        {
+          "description": "Birch desk dividers",
+          "quantity": "2",
+          "unit_price": "17.25",
+          "amount": "34.50"
+        },
+        {
+          "description": "Copper index hooks",
+          "quantity": "7",
+          "unit_price": "2.00",
+          "amount": "14.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount"
+      ],
+      "abstain": [
+        "tax_basis"
+      ],
+      "normalized": {
+        "currency": "EUR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "48.50"
+      }
+    },
+    {
+      "id": "k02",
+      "split": "holdout",
+      "family": "split_note",
+      "layout": "split_note",
+      "scanned": true,
+      "source_type": "VENDOR_INVOICE",
+      "path": "k02.pdf",
+      "sha256": "036bfc71d5d9cd84c8ab4856b48bfa59edbce75a00eab005014b9ec49137ffec",
+      "headers": {
+        "vendor_name": "Fictional Juniper Supply Lab",
+        "invoice_number": "KIVO-PROBE-002",
+        "invoice_date": "2026-10-04",
+        "currency": "EUR",
+        "subtotal_amount": "48.50",
+        "tax_amount": "0.00",
+        "total_amount": "48.50"
+      },
+      "rows": [
+        {
+          "description": "Birch desk dividers",
+          "quantity": "2",
+          "unit_price": "17.25",
+          "amount": "34.50"
+        },
+        {
+          "description": "Copper index hooks",
+          "quantity": "7",
+          "unit_price": "2.00",
+          "amount": "14.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount"
+      ],
+      "abstain": [
+        "tax_basis"
+      ],
+      "normalized": {
+        "currency": "EUR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "48.50"
+      }
+    },
+    {
+      "id": "k03",
+      "split": "holdout",
+      "family": "continuation_sparse",
+      "layout": "continuation_sparse",
+      "scanned": false,
+      "source_type": "VENDOR_INVOICE",
+      "path": "k03.pdf",
+      "sha256": "908f7ddd25b099c2971829e856e013bb8880fd7bc5b9f48969ee427f6a0dd93a",
+      "headers": {
+        "vendor_name": "Fictional Quartz Works",
+        "invoice_number": "KIVO-PROBE-003",
+        "invoice_date": "10/11/2026",
+        "currency": "$",
+        "subtotal_amount": "48.50",
+        "tax_amount": "0.00",
+        "total_amount": "48.50"
+      },
+      "rows": [
+        {
+          "description": "Wool archive cushions",
+          "quantity": "3",
+          "unit_price": "11.50",
+          "amount": "34.50"
+        },
+        {
+          "description": "Glass label frames",
+          "amount": "14.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount"
+      ],
+      "abstain": [
+        "tax_basis",
+        "currency",
+        "invoice_date",
+        "lines.1.quantity",
+        "lines.1.unit_price"
+      ],
+      "normalized": {}
+    },
+    {
+      "id": "k04",
+      "split": "holdout",
+      "family": "continuation_sparse",
+      "layout": "continuation_sparse",
+      "scanned": true,
+      "source_type": "VENDOR_INVOICE",
+      "path": "k04.pdf",
+      "sha256": "8f04d542bbe44e8d8e51249979dabf3e8714e9f658ec3485cddbabe0f8a6e904",
+      "headers": {
+        "vendor_name": "Fictional Quartz Works",
+        "invoice_number": "KIVO-PROBE-004",
+        "invoice_date": "10/11/2026",
+        "currency": "$",
+        "subtotal_amount": "48.50",
+        "tax_amount": "0.00",
+        "total_amount": "48.50"
+      },
+      "rows": [
+        {
+          "description": "Wool archive cushions",
+          "quantity": "3",
+          "unit_price": "11.50",
+          "amount": "34.50"
+        },
+        {
+          "description": "Glass label frames",
+          "amount": "14.00"
+        }
+      ],
+      "absent": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount"
+      ],
+      "abstain": [
+        "tax_basis",
+        "currency",
+        "invoice_date",
+        "lines.1.quantity",
+        "lines.1.unit_price"
+      ],
+      "normalized": {}
+    }
+  ]
+}

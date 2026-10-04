@@ -10,3 +10,6 @@ data/clearledger_row_identity/*.pdf binary
 data/clearledger_row_identity/*.png binary
 data/clearledger_rotation/*.pdf binary
 data/clearledger_rotation/*.png binary
+
+# Frozen original Kivo probe PDFs retain binary/xref bytes.
+/data/kivo_fresh/*.pdf binary
