@@ -143,3 +143,12 @@ Follow the [enterprise pilot gate](docs/runbooks/enterprise-pilot.md), [backup/r
 The original team-pack folder/ZIP and all fixtures remain preserved. The byte-identical working specification is [docs/AP_Exception_Assistant_Codex_Spec.md](docs/AP_Exception_Assistant_Codex_Spec.md), governed by [ADR-0001](docs/adr/0001-repository-and-specification-authority.md). See [progress](docs/progress.md), [assumptions](docs/assumptions.md), [dictionary](docs/data_dictionary.md), [T01–T42 coverage](docs/test_coverage.md), [inference architecture](docs/inference_architecture.md), [compatibility](docs/extraction_compatibility.md), [model card](ml/model_card.md) and [release ADR](docs/adr/0014-enterprise-release-boundaries.md).
 
 Repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate), branch **main**. The Phase-6 source and history were published at `6be40387d4c4268a83468dd112b0d5bf4f6e9f2b`; all 310 then-tracked file modes/blob hashes, including both CI workflows, were verified. The later real-VLM override explicitly excludes publication/authentication work: its changes are local commits only, with no push retried. [Exit review](docs/phase6_exit_review.md) and [progress](docs/progress.md) preserve earlier publication history. Credentials are not stored in repository files or remote URLs. Cloud/pilot deployment remains deferred.
+
+The bounded [CL-09 source repair](docs/clearledger_source_repair.md) preserves the
+working finance engine and approved BF16 runtime. It fixes source-context European
+money, multi-page provider-null reconciliation, dense measured tables and inline
+header ownership. Limited selected-field results improve on four spent public
+fictional development invoices; all still require source/accounting confirmation.
+The report retains failed attempts, actual timings, additional-probe limits and
+unresolved rotated/multi-blank rows. No fine-tuning, data/model acquisition, push
+or deployment follows from this checkpoint.

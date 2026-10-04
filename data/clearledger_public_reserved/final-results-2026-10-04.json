@@ -1,0 +1,760 @@
+{
+  "label": "cl09-reserved-final",
+  "code_commit": "515f391954c606938a2b3d0d7709062b9b762e12",
+  "code_sha256": {
+    "apps/api/app/extraction/layout.py": "62897b33ea571e1a9a8bcf36043aafb4f784ca731ea0eeef96eadd3a243661ab",
+    "apps/api/app/extraction/native.py": "909295bd977ba2d2942056d60d46ffa86439b9d8b71891a56fc2beb7f44e1add",
+    "apps/api/app/extraction/typellm.py": "cfb6312ce8880defe3e30b9c5d42bea73c9563ad23e3df2937b887d97e42be03",
+    "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+    "apps/api/app/extraction/cpu_ocr.py": "665353b2ac49a0762597482d79ed4a953b2c89c1ed69f3ec513b35b0106e88ff",
+    "apps/api/app/extraction/rapidocr_runtime.py": "41eb45e70feec46851b37117c8ff7e64005e4230d58856e1deefde27cc55a396",
+    "apps/api/app/services/document_worker.py": "41004d7c5dbddbc4f4cca4ac0ecebe592b21c85bd4c5f83e87a62cb53ddea0ea",
+    "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+  },
+  "truth_sha256": "48633d312a20e01bf5fd64db8d8ad5c26db22256bd8956d543905eb0a1f6caa3",
+  "corpus": "clearledger_public_reserved",
+  "limitations": "2 externally authored fictional sources in this frozen corpus, not real-company or new-template-family accuracy. Actual loopback upload/proxy/durable worker/result at 0.5s polling. Existing model is resident; first worker/client request can be cold. No cold weight load. Human review/approvals/browser render excluded. Truth enters only post-extraction scoring; production hashes remain unchanged during this run.",
+  "version": "clearledger-public-results-v1",
+  "cases": [
+    {
+      "id": "u01",
+      "source_sha256": "4aeb3d7095b179345fc03beeb23354edc8c2c28bd51fbd0b65aecaeb1174eeac",
+      "upload_seconds": 0.76,
+      "end_to_end_seconds": 14.721,
+      "states": [
+        {
+          "state": "QUEUED",
+          "last_successful_stage": null,
+          "seconds": 0.771
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": null,
+          "seconds": 1.288
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 1.806
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 2.322
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "EXTRACT",
+          "seconds": 12.635
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": "EXTRACT",
+          "seconds": 13.153
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "NORMALIZE",
+          "seconds": 13.676
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "VALIDATE",
+          "seconds": 14.198
+        },
+        {
+          "state": "NEEDS_INPUT",
+          "last_successful_stage": "FINALIZE",
+          "seconds": 14.721
+        }
+      ],
+      "state": "NEEDS_INPUT",
+      "last_error": null,
+      "finance_decision": null,
+      "headers": {
+        "vendor_name": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "Summit Cloud Services",
+          "candidate": "Summit Cloud Services"
+        },
+        "invoice_number": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "SCS-30277",
+          "candidate": "SCS-30277"
+        },
+        "invoice_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "2024-04-01",
+          "candidate": "2024-04-01"
+        },
+        "due_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "2024-04-15",
+          "candidate": "2024-04-15"
+        },
+        "currency": {
+          "read": true,
+          "page": true,
+          "state": "AMBIGUOUS",
+          "raw": "$",
+          "candidate": null
+        },
+        "subtotal_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "$1,054.00",
+          "candidate": null
+        },
+        "tax_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "$86.96",
+          "candidate": null
+        },
+        "total_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "$1,140.96",
+          "candidate": null
+        }
+      },
+      "rows": [
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Compute instance (monthly)",
+            "candidate": "Compute instance (monthly)"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "1",
+            "candidate": "1"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$420.00",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$420.00",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Object storage (TB)",
+            "candidate": "Object storage (TB)"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "5",
+            "candidate": "5"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$23.00",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$115.00",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Compute instance (monthly)",
+            "candidate": "Compute instance (monthly)"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "1",
+            "candidate": "1"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$420.00",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$420.00",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Support plan",
+            "candidate": "Support plan"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "1",
+            "candidate": "1"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$99.00",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$99.00",
+            "candidate": null
+          }
+        }
+      ],
+      "absent": {
+        "tax_basis": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "document_discount_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "shipping_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "other_charges_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "po_reference": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "payment_account_token": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        }
+      },
+      "header_matches": 8,
+      "header_checked": 8,
+      "row_matches": 16,
+      "row_checked": 16,
+      "expected_rows": 4,
+      "actual_rows": 4,
+      "required_abstentions": {
+        "currency": true,
+        "tax_basis": true
+      },
+      "provider": {
+        "provider_id": "ENTERPRISE_VLM",
+        "adapter_id": "typellm-sglang-client",
+        "adapter_version": "2",
+        "model_id": "qwen25-vl3b-local",
+        "runtime_versions": [
+          {
+            "name": "bridge",
+            "version": "sglang-cu124-transport-v1"
+          },
+          {
+            "name": "cache_isolation",
+            "version": "SERIAL_FLUSH_PER_GENERATE"
+          },
+          {
+            "name": "cuda_runtime",
+            "version": "12.4"
+          },
+          {
+            "name": "model_revision",
+            "version": "66285546d2b821cf421d4f5eb2576359d3770cd3"
+          },
+          {
+            "name": "model_source",
+            "version": "Qwen/Qwen2.5-VL-3B-Instruct"
+          },
+          {
+            "name": "precision",
+            "version": "BF16"
+          },
+          {
+            "name": "python",
+            "version": "3.12.3"
+          },
+          {
+            "name": "served_model",
+            "version": "qwen25-vl3b-local"
+          },
+          {
+            "name": "sglang",
+            "version": "0.4.6.post5"
+          },
+          {
+            "name": "torch",
+            "version": "2.6.0+cu124"
+          },
+          {
+            "name": "transformers",
+            "version": "5.3.0"
+          },
+          {
+            "name": "typellm",
+            "version": "0.5.1"
+          },
+          {
+            "name": "prompt_sha256",
+            "version": "a8e283357f8c208ffc4cec7c35298619881dd1915f628516db67227aac39c2f1"
+          }
+        ]
+      },
+      "routing": {
+        "version": "extraction-routing-v6",
+        "header_scope_version": "independent-header-coverage-v1",
+        "accounting_grounding_version": "independent-item-column-v1",
+        "header_accounting_grounding_version": "independent-document-summary-v1",
+        "calls": 1,
+        "header_seconds": 10.577596281014849,
+        "line_seconds": 0.0,
+        "row_inventory_seconds": 0.0,
+        "call_metrics": [
+          {
+            "fields": [
+              "vendor_name",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "image_count": 1,
+            "kind": "header_seconds",
+            "question_count": 10,
+            "seconds": 10.577596281014849
+          }
+        ],
+        "header_fields_requested": [
+          {
+            "fields": [
+              "vendor_name",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "page": 1
+          }
+        ],
+        "reused_header_fields": [
+          {
+            "fields": [
+              "invoice_number",
+              "invoice_date",
+              "currency",
+              "subtotal_amount",
+              "tax_amount",
+              "total_amount"
+            ],
+            "page": 1,
+            "reason": "SOURCE_BOUND_OR_PREVIOUS_DOCUMENT_READ",
+            "unresolved_source_currency": true
+          }
+        ],
+        "reused_tables": [
+          {
+            "page": 1,
+            "reason": "COMPLETE_INDEPENDENT_PRINTED_TABLE",
+            "rows": 4
+          }
+        ],
+        "generation_stops": []
+      },
+      "normalizer_version": "document-normalizer-v4",
+      "selected_canonical": {
+        "currency": null,
+        "invoice_date": "2024-04-01",
+        "due_date": "2024-04-15",
+        "subtotal_amount": null,
+        "tax_amount": null,
+        "total_amount": null,
+        "tax_basis": null,
+        "document_discount_amount": null,
+        "shipping_amount": null,
+        "other_charges_amount": null
+      }
+    },
+    {
+      "id": "u02",
+      "source_sha256": "c72721762b845c9ec59e4a4be2a2256a24be2cbadb3710da7e6060086ce56af5",
+      "upload_seconds": 0.107,
+      "end_to_end_seconds": 16.088,
+      "states": [
+        {
+          "state": "QUEUED",
+          "last_successful_stage": null,
+          "seconds": 0.121
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": null,
+          "seconds": 0.637
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 1.151
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 1.665
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "EXTRACT",
+          "seconds": 14.537
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "NORMALIZE",
+          "seconds": 15.057
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "VALIDATE",
+          "seconds": 15.574
+        },
+        {
+          "state": "NEEDS_INPUT",
+          "last_successful_stage": "FINALIZE",
+          "seconds": 16.088
+        }
+      ],
+      "state": "NEEDS_INPUT",
+      "last_error": null,
+      "finance_decision": null,
+      "headers": {
+        "vendor_name": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "Fictional Atlantic Imports Inc.",
+          "candidate": "Fictional Atlantic Imports Inc."
+        },
+        "invoice_number": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "INV-2026-008",
+          "candidate": "INV-2026-008"
+        },
+        "invoice_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "2026-08-08",
+          "candidate": "2026-08-08"
+        },
+        "currency": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "USD",
+          "candidate": "USD"
+        },
+        "subtotal_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "USD 160.00",
+          "candidate": "160.00"
+        },
+        "shipping_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "USD 12.00",
+          "candidate": "12.00"
+        },
+        "total_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "USD 172.00",
+          "candidate": "172.00"
+        }
+      },
+      "rows": [
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Import Snack Mix 400g",
+            "candidate": "Import Snack Mix 400g"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "50",
+            "candidate": "50"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "3.20",
+            "candidate": "3.20"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "160.00",
+            "candidate": "160.00"
+          },
+          "uom": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "EA",
+            "candidate": "EA"
+          }
+        }
+      ],
+      "absent": {
+        "tax_amount": {
+          "missing": false,
+          "canonical_unresolved": true,
+          "state": "ILLEGIBLE",
+          "raw": null
+        },
+        "tax_basis": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "document_discount_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "other_charges_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "po_reference": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "payment_account_token": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        }
+      },
+      "header_matches": 7,
+      "header_checked": 7,
+      "row_matches": 5,
+      "row_checked": 5,
+      "expected_rows": 1,
+      "actual_rows": 1,
+      "required_abstentions": {
+        "tax_amount": true,
+        "tax_basis": true
+      },
+      "provider": {
+        "provider_id": "ENTERPRISE_VLM",
+        "adapter_id": "typellm-sglang-client",
+        "adapter_version": "2",
+        "model_id": "qwen25-vl3b-local",
+        "runtime_versions": [
+          {
+            "name": "bridge",
+            "version": "sglang-cu124-transport-v1"
+          },
+          {
+            "name": "cache_isolation",
+            "version": "SERIAL_FLUSH_PER_GENERATE"
+          },
+          {
+            "name": "cuda_runtime",
+            "version": "12.4"
+          },
+          {
+            "name": "model_revision",
+            "version": "66285546d2b821cf421d4f5eb2576359d3770cd3"
+          },
+          {
+            "name": "model_source",
+            "version": "Qwen/Qwen2.5-VL-3B-Instruct"
+          },
+          {
+            "name": "precision",
+            "version": "BF16"
+          },
+          {
+            "name": "python",
+            "version": "3.12.3"
+          },
+          {
+            "name": "served_model",
+            "version": "qwen25-vl3b-local"
+          },
+          {
+            "name": "sglang",
+            "version": "0.4.6.post5"
+          },
+          {
+            "name": "torch",
+            "version": "2.6.0+cu124"
+          },
+          {
+            "name": "transformers",
+            "version": "5.3.0"
+          },
+          {
+            "name": "typellm",
+            "version": "0.5.1"
+          },
+          {
+            "name": "prompt_sha256",
+            "version": "a8e283357f8c208ffc4cec7c35298619881dd1915f628516db67227aac39c2f1"
+          }
+        ]
+      },
+      "routing": {
+        "version": "extraction-routing-v6",
+        "header_scope_version": "independent-header-coverage-v1",
+        "accounting_grounding_version": "independent-item-column-v1",
+        "header_accounting_grounding_version": "independent-document-summary-v1",
+        "calls": 1,
+        "header_seconds": 12.656963667017408,
+        "line_seconds": 0.0,
+        "row_inventory_seconds": 0.0,
+        "call_metrics": [
+          {
+            "fields": [
+              "vendor_name",
+              "tax_amount",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "image_count": 1,
+            "kind": "header_seconds",
+            "question_count": 12,
+            "seconds": 12.656963667017408
+          }
+        ],
+        "header_fields_requested": [
+          {
+            "fields": [
+              "vendor_name",
+              "tax_amount",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "page": 1
+          }
+        ],
+        "reused_header_fields": [
+          {
+            "fields": [
+              "invoice_number",
+              "invoice_date",
+              "currency",
+              "subtotal_amount",
+              "total_amount"
+            ],
+            "page": 1,
+            "reason": "SOURCE_BOUND_OR_PREVIOUS_DOCUMENT_READ",
+            "unresolved_source_currency": false
+          }
+        ],
+        "reused_tables": [
+          {
+            "page": 1,
+            "reason": "COMPLETE_INDEPENDENT_PRINTED_TABLE",
+            "rows": 1
+          }
+        ],
+        "generation_stops": []
+      },
+      "normalizer_version": "document-normalizer-v4",
+      "selected_canonical": {
+        "currency": "USD",
+        "invoice_date": "2026-08-08",
+        "due_date": null,
+        "subtotal_amount": "160.00",
+        "tax_amount": null,
+        "total_amount": "172.00",
+        "tax_basis": null,
+        "document_discount_amount": null,
+        "shipping_amount": "12.00",
+        "other_charges_amount": null
+      }
+    }
+  ]
+}

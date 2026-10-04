@@ -1,0 +1,139 @@
+{
+  "version": "clearledger-public-pixel-truth-v1",
+  "frozen_before_tuning_commit": "515f391954c606938a2b3d0d7709062b9b762e12",
+  "frozen_utc": "2026-10-04T18:55:12.280074+00:00",
+  "provenance": "Two additional externally authored public fictional samples from the same exact license/README revisions checked for CL-08. Source pixels manually checked before code changes; no expected JSON/generator/service used. Reserved from tuning/execution, not real-company accuracy or unknown model-training overlap.",
+  "license_manifest": "data/clearledger_public/manifest.json",
+  "cases": [
+    {
+      "id": "u01",
+      "layout": "Native stacked headers; distinct separately printed equal-valued rows; ambiguous dollar symbol",
+      "headers": {
+        "vendor_name": "Summit Cloud Services",
+        "invoice_number": "SCS-30277",
+        "invoice_date": "2024-04-01",
+        "due_date": "2024-04-15",
+        "currency": "$",
+        "subtotal_amount": "1,054.00",
+        "tax_amount": "86.96",
+        "total_amount": "1,140.96"
+      },
+      "accepted_states": {
+        "currency": [
+          "AMBIGUOUS"
+        ]
+      },
+      "money_tokens": [
+        "$"
+      ],
+      "rows": [
+        {
+          "page": 1,
+          "description": "Compute instance (monthly)",
+          "quantity": "1",
+          "unit_price": "420.00",
+          "amount": "420.00"
+        },
+        {
+          "page": 1,
+          "description": "Object storage (TB)",
+          "quantity": "5",
+          "unit_price": "23.00",
+          "amount": "115.00"
+        },
+        {
+          "page": 1,
+          "description": "Compute instance (monthly)",
+          "quantity": "1",
+          "unit_price": "420.00",
+          "amount": "420.00"
+        },
+        {
+          "page": 1,
+          "description": "Support plan",
+          "quantity": "1",
+          "unit_price": "99.00",
+          "amount": "99.00"
+        }
+      ],
+      "absent": [
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "must_be_unresolved": [
+        "currency",
+        "tax_basis"
+      ],
+      "source": {
+        "id": "u01",
+        "url": "https://raw.githubusercontent.com/DylanMerigaud/ai-invoice-parser/5b54f4b5969452cc282b27f0327fbc886f9f6358/eval/samples/duplicate-lines.pdf",
+        "sha256": "4aeb3d7095b179345fc03beeb23354edc8c2c28bd51fbd0b65aecaeb1174eeac",
+        "bytes": 2376,
+        "pages": 1,
+        "native_characters": [
+          382
+        ],
+        "downloaded_utc": "2026-10-04T18:53:45.957410+00:00",
+        "local_path": "u01.pdf",
+        "author": "Dylan Merigaud",
+        "license": "MIT"
+      }
+    },
+    {
+      "id": "u02",
+      "layout": "Native SKU table; explicit invoice USD distinct from merchant store AED; absent tax",
+      "headers": {
+        "vendor_name": "Fictional Atlantic Imports Inc.",
+        "invoice_number": "INV-2026-008",
+        "invoice_date": "2026-08-08",
+        "currency": "USD",
+        "subtotal_amount": "160.00",
+        "shipping_amount": "12.00",
+        "total_amount": "172.00"
+      },
+      "money_tokens": [
+        "USD"
+      ],
+      "rows": [
+        {
+          "page": 1,
+          "description": "Import Snack Mix 400g",
+          "quantity": "50",
+          "unit_price": "3.20",
+          "amount": "160.00",
+          "uom": "EA"
+        }
+      ],
+      "absent": [
+        "tax_amount",
+        "tax_basis",
+        "document_discount_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "must_be_unresolved": [
+        "tax_amount",
+        "tax_basis"
+      ],
+      "source": {
+        "id": "u02",
+        "url": "https://raw.githubusercontent.com/SalorWorks/shopify-invoice-test-pack/bb2e531cfa504e6f7200243620121c523f9f7622/fixtures/08-usd-for-aed/invoice.pdf",
+        "sha256": "c72721762b845c9ec59e4a4be2a2256a24be2cbadb3710da7e6060086ce56af5",
+        "bytes": 2302,
+        "pages": 1,
+        "native_characters": [
+          679
+        ],
+        "downloaded_utc": "2026-10-04T18:53:46.536969+00:00",
+        "local_path": "u02.pdf",
+        "author": "SalorWorks",
+        "license": "CC-BY-4.0"
+      }
+    }
+  ]
+}

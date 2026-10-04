@@ -6,7 +6,7 @@ The legacy labeled/pipe parser remains intact. No arithmetic supplies raw facts.
 """
 import re
 
-VERSION = 'printed-layout-v4'
+VERSION = 'printed-layout-v5'
 HEADER_ALIASES = {
     'supplier': 'vendor_name', 'vendor': 'vendor_name', 'supplier name': 'vendor_name',
     'vendor name': 'vendor_name', 'seller': 'vendor_name', 'merchant': 'merchant_name',
@@ -22,11 +22,12 @@ HEADER_ALIASES = {
 }
 COLUMN_ALIASES = {
     'description': 'description', 'item description': 'description', 'item': 'description',
-    'quantity': 'quantity', 'qty': 'quantity', 'unit price': 'unit_price', 'rate': 'unit_price',
-    'discount': 'discount_amount', 'net': 'net_amount', 'net amount': 'net_amount',
+    'quantity': 'quantity', 'qty': 'quantity', 'unit price': 'unit_price', 'price': 'unit_price', 'rate': 'unit_price',
+    'sku': 'sku', 'barcode': 'barcode',
+    'discount': 'discount_amount', 'disc': 'discount_amount', 'net': 'net_amount', 'net amount': 'net_amount',
     'tax rate': 'tax_rate', 'tax': 'tax_amount', 'tax amount': 'tax_amount',
     'gross': 'gross_amount', 'gross amount': 'gross_amount',
-    'amount': 'amount', 'line total': 'amount', 'uom': 'uom', 'unit': 'uom',
+    'amount': 'amount', 'line total': 'amount', 'total': 'amount', 'uom': 'uom', 'unit': 'uom',
 }
 
 
@@ -75,6 +76,8 @@ def label_at(row, index, aliases):
         joined = ' '.join(p['text'] for p in parts)
         if key(joined) in aliases:
             return count, aliases[key(joined)], parts
+        if aliases is HEADER_ALIASES and re.fullmatch(r'(?:VAT|GST|sales tax|tax)\s+\d{1,2}(?:[.,]\d+)?\s*%',joined.strip(),re.IGNORECASE):
+            return count,'tax_amount',parts  # printed summary label, never tax treatment/rate inference
     return None
 
 
@@ -106,17 +109,29 @@ def stacked_headers(rows):
     out=[];claimed=set()
     for index,row in enumerate(rows[:-1]):
         if index in claimed:continue
-        labels=[];cursor=0
+        labels=[];cursor=0;unrelated=[]
         while cursor<len(row):
             hit=label_at(row,cursor,HEADER_ALIASES)
-            if not hit:break
+            if not hit:
+                unrelated.append(row[cursor]);cursor+=1;continue
             count,field,parts=hit
-            if not any(':' in p['text'] or '#' in p['text'] for p in parts):break
+            if key(' '.join(p['text'] for p in parts)) in ('invoice','po') and not any(':' in p['text'] or '#' in p['text'] for p in parts):break
             labels.append((field,parts));cursor+=count
         if cursor!=len(row) or not labels or len({f for f,_ in labels})!=len(labels):continue
+        if any(not all(p['bbox']['x2']+.06<=parts[0]['bbox']['x1'] or p['bbox']['x1']>=parts[-1]['bbox']['x2']+.06 for _,parts in labels) for p in unrelated):continue
+        # Unrelated text may belong to an independently separated left column.
+        # Text to the right of a label can be its inline value; never claim
+        # that row as stacked and replace it with the following row's text.
+        if any(p['bbox']['x1']>=labels[0][1][0]['bbox']['x1'] for p in unrelated):continue
         values=rows[index+1]
         gap=min(p['bbox']['y1'] for p in values)-max(p['bbox']['y2'] for p in row)
-        if not 0<=gap<=.04 or any(key(p['text']) in HEADER_ALIASES for p in values):continue
+        # PDF font extents can overlap even when consecutive printed baselines
+        # are distinct. Limit this allowance to measured native font spans;
+        # OCR boxes and material overlap still cannot associate labels/values.
+        minimum_gap=0
+        if all(0<p.get('font_size_points',0)<=512 for p in row+values):
+            minimum_gap=-min(p['bbox']['y2']-p['bbox']['y1'] for p in row+values)*.25
+        if not minimum_gap<=gap<=.04 or any(key(p['text']) in HEADER_ALIASES for p in values):continue
         associations=[];used=[]
         for n,(field,parts) in enumerate(labels):
             left=parts[0]['bbox']['x1']
@@ -132,11 +147,28 @@ def stacked_headers(rows):
 
 def column_cells(row,columns):
     bounds=[(a[1]['x2']+b[1]['x1'])/2 for a,b in zip(columns,columns[1:])]
+    text_fields={'sku','barcode','description'}
+    ordered=sorted(row,key=lambda span:span['bbox']['x1'])
+    metadata=any(field in ('sku','barcode') for field,_ in columns)
+    separated=lambda blocks:all(max(p['bbox']['x2'] for p in left)<=min(p['bbox']['x1'] for p in right) for left,right in zip(blocks,blocks[1:]))
+    if metadata and len(ordered)==len(columns) and separated([[p] for p in ordered]):
+        # Metadata/description headings may be centered/right-aligned within
+        # wide cells. Exact ordered independent regions and all numeric/unit
+        # anchors establish this row; broad/crossing financial cells do not.
+        anchored=True
+        for i,((field,_),p) in enumerate(zip(columns,ordered)):
+            if field in text_fields:continue
+            box=p['bbox'];center=(box['x1']+box['x2'])/2
+            anchored &= sum(center>=b for b in bounds)==i and not any(box['x1']<b<box['x2'] for b in bounds)
+        if anchored:return [[p] for p in ordered],False
     cells=[[] for _ in columns];crossing=False
+    financial_crossing=False
     for span in row:
         box=span['bbox'];center=(box['x1']+box['x2'])/2
-        cells[sum(center>=b for b in bounds)].append(span)
-        crossing |= any(box['x1']<b<box['x2'] for b in bounds)
+        i=sum(center>=b for b in bounds);cells[i].append(span)
+        crossed=any(box['x1']<b<box['x2'] for b in bounds)
+        crossing |= crossed;financial_crossing |= crossed and columns[i][0] not in text_fields
+    if metadata and crossing and not financial_crossing and all(cells) and separated(cells):crossing=False
     return cells,crossing
 
 

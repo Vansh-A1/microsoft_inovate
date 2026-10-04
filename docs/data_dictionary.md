@@ -512,3 +512,17 @@ No table or migration is added; extraction-v1 and financial record semantics rem
 | clearledger-public-results-v1 | Limited attributed source facts/observed failures plus timing/call/provenance metadata. Full outputs/source pixels stay ignored; no confidential invoice/export is tracked. |
 | source_classification_erratum | p01 frozen description says native but original PDF has zero native characters. Correction is explicit; frozen truth, originals and scores remain untouched. |
 | end_to_end_seconds / upload_seconds | Actual loopback proxy/durable final-state observations at 0.5 s polling with resident CPU/model; excludes human/browser/approval time. Not a cold-load, paired improvement or VRAM measurement. |
+
+## CL-09 source context and header repair
+
+| Field / version | Meaning and controls |
+|---|---|
+| document-normalizer-v4 | New immutable traces recognize unique euro/rupee or supported explicit ISO codes; dollar/yen/pound alone stay unresolved. Existing v2/v3 traces/reports retain their versions. |
+| number_format / number_format_source_observation_ids | Source-bound monetary separator convention and contributing PRESENT measured observations; never currency/country/FX or quantity/rate arithmetic. Strong mixed conventions and isolated three-digit separators without evidence are unresolved. |
+| DERIVED_SOURCE_CURRENCY | Printed monetary tokens agree on a supported unique currency. Actual monetary locator retained; derivation step explains that it is not a separately printed Currency field. Conflicting/nonunique tokens stay ambiguous. |
+| printed-layout-v5 / labeled-header-table-layout-v7 | Qualified stacked headers with measured alignment, bounded native font overlap and independently separated left text; inline values retain their own row. Metadata table cells require measured nonoverlap and all financial/unit anchors. |
+| PROVIDER_VALUE_UNREAD | Actual null model text becomes ILLEGIBLE/raw null. No fabricated literal null and no contradiction of an independently measured PRESENT source. Real non-null conflict/illegibility remains unresolved. |
+| extraction-routing-v6 / independent-header-coverage-v1 | Reuse independent headers across pages and previous actual reads; request unresolved core and first-page supplementary addresses when measured coverage exists. Human conflicts are not model votes. Strict extraction-v1 and finance authorization unchanged. |
+| reused_header_fields / header_fields_requested / call_metrics | Actual per-page known/requested field lists and executed model times/calls. No synthetic latency/confidence or extraction PASS. |
+| independent-document-summary-v1 / SOURCE_HEADER_AMOUNT_UNCONFIRMED | Model-only document tax/discount/shipping/other charges without an independently read summary label retain raw AMBIGUOUS and canonical null. Item tax/amount and guessed zero do not establish summary scope. |
+| CL-09 development/reserved probes | Four inspected development sources plus two additional source-fact probes frozen before tuning, sharing author/template families. All selected row fields remain counted; reserved null checks are distinct from literal success. No real-company or genuinely new-layout-family accuracy. |

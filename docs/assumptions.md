@@ -425,3 +425,33 @@ human-review gates pass within local fictional scope; actual organization identi
 scanner definitions, commercial attribution/provider and release approval remain
 separate. No production pilot or broader acceptance is inferred. See
 [CL-08 evidence](clearledger_independent_validation.md).
+
+## CL-09 source repair — 2026-10-04
+
+The four CL-08 sources are spent development inputs; their original truth/results
+stay frozen. Two further lawful fictional files were acquired and pixel truth
+frozen before tuning and before the latest no-more-acquisition instruction. No
+further source/model/runtime acquisition or fine-tuning followed. These two files
+share author/template families (u01 with p03/p04), so reserved execution is a check
+of new facts and safety, not genuinely held-out layout-family/customer accuracy.
+Model-training overlap and business adjudication remain unknown.
+
+A uniform printed euro/rupee/ISO token can supply a source-bound currency candidate;
+country/address/store currency and ambiguous dollar/yen/pound cannot. Explicit
+source monetary separators can establish decimal-comma notation; strong mixed
+conventions or isolated three-digit separators without supporting measured format
+evidence remain unresolved. Dates do not inherit locale from currency. The trace
+retains raw values, source IDs and v4; historical v2/v3 outcomes remain unchanged.
+
+A model's null is an unread response, not a printed conflicting word. A known
+measured source survives it; genuine non-null conflicts remain ambiguous. Dense
+metadata/financial cells need independent anchors and actual nonoverlap. An inline
+value must not be claimed as a stacked header. Unsupported summary tax/charge
+candidates retain raw evidence but cannot become canonical. No zero, quantity,
+tax treatment, FX, policy or finance decision is invented.
+
+Source confirmation and required business facts still block submission. Measured
+English/selected fields do not establish Arabic fidelity or complete accounting.
+The rotated scan and spent multi-blank q06 still need improvement/authorized source
+clarification. Resident model timings do not establish cold-weight/VRAM or a
+universal warm-speed promise. See [CL-09 evidence](clearledger_source_repair.md).

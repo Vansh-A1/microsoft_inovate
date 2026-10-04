@@ -1,0 +1,1856 @@
+{
+  "label": "cl09-final",
+  "code_commit": "515f391954c606938a2b3d0d7709062b9b762e12",
+  "code_sha256": {
+    "apps/api/app/extraction/layout.py": "62897b33ea571e1a9a8bcf36043aafb4f784ca731ea0eeef96eadd3a243661ab",
+    "apps/api/app/extraction/native.py": "909295bd977ba2d2942056d60d46ffa86439b9d8b71891a56fc2beb7f44e1add",
+    "apps/api/app/extraction/typellm.py": "cfb6312ce8880defe3e30b9c5d42bea73c9563ad23e3df2937b887d97e42be03",
+    "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+    "apps/api/app/extraction/cpu_ocr.py": "665353b2ac49a0762597482d79ed4a953b2c89c1ed69f3ec513b35b0106e88ff",
+    "apps/api/app/extraction/rapidocr_runtime.py": "41eb45e70feec46851b37117c8ff7e64005e4230d58856e1deefde27cc55a396",
+    "apps/api/app/services/document_worker.py": "41004d7c5dbddbc4f4cca4ac0ecebe592b21c85bd4c5f83e87a62cb53ddea0ea",
+    "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+  },
+  "truth_sha256": "843b8471b637ad700af6e3e7e5ead23cfea1946e2edf6fef270e944032eccdbf",
+  "corpus": "clearledger_public",
+  "limitations": "Four independently authored public fictional sources, not real-company accuracy. Actual loopback upload/proxy/durable worker/result at 0.5s polling. Existing CPU/model state is resident; no cold weight load. Human review/approvals/browser render excluded. Truth enters only post-extraction scoring; pipeline unchanged.",
+  "version": "clearledger-public-results-v1",
+  "cases": [
+    {
+      "id": "p01",
+      "source_sha256": "9b097daecae02527a661f8175db42d5faef9cc7074ebaf00ce99ecf39e8c4422",
+      "upload_seconds": 0.245,
+      "end_to_end_seconds": 17.286,
+      "states": [
+        {
+          "state": "QUEUED",
+          "last_successful_stage": null,
+          "seconds": 0.258
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 0.778
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 1.294
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "EXTRACT",
+          "seconds": 15.195
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "NORMALIZE",
+          "seconds": 15.72
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "VALIDATE",
+          "seconds": 16.243
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": "VALIDATE",
+          "seconds": 16.761
+        },
+        {
+          "state": "NEEDS_INPUT",
+          "last_successful_stage": "FINALIZE",
+          "seconds": 17.286
+        }
+      ],
+      "state": "NEEDS_INPUT",
+      "last_error": null,
+      "finance_decision": null,
+      "headers": {
+        "vendor_name": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "Fictional Gulf Foods LLC",
+          "candidate": "Fictional Gulf Foods LLC"
+        },
+        "invoice_number": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "INV-2026-015",
+          "candidate": "INV-2026-015"
+        },
+        "invoice_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "2026-08-15",
+          "candidate": "2026-08-15"
+        },
+        "currency": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "AED",
+          "candidate": "AED"
+        },
+        "subtotal_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "AED 237.00",
+          "candidate": "237.00"
+        },
+        "document_discount_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "AED 9.00",
+          "candidate": "9.00"
+        },
+        "tax_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "AED 11.85",
+          "candidate": "11.85"
+        },
+        "total_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "AED 248.85",
+          "candidate": "248.85"
+        }
+      },
+      "rows": [
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Green Tea 25 bags/25",
+            "candidate": "Green Tea 25 bags/25"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "12",
+            "candidate": "12"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "8.00",
+            "candidate": "8.00"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "96.00",
+            "candidate": "96.00"
+          },
+          "discount_amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "0.00",
+            "candidate": "0.00"
+          },
+          "tax_amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "4.80",
+            "candidate": "4.80"
+          },
+          "uom": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "EA",
+            "candidate": "EA"
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Olive Oil Soap 150g/150",
+            "candidate": "Olive Oil Soap 150g/150"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "6",
+            "candidate": "6"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "15.00",
+            "candidate": "15.00"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "81.00",
+            "candidate": "81.00"
+          },
+          "discount_amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "9.00",
+            "candidate": "9.00"
+          },
+          "tax_amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "4.05",
+            "candidate": "4.05"
+          },
+          "uom": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "EA",
+            "candidate": "EA"
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Sparkling Water 330ml/330",
+            "candidate": "Sparkling Water 330ml/330"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "24",
+            "candidate": "24"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "2.50",
+            "candidate": "2.50"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "60.00",
+            "candidate": "60.00"
+          },
+          "discount_amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "0.00",
+            "candidate": "0.00"
+          },
+          "tax_amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "3.00",
+            "candidate": "3.00"
+          },
+          "uom": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "EA",
+            "candidate": "EA"
+          }
+        }
+      ],
+      "absent": {
+        "po_reference": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "payment_account_token": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "shipping_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "other_charges_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "tax_basis": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        }
+      },
+      "header_matches": 8,
+      "header_checked": 8,
+      "row_matches": 21,
+      "row_checked": 21,
+      "expected_rows": 3,
+      "actual_rows": 3,
+      "required_abstentions": {
+        "tax_basis": true
+      },
+      "provider": {
+        "provider_id": "ENTERPRISE_VLM",
+        "adapter_id": "typellm-sglang-client",
+        "adapter_version": "2",
+        "model_id": "qwen25-vl3b-local",
+        "runtime_versions": [
+          {
+            "name": "bridge",
+            "version": "sglang-cu124-transport-v1"
+          },
+          {
+            "name": "cache_isolation",
+            "version": "SERIAL_FLUSH_PER_GENERATE"
+          },
+          {
+            "name": "cuda_runtime",
+            "version": "12.4"
+          },
+          {
+            "name": "model_revision",
+            "version": "66285546d2b821cf421d4f5eb2576359d3770cd3"
+          },
+          {
+            "name": "model_source",
+            "version": "Qwen/Qwen2.5-VL-3B-Instruct"
+          },
+          {
+            "name": "precision",
+            "version": "BF16"
+          },
+          {
+            "name": "python",
+            "version": "3.12.3"
+          },
+          {
+            "name": "served_model",
+            "version": "qwen25-vl3b-local"
+          },
+          {
+            "name": "sglang",
+            "version": "0.4.6.post5"
+          },
+          {
+            "name": "torch",
+            "version": "2.6.0+cu124"
+          },
+          {
+            "name": "transformers",
+            "version": "5.3.0"
+          },
+          {
+            "name": "typellm",
+            "version": "0.5.1"
+          },
+          {
+            "name": "prompt_sha256",
+            "version": "a8e283357f8c208ffc4cec7c35298619881dd1915f628516db67227aac39c2f1"
+          }
+        ]
+      },
+      "routing": {
+        "version": "extraction-routing-v6",
+        "header_scope_version": "independent-header-coverage-v1",
+        "accounting_grounding_version": "independent-item-column-v1",
+        "header_accounting_grounding_version": "independent-document-summary-v1",
+        "calls": 1,
+        "header_seconds": 10.817379878018983,
+        "line_seconds": 0.0,
+        "row_inventory_seconds": 0.0,
+        "call_metrics": [
+          {
+            "fields": [
+              "vendor_name",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "image_count": 1,
+            "kind": "header_seconds",
+            "question_count": 10,
+            "seconds": 10.817379878018983
+          }
+        ],
+        "header_fields_requested": [
+          {
+            "fields": [
+              "vendor_name",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "page": 1
+          }
+        ],
+        "reused_header_fields": [
+          {
+            "fields": [
+              "invoice_number",
+              "invoice_date",
+              "currency",
+              "subtotal_amount",
+              "tax_amount",
+              "total_amount"
+            ],
+            "page": 1,
+            "reason": "SOURCE_BOUND_OR_PREVIOUS_DOCUMENT_READ",
+            "unresolved_source_currency": false
+          }
+        ],
+        "reused_tables": [
+          {
+            "page": 1,
+            "reason": "COMPLETE_INDEPENDENT_PRINTED_TABLE",
+            "rows": 3
+          }
+        ],
+        "generation_stops": []
+      },
+      "normalizer_version": "document-normalizer-v4",
+      "selected_canonical": {
+        "currency": "AED",
+        "invoice_date": "2026-08-15",
+        "due_date": null,
+        "subtotal_amount": "237.00",
+        "tax_amount": "11.85",
+        "total_amount": "248.85",
+        "tax_basis": null,
+        "document_discount_amount": "9.00",
+        "shipping_amount": null,
+        "other_charges_amount": null
+      }
+    },
+    {
+      "id": "p02",
+      "source_sha256": "c57552a94f7ee3cd0a8647a8bd1a06652ad78667d9a2835d6ee73e57808a17ca",
+      "upload_seconds": 0.127,
+      "end_to_end_seconds": 39.226,
+      "states": [
+        {
+          "state": "QUEUED",
+          "last_successful_stage": null,
+          "seconds": 0.142
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": null,
+          "seconds": 0.65
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 1.169
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 1.681
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "EXTRACT",
+          "seconds": 37.669
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "NORMALIZE",
+          "seconds": 38.186
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "VALIDATE",
+          "seconds": 38.708
+        },
+        {
+          "state": "NEEDS_INPUT",
+          "last_successful_stage": "FINALIZE",
+          "seconds": 39.226
+        }
+      ],
+      "state": "NEEDS_INPUT",
+      "last_error": null,
+      "finance_decision": null,
+      "headers": {
+        "vendor_name": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "Fictional Gulf Foods LLC",
+          "candidate": "Fictional Gulf Foods LLC"
+        },
+        "invoice_number": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "INV-2026-014",
+          "candidate": "INV-2026-014"
+        },
+        "invoice_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "2026-08-14",
+          "candidate": "2026-08-14"
+        },
+        "currency": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "AED",
+          "candidate": "AED"
+        },
+        "subtotal_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "AED 60.00",
+          "candidate": "60.00"
+        },
+        "tax_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "AED 3.00",
+          "candidate": "3.00"
+        },
+        "total_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "AED 63.00",
+          "candidate": "63.00"
+        }
+      },
+      "rows": [
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Sparkling Water 330ml",
+            "candidate": "Sparkling Water 330ml"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "24",
+            "candidate": "24"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "2.50",
+            "candidate": "2.50"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "60.00",
+            "candidate": "60.00"
+          },
+          "uom": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "EA",
+            "candidate": "EA"
+          }
+        }
+      ],
+      "absent": {
+        "po_reference": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "payment_account_token": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "document_discount_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "shipping_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "other_charges_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "tax_basis": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        }
+      },
+      "header_matches": 7,
+      "header_checked": 7,
+      "row_matches": 5,
+      "row_checked": 5,
+      "expected_rows": 1,
+      "actual_rows": 1,
+      "required_abstentions": {
+        "tax_basis": true
+      },
+      "provider": {
+        "provider_id": "ENTERPRISE_VLM",
+        "adapter_id": "typellm-sglang-client",
+        "adapter_version": "2",
+        "model_id": "qwen25-vl3b-local",
+        "runtime_versions": [
+          {
+            "name": "bridge",
+            "version": "sglang-cu124-transport-v1"
+          },
+          {
+            "name": "cache_isolation",
+            "version": "SERIAL_FLUSH_PER_GENERATE"
+          },
+          {
+            "name": "cuda_runtime",
+            "version": "12.4"
+          },
+          {
+            "name": "model_revision",
+            "version": "66285546d2b821cf421d4f5eb2576359d3770cd3"
+          },
+          {
+            "name": "model_source",
+            "version": "Qwen/Qwen2.5-VL-3B-Instruct"
+          },
+          {
+            "name": "precision",
+            "version": "BF16"
+          },
+          {
+            "name": "python",
+            "version": "3.12.3"
+          },
+          {
+            "name": "served_model",
+            "version": "qwen25-vl3b-local"
+          },
+          {
+            "name": "sglang",
+            "version": "0.4.6.post5"
+          },
+          {
+            "name": "torch",
+            "version": "2.6.0+cu124"
+          },
+          {
+            "name": "transformers",
+            "version": "5.3.0"
+          },
+          {
+            "name": "typellm",
+            "version": "0.5.1"
+          },
+          {
+            "name": "prompt_sha256",
+            "version": "a8e283357f8c208ffc4cec7c35298619881dd1915f628516db67227aac39c2f1"
+          }
+        ]
+      },
+      "routing": {
+        "version": "extraction-routing-v6",
+        "header_scope_version": "independent-header-coverage-v1",
+        "accounting_grounding_version": "independent-item-column-v1",
+        "header_accounting_grounding_version": "independent-document-summary-v1",
+        "calls": 3,
+        "header_seconds": 11.424970594001934,
+        "line_seconds": 16.905325677013025,
+        "row_inventory_seconds": 4.952654342981987,
+        "call_metrics": [
+          {
+            "fields": [
+              "vendor_name",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "image_count": 1,
+            "kind": "header_seconds",
+            "question_count": 10,
+            "seconds": 11.424970594001934
+          },
+          {
+            "fields": [
+              "row_count"
+            ],
+            "image_count": 1,
+            "kind": "row_inventory_seconds",
+            "question_count": 2,
+            "seconds": 4.952654342981987
+          },
+          {
+            "fields": [
+              "description",
+              "quantity",
+              "unit_price",
+              "discount_amount",
+              "net_amount",
+              "tax_rate",
+              "tax_amount",
+              "gross_amount",
+              "uom",
+              "amount"
+            ],
+            "image_count": 1,
+            "kind": "line_seconds",
+            "question_count": 20,
+            "seconds": 16.905325677013025
+          }
+        ],
+        "header_fields_requested": [
+          {
+            "fields": [
+              "vendor_name",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "page": 1
+          }
+        ],
+        "reused_header_fields": [
+          {
+            "fields": [
+              "invoice_number",
+              "invoice_date",
+              "currency",
+              "subtotal_amount",
+              "tax_amount",
+              "total_amount"
+            ],
+            "page": 1,
+            "reason": "SOURCE_BOUND_OR_PREVIOUS_DOCUMENT_READ",
+            "unresolved_source_currency": false
+          }
+        ],
+        "reused_tables": [],
+        "generation_stops": []
+      },
+      "normalizer_version": "document-normalizer-v4",
+      "selected_canonical": {
+        "currency": "AED",
+        "invoice_date": "2026-08-14",
+        "due_date": null,
+        "subtotal_amount": "60.00",
+        "tax_amount": "3.00",
+        "total_amount": "63.00",
+        "tax_basis": null,
+        "document_discount_amount": null,
+        "shipping_amount": null,
+        "other_charges_amount": null
+      }
+    },
+    {
+      "id": "p03",
+      "source_sha256": "670616475f7dc45a156fd3357e0d314853079c1d6338c65df410a9e53a038c94",
+      "upload_seconds": 0.11,
+      "end_to_end_seconds": 13.524,
+      "states": [
+        {
+          "state": "QUEUED",
+          "last_successful_stage": null,
+          "seconds": 0.118
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 0.632
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 1.145
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "EXTRACT",
+          "seconds": 11.954
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "NORMALIZE",
+          "seconds": 12.478
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "VALIDATE",
+          "seconds": 13.0
+        },
+        {
+          "state": "NEEDS_INPUT",
+          "last_successful_stage": "FINALIZE",
+          "seconds": 13.524
+        }
+      ],
+      "state": "NEEDS_INPUT",
+      "last_error": null,
+      "finance_decision": null,
+      "headers": {
+        "vendor_name": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "Nordlicht Components GmbH",
+          "candidate": "Nordlicht Components GmbH"
+        },
+        "invoice_number": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "NL-9931",
+          "candidate": "NL-9931"
+        },
+        "invoice_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "2024-02-12",
+          "candidate": "2024-02-12"
+        },
+        "due_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "2024-03-13",
+          "candidate": "2024-03-13"
+        },
+        "currency": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "€",
+          "candidate": "EUR"
+        },
+        "subtotal_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "1.007,50 €",
+          "candidate": "1007.50"
+        },
+        "tax_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "191,43 €",
+          "candidate": "191.43"
+        },
+        "total_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "1.198,93 €",
+          "candidate": "1198.93"
+        }
+      },
+      "rows": [
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Aluminium profile 40x40, 2m",
+            "candidate": "Aluminium profile 40x40, 2m"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "25",
+            "candidate": "25"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "18,90 €",
+            "candidate": "18.90"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "472,50 €",
+            "candidate": "472.50"
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Corner brackets, zinc",
+            "candidate": "Corner brackets, zinc"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "100",
+            "candidate": "100"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "1,45 €",
+            "candidate": "1.45"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "145,00 €",
+            "candidate": "145.00"
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Assembly service (hours)",
+            "candidate": "Assembly service (hours)"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "6",
+            "candidate": "6"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "65,00 €",
+            "candidate": "65.00"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "390,00 €",
+            "candidate": "390.00"
+          }
+        }
+      ],
+      "absent": {
+        "po_reference": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "payment_account_token": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "document_discount_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "shipping_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "other_charges_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "tax_basis": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        }
+      },
+      "header_matches": 8,
+      "header_checked": 8,
+      "row_matches": 12,
+      "row_checked": 12,
+      "expected_rows": 3,
+      "actual_rows": 3,
+      "required_abstentions": {
+        "tax_basis": true
+      },
+      "provider": {
+        "provider_id": "ENTERPRISE_VLM",
+        "adapter_id": "typellm-sglang-client",
+        "adapter_version": "2",
+        "model_id": "qwen25-vl3b-local",
+        "runtime_versions": [
+          {
+            "name": "bridge",
+            "version": "sglang-cu124-transport-v1"
+          },
+          {
+            "name": "cache_isolation",
+            "version": "SERIAL_FLUSH_PER_GENERATE"
+          },
+          {
+            "name": "cuda_runtime",
+            "version": "12.4"
+          },
+          {
+            "name": "model_revision",
+            "version": "66285546d2b821cf421d4f5eb2576359d3770cd3"
+          },
+          {
+            "name": "model_source",
+            "version": "Qwen/Qwen2.5-VL-3B-Instruct"
+          },
+          {
+            "name": "precision",
+            "version": "BF16"
+          },
+          {
+            "name": "python",
+            "version": "3.12.3"
+          },
+          {
+            "name": "served_model",
+            "version": "qwen25-vl3b-local"
+          },
+          {
+            "name": "sglang",
+            "version": "0.4.6.post5"
+          },
+          {
+            "name": "torch",
+            "version": "2.6.0+cu124"
+          },
+          {
+            "name": "transformers",
+            "version": "5.3.0"
+          },
+          {
+            "name": "typellm",
+            "version": "0.5.1"
+          },
+          {
+            "name": "prompt_sha256",
+            "version": "a8e283357f8c208ffc4cec7c35298619881dd1915f628516db67227aac39c2f1"
+          }
+        ]
+      },
+      "routing": {
+        "version": "extraction-routing-v6",
+        "header_scope_version": "independent-header-coverage-v1",
+        "accounting_grounding_version": "independent-item-column-v1",
+        "header_accounting_grounding_version": "independent-document-summary-v1",
+        "calls": 1,
+        "header_seconds": 10.67060810996918,
+        "line_seconds": 0.0,
+        "row_inventory_seconds": 0.0,
+        "call_metrics": [
+          {
+            "fields": [
+              "vendor_name",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "image_count": 1,
+            "kind": "header_seconds",
+            "question_count": 10,
+            "seconds": 10.67060810996918
+          }
+        ],
+        "header_fields_requested": [
+          {
+            "fields": [
+              "vendor_name",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "page": 1
+          }
+        ],
+        "reused_header_fields": [
+          {
+            "fields": [
+              "invoice_number",
+              "invoice_date",
+              "currency",
+              "subtotal_amount",
+              "tax_amount",
+              "total_amount"
+            ],
+            "page": 1,
+            "reason": "SOURCE_BOUND_OR_PREVIOUS_DOCUMENT_READ",
+            "unresolved_source_currency": false
+          }
+        ],
+        "reused_tables": [
+          {
+            "page": 1,
+            "reason": "COMPLETE_INDEPENDENT_PRINTED_TABLE",
+            "rows": 3
+          }
+        ],
+        "generation_stops": []
+      },
+      "normalizer_version": "document-normalizer-v4",
+      "selected_canonical": {
+        "currency": "EUR",
+        "invoice_date": "2024-02-12",
+        "due_date": "2024-03-13",
+        "subtotal_amount": "1007.50",
+        "tax_amount": "191.43",
+        "total_amount": "1198.93",
+        "tax_basis": null,
+        "document_discount_amount": null,
+        "shipping_amount": null,
+        "other_charges_amount": null
+      }
+    },
+    {
+      "id": "p04",
+      "source_sha256": "a66b0af03b6ae32a73c3738d59b0b067202f2e12b4163b2d261a99c2d3d673a0",
+      "upload_seconds": 0.125,
+      "end_to_end_seconds": 14.087,
+      "states": [
+        {
+          "state": "QUEUED",
+          "last_successful_stage": null,
+          "seconds": 0.138
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": null,
+          "seconds": 0.649
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 1.164
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": "PREPROCESS",
+          "seconds": 1.679
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "EXTRACT",
+          "seconds": 11.979
+        },
+        {
+          "state": "PROCESSING",
+          "last_successful_stage": "EXTRACT",
+          "seconds": 12.505
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "NORMALIZE",
+          "seconds": 13.031
+        },
+        {
+          "state": "QUEUED",
+          "last_successful_stage": "VALIDATE",
+          "seconds": 13.559
+        },
+        {
+          "state": "NEEDS_INPUT",
+          "last_successful_stage": "FINALIZE",
+          "seconds": 14.087
+        }
+      ],
+      "state": "NEEDS_INPUT",
+      "last_error": null,
+      "finance_decision": null,
+      "headers": {
+        "vendor_name": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "Cascade Wholesale Foods",
+          "candidate": "Cascade Wholesale Foods"
+        },
+        "invoice_number": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "CWF-77120",
+          "candidate": "CWF-77120"
+        },
+        "invoice_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "2024-03-28",
+          "candidate": "2024-03-28"
+        },
+        "due_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "2024-04-27",
+          "candidate": "2024-04-27"
+        },
+        "currency": {
+          "read": true,
+          "page": true,
+          "state": "AMBIGUOUS",
+          "raw": "$",
+          "candidate": null
+        },
+        "subtotal_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "$5,469.20",
+          "candidate": null
+        },
+        "tax_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "$437.54",
+          "candidate": null
+        },
+        "total_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "$5,906.74",
+          "candidate": null
+        }
+      },
+      "rows": [
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Organic flour, 25kg sack",
+            "candidate": "Organic flour, 25kg sack"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "20",
+            "candidate": "20"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$34.00",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$680.00",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Cane sugar, 25kg sack",
+            "candidate": "Cane sugar, 25kg sack"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "15",
+            "candidate": "15"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$28.50",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$427.50",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Olive oil, 5L tin",
+            "candidate": "Olive oil, 5L tin"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "24",
+            "candidate": "24"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$41.25",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$990.00",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Sea salt, 10kg bag",
+            "candidate": "Sea salt, 10kg bag"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "30",
+            "candidate": "30"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$12.80",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$384.00",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Black peppercorns, 5kg",
+            "candidate": "Black peppercorns, 5kg"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "8",
+            "candidate": "8"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$64.50",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$516.00",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Canned tomatoes, case of 12",
+            "candidate": "Canned tomatoes, case of 12"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "40",
+            "candidate": "40"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$18.90",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$756.00",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Dried pasta, 10kg box",
+            "candidate": "Dried pasta, 10kg box"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "22",
+            "candidate": "22"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$26.40",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$580.80",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Yeast, 1kg vacuum pack",
+            "candidate": "Yeast, 1kg vacuum pack"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "18",
+            "candidate": "18"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$9.95",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$179.10",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Baking soda, 5kg",
+            "candidate": "Baking soda, 5kg"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "12",
+            "candidate": "12"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$7.50",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$90.00",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Vanilla extract, 1L",
+            "candidate": "Vanilla extract, 1L"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "6",
+            "candidate": "6"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$58.00",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$348.00",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Cocoa powder, 5kg",
+            "candidate": "Cocoa powder, 5kg"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "9",
+            "candidate": "9"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$44.20",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$397.80",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Delivery surcharge",
+            "candidate": "Delivery surcharge"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "1",
+            "candidate": "1"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$120.00",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "$120.00",
+            "candidate": null
+          }
+        }
+      ],
+      "absent": {
+        "po_reference": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "payment_account_token": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "document_discount_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "shipping_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "other_charges_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "tax_basis": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        }
+      },
+      "header_matches": 8,
+      "header_checked": 8,
+      "row_matches": 48,
+      "row_checked": 48,
+      "expected_rows": 12,
+      "actual_rows": 12,
+      "required_abstentions": {
+        "currency": true,
+        "tax_basis": true
+      },
+      "provider": {
+        "provider_id": "ENTERPRISE_VLM",
+        "adapter_id": "typellm-sglang-client",
+        "adapter_version": "2",
+        "model_id": "qwen25-vl3b-local",
+        "runtime_versions": [
+          {
+            "name": "bridge",
+            "version": "sglang-cu124-transport-v1"
+          },
+          {
+            "name": "cache_isolation",
+            "version": "SERIAL_FLUSH_PER_GENERATE"
+          },
+          {
+            "name": "cuda_runtime",
+            "version": "12.4"
+          },
+          {
+            "name": "model_revision",
+            "version": "66285546d2b821cf421d4f5eb2576359d3770cd3"
+          },
+          {
+            "name": "model_source",
+            "version": "Qwen/Qwen2.5-VL-3B-Instruct"
+          },
+          {
+            "name": "precision",
+            "version": "BF16"
+          },
+          {
+            "name": "python",
+            "version": "3.12.3"
+          },
+          {
+            "name": "served_model",
+            "version": "qwen25-vl3b-local"
+          },
+          {
+            "name": "sglang",
+            "version": "0.4.6.post5"
+          },
+          {
+            "name": "torch",
+            "version": "2.6.0+cu124"
+          },
+          {
+            "name": "transformers",
+            "version": "5.3.0"
+          },
+          {
+            "name": "typellm",
+            "version": "0.5.1"
+          },
+          {
+            "name": "prompt_sha256",
+            "version": "a8e283357f8c208ffc4cec7c35298619881dd1915f628516db67227aac39c2f1"
+          }
+        ]
+      },
+      "routing": {
+        "version": "extraction-routing-v6",
+        "header_scope_version": "independent-header-coverage-v1",
+        "accounting_grounding_version": "independent-item-column-v1",
+        "header_accounting_grounding_version": "independent-document-summary-v1",
+        "calls": 1,
+        "header_seconds": 10.629890982003417,
+        "line_seconds": 0.0,
+        "row_inventory_seconds": 0.0,
+        "call_metrics": [
+          {
+            "fields": [
+              "vendor_name",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "image_count": 1,
+            "kind": "header_seconds",
+            "question_count": 10,
+            "seconds": 10.629890982003417
+          }
+        ],
+        "header_fields_requested": [
+          {
+            "fields": [
+              "vendor_name",
+              "vendor_address",
+              "customer_bill_to",
+              "bill_to_address",
+              "ship_to_address"
+            ],
+            "page": 1
+          },
+          {
+            "fields": [],
+            "page": 2
+          }
+        ],
+        "reused_header_fields": [
+          {
+            "fields": [
+              "invoice_number",
+              "invoice_date",
+              "currency",
+              "subtotal_amount",
+              "tax_amount",
+              "total_amount"
+            ],
+            "page": 1,
+            "reason": "SOURCE_BOUND_OR_PREVIOUS_DOCUMENT_READ",
+            "unresolved_source_currency": true
+          },
+          {
+            "fields": [
+              "vendor_name",
+              "invoice_number",
+              "invoice_date",
+              "currency",
+              "subtotal_amount",
+              "tax_amount",
+              "total_amount"
+            ],
+            "page": 2,
+            "reason": "SOURCE_BOUND_OR_PREVIOUS_DOCUMENT_READ",
+            "unresolved_source_currency": true
+          }
+        ],
+        "reused_tables": [
+          {
+            "page": 1,
+            "reason": "COMPLETE_INDEPENDENT_PRINTED_TABLE",
+            "rows": 8
+          },
+          {
+            "page": 2,
+            "reason": "COMPLETE_INDEPENDENT_PRINTED_TABLE",
+            "rows": 4
+          }
+        ],
+        "generation_stops": []
+      },
+      "normalizer_version": "document-normalizer-v4",
+      "selected_canonical": {
+        "currency": null,
+        "invoice_date": "2024-03-28",
+        "due_date": "2024-04-27",
+        "subtotal_amount": null,
+        "tax_amount": null,
+        "total_amount": null,
+        "tax_basis": null,
+        "document_discount_amount": null,
+        "shipping_amount": null,
+        "other_charges_amount": null
+      }
+    }
+  ]
+}

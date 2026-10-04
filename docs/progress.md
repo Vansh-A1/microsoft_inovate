@@ -1559,3 +1559,78 @@ against these now-spent failures, followed by genuinely new reserved evidence.
 The 40–60 independently adjudicated real/anonymized invoices, approved business
 sources, actual identity/scanner/model attribution and release inputs remain
 external gates; this lawful four-source probe does not supply them. No push/deploy.
+
+## CL-09 — source context, multi-page and dense-table repair
+
+Phase-6/final hardening responsibility, completed 2026-10-04. Goal: fix observed
+European normalization, model-null contamination and dense wrong/repeated rows
+without rebuilding the finance engine. Files: existing layout/native/TypeLLM/
+worker/normalizer, scoped tests/evaluation, new frozen limited additional-probe
+evidence, ADR-0018 and registers. No schema/dependency/model/runtime/UI/host/cloud
+or publication change. No other active thread writes this checkout; portfolio
+work is separate. Earlier original packs/spec/evidence and finance histories stay
+unchanged. No further source/model acquisition or fine-tuning followed the latest
+restriction.
+
+New v4 normalizer uses measured monetary separator evidence/Decimal, explicit
+ISO/unique euro/rupee tokens and trace source IDs. Strong mixed formats, isolated
+three-digit separators, dollar/yen/pound ambiguity and missing facts stay unresolved.
+Native layout v5 handles stacked/inline ownership and dense metadata cell anchors;
+actual overlap/shifted missing cells abstain. Routing v6 reuses known document
+headers across pages, distinguishes unread model null from printed contradiction,
+and quarantines unsupported summary tax/charge scope. Real non-null conflicts,
+source confirmation and mandatory accounting/business controls remain.
+
+Four spent development sources: **25/31→31/31 header, 72/86→86/86 row checks**, all
+19 rows counted. **23/23 absent canonical null and explicit MISSING**, five required
+abstentions; every document NEEDS_INPUT/no finance result. End-to-end before/after
+**90.736→17.286, 55.190→39.226, 31.523→13.524, 58.822→14.087 s**; model calls
+**5→1, 3→3, 1→1, 2→1**. p01 tax 11.85/measured three rows, p03 EUR/1198.93 and p04
+page-two source totals are repaired; p04 dollar/money canonical remain null.
+Rotation remains 16.905 s row generation plus 4.953 s inventory. These are limited
+selected English facts/single resident observations, not complete Arabic, true
+cold-weight, per-request VRAM or universal accuracy/speed claims.
+
+Two lawful additional fictional source facts were frozen before tuning/no-more-
+acquisition instruction. Initial and final spent probe: **15/15 header, 21/21 row,
+12/12 absent canonical null, 11/12 explicit MISSING, four abstentions**. Final
+14.721/16.088 s, one call each; legitimate equal positions preserved, no USD from
+dollar/AED merchant default, absent tax ILLEGIBLE/null not zero. They share prior
+author/template families; no genuinely held-out family/business adjudication claim.
+q06 remains **0/10 rows** at 30.485 s/three calls, both absent quantity/price null,
+no unsupported canonical row. Historical source/truth/results and intermediate
+failures are retained; neither safe null nor completed measurement counts as
+finance PASS.
+
+Final focused **183 passed / 4.41 s / exit 0**; finance/security/governance units
+**125 / 0.88 s / exit 0**; actual CPU/migrated pipeline/both finance branches
+**24 / 363.03 s / exit 0**. An actual CPU regression was diagnosed (one failed/
+13.95 s): inline total incorrectly replaced by the next row's tax-basis text.
+Stacked ownership was fixed and a regression test added; original assertion not
+relaxed. Earlier model p01 1/21 row failure and test failure history remain in
+[the report](clearledger_source_repair.md).
+
+Initial browser **16 pass/one selector failure/one conditional outage skip /
+132.647966 s / exit 1**; selector-only affected rerun **one pass/2.7 s/exit 0**;
+final real-source laptop/phone **two pass/4.438873 s/exit 0**, no retries/flaky/skips.
+Fifteen other earlier browser cases pass, including Finance/Admin authorization,
+computed HOLD, source/correction/history, quarantine/error/mobile and future
+fictional hotel allowance version 46/audit/report preservation. No fictitious
+combined clean rerun is claimed. Source/Finance/Admin screens visually inspected.
+Eight current computed judge scenarios retain 28 controls each/eligibility/citations
+and original correction HOLD.
+
+Typecheck/compilation/whitespace, 392-file bounded source scan, cached Gitleaks zero
+findings/one redacted detection probe, finance/CPU dependency checks pass. Nine
+original hashes/spec, 26 prior fictional hashes, 40 tracked historical evidence
+files and six public originals preserved; final eight production hashes match
+measurements. Loopback app/API/web/worker READY, approved model AVAILABLE; current
+readback retains RTX 2000 Ada/550.120 and finance Python 3.13.11. Local reviewed
+commit only; no push/deploy.
+
+Next bounded technical responsibility: improve rotated page/crop source recognition
+on the existing engine and q06 association while preserving missing-field holds,
+then simplify lengthy source-review presentation. Real acceptance still needs fresh
+adjudicated vendor/layout families (40–60 target), source/business facts, actual
+identity/scanner/model attribution and pilot inputs. No new acquisition/training,
+model/host change or publication follows automatically.

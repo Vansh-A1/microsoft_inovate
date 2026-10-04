@@ -55,7 +55,7 @@ def test_real_document_to_finance_both_branches_and_authorized_evidence(environm
     assert report['decision']=='HOLD' and report['ruleset_version']=='rules-p1-v7'
     assert next(rule for rule in report['rules'] if rule['rule_id']=='DOC-001')['status']=='PASS',report
     assert report['extraction_mode']=='DOCUMENT_DERIVED'
-    assert report['normalizer_version']==doc['draft']['normalizer_version']=='document-normalizer-v3'
+    assert report['normalizer_version']==doc['draft']['normalizer_version']=='document-normalizer-v4'
     assert all(t['rule_version']==report['normalizer_version'] for t in doc['draft']['traces'])
     # Phase-5 quality uses actual branch-specific source observations, excluding
     # the other branch's deliberately missing supplier/merchant/date fields.

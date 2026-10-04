@@ -61,15 +61,17 @@ def score(doc,case):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--label',required=True)
-    parser.add_argument('--case',choices=['p01','p02','p03','p04']);args=parser.parse_args()
+    parser.add_argument('--case');parser.add_argument('--corpus',choices=['clearledger_public','clearledger_public_reserved'],default='clearledger_public');args=parser.parse_args()
     if not re.fullmatch('[a-z0-9-]{1,64}',args.label):raise ValueError('Bounded lowercase measurement label required')
     os.umask(0o077);target=ROOT/'runtime/clearledger'/('public-'+args.label+'.json')
     if target.exists():raise RuntimeError('Measurement exists; historical evidence cannot be overwritten')
-    manifest=json.loads(MANIFEST.read_text());hashes=code_hashes()
+    truth=ROOT/'data'/args.corpus/'manifest.json'
+    manifest=json.loads(truth.read_text());hashes=code_hashes()
+    if args.case and args.case not in {case['id'] for case in manifest['cases']}:raise ValueError('Case must belong to frozen corpus')
     output={'version':'clearledger-public-measurement-v1','label':args.label,
         'code_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-        'code_sha256':hashes,'truth_sha256':hashlib.sha256(MANIFEST.read_bytes()).hexdigest(),
-        'limitations':'Four independently authored public fictional sources, not real-company accuracy. Actual loopback upload/proxy/durable worker/result at 0.5s polling. Existing CPU/model state is resident; no cold weight load. Human review/approvals/browser render excluded. Truth enters only post-extraction scoring; pipeline unchanged.','cases':[]}
+        'code_sha256':hashes,'truth_sha256':hashlib.sha256(truth.read_bytes()).hexdigest(),'corpus':args.corpus,
+        'limitations':f"{len(manifest['cases'])} externally authored fictional sources in this frozen corpus, not real-company or new-template-family accuracy. Actual loopback upload/proxy/durable worker/result at 0.5s polling. Existing model is resident; first worker/client request can be cold. No cold weight load. Human review/approvals/browser render excluded. Truth enters only post-extraction scoring; production hashes remain unchanged during this run.",'cases':[]}
     with httpx.Client(base_url=ORIGIN,timeout=20,follow_redirects=False) as client:
         session=client.post('/api/development/session',headers={'Origin':ORIGIN},json={'label':'Synthetic finance workspace'});session.raise_for_status()
         def post(path,**kw):

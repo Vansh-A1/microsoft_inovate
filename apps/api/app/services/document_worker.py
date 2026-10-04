@@ -208,6 +208,17 @@ def extract(doc,identity,page_data,storage,providers):
             image_loader=lambda p:'data:image/png;base64,'+base64.b64encode(storage.get(identity,p.artifact_ref)).decode(),row_image_loader=row_image,
             header_observations=mapped_headers,printed_columns=printed_columns,row_observations=mapped_rows)
         extracted=enterprise.extract(bundle_for(doc,identity,ocr_pages),SCHEMA_VERSION)
+        # A page/crop selection alone cannot prove a model tax/charge belongs to
+        # the document summary rather than an item. Preserve its raw candidate
+        # uncertain until a labeled amount or reviewer corroborates the scope.
+        independent_headers={f.field_path:f for f in native.header_fields}
+        header_accounting=frozenset(('tax_amount','document_discount_amount','shipping_amount','other_charges_amount'))
+        from app.domain.extraction import ExtractionObservationState as ObservationState
+        extracted=replace(extracted,header_fields=tuple(replace(f,state=ObservationState.AMBIGUOUS,
+            diagnostic_note='SOURCE_HEADER_AMOUNT_UNCONFIRMED: model-only tax/charge has no independently read document-summary label; confirm its printed header scope, not an item amount or inferred zero.')
+            if f.field_path in header_accounting and f.state is ObservationState.PRESENT and
+                (f.field_path not in independent_headers or independent_headers[f.field_path].state is not ObservationState.PRESENT)
+            else f for f in extracted.header_fields))
         # A model can read amounts but cannot establish accounting tax treatment
         # from their arithmetic or a sales-tax summary. Preserve the unsupported
         # candidate for review; only independently labeled text can corroborate it.
@@ -230,6 +241,7 @@ def extract(doc,identity,page_data,storage,providers):
             grounded_rows.append(replace(row,fields=fields))
         extracted=replace(extracted,line_items=tuple(grounded_rows))
         enterprise.sidecar['accounting_grounding_version']='independent-item-column-v1'
+        enterprise.sidecar['header_accounting_grounding_version']='independent-document-summary-v1'
         if native.line_items and extracted.line_items and len(native.line_items)!=len(extracted.line_items):
             from app.domain.extraction import to_data
             routing['row_count_disagreement']={'version':'provider-candidates-v1',

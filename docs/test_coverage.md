@@ -422,3 +422,55 @@ previous frozen source/snapshot checks pass. Four public source/truth hashes and
 eight production hashes match the measured unchanged 0319cf4 code. No new full
 backend/browser, representative real-company accuracy, paired before/after or VRAM
 claim. Exact commands/method/failures: [CL-08 report](clearledger_independent_validation.md).
+
+## CL-09 source normalization and header/table ownership
+
+Final focused extraction suite **183 passed / 4.41 s / exit 0**: measured European
+format sources, unique/ambiguous currencies, mixed/isolated separator rejection,
+invalid grouping/source-free locale, stacked/font overlap/left-column/inline
+ownership, dense metadata financial anchors, missing/crossing cell abstention,
+provider null versus genuine conflict, cross-page known-header reuse, separate
+equal rows, unsupported summary tax/charge/zero quarantine and retained schema/
+tenant/worker boundaries. Finance/security/governance/duplicate/rules/scanner
+regression **125 passed / 0.88 s / exit 0**.
+
+Actual CPU/migrated durable document and both source-to-finance branches **24
+passed / 363.03 s / exit 0**. The actual t04 failure was not waived: targeted
+diagnosis **one failed / 13.95 s / exit 1** exposed inline Total paired with the
+next Tax basis row. Production association and a focused regression were added;
+the unchanged original CPU assertion now passes. Existing source/tenant/commit
+guards, immutable revisions/reports, approval before clearance and embedded
+instruction/master resistance remain tested. No new full backend/all prior GPU
+suite claim.
+
+Four final resident real-model development sources **31/31 header, 86/86 row,
+23/23 absent canonical null and explicit MISSING, five required abstention checks**;
+all 19 rows counted, all NEEDS_INPUT/no finance result. Two initial additional
+reserved source-fact probes and final spent regression each **15/15 header, 21/21
+row, 12/12 absent canonical null, 11/12 explicit MISSING, four abstentions**. These
+share author/template families, not genuinely unseen layout acceptance. Final q06
+remains **0/10 rows**, both absent quantity/price canonical null, no unsupported
+canonical row; its failed row denominator remains visible. Original manifests/
+results stay unchanged and intermediate wrong p01 reads retained.
+
+Initial actual browser **16 passed / one selector failure / one conditional outage
+skip / 132.647966 s / exit 1**; affected corrected selector **one passed / 2.7 s /
+exit 0**; final actual-source checks **two passed / 4.438873 s / exit 0**, one worker,
+no retries/flakiness/skips. Fifteen other earlier cases pass: both role boundaries,
+Auto intake/unknowns, computed invoice/expense HOLD, source correction/revision/
+report retention, errors/quarantine/mobile and future fictional policy version 46
+with effective date/reason/audit/old report. Final source tests use current actual
+API documents, no truth/correction injection; measured dense tax, euro raw/canonical,
+blocked confirmation, page-two evidence and dollar ambiguity pass. Laptop/phone/
+Admin screenshots inspected. No fake combined clean browser count or new outage
+drill follows from the skip.
+
+Eight read-only computed judge scenarios with 28 current controls/eligibility/
+citations/original correction HOLD pass. Typecheck/compilation/whitespace, 392-file
+bounded source scan, cached Gitleaks zero findings/one redacted probe, both finance/
+CPU `pip check`, original nine hashes/spec, all 26 prior fictional hashes/40 tracked
+historical evidence files and six public originals pass. App/model health READY/
+AVAILABLE and approved driver/runtime preserved. Exact commands, actual latency/
+whole-device telemetry and remaining corpus/business/Arabic/rotation limits are
+in [CL-09 evidence](clearledger_source_repair.md). No additional T01–T42 completion
+or production acceptance is inferred.

@@ -72,10 +72,11 @@ class TypeLLMExtractionAdapter:
         except PackageNotFoundError: package_version='NOT_INSTALLED'
         self.metadata=AdapterMetadata('typellm-sglang-client','1','ENTERPRISE_VLM',model_id=self.config.model,
             prompt_template_version=PROMPT_VERSION,runtime_versions=(VersionMetadata('typellm',package_version),VersionMetadata('prompt_sha256',PROMPT_HASH)))
-        self.sidecar={'version':'extraction-routing-v5','prompt_sha256':PROMPT_HASH,'question_scope_version':QUESTION_SCOPE_VERSION,
+        self.sidecar={'version':'extraction-routing-v6','prompt_sha256':PROMPT_HASH,'question_scope_version':QUESTION_SCOPE_VERSION,
             'calls':0,'table_coverage':'UNKNOWN','call_metrics':[],
             'header_seconds':0.0,'line_seconds':0.0,'row_inventory_seconds':0.0,'row_regions':[],'header_fields_requested':[],
-            'reused_tables':[],'row_association_checks':[],'generation_stops':[]}
+            'reused_tables':[],'row_association_checks':[],'generation_stops':[],
+            'header_scope_version':'independent-header-coverage-v1','reused_header_fields':[]}
 
     def call(self,text,fields,images,deadline,scope=None):
         if self.sidecar['calls']>=self.config.maximum_calls:raise DocumentFailure('PROVIDER_CALL_BUDGET')
@@ -111,7 +112,7 @@ class TypeLLMExtractionAdapter:
             if raw is not None and state in ('MISSING','NOT_APPLICABLE'):
                 state='AMBIGUOUS';diagnostic='Provider text contradicts its observation status; needs human input.'
             if raw is None and state in ('PRESENT','AMBIGUOUS'):
-                state='AMBIGUOUS';raw='null (provider response)';diagnostic='Provider null cannot establish missing versus illegible; needs human input.'
+                state='ILLEGIBLE';diagnostic='PROVIDER_VALUE_UNREAD: provider supplied no observable text; this is not a conflicting printed value or proof of source absence.'
             if state=='MISSING':
                 ref=None
             else:
@@ -126,18 +127,36 @@ class TypeLLMExtractionAdapter:
         deadline=time.monotonic()+self.config.timeout_seconds
         headers_by_page=[];rows=[]
         from app.extraction.native import reconcile
+        document_known=None
+        for known_fields in self.header_observations.values():
+            current=result(bundle,self.metadata,known_fields)
+            document_known=current if document_known is None else reconcile(document_known,current)
         for page in bundle.pages:
             images=[self.image_loader(page)] if self.image_loader else []
             fields=VISUAL_HEADERS if images else HEADER_FIELDS
-            known={f.field_path:f for f in self.header_observations.get(page.page,())}
+            known={f.field_path:f for f in document_known.header_fields} if document_known else {}
             core=('vendor_name','invoice_number','invoice_date','currency','subtotal_amount','tax_amount','total_amount') if bundle.source_type.value=='VENDOR_INVOICE' else ('merchant_name','expense_date','currency','total_amount')
-            if known and all(name in known and known[name].state is State.PRESENT for name in core):
+            def source_question(f):
+                return f is not None and f.state is State.AMBIGUOUS and (
+                    (f.diagnostic_note or '').startswith('DERIVED_SOURCE_CURRENCY_AMBIGUOUS:') or
+                    f.bbox is not None and (f.diagnostic_note or '').startswith(('Conflicting repeated labels','Provider disagreement')))
+            solved=lambda name:name in known and (known[name].state is State.PRESENT or source_question(known[name]))
+            measured=sum(f.state is State.PRESENT and f.bbox is not None for f in known.values())
+            if known and all(solved(name) for name in core):
                 requested=()
-            # When coverage is incomplete, retain independent corroboration of
-            # all headers: an OCR PRESENT status does not guarantee correct glyphs.
+            elif measured>=3:
+                # Existing source-bound fields across pages need human source
+                # confirmation, not another model rewrite. Missing accounting
+                # fields remain unknown; printed conflicts cannot be settled by
+                # generation. Page-level model answers do not invent field boxes.
+                missing=tuple(name for name in core if not solved(name))
+                extra=tuple(f for f in VISUAL_HEADERS if f not in HEADER_FIELDS) if images and not headers_by_page else ()
+                requested=missing+extra
             else:
                 excluded=RECEIPT_ONLY if bundle.source_type.value=='VENDOR_INVOICE' else INVOICE_ONLY
                 requested=tuple(f for f in fields if f not in excluded)
+            self.sidecar['reused_header_fields'].append({'page':page.page,'fields':[f for f in core if solved(f)],
+                'reason':'SOURCE_BOUND_OR_PREVIOUS_DOCUMENT_READ','unresolved_source_currency':source_question(known.get('currency'))})
             self.sidecar['header_fields_requested'].append({'page':page.page,'fields':list(requested)})
             if requested:
                 data=self.call(page.available_text or '',requested,images,deadline)
@@ -146,6 +165,7 @@ class TypeLLMExtractionAdapter:
             headers=tuple(new.get(f) or known.get(f) or FieldObservation(f,State.MISSING) for f in fields)
             per_page=result(bundle,self.metadata,headers)
             headers_by_page.append(per_page)
+            document_known=per_page if document_known is None else reconcile(document_known,per_page)
             preserved=self.row_observations.get(page.page,())
             if preserved:
                 # Supplied only by the independent complete-table gate. Reuse

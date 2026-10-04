@@ -174,7 +174,7 @@ def test_reconciliation_does_not_treat_currency_as_a_quantity_or_rate(field,valu
 def test_visual_printed_row_amount_uses_the_decimal_normalizer():
     from app.documents.normalizer import normalized_value,NORMALIZER_VERSION
     assert normalized_value('lines.0.amount','INR 1,234.50','INR')[0]=='1234.50'
-    assert NORMALIZER_VERSION=='document-normalizer-v3'
+    assert NORMALIZER_VERSION=='document-normalizer-v4'
 
 
 @pytest.mark.parametrize('raw,currency',[('100.00',None),(100.0,'INR')])

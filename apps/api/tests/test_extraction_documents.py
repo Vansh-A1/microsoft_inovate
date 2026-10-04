@@ -96,7 +96,8 @@ def test_typellm_real_generate_contract_string_money_and_null_uncertainty():
     transport=MockTransport(data);adapter=TypeLLMExtractionAdapter(ProviderSettings(endpoint='http://shared-inference.example',model='approved-external-model'),transport)
     out=adapter.extract(bundle,SCHEMA_VERSION)
     assert next(f for f in out.header_fields if f.field_path=='total_amount').raw_value=='INR 500.00'
-    assert next(f for f in out.header_fields if f.field_path=='invoice_date').state is State.AMBIGUOUS
+    unread=next(f for f in out.header_fields if f.field_path=='invoice_date')
+    assert unread.state is State.ILLEGIBLE and unread.raw_value is None and unread.diagnostic_note.startswith('PROVIDER_VALUE_UNREAD:')
     q=transport.calls[0]['questions']
     assert q['total_amount_raw']['type']==['string','null'] and all(v['thinking'] is False for v in q.values())
     assert 'secret' not in str(to_data(out)) and adapter.metadata.prompt_template_version

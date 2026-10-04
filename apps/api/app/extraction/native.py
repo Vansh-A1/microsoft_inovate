@@ -7,7 +7,7 @@ from dataclasses import replace
 from uuid import uuid4
 import re
 from app.domain.extraction import AdapterMetadata, AdapterCapabilities, ExtractionResult, FieldObservation, LineItemObservation, SCHEMA_VERSION
-from app.domain.extraction import ExtractionObservationState as State, ExtractionStatus
+from app.domain.extraction import ExtractionObservationState as State, ExtractionStatus, to_data
 from app.domain.evidence import EvidenceReference, EvidenceKind, BoundingBox
 
 LABELS={'supplier':'vendor_name','vendor':'vendor_name','merchant':'merchant_name',
@@ -37,7 +37,7 @@ def result(bundle,metadata,headers,rows=(),failure=None):
 
 
 class NativeTextExtractionAdapter:
-    metadata=AdapterMetadata('native-label-parser','6','NATIVE_TEXT',prompt_template_version='labeled-header-table-layout-v6')
+    metadata=AdapterMetadata('native-label-parser','7','NATIVE_TEXT',prompt_template_version='labeled-header-table-layout-v7')
     capabilities=AdapterCapabilities(True,True,True,False)
 
     def __init__(self, page_details=()):
@@ -103,6 +103,30 @@ class NativeTextExtractionAdapter:
                 headers.append(FieldObservation(field,State.AMBIGUOUS,' | '.join(distinct),source=candidates[0].source,
                     diagnostic_note='Conflicting repeated labels across document pages; no value chosen.'))
                 if field in ('invoice_number','receipt_number'):self.diagnostics.append('SEGMENTATION_UNCERTAIN')
+        # An explicit unit printed in monetary cells establishes a candidate
+        # currency even without a separate Currency label. $ and ¥ do not select
+        # a currency, and conflicting tokens never pick one by country/address.
+        currency_index=next(i for i,f in enumerate(headers) if f.field_path=='currency')
+        if headers[currency_index].state is State.MISSING:
+            from app.documents.normalizer import CURRENCIES,normalize_currency,NormalizationError
+            measured=[f for f in headers if f.field_path.endswith('_amount')]+[
+                f for row in rows for f in row.fields if f.field_path in ('unit_price','amount','net_amount','gross_amount','tax_amount')]
+            tokens=[]
+            for f in measured:
+                if f.state is not State.PRESENT or f.source is None or f.bbox is None:continue
+                for token in re.findall(r'\b[A-Z]{3}\b|[₹$€£¥]',f.raw_value):
+                    if token in CURRENCIES or token in '₹$€£¥':tokens.append((token,f))
+            if tokens:
+                distinct=list(dict.fromkeys(token for token,_ in tokens));units=set()
+                try:units={normalize_currency(token) for token in distinct}
+                except NormalizationError:pass
+                first=tokens[0][1];raw=' | '.join(distinct)
+                certain=len(units)==1 and all(token not in ('$','¥') for token in distinct)
+                if certain:raw=distinct[0]
+                headers[currency_index]=FieldObservation('currency',State.PRESENT if certain else State.AMBIGUOUS,raw,
+                    source=source(bundle,first.page,'currency',to_data(first.bbox),raw),
+                    diagnostic_note='DERIVED_SOURCE_CURRENCY: printed monetary units agree; no address/FX inference.' if certain else
+                        'DERIVED_SOURCE_CURRENCY_AMBIGUOUS: printed monetary unit cannot establish one currency; source/business confirmation required.')
         # A missing column must remain a reviewable observation, not disappear
         # and let a demo/business template appear to supply the source fact.
         rows=[replace(row,fields=row.fields+tuple(FieldObservation(field,State.MISSING,
@@ -128,13 +152,20 @@ def reconcile(primary,other):
     def same_literal(a,b):
         if a.raw_value==b.raw_value:return True
         name=a.field_path.split('.')[-1]
+        if name=='currency':
+            from app.documents.normalizer import normalize_currency,NormalizationError
+            try:return normalize_currency(a.raw_value)==normalize_currency(b.raw_value)
+            except NormalizationError:return False
         if name in ('quantity','tax_rate') or (currency and (name.endswith('_amount') or name in ('unit_price','amount'))):
-            from app.documents.normalizer import normalize_money,normalized_value,NormalizationError
+            from app.documents.normalizer import normalize_money,normalized_value,source_number_format,NormalizationError
             from decimal import Decimal
             try:
                 if name in ('quantity','tax_rate'):
                     return Decimal(normalized_value(name,a.raw_value)[0])==Decimal(normalized_value(name,b.raw_value)[0])
-                return Decimal(normalize_money(a.raw_value,currency))==Decimal(normalize_money(b.raw_value,currency))
+                def amount(f):
+                    convention,_=source_number_format([{'id':'comparison','field_path':f.field_path,'state':'PRESENT','raw_value':f.raw_value,'source':f.source}],currency)
+                    return Decimal(normalize_money(f.raw_value,currency,convention))
+                return amount(a)==amount(b)
             except NormalizationError:return False
         return False
     headers=[]
@@ -145,6 +176,8 @@ def reconcile(primary,other):
             headers.append(FieldObservation(a.field_path,State.AMBIGUOUS,f'{a.raw_value} | {b.raw_value}',source=a.source,
                 diagnostic_note='Provider disagreement; both candidates retained.'))
         elif a.state is State.MISSING:headers.append(b)
+        elif a.state is State.PRESENT and a.bbox is not None and b.raw_value is None and (b.diagnostic_note or '').startswith('PROVIDER_VALUE_UNREAD:'):
+            headers.append(replace(a,diagnostic_note=(a.diagnostic_note or '')+' Alternate provider did not read a value; no contradictory printed candidate exists.'))
         elif a.state is State.PRESENT and b.state in (State.AMBIGUOUS,State.ILLEGIBLE):
             headers.append(FieldObservation(a.field_path,State.AMBIGUOUS,f'{a.raw_value} | {b.raw_value or b.state.value}',source=a.source,
                 diagnostic_note='Independent provider cannot corroborate critical observation.'))
