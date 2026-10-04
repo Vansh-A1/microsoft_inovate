@@ -6,8 +6,9 @@
 | Finance Workspace and separate Admin Console | COMPLETE | Role-aware navigation, business reference/correction forms, plain result/next actions, optional technical evidence; typed configuration drafts/new versions. |
 | Secure PDF/PNG/JPEG intake, native extraction and CPU OCR | COMPLETE | Original preservation, bounded parser, quality/source traces, quarantine, human source verification. Limited supported document families. |
 | CSV/XLSX imports and cell evidence | COMPLETE | Explicit mapping/defaults and retained errors; formulas rejected and real document links required. |
-| TypeLLM extraction application boundary | COMPLETE | Contract/mocked-provider tests, strings for money, explicit uncertainty, bounded header/row requests and outage handling. |
-| Real enterprise VLM/SGLang execution, latency/VRAM/quality | DEFERRED_EXTERNAL | Approved suitable inference infrastructure still absent; no driver/Docker repair or weights download. |
+| TypeLLM extraction application boundary | COMPLETE | Actual pinned TypeLLM 0.5.1 + Qwen visual generation, opt-in real uploads/rows/normalization, contract tests, strings for money and explicit uncertainty. |
+| Real local VLM/SGLang execution, latency/VRAM/quality smoke | OPERATIONAL FOR TESTED CASES | Qwen2.5-VL-3B BF16, SGLang 0.4.6.post5/CUDA 12.4, unchanged driver 550.120; five source variants and real app integration. [Measured record](real_vlm_acceptance.md). |
+| Production enterprise inference/license/representative quality | DEFERRED_EXTERNAL | Tested checkpoint has Qwen RESEARCH LICENSE AGREEMENT. Shared private service, commercial permission, representative quality and capacity need separate gates; local loopback smoke is not universal accuracy. |
 | Rules-only and governed statistical anomaly modes | COMPLETE | Twenty PIT features, median/MAD signals, feedback/dataset provenance, candidate/shadow/activation/rollback/monitoring; no fraud probability. |
 | Supervised classifier, calibrated probability and SHAP | DEFERRED_DATA | Representative independent final adjudications required. Synthetic engine outcomes do not qualify. |
 | Ownership, conflicts, cancellation/compensation, reconciliation/replay | COMPLETE | Existing versioned workflow and immutable audit/ledger retained, including concurrent release tests. |

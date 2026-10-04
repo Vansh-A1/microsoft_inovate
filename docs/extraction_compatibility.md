@@ -1,5 +1,14 @@
 # Phase 0 extraction compatibility
 
+**Current update — 2026-10-04:** the user's priority override has established actual
+Qwen2.5-VL-3B BF16 + SGLang 0.4.6.post5 + PyTorch CUDA 12.4 + TypeLLM 0.5.1
+execution on driver 550.120. The [new ADR](adr/0015-current-driver-compatible-real-vlm.md)
+and [acceptance record](real_vlm_acceptance.md) supersede the local-runtime deferral
+for this tested experimental tuple. The unchanged research matrices below are
+historical observations of different tuples; their counts are not new model metrics.
+The current checkpoint has a Qwen research license, unlike the earlier researched
+checkpoint families. Production hosting/license/quality remain separate gates.
+
 P0-05 feasibility consolidation is COMPLETE under the 2026-10-03 approved external-runtime deferral. P0-04 is CLOSED WITH EXTERNAL RUNTIME DEFERRAL; the fixture/contracts/research are verified, and real inference remains unexecuted. The original P0-04B research snapshot and P0-04C1 observations below retain their source-specific status. Exact sources and research pins are in the [spike plan](typellm_spike_plan.md); [exit review](phase0_exit_review.md) records the qualified closure. Source verification never establishes an executed provider compatibility test.
 
 Status meanings: **VERIFIED FROM OFFICIAL SOURCE** establishes the stated upstream behavior; **VERIFIED LOCALLY** requires an executed local check; **NOT VERIFIED** identifies an unanswered compatibility/measurement question; **BLOCKED** identifies an observed prerequisite that prevents the selected experiment; **UNSUPPORTED** identifies a rejected interface feature. Source verification does not establish end-to-end compatibility. Each row has one primary status; its evidence column preserves qualifications.

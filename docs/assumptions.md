@@ -5,6 +5,31 @@ This register separates proposed development defaults, currently missing inputs,
 Later phase sections supersede earlier historical capability limits; they do not
 change the original assumptions or pretend synthetic policy is company policy.
 
+## Current real-extraction experiment — 2026-10-04
+
+The priority override authorizes the isolated local experiment in [ADR-0015](adr/0015-current-driver-compatible-real-vlm.md).
+Actual Qwen2.5-VL-3B BF16, SGLang 0.4.6.post5/PyTorch CUDA 12.4 and TypeLLM 0.5.1
+now execute with driver 550.120 unchanged. Separate Python 3.12 serving/client
+environments avoid changing the working finance application's Python 3.13 packages.
+Docker remains permission denied. Local extracted Python headers are files in
+runtime, not an installed OS package. No sudo or host/GPU/system change occurred.
+
+The exact Northstar invoice was unavailable; the supplied actual table-invoice
+image was used as the primary case. Five actual source variants include three
+related synthetic invoice renderings and one synthetic receipt photograph.
+They establish compatibility and specific observed field/row behavior, not
+independent representative accuracy. The small model can confuse compact tables
+and invent semantic observations. Critical ambiguity, provider disagreement and
+arithmetic errors still require source-linked correction and new finance evaluation.
+
+The pinned checkpoint's actual LICENSE is the Qwen RESEARCH LICENSE AGREEMENT.
+Commercial use/redistribution, representative quality, shared private serving and
+capacity remain unapproved external gates. Earlier assumptions describing local
+inference as unavailable apply to their historical tuples; the current measured
+experimental tuple is operational. No classifier/SHAP or cloud gate is changed.
+Private originals, outputs, keys, caches and weights remain outside Git. See the
+[measured acceptance record](real_vlm_acceptance.md) and [runbook](runbooks/local-inference.md).
+
 ## Business defaults and missing inputs
 
 | Item | Current basis/status | Required before live use |

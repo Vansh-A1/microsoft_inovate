@@ -78,6 +78,15 @@ The latest Phase-5 approval authorizes P5-01–P5-05 continuously, with additive
 
 ## Git publication policy
 
+The 2026-10-04 priority override authorizes real local invoice extraction in one
+continuous pass, including isolated VLM/runtime/model downloads and changes needed
+for the current driver. It supersedes earlier inference-deferral prohibitions for
+this task. No sudo, host/system/GPU/Docker changes, finance-environment downgrades,
+cloud provisioning or publication/authentication work are authorized. Preserve
+the existing application and verify real TypeLLM/model/provider provenance, rows,
+normalization, uncertainty and finance integration. Keep private runtime artifacts
+ignored; make reviewed local commits and do not push under this override.
+
 - Target repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate); primary branch: `main`.
 - The completed Phase 0 had one failed authentication push. The latest approval authorizes exactly one consolidated main push after Phase 1 is fully verified. If authentication fails, record it, preserve clean local commits, and do not repair credentials/retry.
 - From P0-02 onward, make appropriate local commits for approved tasks. Do not push every small step. Push consolidated work only after the entire phase is completed, verified, and approved by the user, unless explicitly instructed otherwise.

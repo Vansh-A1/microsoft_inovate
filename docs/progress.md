@@ -1,5 +1,69 @@
 # Implementation progress
 
+## Current priority override — real local document inference
+
+The 2026-10-04 direct request authorizes an isolated current-driver VLM experiment
+and actual application integration, superseding earlier inference deferrals for
+this task. Phases 0–6 were already delivered locally; this checkpoint changes the
+extraction front half and preserves their finance architecture. No new phase,
+host change, cloud provisioning or Git publication/authentication task is started.
+
+Actual Qwen2.5-VL-3B BF16, pinned revision
+`66285546d2b821cf421d4f5eb2576359d3770cd3`, now runs with SGLang 0.4.6.post5 /
+PyTorch 2.6.0+cu124 on the unchanged 550.120 driver. Actual TypeLLM 0.5.1 lives
+in a separate CPU client environment. Real pixels reach the existing adapter,
+persisted extraction pipeline, Decimal normalizer, source corrections and finance
+engine. Final full backend: **803 passed / 6 opt-in skipped**, 2375.28 s, exit 0.
+The final affected CPU batch passes **200**, 2.30 s, covering five cases added
+after full-run collection; all **808 current ordinary cases** are covered by
+these overlapping runs. The separate actual GPU suite passes **6**, 241.19 s.
+Final browser suite passes **37**, 2.8 minutes; TypeScript/build/drift/contracts,
+dependency integrity, source manifests and secret scanning pass. Counts are
+separate executed runs, not an invented 814-case ordinary full-suite result.
+
+Changes include an authenticated CPU gateway, legacy transport compatibility,
+measured source-mapped row crops, mapping-coverage escalation, visual row inventory
+independent of partial OCR, retained provider conflicts and actual admin health.
+`document-normalizer-v2` routes printed visual row amounts through the existing
+Decimal/currency validator while retaining earlier trace versions.
+The scan-to-finance test preserves raw observations and explicitly corrects a
+compact-table error; finance returns HOLD for missing approvals. The supplied
+table invoice maps its eight checked header literals and 12 core row values, but
+currency/date/fee uncertainty still requires input. Northstar's exact source was
+not found. Five source variants and crop measurements are a smoke, not universal
+accuracy. The model's Qwen research license is a production-use gate.
+
+A browser regression exposed a delayed reference-list response overwriting newer
+staged work. A small generation guard and a real delayed-response regression test
+repair it. Identity test navigation and provider-status assertions were corrected;
+no finance authorization or decision behavior was weakened.
+
+The [acceptance record](real_vlm_acceptance.md), [ADR-0015](adr/0015-current-driver-compatible-real-vlm.md),
+[runbook](runbooks/local-inference.md), compatibility/architecture/assumptions,
+dictionary, coverage and release matrix describe actual behavior and limits.
+Source originals, hashes, private outputs, keys, caches and model artifacts remain
+preserved/ignored. No GPU driver, host CUDA, system Python, GPU/Docker configuration
+or administrator package was changed, and no sudo was used. Earlier sections below
+are retained historical checkpoints, superseded by later approved phase/override work.
+
+### Local delivery checkpoint
+
+Implementation commit `4d69cf0` contains the real runtime/gateway, provider boundary,
+coverage routing, uncertainty/normalization guards, benchmark and opt-in tests.
+A separate reviewed UI/documentation commit records actual provider health, the
+browser response-race repair, acceptance evidence and reproducible run commands.
+Original source-pack/fixture manifests remain verified and unchanged. Source scan
+reports 310 text files with no configured credential patterns/private paths;
+Gitleaks 8.30.1 finds zero source secrets and passes its redacted positive probe.
+Staged whitespace checks pass. No new migrations or finance-rule changes occurred.
+
+Actual stop/start/health and post-restart image inference were exercised. Final
+provider health is AVAILABLE, application readiness is HTTP 200, and Finance
+Workspace responds HTTP 200. Working inference and app artifacts are retained.
+No push or authentication repair is attempted. Next task: **none; STOP after
+delivering the verified local extraction checkpoint.** Production hosting/license,
+representative quality, supervised labels and cloud inputs remain separate gates.
+
 ## Phase 5 complete locally — rules plus anomaly; stop before Phase 6
 
 Direct approval authorized P5-01–P5-05 continuously and the specification's honest
@@ -36,16 +100,16 @@ Direct approval authorized P4-01–P4-04 continuously. All four tasks and the lo
 ## Project status
 
 - Session date: 2026-10-02–04 (Asia/Kolkata).
-- Current phase: **PHASE 5 COMPLETE LOCALLY — Measured statistical intelligence and governance**; Phases 0–3 and the preserved enterprise-runtime deferral remain intact.
-- Current task: **P5-01–P5-05 local fallback exit complete. Stop before Phase 6; separate approval required.**
+- Current phase: **PHASES 0–6 COMPLETE LOCALLY** with their recorded external cloud/data gates.
+- Current task: **PRIORITY OVERRIDE COMPLETE — real current-machine VLM extraction, application integration and final regression verified; stop after local commits.**
 - P0-01: **COMPLETE LOCALLY**; the single consolidated phase push failed authentication; remote publication remains blocked.
 - P0-02: **COMPLETE**; tested Money/currency, states and evidence foundation.
 - P0-03: **COMPLETE**; reproducible synthetic references and independent golden expectations.
 - P0-04: **CLOSED WITH EXTERNAL RUNTIME DEFERRAL**; fixture/contracts/research verified, real inference not executed.
 - P0-05: **COMPLETE FEASIBILITY CONSOLIDATION**; final compatibility matrix, research pins and honest unverified/blocked/deferred limitations.
 - P0-06: **COMPLETE DESIGN DECISIONS**; identity, effective policy, durable jobs, private storage, RULES_ONLY risk and optimized shared inference.
-- Real inference runtime: **BLOCKED_EXTERNAL_PREREQUISITE**; observed BLOCKED_DRIVER and BLOCKED_DOCKER_ACCESS, ENVIRONMENT_FAILURE, IMAGE_PATH_NOT_RUN.
-- Development extraction: **ACTUAL NATIVE_TEXT / LOCAL_OCR** plus preserved FIXTURE replay; enterprise target **OPTIMIZED SHARED VLM INFERENCE SERVICE**, runtime explicitly deferred.
+- Real inference runtime: **OPERATIONAL FOR TESTED LOCAL CASES** under ADR-0015; the earlier CUDA-13 and Docker observations remain historical blockers for those paths.
+- Development extraction: **ACTUAL NATIVE_TEXT / LOCAL_OCR / ENTERPRISE_VLM** plus preserved FIXTURE replay; production shared serving/license/representative quality remain separate gates.
 - Phase 1: **COMPLETE LOCALLY**; preserved as the Phase-2 finance baseline.
 
 The [Phase-0 exit review](phase0_exit_review.md) preserves the explicit runtime qualification. The [Phase-1 exit review](phase1_exit_review.md) records the working product and full-release limits. [T01–T42 coverage](test_coverage.md) is 39 implemented/passing, 1 partial and 2 deferred by the supervised-data gate. Historical work records below describe the approval/status at each checkpoint; this current disposition supersedes their prior stop/parent-incomplete statements. No original record or specification is rewritten to suggest a passed real spike.
@@ -58,7 +122,7 @@ The [Phase-0 exit review](phase0_exit_review.md) preserves the explicit runtime 
 - [x] Phase 3 — Complete finance matching and controls (local exit verified; authentication-blocked publication).
 - [x] Phase 4 — Human workflow and operational reliability (local exit passed; publication separately recorded).
 - [x] Phase 5 — Measured intelligence/explanations: explicit rules/anomaly-only exit; supervised model and SHAP deferred for representative-data gate.
-- [ ] Phase 6 — Azure pilot and handoff.
+- [x] Phase 6 — Local deployment/pilot handoff complete; cloud provisioning deferred for external inputs, as recorded in the Phase-6 exit review.
 
 ### Phase 0 tasks
 

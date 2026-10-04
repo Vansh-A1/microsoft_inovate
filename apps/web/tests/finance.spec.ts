@@ -56,6 +56,24 @@ test('reference stage validate activate and unauthorized action errors are visib
  const forged=await page.request.post('/api/development/session',{headers:{Origin:origin},data:{label:'Synthetic employee',roles:['CFO']}});expect(forged.status()).toBe(422);
 });
 
+test('a delayed initial reference response cannot erase the newly staged batch',async({page})=>{
+ let first=true;let captured!:()=>void;let release!:()=>void;let delivered!:()=>void;
+ const snapshot=new Promise<void>(resolve=>{captured=resolve});const held=new Promise<void>(resolve=>{release=resolve});const completed=new Promise<void>(resolve=>{delivered=resolve});
+ await page.route('**/api/reference-imports',async route=>{
+  if(route.request().method()==='GET'&&first){first=false;const response=await route.fetch();captured();await held;await route.fulfill({response});delivered();}
+  else await route.continue();
+ });
+ try{
+  await page.goto('/reference-imports');await snapshot;
+  const tag='SYNTHETIC-DELAY-'+randomUUID();await page.getByLabel('Source system',{exact:true}).fill(tag);
+  await page.getByLabel('Import / activation reason').fill('Verify stale response protection with a real scoped import');
+  await page.getByLabel('Reference records JSON').fill(JSON.stringify([{kind:'cost_centers',payload:{id:randomUUID(),version:1,name:tag,department:'DEMO-ENGINEERING'}}]));
+  await page.getByRole('button',{name:'Stage import',exact:true}).click();
+  const batch=page.locator('.reference-batch').filter({hasText:tag});await expect(batch).toContainText('STAGED');
+  release();await completed;await batch.getByRole('button',{name:'Validate batch',exact:true}).click();await expect(batch).toContainText('VALID');
+ }finally{release();}
+});
+
 test('finance control loading error empty and mobile views remain usable',async({page})=>{
  const id='30000000-0000-4000-8000-000000000004';await page.route('**/api/transactions/'+id+'/finance-controls',async route=>{await new Promise(r=>setTimeout(r,900));await route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:{message:'Finance controls temporarily unavailable'}})});});await page.goto('/cases/'+id);await expect(page.getByText('Loading finance controls…')).toBeVisible();await expect(page.locator('.finance-controls .error[role=alert]')).toContainText('Finance controls temporarily unavailable');await page.unroute('**/api/transactions/'+id+'/finance-controls');await page.reload();await expect(page.getByText('No Phase-3 budget result for this version.')).toBeVisible();await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'../../output/playwright/phase3-controls-mobile.png',fullPage:true});
 });

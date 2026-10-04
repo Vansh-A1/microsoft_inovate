@@ -1,5 +1,31 @@
 # Mandatory test coverage
 
+## Current real VLM integration — 2026-10-04
+
+The approved priority override supplements the historical phase results below.
+Actual pinned TypeLLM 0.5.1 / Qwen2.5-VL-3B BF16 / SGLang CUDA-12.4 execution
+is now verified in six opt-in real integration tests (241.19 s, exit 0): text,
+supplied-image secure uploads with and without actual OCR, complete native cheap
+routing, an actual refused provider connection and a source-corrected real scan
+through immutable canonical facts and the existing finance engine. These tests
+assert provider/model/runtime metadata, source hashes/pages/null boxes, retained
+observations, cross-tenant denial and critical-uncertainty commit rejection.
+They cannot satisfy acceptance using FIXTURE or parser ground truth.
+
+The ordinary CPU extraction/document batch passes **200 tests** (2.30 s, exit 0),
+including authenticated gateway bounds/pins, explicit uncertainty, cache failure
+isolation, row inventory independent of partial OCR, row-count disagreement,
+string/Decimal reconciliation, explicit-currency normalization of printed visual
+row amounts, and currency exclusion from quantities/rates.
+Normal CI skips the opt-in GPU cases without downloads or startup. The paired
+real crop experiment retains 12/12 core row values in both variants.
+
+This strengthens T29/T33's actual extraction uncertainty/outage behavior without
+changing the 39/1/2 scenario taxonomy below. It does not implement a supervised
+classifier or SHAP: T31/T34 remain data-gated, and supervised T30 remains partial.
+Five actual source variants are a smoke, not a representative accuracy dataset.
+Final full regression/browser counts are recorded in the [acceptance record](real_vlm_acceptance.md).
+
 This is the implementation coverage tracker for T01–T42 in [specification section 22.2](AP_Exception_Assistant_Codex_Spec.md#222-mandatory-test-cases). Scenarios and expected results are copied from that table; they describe required behavior, not executed tests.
 
 **Current Phase-6 scenario status: 39 IMPLEMENTED + PASSING; 1 PARTIALLY IMPLEMENTED; 2 DEFERRED — SUPERVISED DATA GATE.** Phase 6 preserves these truthful dispositions; it does not fabricate a classifier or SHAP. The preserved Phase-1 gate executed 569 Python tests (488 preserved Phase-0 + 44 pure rules + 37 PostgreSQL integration) and 11 live-browser tests, with zero failures or skips. This is supported synthetic development coverage, not a full production release gate.
@@ -38,7 +64,7 @@ Test references: **PG** = [PostgreSQL integration](../apps/api/tests/integration
 | T26 | Mandatory approval absent or insufficient authority | HOLD, exact missing step/authority evidence | Phase 1 / 3 | IMPLEMENTED + PASSING | PG golden `vendor/approval_pending`, `test_insufficient_approver_authority_is_persisted_hold`; UI new submissions lack authority and HOLD. |
 | T27 | Submitter tries self-approval or forged approver ID | Rejected and audited | Phase 3 / 4 | IMPLEMENTED + PASSING | PG self-approval 403 with immutable REJECTED action/audit; forged actor DTO 422; ordered authenticated roles and authority enforced. Validation rejection does not fabricate an approval action. |
 | T28 | Amount materially changes after approval | Old approval invalidated and eligibility recomputed | Phase 3 / 4 | IMPLEMENTED + PASSING | PG `test_revision_invalidates_approved_version_and_capacity` and `test_material_amount_change_requires_new_authority_chain_and_retains_old_approvals`: 50,000→150,000 retains historical authority but requires the fresh Manager/Director chain. |
-| T29 | Critical extraction unknown or provider disagreement | REVIEW; no invented amount/vendor/currency | Phase 2 / 4 | IMPLEMENTED + PASSING | P2 real native/OCR and mocked TypeLLM disagreement abstentions plus PG `test_native_unknown_and_unsupported_credit_route_to_review_without_source_invention`: actual missing-total PDF NEEDS_INPUT, attached source DOC-001 UNKNOWN/REVIEW, no automatic PASS or invented amount. Live VLM quality remains explicitly deferred. |
+| T29 | Critical extraction unknown or provider disagreement | REVIEW; no invented amount/vendor/currency | Phase 2 / 4 + real VLM override | IMPLEMENTED + PASSING | Actual native/OCR and opt-in real TypeLLM/VLM uncertainty/source rejection, provider disagreements and row arithmetic abstention; PG missing-total attachment DOC-001 UNKNOWN/REVIEW. Actual real invoice critical ambiguity stays NEEDS_INPUT; no automatic PASS. Representative production quality remains unverified. |
 | T30 | Low ML score but mandatory rule failure | HOLD remains | Phase 1 / 5 | PARTIALLY IMPLEMENTED | Actual PostgreSQL `test_actual_low_anomaly_cannot_clear_mandatory_hold` computes score 0 from retained statistical inputs and preserves mandatory HOLD in SHADOW and active anomaly mode; pure combiner and required-outage tests also preserve precedence. Supervised classifier behavior remains deferred because the representative-label gate fails; no complete supervised-ML claim. |
 | T31 | High ML score, otherwise complete controls | REVIEW, model explanation separate from rule evidence | Phase 5 | DEFERRED — SUPERVISED DATA GATE | No justified supervised classifier. Actual statistical anomaly escalation PASS→REVIEW is tested in PostgreSQL and browser, with separate factors and unchanged rule results; this does not fabricate the supervised-model scenario. |
 | T32 | Model disabled in authorized RULES_ONLY mode | No score; rules may PASS | Phase 1 / 5 | IMPLEMENTED + PASSING | All eight PG golden flows assert NOT_CONFIGURED, no risk_score; eligible clean cases PASS. |

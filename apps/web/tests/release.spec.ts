@@ -23,7 +23,7 @@ test('finance workspace has a small authorized navigation and business result',a
 test('policy business form creates a future hotel version and retains history and reports',async({page})=>{
  await page.goto('/');const evaluation=(await (await page.request.get('/api/transactions/30000000-0000-4000-8000-000000000001')).json()).latest_evaluation_id;
  const before=await (await page.request.get('/api/evaluations/'+evaluation+'/report')).json();
- await identity(page,'Synthetic policy administrator');await page.goto('/admin');await expect(page.getByRole('heading',{name:'Business configuration'})).toBeVisible();
+ await identity(page,'Synthetic policy administrator');await expect(page.getByRole('heading',{name:'Business configuration'})).toBeVisible();
  await expect(page.getByRole('link',{name:'Review queue',exact:true})).toHaveCount(0);
  const records=(await (await page.request.get('/api/admin/catalog')).json()).items;
  const hotel=records.find((r:{kind:string;payload:{category:string}})=>r.kind==='expense_policies'&&r.payload.category==='HOTEL');

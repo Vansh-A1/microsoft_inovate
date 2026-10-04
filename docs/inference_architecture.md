@@ -1,6 +1,12 @@
 # Optimized enterprise extraction architecture
 
-Accepted design on 2026-10-03; basis: the user-approved Phase-0 closure, specification sections 3–4 and 18–19, and [ADR-0008](adr/0008-optimized-enterprise-inference.md). This document describes future services. Only the provider-independent contracts, synthetic fixture adapter and comparison harness are implemented today. No router, native-text extractor, crop detector, GPU service, queue or application is implemented.
+Accepted design on 2026-10-03; basis: the user-approved Phase-0 closure, specification sections 3–4 and 18–19, and [ADR-0008](adr/0008-optimized-enterprise-inference.md). The later phases implement the CPU application, native/OCR preprocessing, durable routing and provider boundary. The 2026-10-04 priority override establishes real local experimental TypeLLM/VLM/SGLang serving in [ADR-0015](adr/0015-current-driver-compatible-real-vlm.md). Larger fallback tiers, production shared serving and representative quality/capacity remain future work.
+
+## Current executed local path
+
+`upload → preprocessing → native/OCR mapping coverage → real visual header and bounded row generation → independent reconciliation → trusted Decimal normalization → source verification/correction → existing deterministic finance engine` is operational for the tested cases. Complete native PDFs remain cheap. Incomplete native/OCR mapping escalates even with high native-text coverage; known segmentation uncertainty requires confirmation. Routing never decides finance eligibility.
+
+The resident small BF16 model runs in an isolated CUDA-12.4 environment and the actual TypeLLM client in a separate CPU environment. The finance application has no new GPU dependency. Generation is serialized with cache flushing, safe error handling and explicit metadata. Measured uniform-grid crops retain actual source mappings and unknown field boxes. Both provider outputs are retained on row-count disagreement; all affected candidates remain ambiguous. See [acceptance measurements](real_vlm_acceptance.md) and [run commands](runbooks/local-inference.md).
 
 ## Goals and planes
 
@@ -29,7 +35,7 @@ TypeLLM supplies bounded typed scalar generation through the replaceable adapter
 
 ## Routing and sufficiency
 
-The future ExtractionRouter chooses a path using native-text coverage/reliability, scan/photo classification, quality, supported family, page count, layout/table complexity, unresolved critical fields, availability and resource budgets. It never emits PASS/REVIEW/HOLD. No routing implementation or quality thresholds are invented in Phase 0.
+The implemented router uses page quality, native-text availability and explicit header/row mapping coverage. The future extension adds richer supported-family/table complexity and model-tier/resource selection. It never emits PASS/REVIEW/HOLD. No routing implementation or quality thresholds were invented in Phase 0; historical design sections below describe the intended enterprise extension.
 
 ```mermaid
 flowchart TD

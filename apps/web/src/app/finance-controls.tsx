@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {api,mutate,type Evaluation,type Canonical} from '@/lib/api';
 import {SourceViewer,type DocumentDetail} from './documents';
 type Json=Record<string,unknown>;
@@ -38,8 +38,9 @@ export function FinanceControls({id,version,evaluation,onChange,refreshKey=0,can
 }
 export function ReferenceImports(){
  const [items,setItems]=useState<Json[]>([]),[text,setText]=useState(''),[reason,setReason]=useState(''),[source,setSource]=useState('SYNTHETIC_LOCAL'),[sourceVersion,setVersion]=useState('v1'),[error,setError]=useState(''),[busy,setBusy]=useState(false),[loaded,setLoaded]=useState(false);
- async function load(){const r=await api<{items:Json[]}>('reference-imports');setItems(r.items);setLoaded(true);}
- useEffect(()=>{void load().catch(e=>{setError(e.message);setLoaded(true);});},[]);
+ const loadGeneration=useRef(0);
+ async function load(){const generation=++loadGeneration.current;const r=await api<{items:Json[]}>('reference-imports');if(generation!==loadGeneration.current)return;setItems(r.items);setLoaded(true);}
+ useEffect(()=>{void load().catch(e=>{setError(e.message);setLoaded(true);});return()=>{loadGeneration.current++}},[]);
  async function action(path:string,body:unknown){setBusy(true);setError('');try{await mutate(path,body,crypto.randomUUID());await load();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
  return <><div className="page-title"><div><h1>Reference imports</h1><p>Stage, validate and activate an approved source version. Existing evaluations retain their snapshots.</p></div></div><ErrorBox message={error}/><section className="panel"><h2>Stage reference records</h2><label>Source system<input value={source} onChange={e=>setSource(e.target.value)}/></label><label>Source version<input value={sourceVersion} onChange={e=>setVersion(e.target.value)}/></label><label>Reference records JSON<textarea aria-label="Reference records JSON" rows={10} value={text} onChange={e=>setText(e.target.value)} placeholder='[{"kind":"vendors","payload":{…}}]'/></label><label>Import / activation reason<input value={reason} onChange={e=>setReason(e.target.value)}/></label><button disabled={busy||!text||reason.trim().length<3} onClick={()=>{try{void action('reference-imports',{source_system:source,source_version:sourceVersion,records:JSON.parse(text),reason});}catch{setError('Enter a valid array of reference records.');}}}>Stage import</button></section><section className="panel"><h2>Import batches</h2>{!loaded?<p role="status">Loading reference batches…</p>:!items.length?<p>No staged imports. Add a source batch above.</p>:items.map(r=><article className="reference-batch" key={String(r.id)}><h3>{String(r.source_system)} / {String(r.source_version)} · {String(r.state)}</h3><details><summary>Validation findings and source records</summary><pre>{JSON.stringify({validation:r.validation,records:r.records},null,2)}</pre></details>{['STAGED','INVALID','VALID'].includes(String(r.state))?<button disabled={busy} onClick={()=>void action('reference-imports/'+r.id+'/validate',{})}>Validate batch</button>:null}{r.state==='VALID'?<button disabled={busy||reason.trim().length<3} onClick={()=>void action('reference-imports/'+r.id+'/activate',{reason})}>Activate validated batch</button>:null}</article>)}</section></>;
 }

@@ -4,7 +4,7 @@ Accounts-Payable Exception Assistant · Microsoft Innovate 2026 · AI BATTALION 
 
 The application screens vendor invoices and employee claims using source evidence, versioned finance rules, matching, approvals and budgets. It produces **PASS / REVIEW / HOLD**, preserves the original decision and shows the next action. It executes no payments.
 
-Phase 6 delivers the local application and release/handoff artifacts under an explicit external-infrastructure fallback. This is a **synthetic development demonstration**, not a deployed production pilot. Final verified results and acceptance dispositions are in the [Phase-6 exit review](docs/phase6_exit_review.md); [capability matrix](docs/release_matrix.md) distinguishes completed work from actual cloud/VLM/data gates.
+Phase 6 delivers the local application and release/handoff artifacts under an explicit external-infrastructure fallback. The subsequent approved priority override establishes **real local VLM + TypeLLM invoice extraction** on the unchanged GPU driver. This is a development experiment, not a deployed production pilot. See the [real inference acceptance record](docs/real_vlm_acceptance.md), [Phase-6 exit review](docs/phase6_exit_review.md) and [capability matrix](docs/release_matrix.md).
 
 ## Finance Workspace
 
@@ -18,14 +18,14 @@ Administration has separate navigation and permissions. Typed business forms edi
 
 ## Architecture and modes
 
-[Architecture](docs/architecture.md) and [data flow](docs/data_flow.md) explain the CPU Next.js/FastAPI/PostgreSQL/private storage/leased worker application and separate future enterprise inference plane. Finance laptops need no GPU/CUDA/weights/TypeLLM/SGLang.
+[Architecture](docs/architecture.md) and [data flow](docs/data_flow.md) explain the CPU Next.js/FastAPI/PostgreSQL/private storage/leased worker application. The [experimental inference plane](docs/adr/0015-current-driver-compatible-real-vlm.md) runs in separate processes/environments. Finance laptops need no GPU/CUDA/weights/TypeLLM/SGLang.
 
 | Area | Current status |
 |---|---|
 | Deterministic finance | 28 controls; Decimal/currency, source coverage, vendor/employee, duplicates, PO/contract/GRN/service, policy, offsets/shared receipts, budgets and approvals. |
 | Actual documents | PyMuPDF native text/pages and local Tesseract CPU OCR; bounded parsing, preserved originals, uncertainty and source-linked human verification. |
-| TypeLLM | Provider-independent remote adapter implemented/contract-tested; money is extracted as strings. |
-| VLM / SGLang | DEFERRED_EXTERNAL: suitable separately approved runtime absent; no GPU/driver/Docker repairs or weights download. |
+| TypeLLM | Actual 0.5.1 text/image/header/row generation through the existing adapter; money is extracted as strings. |
+| VLM / SGLang | OPERATIONAL FOR TESTED CASES: pinned Qwen2.5-VL-3B BF16, SGLang 0.4.6.post5/PyTorch CUDA 12.4, unchanged driver 550.120; isolated resident loopback service. Production hosting/license/quality gates remain. |
 | Intelligence | RULES_ONLY (NOT_CONFIGURED/null score) or governed RULES_PLUS_ANOMALY with 20 PIT features and transparent statistical factors. Statistical scores are not probabilities. |
 | Classifier / SHAP | DEFERRED_DATA: representative independently adjudicated labels required; no fabricated training/metrics/attribution. |
 | Azure | Private CPU Bicep/CI/deployment definitions locally validated; provisioning, image builds, hosted SSO/Blob and pilot recovery/rollback remain externally gated. |
@@ -51,6 +51,20 @@ npm --prefix apps/web run build
 ```
 
 Open [Finance Workspace](http://127.0.0.1:3000); API docs are at http://127.0.0.1:8000/docs. The supervisor starts the loopback API, worker and web; Ctrl+C stops its own children. PostgreSQL uses :55432. Migrations through `0008_intelligence_audit` are explicit and never run by workers. Private development identity/settings files are ignored and 0600; browser JSON cannot supply scope/actor/approval authority. Enterprise mode disables demo selection and requires verified identity/private storage/TLS configuration.
+
+For the installed real extraction experiment, use the [local inference runbook](docs/runbooks/local-inference.md):
+
+```bash
+.venv/bin/python scripts/inference/local.py start
+.venv/bin/python scripts/inference/local.py health
+.venv/bin/python scripts/inference/local.py app
+```
+
+The app command supplies the private gateway token to the established supervisor.
+Do not start a second supervisor on the same ports. Complete native/OCR mapping
+stays cheap; incomplete mapping reaches VLM. Currency/date ambiguity, conflicting
+providers and arithmetic errors require source-linked correction. This small
+model's tested extraction is useful and imperfect; no universal accuracy is claimed.
 
 For separate backend/frontend startup details, database/seed troubleshooting and browser prerequisites, use the validated [Phase-1 setup](docs/runbooks/phase1-local.md) and [Phase-6 runbook](docs/runbooks/phase6-local.md). [Phase-2](docs/runbooks/phase2-local.md), [Phase-3](docs/runbooks/phase3-local.md), [Phase-4](docs/runbooks/phase4-local.md) and [Phase-5](docs/runbooks/phase5-local.md) retain their original stage-specific instructions.
 
@@ -86,4 +100,4 @@ Follow the [enterprise pilot gate](docs/runbooks/enterprise-pilot.md), [backup/r
 
 The original team-pack folder/ZIP and all fixtures remain preserved. The byte-identical working specification is [docs/AP_Exception_Assistant_Codex_Spec.md](docs/AP_Exception_Assistant_Codex_Spec.md), governed by [ADR-0001](docs/adr/0001-repository-and-specification-authority.md). See [progress](docs/progress.md), [assumptions](docs/assumptions.md), [dictionary](docs/data_dictionary.md), [T01–T42 coverage](docs/test_coverage.md), [inference architecture](docs/inference_architecture.md), [compatibility](docs/extraction_compatibility.md), [model card](ml/model_card.md) and [release ADR](docs/adr/0014-enterprise-release-boundaries.md).
 
-Repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate), branch **main**. **The complete source and commit history are published.** After separate user authorization and the required GitHub workflow permission, the normal push succeeded. Remote commit and all 310 tracked file modes/blob hashes, including both CI workflows, were verified. [Exit review](docs/phase6_exit_review.md) and [progress](docs/progress.md) preserve earlier failures and their resolution. Credentials are not stored in repository files or remote URLs. Cloud/pilot deployment remains deferred.
+Repository: [Vansh-A1/microsoft_inovate](https://github.com/Vansh-A1/microsoft_inovate), branch **main**. The Phase-6 source and history were published at `6be40387d4c4268a83468dd112b0d5bf4f6e9f2b`; all 310 then-tracked file modes/blob hashes, including both CI workflows, were verified. The later real-VLM override explicitly excludes publication/authentication work: its changes are local commits only, with no push retried. [Exit review](docs/phase6_exit_review.md) and [progress](docs/progress.md) preserve earlier publication history. Credentials are not stored in repository files or remote URLs. Cloud/pilot deployment remains deferred.

@@ -1,5 +1,30 @@
 # Domain glossary and implemented foundational contracts
 
+## Current real-extraction sidecar — 2026-10-04
+
+This integration adds no database table or migration and retains `extraction-v1`.
+The existing scoped immutable extraction run, observation, draft, source binding,
+correction and evaluation records remain authoritative for their own versions.
+
+| Item | Meaning / invariants |
+|---|---|
+| ProviderSettings.transport | `SDK` remains default; `TYPELLM_GATEWAY` uses the authenticated configured CPU HTTP endpoint. Token is read from a named environment variable, never persisted in run metadata. |
+| ProviderSettings.model_revision | Optional exact 40-character revision pin; gateway responses must agree. |
+| Additional visual header observations | `vendor_address`, `customer_bill_to`, `bill_to_address`, `ship_to_address`; raw strings with the same explicit five states and source page. They do not update masters. |
+| Visual row amount | Printed `amount` observation supplements existing net/tax/gross fields. No float or inferred zero. |
+| document-normalizer-v2 | Adds printed visual row `amount` to the existing Decimal/currency normalization rules. Earlier field semantics and stored v1 traces remain intact; ambiguous currency leaves this candidate unresolved. |
+| extraction-routing-v2 | Private run sidecar: actual routing paths, cheap mapping gaps, provider state, prompt hash, call count, measured header/row/inventory seconds and table coverage. Not a finance decision or quality percentage. |
+| row_regions / ruled-table-crops-v1 | Measured parent-preview dimensions, derived composite dimensions, header/row extents and offsets, rotation/scale, SHA-256, separate storage key and parent page transform. `field_bbox=null`; a crop extent is not a field box. |
+| row_count_disagreement / provider-candidates-v1 | Both source-bound native/OCR and visual extraction outputs, retained privately when row counts differ. The larger candidate set stays visible with every field AMBIGUOUS; no asserted complete table or automatic finance acceptance. |
+| Runtime versions | Safe actual TypeLLM, SGLang, torch, tokenizer-library/client Python, CUDA runtime, model source/revision, precision, bridge/cache-isolation and prompt hash. No secret, provider prompt dump or hidden reasoning. |
+| Cache isolation | Gateway serializes requests and flushes backend prefix caches per generation; a failed flush makes the dependency unavailable until owned-service restart. |
+| Provider uncertainty reconciliation | An empty native MISSING cannot replace source-bound visual AMBIGUOUS/ILLEGIBLE/NOT_APPLICABLE observations. Exact-format money differences may compare only through Decimal with agreed explicit currency; real disagreement remains AMBIGUOUS. |
+
+All page numbers remain one-based. Native/OCR trustworthy coordinates retain
+their existing mapping; VLM fields without trustworthy localization use null
+boxes. Canonical money remains Decimal encoded as decimal strings. Raw independent
+observations remain evidence, not approved canonical facts. See [ADR-0015](adr/0015-current-driver-compatible-real-vlm.md).
+
 Terminology comes from the [specification](AP_Exception_Assistant_Codex_Spec.md). P0-02 implements the foundational value contracts described below; the broader glossary also describes future release concepts. The Phase-1 persisted schema is documented below.
 
 | Term | Meaning |
