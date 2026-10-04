@@ -37,7 +37,7 @@ def result(bundle,metadata,headers,rows=(),failure=None):
 
 
 class NativeTextExtractionAdapter:
-    metadata=AdapterMetadata('native-label-parser','5','NATIVE_TEXT',prompt_template_version='labeled-header-table-layout-v5')
+    metadata=AdapterMetadata('native-label-parser','6','NATIVE_TEXT',prompt_template_version='labeled-header-table-layout-v6')
     capabilities=AdapterCapabilities(True,True,True,False)
 
     def __init__(self, page_details=()):
@@ -89,8 +89,10 @@ class NativeTextExtractionAdapter:
                     diagnostic_note='Printed label/value association from measured text regions; not yet human confirmed.'))
             for cells in layout_rows:
                 if len(rows)>=200:self.diagnostics.append('TABLE_ROW_LIMIT');break
-                rows.append(LineItemObservation(len(rows)+1,tuple(FieldObservation(field,State.PRESENT,raw,
-                    source=source(bundle,page.page,field,bbox,raw),diagnostic_note='Printed column association from measured cell text regions.')
+                rows.append(LineItemObservation(len(rows)+1,tuple(FieldObservation(field,State.PRESENT if raw is not None else State.MISSING,raw,
+                    source=source(bundle,page.page,field,bbox,raw),
+                    diagnostic_note='Printed column association from measured cell text regions.' if raw is not None else
+                        f'SOURCE_CELL_UNREAD: no value independently read for {field} on page {page.page}; absent versus illegible requires source review. No field box is asserted.')
                     for field,raw,bbox in cells)))
         headers=[]
         for field,candidates in seen.items():
@@ -157,8 +159,9 @@ def reconcile(primary,other):
             # Keep the larger candidate set visible, without asserting that its
             # coverage is correct. The worker retains both provider outputs.
             rows=primary.line_items if len(primary.line_items)>=len(other.line_items) else other.line_items
-            rows=tuple(replace(r,fields=tuple(FieldObservation(f.field_path,State.AMBIGUOUS,f.raw_value or 'unresolved',source=f.source,
-                diagnostic_note='Provider table row-count disagreement.') for f in r.fields)) for r in rows)
+            rows=tuple(replace(r,fields=tuple(replace(f,state=State.AMBIGUOUS if f.raw_value is not None else f.state,
+                diagnostic_note='ROW_ASSOCIATION_UNCONFIRMED: provider row-count disagreement; inspect source rows before using candidates.')
+                for f in r.fields)) for r in rows)
         else:
             combined=[]
             for a_row,b_row in zip(primary.line_items,other.line_items):

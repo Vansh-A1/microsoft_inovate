@@ -6,7 +6,7 @@ The legacy labeled/pipe parser remains intact. No arithmetic supplies raw facts.
 """
 import re
 
-VERSION = 'printed-layout-v3'
+VERSION = 'printed-layout-v4'
 HEADER_ALIASES = {
     'supplier': 'vendor_name', 'vendor': 'vendor_name', 'supplier name': 'vendor_name',
     'vendor name': 'vendor_name', 'seller': 'vendor_name', 'merchant': 'merchant_name',
@@ -140,6 +140,13 @@ def column_cells(row,columns):
     return cells,crossing
 
 
+def readable_partial_row(cells,columns):
+    missing=[field for (field,_),cell in zip(columns,cells) if not cell]
+    present={field for (field,_),cell in zip(columns,cells) if cell}
+    return (len(missing)==1 and missing[0] in ('quantity','unit_price','amount','net_amount','gross_amount')
+            and 'description' in present and len(present)>=3)
+
+
 def table_retry_regions(details, maximum=3):
     """Bounded OCR retries for one absent numeric cell in a measured table row.
 
@@ -255,7 +262,7 @@ def printed_layout(details):
             following,overlap=column_cells(rows[row_index+1],columns)
             gap=min(p['bbox']['y1'] for p in row)-(table_y or 0)
             next_gap=min(p['bbox']['y1'] for p in rows[row_index+1])-max(p['bbox']['y2'] for p in row)
-            if 0<=gap<=.025 and 0<=next_gap<=.06 and all(following) and not overlap and not heading_columns(rows[row_index+1]):
+            if 0<=gap<=.025 and 0<=next_gap<=.06 and (all(following) or readable_partial_row(following,columns)) and not overlap and not heading_columns(rows[row_index+1]):
                 field,raw,box=items[-1][description]
                 continued=union(cells[description],source=True)
                 joined=union([{'bbox':box},{'bbox':continued}])
@@ -266,14 +273,15 @@ def printed_layout(details):
             diagnostics.append('TABLE_COVERAGE_UNCERTAIN')
             columns = None
             continue
-        if crossing or any(not c for c in cells):
+        if crossing or (any(not c for c in cells) and not readable_partial_row(cells,columns)):
             diagnostics.append('TABLE_COVERAGE_UNCERTAIN')
             columns = None
             continue
+        if any(not c for c in cells):diagnostics.append('TABLE_CELL_UNREAD')
         if len(items) >= 200:
             diagnostics.append('TABLE_ROW_LIMIT')
             break
-        items.append([(field, ' '.join(p['text'].strip() for p in cell), union(cell,source=True))
+        items.append([(field, ' '.join(p['text'].strip() for p in cell) if cell else None, union(cell,source=True) if cell else None)
                       for (field, _), cell in zip(columns, cells)])
         table_y = max(p['bbox']['y2'] for p in row)
     return headers, items, list(dict.fromkeys(diagnostics))

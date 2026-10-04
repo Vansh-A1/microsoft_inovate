@@ -487,3 +487,16 @@ No table or migration is added; extraction-v1 and financial record semantics rem
 | routing.enterprise.version / reused_tables | extraction-routing-v4; complete independent per-page observations retain source/scope/version and row count during header fallback. Strict extraction-v1 is unchanged. |
 | table_coverage UNCERTAIN | An unread/uncertain page stays uncertain even if another page has observed or reused rows; it cannot silently satisfy full coverage. |
 | Reserved row literal denominator | Checked fields on seven of eight new variants. r07 intentionally incomplete rows are excluded; its required missing-quantity canonical abstention is scored separately. Not invoice-level accuracy. |
+
+## CL-07 unread cells and row identity
+
+| Field / version | Meaning and controls |
+|---|---|
+| printed-layout-v4 / labeled-header-table-layout-v6 | Exactly one unread numeric core cell under unique measured headings can retain the row and following items; crossing/competing/multiple missing cells still abstain. |
+| TABLE_CELL_UNREAD / SOURCE_CELL_UNREAD | No independently read value. Raw/canonical null, known source-page context, no invented field box. Does not establish absent versus illegible; reviewer confirms source. |
+| routing.source_rows | Scoped SHA-256 request identity over document/version/tenant/entity/page/measured row extent, with row/page/unread fields. Row extents are not field boxes, value hashes or duplication proof. |
+| extraction-routing-v5 / row_association_checks | Actual source-region identity or PAGE_ORDINAL_UNVERIFIED; strict extraction-v1 unchanged. Equal values in distinct measured regions/pages remain distinct. |
+| generation_stops | Actual page/row/remaining/reason for duplicate measured-region requests or REPEATED_UNASSOCIATED_CANDIDATES. No synthetic call timing; unread remaining slots contain null values. |
+| ROW_ASSOCIATION_UNCONFIRMED / MODEL_ROW_ASSOCIATION_UNCONFIRMED | Raw candidates retained ambiguous, no canonical quantity/amount. Remaining unassigned slots are unread. Does not declare genuine equal items duplicates. |
+| document-normalizer-v3 / observation_diagnostic | New immutable traces preserve extraction diagnostic and source-specific/generic review findings. v2 histories remain retained; money arithmetic/finance decisions unchanged. |
+| CL-07 readable row denominator | All 67 printed row literals on six new fictional variants, including q06's unresolved ten. A required null abstention is distinct from successful extraction. |

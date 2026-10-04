@@ -23,7 +23,7 @@ def providers():
 def upload(environment,file,source_type,settings):
     _,_,_,client,_=environment
     content=file.read_bytes()
-    response=client.post('/api/v1/uploads',json={'filename':'fictional-cpu-ocr.png','mime':'image/png','source_type':source_type},headers=headers())
+    response=client.post('/api/v1/uploads',json={'filename':'fictional-cpu-ocr'+file.suffix,'mime':'application/pdf' if file.suffix=='.pdf' else 'image/png','source_type':source_type},headers=headers())
     assert response.status_code==201,response.text
     u=response.json();assert client.post(u['bytes_url'],content=content).status_code==200
     assert client.post('/api/v1/uploads/'+u['id']+'/finalize',headers=headers()).status_code==202
@@ -85,6 +85,40 @@ def test_actual_wrapped_scan_recovers_missed_glyph_with_measured_crop_without_vl
     assert .48<box['x1']<box['x2']<.55 and .44<box['y1']<box['y2']<.49
     assert box['x2']-box['x1']<.03  # actual detected glyph region, not full row crop
     assert by['lines.1.tax_amount']['state']=='MISSING' and candidate.get('lines.1.tax_amount') is None
+
+
+def test_actual_unread_quantity_keeps_distinct_source_rows_and_precise_human_question(environment):
+    configured=Settings.load().document_providers
+    settings=replace(providers(),endpoint=configured.endpoint,model=configured.model)
+    doc=upload(environment,ROOT/'data/clearledger_reserved/r07.png','VENDOR_INVOICE',settings)
+    assert doc['state']=='NEEDS_INPUT' and doc['finance_decision'] is None
+    routing=doc['extraction_runs'][0]['metadata']['routing']
+    assert routing['paths']==['LOCAL_OCR'] and routing['vlm_status']=='CONFIGURED_NOT_NEEDED'
+    assert routing['sufficiency']=='SOURCE_CELL_CONFIRMATION_REQUIRED'
+    assert len(routing['source_rows'])==3 and len({r['identity'] for r in routing['source_rows']})==3
+    candidate=doc['draft']['candidate']
+    assert [candidate[f'lines.{i}.description'] for i in range(3)]==['Felt document sleeves','Desk index tabs','Binder spines']
+    assert candidate['lines.1.quantity'] is None and candidate['lines.1.unit_price']=='19.25' and candidate['lines.1.amount']=='19.25'
+    by={o['field_path']:o for o in doc['observations']};quantity=by['lines.1.quantity']
+    assert quantity['state']=='MISSING' and quantity['raw_value'] is None and quantity['source']['page']==1 and quantity['source']['bbox'] is None
+    question=next(f['message'] for f in doc['draft']['findings'] if f['field']=='lines.1.quantity')
+    assert 'line 2 (Desk index tabs) on page 1' in question and 'do not calculate' in question
+    _,_,_,client,_=environment
+    response=client.post('/api/v1/documents/'+doc['id']+'/commit',json={'draft_id':doc['draft']['id'],'transaction':payload(),
+        'source_confirmed':True,'reason':'An unread quantity cannot be supplied by a demo template','corrections':[]},headers=headers())
+    assert response.status_code==422 and response.json()['error']['code']=='CANONICAL_SOURCE_UNRESOLVED'
+
+
+@pytest.mark.parametrize('filename',['q03.png','q04.pdf'])
+def test_actual_legitimate_identical_printed_items_keep_distinct_positions_and_pages(environment,filename):
+    doc=upload(environment,ROOT/'data/clearledger_row_identity'/filename,'VENDOR_INVOICE',providers())
+    assert doc['state']=='NEEDS_INPUT' and doc['finance_decision'] is None
+    candidate=doc['draft']['candidate']
+    assert [candidate[f'lines.{i}.quantity'] for i in range(3)]==['2','2','2']
+    assert len({candidate[f'lines.{i}.description'] for i in range(3)})==1
+    rows=doc['extraction_runs'][0]['metadata']['routing']['source_rows']
+    assert len(rows)==3 and len({r['identity'] for r in rows})==3
+    assert [r['page'] for r in rows]==([1,2,3] if filename.endswith('.pdf') else [1,1,1])
 
 
 def test_cpu_source_scope_and_owned_child_restart_preserve_actual_reading(tmp_path):

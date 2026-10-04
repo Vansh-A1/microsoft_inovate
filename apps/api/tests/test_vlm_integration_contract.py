@@ -156,7 +156,10 @@ def test_row_count_disagreement_retains_larger_candidate_set_as_ambiguous():
     incomplete=replace(primary,line_items=primary.line_items[:1])
     merged=reconcile(incomplete,primary)
     assert len(merged.line_items)==2
-    assert all(f.state is State.AMBIGUOUS and f.diagnostic_note=='Provider table row-count disagreement.' for row in merged.line_items for f in row.fields)
+    assert all(f.state is State.AMBIGUOUS and f.diagnostic_note.startswith('ROW_ASSOCIATION_UNCONFIRMED:') for row in merged.line_items for f in row.fields if f.raw_value is not None)
+    missing={(row.row_index,f.field_path):f for row in primary.line_items for f in row.fields if f.state is State.MISSING}
+    assert all(f.state is State.MISSING and f.raw_value is None and f.source==missing[(row.row_index,f.field_path)].source
+        for row in merged.line_items for f in row.fields if (row.row_index,f.field_path) in missing)
     assert merged.line_items[1].fields[0].source==primary.line_items[1].fields[0].source
 
 
@@ -171,7 +174,7 @@ def test_reconciliation_does_not_treat_currency_as_a_quantity_or_rate(field,valu
 def test_visual_printed_row_amount_uses_the_decimal_normalizer():
     from app.documents.normalizer import normalized_value,NORMALIZER_VERSION
     assert normalized_value('lines.0.amount','INR 1,234.50','INR')[0]=='1234.50'
-    assert NORMALIZER_VERSION=='document-normalizer-v2'
+    assert NORMALIZER_VERSION=='document-normalizer-v3'
 
 
 @pytest.mark.parametrize('raw,currency',[('100.00',None),(100.0,'INR')])

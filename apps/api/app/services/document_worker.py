@@ -94,6 +94,33 @@ def printed_table_complete(observed,diagnostics=()):
     return True
 
 
+def source_table_reviewable(observed,diagnostics=()):
+    """Distinct measured rows with one unread core cell require human input.
+
+    OCR absence is not proof of a blank cell. Do not ask a model to fill it from
+    prices/totals, or discard following measured rows. Competing/crossing geometry
+    and provider disagreements never satisfy this gate.
+    """
+    if not observed.line_items or set(diagnostics)-{'TABLE_CELL_UNREAD'}:return False
+    for row in observed.line_items:
+        fields={f.field_path:f for f in row.fields}
+        amount=next((f for f in ('amount','net_amount','gross_amount') if f in fields),None)
+        if amount is None:return False
+        core=[fields.get(f) for f in ('description','quantity','unit_price',amount)]
+        if core[0] is None or core[0].state.value!='PRESENT':return False
+        if sum(f is not None and f.state.value=='PRESENT' for f in core)<3:return False
+        if any(f is None or f.state.value not in ('PRESENT','MISSING') for f in core):return False
+        if any(f.state.value=='PRESENT' and (f.source is None or f.bbox is None) for f in core):return False
+    return True
+
+
+def source_mapping_reviewable(observed,source_type,diagnostics=()):
+    if source_type!='VENDOR_INVOICE':return False
+    headers={f.field_path:f for f in observed.header_fields}
+    core=('vendor_name','invoice_number','invoice_date','currency','subtotal_amount','tax_amount','total_amount')
+    return all(f in headers and headers[f].state.value=='PRESENT' for f in core) and source_table_reviewable(observed,diagnostics)
+
+
 def printed_mapping_complete(observed,source_type,diagnostics=()):
     """Sufficient *printed* coverage to stop inference, never financial clearance.
 
@@ -112,6 +139,7 @@ def printed_mapping_complete(observed,source_type,diagnostics=()):
 def extract(doc,identity,page_data,storage,providers):
     bundle=bundle_for(doc,identity,page_data);adapter=NativeTextExtractionAdapter(page_data)
     native=adapter.extract(bundle,SCHEMA_VERSION);diagnostics=list(adapter.diagnostics)
+    from app.extraction.row_grounding import source_rows
     routing={'version':'extraction-routing-v2','paths':['NATIVE_TEXT'] if any(p['native_text'] for p in page_data) else [],'ocr_status':'NOT_CONFIGURED','vlm_status':'NOT_CONFIGURED',
         'segmentation':'UNCERTAIN' if 'SEGMENTATION_UNCERTAIN' in diagnostics else 'UNCONFIRMED',
         'fallback':'HUMAN_REVIEW','model_quality':'NOT_MEASURED'}
@@ -124,9 +152,10 @@ def extract(doc,identity,page_data,storage,providers):
         routing['vlm_status']='CONFIGURED_NOT_NEEDED' if providers.endpoint else 'NOT_CONFIGURED'
         routing['sufficiency']='HUMAN_SEGMENTATION_REQUIRED'
         return native,diagnostics,routing
-    if not visual and (not gaps or printed_mapping_complete(native,doc['source_type'],diagnostics)):
+    if not visual and (not gaps or printed_mapping_complete(native,doc['source_type'],diagnostics) or source_mapping_reviewable(native,doc['source_type'],diagnostics)):
         if providers.endpoint:routing['vlm_status']='CONFIGURED_NOT_NEEDED'
-        if gaps:routing['sufficiency']='PRINTED_FACTS_MAPPED_REVIEW_REQUIRED'
+        if gaps:routing['sufficiency']='SOURCE_CELL_CONFIRMATION_REQUIRED' if 'TABLE_CELL_UNREAD' in diagnostics else 'PRINTED_FACTS_MAPPED_REVIEW_REQUIRED'
+        routing['source_rows']=source_rows(native)
         routing['paths']=['NATIVE_TEXT'];return native,diagnostics,routing
     ocr=UnconfiguredOCRAdapter()
     if ocr_configured(providers):
@@ -153,7 +182,7 @@ def extract(doc,identity,page_data,storage,providers):
         routing['ocr_status']='SUCCEEDED'
     gaps=mapping_gaps(native,doc['source_type'],diagnostics)
     routing['cheap_mapping_gaps']=gaps
-    if providers.endpoint and gaps and not printed_mapping_complete(native,doc['source_type'],diagnostics):
+    if providers.endpoint and gaps and not (printed_mapping_complete(native,doc['source_type'],diagnostics) or source_mapping_reviewable(native,doc['source_type'],diagnostics)):
         routing['vlm_status']='CONFIGURED'
         from app.extraction.grid import row_crops
         crop_cache={}
@@ -174,7 +203,7 @@ def extract(doc,identity,page_data,storage,providers):
             per_page=page_adapter.extract(bundle_for(doc,identity,[p]),SCHEMA_VERSION)
             mapped_headers[p['page']]=per_page.header_fields
             printed_columns[p['page']]=table_columns(p)
-            if printed_table_complete(per_page,page_adapter.diagnostics):mapped_rows[p['page']]=per_page.line_items
+            if printed_table_complete(per_page,page_adapter.diagnostics) or source_table_reviewable(per_page,page_adapter.diagnostics):mapped_rows[p['page']]=per_page.line_items
         enterprise=TypeLLMExtractionAdapter(providers,
             image_loader=lambda p:'data:image/png;base64,'+base64.b64encode(storage.get(identity,p.artifact_ref)).decode(),row_image_loader=row_image,
             header_observations=mapped_headers,printed_columns=printed_columns,row_observations=mapped_rows)
@@ -217,8 +246,9 @@ def extract(doc,identity,page_data,storage,providers):
         if enterprise.sidecar['table_coverage']=='UNCERTAIN':diagnostics.append('TABLE_COVERAGE_UNCERTAIN')
     elif providers.endpoint:
         routing['vlm_status']='CONFIGURED_NOT_NEEDED'
-        if gaps:routing['sufficiency']='PRINTED_FACTS_MAPPED_REVIEW_REQUIRED'
+        if gaps:routing['sufficiency']='SOURCE_CELL_CONFIRMATION_REQUIRED' if 'TABLE_CELL_UNREAD' in diagnostics else 'PRINTED_FACTS_MAPPED_REVIEW_REQUIRED'
     if visual and not ocr_configured(providers) and not providers.endpoint:raise DocumentFailure('VISUAL_PROVIDER_NOT_CONFIGURED')
+    routing['source_rows']=source_rows(native)
     return native,diagnostics,routing
 
 
@@ -228,7 +258,7 @@ def load_work(database,identity,job_id):
         original=s.scalar(scope_query(select(DocumentVersion),DocumentVersion,identity).where(DocumentVersion.id==doc.id,DocumentVersion.version==1))
         page_data=[{'page':p.page,'native_text':p.native_text,'spans':p.spans,'preview_key':p.preview_key,'transform':p.transform,'route':p.route} for p in pages(s,identity,doc.id)]
         run=s.scalar(scope_query(select(ExtractionRun),ExtractionRun,identity).where(ExtractionRun.document_id==doc.id,ExtractionRun.status.in_(['COMPLETED','PARTIAL'])).order_by(ExtractionRun.created_at.desc()).limit(1))
-        observations=[] if run is None else [projection({'id':o.id,'field_path':o.field_path,'state':o.state,'raw_value':o.raw_value,'source':o.source}) for o in s.scalars(scope_query(select(Observation),Observation,identity).where(Observation.extraction_run_id==run.id))]
+        observations=[] if run is None else [projection({'id':o.id,'field_path':o.field_path,'state':o.state,'raw_value':o.raw_value,'source':o.source,'diagnostic':o.diagnostic}) for o in s.scalars(scope_query(select(Observation),Observation,identity).where(Observation.extraction_run_id==run.id))]
         draft=s.scalar(scope_query(select(DocumentDraft),DocumentDraft,identity).where(DocumentDraft.document_id==doc.id).order_by(DocumentDraft.created_at.desc()).limit(1))
         from app.services.documents import intake_hint
         return {'stage':job.stage,'attempt':job.attempts,'id':doc.id,'source_type':doc.source_type,'intake_hint':intake_hint(s,identity,doc),'original_key':original.storage_key,

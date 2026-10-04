@@ -6,3 +6,5 @@ data/clearledger_challenge/*.pdf binary
 data/clearledger_challenge/*.png binary
 data/clearledger_reserved/*.pdf binary
 data/clearledger_reserved/*.png binary
+data/clearledger_row_identity/*.pdf binary
+data/clearledger_row_identity/*.png binary

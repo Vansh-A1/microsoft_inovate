@@ -375,3 +375,28 @@ not finance clearance. Single shared-host measurements, resident inference and
 worker cold/warm timings remain distinct. No generalized speed/VRAM/accuracy
 improvement or real-company policy follows from these fixtures. The current
 model, driver and isolated runtime pins are retained; phone access remains closed.
+
+## CL-07 unread cells and source row identity — 2026-10-04
+
+No OCR read is not proof of a genuinely blank versus illegible source. Retain the
+known page/row context, raw/canonical null and no field box, then ask the reviewer.
+Neither amounts nor a plausible quantity can fill that cell. A uniquely measured
+partial row can stop VLM generation while still requiring source/accounting input.
+Equal values or equal crop bytes do not prove duplicate items; document/version/
+scope/page/actual region establish request identity. Unlocated repeated model
+candidates stay ambiguous and accessible, remaining inventory slots stay unread.
+
+Six reserved fictional variants were frozen before tuning and baseline sealed;
+57/67 readable row checks pass after correction. q06 stays 0/10, while all five
+canonical abstentions pass. No invoice-level/customer accuracy follows. The spent
+r07 development improvement does not rewrite its prior excluded-row score. Current
+corpora are now inspected; future unseen evidence needs fresh independently
+adjudicated layouts. Cold worker 6.469 s and warm 6.883 s are single actual r07
+queue observations, not a promise of faster warm processing. No cold GPU-weight
+benchmark or per-request VRAM improvement is claimed.
+
+[Acceptance inputs](clearledger_acceptance_inputs.md) distinguish fictional local
+policies/identities/scanner paths from business/identity/security acceptance.
+Missing real inputs remain missing; lawful independent source evidence is being
+requested through the parent task. No restricted dataset, stronger provider, credential or
+host change, private export, publication or production pilot was authorized.

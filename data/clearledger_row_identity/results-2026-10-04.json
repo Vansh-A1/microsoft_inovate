@@ -1,0 +1,841 @@
+{
+  "version": "clearledger-row-identity-results-v1",
+  "source_manifest": "manifest.json",
+  "limitations": "Six original fictional variants frozen before tuning on 7cc473e, baseline sealed until corrections/unit checks ended. Not representative customer accuracy. All 67 readable row literals remain in the denominator; q06 stays 0/10 with unassigned ambiguous candidates. Single resident-GPU executions on a shared host; pipeline includes preprocessing and isolated CPU OCR startup, excludes upload/queue/UI/human confirmation. Whole-device VRAM is not request-attributed memory. Prior corpus/results remain unchanged. Baseline hashes omit normalizer.py; its tracked v2 implementation is pinned by the base commit. After v3 hashes are recorded. No private source pixels or output included.",
+  "runs": {
+    "before": {
+      "label": "rows-baseline",
+      "code_commit": "7cc473e377a41f4eec335d44cf92654a585d4217",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d768dbf9847270a712171cbe65758c4a5b8540ce8cf7b43be229b37baffd6d67",
+        "apps/api/app/extraction/native.py": "2fcbe4fd55bddb834337be3438b74d69278da4b54f8ba8b2299d50476e9291cc",
+        "apps/api/app/extraction/typellm.py": "e7137c01f4ecfd9243117a49997570d61e2dab53c3f5656317adbb03364de098",
+        "apps/api/app/extraction/cpu_ocr.py": "665353b2ac49a0762597482d79ed4a953b2c89c1ed69f3ec513b35b0106e88ff",
+        "apps/api/app/extraction/rapidocr_runtime.py": "41eb45e70feec46851b37117c8ff7e64005e4230d58856e1deefde27cc55a396",
+        "apps/api/app/services/document_worker.py": "2a393e9ea568b0238058d59d4a9333c3307cd76674b7aa276d8d3065489d335f"
+      },
+      "temperature": "Resident model; first request after idle then sequential requests. Not cold weight loading.",
+      "cases": [
+        {
+          "id": "q01",
+          "source_sha256": "753a1f942ecf73fc537b50ab7cad38220ef473608583e5293744bd18ebcc6071",
+          "seconds": 20.939,
+          "peak_whole_device_memory_mib": 13832,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 0,
+          "row_checked": 11,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 7,
+          "present_observations": 7,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 4,
+          "generation_stops": [],
+          "source_rows": [],
+          "provider_id": "ENTERPRISE_VLM",
+          "ocr_runtime": [
+            {
+              "cold_initialization_seconds": 0.26650836801854894,
+              "memory_peak_kib": 550000,
+              "last_seconds": 2.9033772409893572,
+              "row_retries": [
+                {
+                  "field": "quantity",
+                  "crop_extents_pixels": [
+                    43,
+                    631,
+                    929,
+                    682
+                  ],
+                  "scale": 2,
+                  "seconds": 1.4940945850103162,
+                  "status": "UNRESOLVED"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q02",
+          "source_sha256": "0232ebb2e960497440f88b151b1ef2c0f35adf5a1ea6daf8dd2f77ad2b21d01a",
+          "seconds": 39.026,
+          "peak_whole_device_memory_mib": 14970,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 0,
+          "row_checked": 11,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 7,
+          "present_observations": 7,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 4,
+          "generation_stops": [],
+          "source_rows": [],
+          "provider_id": "ENTERPRISE_VLM",
+          "ocr_runtime": []
+        },
+        {
+          "id": "q03",
+          "source_sha256": "24537172ab5bbfcb93de4bff4770ecfcc1923c8d16cb38796291ebd9c4838026",
+          "seconds": 1.587,
+          "peak_whole_device_memory_mib": 13062,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 19,
+          "present_observations": 19,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 0,
+          "generation_stops": [],
+          "source_rows": [],
+          "provider_id": "LOCAL_OCR",
+          "ocr_runtime": [
+            {
+              "cold_initialization_seconds": 0.26650836801854894,
+              "memory_peak_kib": 550000,
+              "last_seconds": 1.3746502670110203,
+              "row_retries": []
+            }
+          ]
+        },
+        {
+          "id": "q04",
+          "source_sha256": "c91c7887280019d0efb31d02aa5e490fc9c2c7e2582baad8e569fdbc9f1ca692",
+          "seconds": 0.367,
+          "peak_whole_device_memory_mib": 13062,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 19,
+          "present_observations": 19,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 0,
+          "generation_stops": [],
+          "source_rows": [],
+          "provider_id": "NATIVE_TEXT",
+          "ocr_runtime": []
+        },
+        {
+          "id": "q05",
+          "source_sha256": "4b78c12464463a7c22c580d113fc094885bf933172e9cd0f9cdf1486d8f38bd8",
+          "seconds": 20.265,
+          "peak_whole_device_memory_mib": 14160,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 0,
+          "row_checked": 11,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {
+            "lines.1.unit_price": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 7,
+          "present_observations": 7,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 4,
+          "generation_stops": [],
+          "source_rows": [],
+          "provider_id": "ENTERPRISE_VLM",
+          "ocr_runtime": [
+            {
+              "cold_initialization_seconds": 0.26650836801854894,
+              "memory_peak_kib": 632340,
+              "last_seconds": 2.658098635962233,
+              "row_retries": [
+                {
+                  "field": "unit_price",
+                  "crop_extents_pixels": [
+                    43,
+                    631,
+                    932,
+                    682
+                  ],
+                  "scale": 2,
+                  "seconds": 1.3551756119704805,
+                  "status": "UNRESOLVED"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q06",
+          "source_sha256": "9d94efcfa8201e43bce7d5c8174276381ce7489f74492aa3e8a19ba0547d547b",
+          "seconds": 39.109,
+          "peak_whole_device_memory_mib": 15220,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 0,
+          "row_checked": 10,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 7,
+          "present_observations": 7,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 4,
+          "generation_stops": [],
+          "source_rows": [],
+          "provider_id": "ENTERPRISE_VLM",
+          "ocr_runtime": []
+        }
+      ]
+    },
+    "after": {
+      "label": "rows-after",
+      "code_commit": "7cc473e377a41f4eec335d44cf92654a585d4217",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "26870c7727761d21d9d1bdea9f66e3fc7cf1d672013a352da99be569b6f7fd30",
+        "apps/api/app/extraction/native.py": "cc62dd70be0725881daf72e70da639a6197ade6e6ad618dfce7b8329f6fc8b17",
+        "apps/api/app/extraction/typellm.py": "acaf046618ab7e98f3e3e3b079f1d4ed5e5800477ef550faf6d945e282e32ef0",
+        "apps/api/app/extraction/cpu_ocr.py": "665353b2ac49a0762597482d79ed4a953b2c89c1ed69f3ec513b35b0106e88ff",
+        "apps/api/app/extraction/rapidocr_runtime.py": "41eb45e70feec46851b37117c8ff7e64005e4230d58856e1deefde27cc55a396",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/services/document_worker.py": "0445120eb0c563ce8ba54010ce3f87f6a5f44459e71f79d901868aaf48af1c65",
+        "apps/api/app/documents/normalizer.py": "1d03e8ef4e186b2a9ca9f54c5b3a9903aea3a7990041b97d02736aa628334353"
+      },
+      "temperature": "Resident model; first request after idle then sequential requests. Not cold weight loading.",
+      "cases": [
+        {
+          "id": "q01",
+          "source_sha256": "753a1f942ecf73fc537b50ab7cad38220ef473608583e5293744bd18ebcc6071",
+          "seconds": 3.707,
+          "peak_whole_device_memory_mib": 13480,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 11,
+          "row_checked": 11,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 18,
+          "present_observations": 18,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 0,
+          "generation_stops": [],
+          "source_rows": [
+            {
+              "row": 1,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06280193236714976,
+                "y1": 0.42424242424242425,
+                "x2": 0.8628019323671497,
+                "y2": 0.4409090909090909
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            },
+            {
+              "row": 2,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06280193236714976,
+                "y1": 0.4893939393939394,
+                "x2": 0.8628019323671497,
+                "y2": 0.5053030303030303
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": [
+                "quantity"
+              ]
+            },
+            {
+              "row": 3,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06280193236714976,
+                "y1": 0.5537878787878788,
+                "x2": 0.8628019323671497,
+                "y2": 0.5704545454545454
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            }
+          ],
+          "provider_id": "LOCAL_OCR",
+          "ocr_runtime": [
+            {
+              "cold_initialization_seconds": 0.27291205298388377,
+              "memory_peak_kib": 551596,
+              "last_seconds": 2.897617787006311,
+              "row_retries": [
+                {
+                  "field": "quantity",
+                  "crop_extents_pixels": [
+                    43,
+                    631,
+                    929,
+                    682
+                  ],
+                  "scale": 2,
+                  "seconds": 1.487860044988338,
+                  "status": "UNRESOLVED"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q02",
+          "source_sha256": "0232ebb2e960497440f88b151b1ef2c0f35adf5a1ea6daf8dd2f77ad2b21d01a",
+          "seconds": 0.227,
+          "peak_whole_device_memory_mib": 13480,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 11,
+          "row_checked": 11,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 18,
+          "present_observations": 18,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 0,
+          "generation_stops": [],
+          "source_rows": [
+            {
+              "row": 1,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06521739130434782,
+                "y1": 0.42414772727272726,
+                "x2": 0.8623478543931159,
+                "y2": 0.4397613525390625
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            },
+            {
+              "row": 2,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06521739130434782,
+                "y1": 0.4889204545454545,
+                "x2": 0.8623478543931159,
+                "y2": 0.5045340798117898
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": [
+                "quantity"
+              ]
+            },
+            {
+              "row": 3,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06521739130434782,
+                "y1": 0.5536931818181818,
+                "x2": 0.8623478543931159,
+                "y2": 0.5693068070845171
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            }
+          ],
+          "provider_id": "NATIVE_TEXT",
+          "ocr_runtime": []
+        },
+        {
+          "id": "q03",
+          "source_sha256": "24537172ab5bbfcb93de4bff4770ecfcc1923c8d16cb38796291ebd9c4838026",
+          "seconds": 1.593,
+          "peak_whole_device_memory_mib": 13480,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 19,
+          "present_observations": 19,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 0,
+          "generation_stops": [],
+          "source_rows": [
+            {
+              "row": 1,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06376811594202898,
+                "y1": 0.42424242424242425,
+                "x2": 0.8734299516908213,
+                "y2": 0.4409090909090909
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            },
+            {
+              "row": 2,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06280193236714976,
+                "y1": 0.4909090909090909,
+                "x2": 0.8724637681159421,
+                "y2": 0.5060606060606061
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            },
+            {
+              "row": 3,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06376811594202898,
+                "y1": 0.5537878787878788,
+                "x2": 0.8734299516908213,
+                "y2": 0.5704545454545454
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            }
+          ],
+          "provider_id": "LOCAL_OCR",
+          "ocr_runtime": [
+            {
+              "cold_initialization_seconds": 0.27291205298388377,
+              "memory_peak_kib": 551596,
+              "last_seconds": 1.3792514590313658,
+              "row_retries": []
+            }
+          ]
+        },
+        {
+          "id": "q04",
+          "source_sha256": "c91c7887280019d0efb31d02aa5e490fc9c2c7e2582baad8e569fdbc9f1ca692",
+          "seconds": 0.38,
+          "peak_whole_device_memory_mib": 13480,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 19,
+          "present_observations": 19,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 0,
+          "generation_stops": [],
+          "source_rows": [
+            {
+              "row": 1,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06521739130434782,
+                "y1": 0.4243977286598899,
+                "x2": 0.8586956521739131,
+                "y2": 0.4395568154074929
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            },
+            {
+              "row": 2,
+              "page": 2,
+              "row_extent": {
+                "x1": 0.06521739130434782,
+                "y1": 0.4243977286598899,
+                "x2": 0.8586956521739131,
+                "y2": 0.4395568154074929
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            },
+            {
+              "row": 3,
+              "page": 3,
+              "row_extent": {
+                "x1": 0.06521739130434782,
+                "y1": 0.4243977286598899,
+                "x2": 0.8586956521739131,
+                "y2": 0.4395568154074929
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            }
+          ],
+          "provider_id": "NATIVE_TEXT",
+          "ocr_runtime": []
+        },
+        {
+          "id": "q05",
+          "source_sha256": "4b78c12464463a7c22c580d113fc094885bf933172e9cd0f9cdf1486d8f38bd8",
+          "seconds": 2.867,
+          "peak_whole_device_memory_mib": 13480,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 11,
+          "row_checked": 11,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {
+            "lines.1.unit_price": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 18,
+          "present_observations": 18,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 0,
+          "generation_stops": [],
+          "source_rows": [
+            {
+              "row": 1,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06183574879227053,
+                "y1": 0.42348484848484846,
+                "x2": 0.8666666666666667,
+                "y2": 0.44166666666666665
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            },
+            {
+              "row": 2,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06183574879227053,
+                "y1": 0.4893939393939394,
+                "x2": 0.8666666666666667,
+                "y2": 0.5053030303030303
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": [
+                "unit_price"
+              ]
+            },
+            {
+              "row": 3,
+              "page": 1,
+              "row_extent": {
+                "x1": 0.06183574879227053,
+                "y1": 0.553030303030303,
+                "x2": 0.8666666666666667,
+                "y2": 0.5712121212121212
+              },
+              "method": "MEASURED_ROW_REGIONS",
+              "unread_fields": []
+            }
+          ],
+          "provider_id": "LOCAL_OCR",
+          "ocr_runtime": [
+            {
+              "cold_initialization_seconds": 0.27291205298388377,
+              "memory_peak_kib": 633884,
+              "last_seconds": 2.6543935170047916,
+              "row_retries": [
+                {
+                  "field": "unit_price",
+                  "crop_extents_pixels": [
+                    43,
+                    631,
+                    932,
+                    682
+                  ],
+                  "scale": 2,
+                  "seconds": 1.3610580280073918,
+                  "status": "UNRESOLVED"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q06",
+          "source_sha256": "9d94efcfa8201e43bce7d5c8174276381ce7489f74492aa3e8a19ba0547d547b",
+          "seconds": 28.927,
+          "peak_whole_device_memory_mib": 15167,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 0,
+          "row_checked": 10,
+          "actual_rows": 3,
+          "absent_checks": {
+            "po_reference": true,
+            "payment_account_token": true,
+            "tax_basis": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "source_located": 7,
+          "present_observations": 7,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "vlm_calls": 3,
+          "generation_stops": [
+            {
+              "page": 1,
+              "row": 2,
+              "remaining": 1,
+              "reason": "REPEATED_UNASSOCIATED_CANDIDATES"
+            }
+          ],
+          "source_rows": [],
+          "provider_id": "ENTERPRISE_VLM",
+          "ocr_runtime": []
+        }
+      ]
+    }
+  }
+}

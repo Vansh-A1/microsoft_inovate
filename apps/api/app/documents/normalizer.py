@@ -4,7 +4,7 @@ from decimal import Decimal, localcontext
 import re
 import unicodedata
 
-NORMALIZER_VERSION='document-normalizer-v2'
+NORMALIZER_VERSION='document-normalizer-v3'
 CURRENCIES=frozenset(('INR','USD','EUR','GBP','JPY','CAD','AUD','CHF','SGD','AED'))
 AMOUNTS=frozenset(('subtotal_amount','document_discount_amount','tax_amount','shipping_amount','other_charges_amount',
     'total_amount','unit_price','amount','discount_amount','net_amount','gross_amount','quantity','tax_rate','eligible_nights'))
@@ -94,7 +94,7 @@ class Normalizer:
                 except NormalizationError as exc:status='AMBIGUOUS';code=exc.code
             trace={'source_observation_id':o['id'],'field_path':field,'raw_value':o['raw_value'],
                 'rule_version':NORMALIZER_VERSION,'steps':steps,'canonical_candidate':value,'status':status,
-                'source':o.get('source'),'diagnostic':code}
+                'source':o.get('source'),'diagnostic':code,'observation_diagnostic':o.get('diagnostic',o.get('diagnostic_note'))}
             if field in ('invoice_number','receipt_number') and value:
                 trace['number_keys']=number_keys(value)
             if code:findings.append({'field':field,'code':code,'state':status})
@@ -107,11 +107,14 @@ def validate_draft(candidate,traces,source_type,diagnostics=()):
         'document_discount_amount','shipping_amount','other_charges_amount','tax_basis') if source_type=='VENDOR_INVOICE' else (
         'merchant_name','receipt_number','expense_date','currency','total_amount','receipt_type','category','local_timezone')
     findings=[{'field':key,'code':'CRITICAL_UNRESOLVED','state':'NEEDS_INPUT'} for key in required if candidate.get(key) is None]
+    if any((t.get('observation_diagnostic') or '').startswith('ROW_ASSOCIATION_UNCONFIRMED:') for t in traces):
+        findings.append({'field':'lines','code':'MODEL_ROW_ASSOCIATION_UNCONFIRMED','state':'NEEDS_INPUT',
+            'message':'Confirm the distinct printed line items against the original source. Model candidates could not be assigned to separate source rows; do not use their quantities or amounts.'})
     for key in required:
         trace=next((t for t in traces if t['field_path']==key),None)
         if trace and trace['canonical_candidate'] is not None and not trace.get('source'):
             findings.append({'field':key,'code':'SOURCE_COVERAGE_MISSING','state':'NEEDS_INPUT'})
-    if any(code in diagnostics for code in ('SEGMENTATION_UNCERTAIN','TABLE_COVERAGE_UNCERTAIN','TABLE_ROW_LIMIT')):
+    if any(code in diagnostics for code in ('SEGMENTATION_UNCERTAIN','TABLE_COVERAGE_UNCERTAIN','TABLE_ROW_LIMIT','TABLE_CELL_UNREAD')):
         findings.extend({'field':'document','code':code,'state':'NEEDS_INPUT'} for code in diagnostics)
     if source_type=='VENDOR_INVOICE':
         line_indexes=sorted({key.split('.')[1] for key in candidate if key.startswith('lines.')},key=int)
@@ -120,6 +123,16 @@ def validate_draft(candidate,traces,source_type,diagnostics=()):
             dc.prec=60
             net_sum=tax_sum=Decimal('0');complete=True
             for i in line_indexes:
+                for field,label in (('quantity','quantity'),('unit_price','unit price'),('amount','line amount')):
+                    trace=next((t for t in traces if t['field_path']==f'lines.{i}.{field}'),None)
+                    if trace and trace['status']=='MISSING' and candidate.get(f'lines.{i}.{field}') is None and not (trace.get('observation_diagnostic') or '').startswith('ROW_ASSOCIATION_UNCONFIRMED:'):
+                        description=candidate.get(f'lines.{i}.description')
+                        context=next((t for t in traces if t['field_path']==f'lines.{i}.description'),None)
+                        page=(context or {}).get('source',{});page=(page or {}).get('page')
+                        item=f' ({description[:120]})' if isinstance(description,str) else ''
+                        where=f' on page {page}' if page else ''
+                        findings.append({'field':f'lines.{i}.{field}','code':'SOURCE_CELL_UNREAD','state':'NEEDS_INPUT',
+                            'message':f'What {label} is shown for line {int(i)+1}{item}{where}? No value was independently read. If the source is blank or unreadable, obtain a source-backed correction; do not calculate it from other amounts.'})
                 row={k:candidate.get(f'lines.{i}.{k}') for k in ('quantity','unit_price','discount_amount','net_amount','tax_rate','tax_amount','gross_amount')}
                 if any(v is None for v in row.values()):
                     findings.append({'field':f'lines.{i}','code':'LINE_UNRESOLVED','state':'NEEDS_INPUT'});complete=False;continue

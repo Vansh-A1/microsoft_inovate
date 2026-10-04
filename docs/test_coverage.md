@@ -351,3 +351,43 @@ unresolved. Two absent r02 header fields remain ambiguous. Model raw failures
 are retained. The previous holdout results are not rewritten or relabeled unseen.
 Actual h04 cold/warm-worker queue is 6.641/6.494 s. Exact commands and measurement/
 acceptance limits: [CL-06 correctness](clearledger_table_correctness.md).
+
+## CL-07 unread cells and row identity
+
+Final focused extraction/source boundaries: **144 passed / 4.25 s / exit 0**.
+New cases retain single-unread-cell rows/following items and null source facts,
+reject competing/multiple-blank geometry, preserve equal items at separate source
+positions/pages, stop repeated unassociated vectors/duplicate-region requests,
+retain candidates ambiguous with unread remaining slots, and discard retryable
+timed-out partial work. Missing observations are never fabricated as a literal
+"unresolved" value during row-count disagreement. Existing strict v1/schema limits
+and source/scoping checks remain. Finance/security/governance/scanner/worker unit
+regressions: **125 passed / 0.85 s / exit 0**.
+
+Actual migrated CPU/pipeline/finance execution: **22 passed / two outdated v2
+assertion failures / 378.66 s / exit 1**. All new CPU cases pass. Corrected finance
+plus actual GPU: **11 passed / two missing private-source input failures / 235.52 s /
+exit 1**; affected private-source rerun **two passed / four deselected / 82.79 s /
+exit 0**. All seven finance and six distinct real GPU cases have passing execution,
+including both source branches, computed controls, authorized corrections, retained
+report/trace version pins and actual provider outage. This is not a fabricated
+single fully passing combined run. Initial focused diagnostic/version and import
+collection failures are recorded in the report.
+
+Actual browser **20 passed / one conditional outage skip / 180.364 s / exit 0**,
+one worker/no retries. Real r07 precise human question/null quantity/unknown box,
+three-page equal items, unassigned candidate collapsed default and accessible raw
+drill-down, source/corruption/revision/history, Finance/Admin authorization and
+future fictional allowance/report audit pass. Laptop/phone source and loaded
+Finance/Admin screenshots inspected. Read-only eight-scenario judge gate retains
+all 28 current controls/eligibility/citations and original correction HOLD.
+
+New six frozen fictional variants: **42/42 headers, 57/67 readable row literals,
+18/18 explicit absent headers, 5/5 canonical abstentions**. q06's ten row literals
+remain failed/in the denominator; actual repeated-model stop saves one call and
+no candidate becomes canonical. Old held-out evidence remains unchanged; inspected
+variants now serve regression, not fresh unseen accuracy. Actual r07 cold/warm
+worker queue timings 6.469/6.883 s (warm slower), both NEEDS_INPUT/no finance result.
+Source/secret/original preservation and dependency checks pass; no full-suite or
+representative production accuracy/performance claim. Commands and limitations:
+[CL-07 correctness](clearledger_row_correctness.md).

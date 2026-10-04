@@ -174,7 +174,7 @@ def run(label,split,force_vlm=False,only=None,rapid=False,production_rapid=False
     if output.exists():raise RuntimeError('Benchmark output already exists; use a fresh label')
     git=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     code_hashes={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in
-        [ROOT/'apps/api/app/extraction'/n for n in ('layout.py','native.py','typellm.py','cpu_ocr.py','rapidocr_runtime.py')]+[ROOT/'apps/api/app/services/document_worker.py'] if p.is_file()}
+        [ROOT/'apps/api/app/extraction'/n for n in ('layout.py','native.py','typellm.py','cpu_ocr.py','rapidocr_runtime.py','row_grounding.py')]+[ROOT/'apps/api/app/services/document_worker.py',ROOT/'apps/api/app/documents/normalizer.py'] if p.is_file()}
     for case in cases:
         if case['split']!=split or only and case['id']!=only:continue
         source=manifest.parent/case['path']
@@ -231,7 +231,7 @@ def run(label,split,force_vlm=False,only=None,rapid=False,production_rapid=False
             'limitations':'Pipeline timing excludes upload/database queue/UI and candidate OCR startup, which is reported separately. VRAM is whole device including resident weights and other processes. No accuracy claim beyond these fictional sources.',
             'cases':results},indent=2)+'\n')
         # Baseline holdout results remain sealed until tuning is complete.
-        if split=='holdout' and label in ('baseline','reserved-baseline'):print(json.dumps({'id':case['id'],'baseline_sealed':True}),flush=True)
+        if split=='holdout' and (label=='baseline' or label.endswith('-baseline')):print(json.dumps({'id':case['id'],'baseline_sealed':True}),flush=True)
         else:print(json.dumps({k:v for k,v in data.items() if k not in ('observed','candidate','traces','findings','routing','diagnostics')}),flush=True)
     if candidate_ocr:candidate_ocr.close()
 

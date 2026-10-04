@@ -72,10 +72,10 @@ class TypeLLMExtractionAdapter:
         except PackageNotFoundError: package_version='NOT_INSTALLED'
         self.metadata=AdapterMetadata('typellm-sglang-client','1','ENTERPRISE_VLM',model_id=self.config.model,
             prompt_template_version=PROMPT_VERSION,runtime_versions=(VersionMetadata('typellm',package_version),VersionMetadata('prompt_sha256',PROMPT_HASH)))
-        self.sidecar={'version':'extraction-routing-v4','prompt_sha256':PROMPT_HASH,'question_scope_version':QUESTION_SCOPE_VERSION,
+        self.sidecar={'version':'extraction-routing-v5','prompt_sha256':PROMPT_HASH,'question_scope_version':QUESTION_SCOPE_VERSION,
             'calls':0,'table_coverage':'UNKNOWN','call_metrics':[],
             'header_seconds':0.0,'line_seconds':0.0,'row_inventory_seconds':0.0,'row_regions':[],'header_fields_requested':[],
-            'reused_tables':[]}
+            'reused_tables':[],'row_association_checks':[],'generation_stops':[]}
 
     def call(self,text,fields,images,deadline,scope=None):
         if self.sidecar['calls']>=self.config.maximum_calls:raise DocumentFailure('PROVIDER_CALL_BUDGET')
@@ -154,7 +154,9 @@ class TypeLLMExtractionAdapter:
                 if len(rows)+len(preserved)>self.config.maximum_rows:raise DocumentFailure('TABLE_ROW_LIMIT')
                 offset=len(rows)
                 rows.extend(replace(row,row_index=offset+index+1) for index,row in enumerate(preserved))
-                self.sidecar['reused_tables'].append({'page':page.page,'rows':len(preserved),'reason':'COMPLETE_INDEPENDENT_PRINTED_TABLE'})
+                unread=any((f.diagnostic_note or '').startswith('SOURCE_CELL_UNREAD:') for row in preserved for f in row.fields)
+                self.sidecar['reused_tables'].append({'page':page.page,'rows':len(preserved),'reason':'INDEPENDENT_TABLE_WITH_UNREAD_CELLS' if unread else 'COMPLETE_INDEPENDENT_PRINTED_TABLE'})
+                if unread:self.sidecar['table_coverage']='UNCERTAIN'
                 continue
             # Application-managed candidate rows. No deeply nested schema claims.
             candidates=[s for s in (page.available_text or '').splitlines() if '|' in s and not s.lower().startswith('description')]
@@ -172,22 +174,49 @@ class TypeLLMExtractionAdapter:
                 if state=='PRESENT' and isinstance(raw,str) and raw.isdecimal() and int(raw)<=self.config.maximum_rows:
                     candidates=[f'Extract visible table row {i+1} only.' for i in range(int(raw))]
                 else:self.sidecar['table_coverage']='UNCERTAIN'
+            from app.extraction.row_grounding import region_identity,fingerprint,quarantine,PREFIX
+            identities={};fingerprints={}
+            def stop_generation(completed,at_row,reason):
+                self.sidecar['table_coverage']='UNCERTAIN'
+                self.sidecar['generation_stops'].append({'page':page.page,'row':at_row,'remaining':len(candidates)-completed,'reason':reason})
+                for pending in range(completed,len(candidates)):
+                    if len(rows)>=self.config.maximum_rows:raise DocumentFailure('TABLE_ROW_LIMIT')
+                    rows.append(LineItemObservation(len(rows)+1,tuple(FieldObservation(f,State.MISSING,
+                        diagnostic_note=PREFIX+' Model inventory slot not read; confirm distinct source rows before supplying values.') for f in VISUAL_ROWS)))
             for ordinal,text in enumerate(candidates,1):
                 if len(rows)>=self.config.maximum_rows:raise DocumentFailure('TABLE_ROW_LIMIT')
-                row_images=images;scope=text
+                row_images=images;scope=text;identity=None
                 if self.row_image_loader:
                     region=self.row_image_loader(page,ordinal,len(candidates))
                     if region:
                         image,trace=region;row_images=[image]
                         self.sidecar['row_regions'].append({'page':page.page,'row':ordinal,**trace})
+                        identity=region_identity(bundle,page,trace)
                         scope='The supplied image contains the table column headings and ONLY this item row. Read this sole item row; do not read document totals.'
+                if identity and identity in identities:
+                    rows[identities[identity]]=quarantine(rows[identities[identity]],'The same measured source region was supplied for two inventory slots; no duplicate item is asserted.')
+                    # Dedup the request by actual region, never by equal values.
+                    self.sidecar['row_association_checks'].append({'page':page.page,'row':ordinal,'source_identity':identity,'status':'DUPLICATE_SOURCE_REGION'})
+                    stop_generation(ordinal-1,ordinal,'DUPLICATE_SOURCE_REGION');break
                 fields=VISUAL_ROWS if images else ROW_FIELDS
                 printed=self.printed_columns.get(page.page)
                 requested=tuple(f for f in fields if f in printed) if printed else fields
                 data=self.call(text,requested,row_images,deadline,scope=scope)
                 observed={f.field_path:f for f in self.observations(bundle,page.page,requested,data)}
-                rows.append(LineItemObservation(len(rows)+1,tuple(observed.get(f) or FieldObservation(f,State.MISSING,
-                    diagnostic_note='No such independently printed table column was observed; no value inferred.') for f in fields)))
+                current=LineItemObservation(len(rows)+1,tuple(observed.get(f) or FieldObservation(f,State.MISSING,
+                    diagnostic_note='No such independently printed table column was observed; no value inferred.') for f in fields))
+                signature=fingerprint(current)
+                self.sidecar['row_association_checks'].append({'page':page.page,'row':ordinal,'source_identity':identity,
+                    'status':'SOURCE_REGION_SELECTED' if identity else 'PAGE_ORDINAL_UNVERIFIED'})
+                repeated=signature is not None and signature in fingerprints and (identity is None or fingerprints[signature][1] is None)
+                if repeated:
+                    previous=fingerprints[signature][0]
+                    rows[previous]=quarantine(rows[previous],'Equal model candidates have no distinct measured source regions; they may represent separate items. Confirm row ownership.')
+                    rows.append(quarantine(current,'Equal model candidates have no distinct measured source regions; both candidates retained for source review.'))
+                    stop_generation(ordinal,ordinal,'REPEATED_UNASSOCIATED_CANDIDATES');break
+                rows.append(current)
+                if identity:identities[identity]=len(rows)-1
+                if signature is not None:fingerprints[signature]=(len(rows)-1,identity)
         combined=headers_by_page[0]
         for page_result in headers_by_page[1:]:combined=reconcile(combined,page_result)
         # Rows on one page cannot establish coverage of another unread page.

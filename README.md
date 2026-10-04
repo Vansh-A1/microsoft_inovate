@@ -16,6 +16,11 @@ table failures and [optional isolated CPU OCR](docs/runbooks/cpu-ocr-experiment.
 The [CL-06 table correctness checkpoint](docs/clearledger_table_correctness.md)
 fixes the two spent failures, preserves genuinely unknown values and records
 eight fresh reserved variants without rewriting the previous benchmark.
+The [CL-07 row correctness checkpoint](docs/clearledger_row_correctness.md)
+retains unread cells and distinct repeated items, bounds unassigned VLM generation
+and records six fresh fictional variants. [Acceptance inputs](docs/clearledger_acceptance_inputs.md)
+separate the functioning local demo from independent corpus, business-policy,
+identity, scanner and production-pilot acceptance.
 
 Phase 6 delivers the local application and release/handoff artifacts under an explicit external-infrastructure fallback. The subsequent approved priority override establishes **real local VLM + TypeLLM invoice extraction** on the unchanged GPU driver. This is a development experiment, not a deployed production pilot. See the [real inference acceptance record](docs/real_vlm_acceptance.md), [Phase-6 exit review](docs/phase6_exit_review.md) and [capability matrix](docs/release_matrix.md).
 

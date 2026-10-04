@@ -21,12 +21,13 @@ ORIGIN='http://127.0.0.1:3000'
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--label',required=True)
-    p.add_argument('--case',choices=['t01','t04','h01','h04'],default='t04');args=p.parse_args()
+    p.add_argument('--case',choices=['t01','t04','h01','h04','r07'],default='t04');args=p.parse_args()
     if not re.fullmatch('[a-z0-9-]{1,64}',args.label):raise SystemExit('Use a bounded lowercase measurement label')
     os.umask(0o077)
-    manifest=json.loads((ROOT/'data/clearledger_challenge/manifest.json').read_text())
+    corpus=ROOT/'data'/('clearledger_reserved' if args.case=='r07' else 'clearledger_challenge')
+    manifest=json.loads((corpus/'manifest.json').read_text())
     case=next(c for c in manifest['cases'] if c['id']==args.case)
-    source=ROOT/'data/clearledger_challenge'/case['path'];content=source.read_bytes()
+    source=corpus/case['path'];content=source.read_bytes()
     assert hashlib.sha256(content).hexdigest()==case['sha256']
     target=ROOT/'runtime/clearledger'/('async-'+args.label+'-'+args.case+'.json')
     if target.exists():raise SystemExit('Result exists; choose a fresh label')

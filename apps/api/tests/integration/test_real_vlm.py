@@ -135,7 +135,7 @@ def test_real_scan_to_normalization_source_correction_and_finance(environment,pr
     approve(client,created['id']);drain_finance(db,ctx)
     approved=finance_report(client,created['id'])
     assert approved['decision']=='PASS' and len(approved['rules'])==28
-    assert approved['extraction_mode']=='DOCUMENT_DERIVED' and approved['normalizer_version']=='document-normalizer-v2'
+    assert approved['extraction_mode']=='DOCUMENT_DERIVED' and approved['normalizer_version']=='document-normalizer-v3'
     assert next(r for r in approved['rules'] if r['rule_id']=='GRN-001')['status']=='PASS'
     assert client.get('/api/v1/evaluations/'+old_id).json()['decision']=='HOLD'
 

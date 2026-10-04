@@ -72,3 +72,14 @@ field boxes or confidence. Complete independent tables survive header-only VLM
 fallback; incomplete/uncertain pages remain subject to review. No RapidTable,
 PPStructure, new model or dependency is justified by this specific failure.
 See [CL-06 evidence and remaining failures](../clearledger_table_correctness.md).
+
+## CL-07 implementation refinement — 2026-10-04
+
+Actual r07 and new blank-cell variants show full-page VLM repetition after a
+partial geometric row was discarded. Preserve measured partial rows with one
+unread numeric cell and route source confirmation instead of guessing it. Keep
+null, known page context and unknown field box. Source-region identity, not value
+equality, can prevent duplicate model requests. Repeated unlocated model vectors
+are quarantined and stop further generation; distinct measured equal items are
+retained. No new table stack, model/runtime dependency or financial authority.
+See [CL-07 evidence and acceptance inputs](../clearledger_row_correctness.md).

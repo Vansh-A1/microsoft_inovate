@@ -1450,3 +1450,65 @@ requires confirmed row associations and an authorized source for the absent
 quantity; ambiguous currencies/dates and unprinted tax/accounting remain review
 questions. Current research-model commercial attribution, actual identity/scanner
 and authorized stronger-provider inputs remain separate. No publication is requested.
+
+## CL-07 — unread-cell and row-identity correctness
+
+Phase-6/final local hardening, completed 2026-10-04 under continuous approval.
+Goal: preserve incomplete measured rows, stop unassigned model repetition and
+ask the reviewer for the actual missing fact while retaining legitimate equal
+items. Files: layout/native/TypeLLM/source-identity routing, v3 normalizer findings,
+narrow source review text/drill-down, scoped unit/actual CPU/GPU/browser coverage,
+fresh fictional corpus/metrics and explicit external acceptance checklist.
+Requirements: uncertainty/source integrity, identity not value deduplication,
+bounded generation/retries, unchanged finance controls/history/security and
+truthful measured before/after. No finance-domain/migration/dependency/host/model
+change, redesign/name change, private export, push or deployment.
+
+Spent r07 previously discarded its blank-quantity row and following readable
+item, then VLM repeated rows. Single-unread-core-cell geometry now retains known
+facts, raw/canonical null and unknown field box and can route directly to human
+confirmation. Reviewer gets actual line/description/page context. Crossing,
+multiple-missing and contradictory facts still abstain. Distinct actual regions/
+pages preserve equal items; identical values/crop bytes are not duplicate proof.
+Same-region requests are avoided; repeated unlocated model candidates remain
+ambiguous in collapsed drill-down and stop further generation. Missing slots are
+never filled from arithmetic or literal invented text. v3 new traces preserve
+diagnostics; old v2 histories stay retained.
+
+Six fresh original fictional variants were frozen before tuning and baseline
+sealed. Checked rows improve **24/67→57/67**, headers **42/42**, explicit missing
+headers **18/18**, all **five** required abstentions pass. Blank native quantity
+39.026→0.227 s, blank scanned quantity 20.939→3.707 s, blank scanned price
+20.265→2.867 s; each 4→0 VLM calls. Legitimate identical/multi-page items remain
+12/12 each. Hard q06 remains **0/10**, both unassigned candidates ambiguous and
+remaining slot unread; real repetition stop saves one call, 39.109→28.927 s.
+All benchmark outcomes are NEEDS_INPUT/no finance decision. No old score/source
+was rewritten and no representative accuracy/VRAM or universal speed is asserted.
+Actual r07 queue cold/warm 6.469/6.883 s; warm slower, both no error/finance result.
+
+Final focused **144 passed / 4.25 s / exit 0**; finance/security/governance units
+**125 / 0.85 s / exit 0**. Actual CPU/pipeline/finance **22 pass/two stale version
+assertion failures / 378.66 s / exit 1**; corrected finance+GPU **11 pass/two
+missing input failures / 235.52 s / exit 1**; affected authorized-local-source GPU
+rerun **two pass / 82.79 s / exit 0**. All seven finance/six distinct GPU cases have
+passing execution; failure history is retained, not a fake combined pass count.
+Actual browser **20 pass/one conditional outage skip / 180.364 s / exit 0**, no
+retries. Source question, null quantity/no invented box, equal items and collapsed
+model candidate pass; Finance/Admin laptop/phone screens inspected. Computed eight
+judge scenarios, current eligibility/citations, original correction HOLD and
+future fictional allowance version/history/old report pass.
+
+Build/typecheck/compilation/whitespace, original/spec/all 26 frozen source hashes,
+374-file bounded source scan, zero-finding Gitleaks plus redacted probe and both
+finance/CPU dependency checks pass. App/model remain healthy/loopback and phone
+port 3001 closed. Exact commands and measured/runtime limits are in
+[CL-07 correctness](clearledger_row_correctness.md); production-pilot inputs are
+explicit in [the acceptance checklist](clearledger_acceptance_inputs.md).
+
+Next bounded responsibility requires independently adjudicated lawful invoices
+with fresh reserved vendor/layout families (target 40–60), approved business and
+missing-source facts, plus actual identity/scanner/model attribution acceptance.
+Parent is requesting those inputs. q06 cannot be cleared without confirmed row
+association and an authorized source for absent quantity/price. Keep current
+fictional demo available; no further model/dependency/provisioning/publication
+work follows automatically from this checkpoint.

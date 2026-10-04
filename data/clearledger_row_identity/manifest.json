@@ -1,0 +1,300 @@
+{
+  "version": "clearledger-row-identity-v1",
+  "created_before_tuning_commit": "7cc473e377a41f4eec335d44cf92654a585d4217",
+  "provenance": "Original CC0 fictional ReportLab/PyMuPDF/Pillow sources; no customer data or downloads.",
+  "limitations": "Six reserved synthetic variants, not representative customer accuracy. Legitimate equal-valued rows have separate source positions/pages.",
+  "cases": [
+    {
+      "id": "q01",
+      "split": "holdout",
+      "layout": "blank_quantity",
+      "source_type": "VENDOR_INVOICE",
+      "path": "q01.png",
+      "sha256": "753a1f942ecf73fc537b50ab7cad38220ef473608583e5293744bd18ebcc6071",
+      "headers": {
+        "vendor_name": "Fictional Juniper Paper Works",
+        "invoice_number": "ROW-001",
+        "invoice_date": "2026-10-03",
+        "currency": "INR",
+        "subtotal_amount": "161.50",
+        "tax_amount": "0.00",
+        "total_amount": "161.50"
+      },
+      "rows": [
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        },
+        {
+          "description": "Blue record labels",
+          "unit_price": "12.50",
+          "amount": "37.50"
+        },
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [
+        "lines.1.quantity"
+      ],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-03",
+        "total_amount": "161.50"
+      }
+    },
+    {
+      "id": "q02",
+      "split": "holdout",
+      "layout": "blank_quantity",
+      "source_type": "VENDOR_INVOICE",
+      "path": "q02.pdf",
+      "sha256": "0232ebb2e960497440f88b151b1ef2c0f35adf5a1ea6daf8dd2f77ad2b21d01a",
+      "headers": {
+        "vendor_name": "Fictional Juniper Paper Works",
+        "invoice_number": "ROW-002",
+        "invoice_date": "2026-10-03",
+        "currency": "INR",
+        "subtotal_amount": "161.50",
+        "tax_amount": "0.00",
+        "total_amount": "161.50"
+      },
+      "rows": [
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        },
+        {
+          "description": "Blue record labels",
+          "unit_price": "12.50",
+          "amount": "37.50"
+        },
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [
+        "lines.1.quantity"
+      ],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-03",
+        "total_amount": "161.50"
+      }
+    },
+    {
+      "id": "q03",
+      "split": "holdout",
+      "layout": "identical_items",
+      "source_type": "VENDOR_INVOICE",
+      "path": "q03.png",
+      "sha256": "24537172ab5bbfcb93de4bff4770ecfcc1923c8d16cb38796291ebd9c4838026",
+      "headers": {
+        "vendor_name": "Fictional Juniper Paper Works",
+        "invoice_number": "ROW-003",
+        "invoice_date": "2026-10-03",
+        "currency": "INR",
+        "subtotal_amount": "186.00",
+        "tax_amount": "0.00",
+        "total_amount": "186.00"
+      },
+      "rows": [
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        },
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        },
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-03",
+        "total_amount": "186.00"
+      }
+    },
+    {
+      "id": "q04",
+      "split": "holdout",
+      "layout": "multi_page",
+      "source_type": "VENDOR_INVOICE",
+      "path": "q04.pdf",
+      "sha256": "c91c7887280019d0efb31d02aa5e490fc9c2c7e2582baad8e569fdbc9f1ca692",
+      "headers": {
+        "vendor_name": "Fictional Juniper Paper Works",
+        "invoice_number": "ROW-004",
+        "invoice_date": "2026-10-03",
+        "currency": "INR",
+        "subtotal_amount": "186.00",
+        "tax_amount": "0.00",
+        "total_amount": "186.00"
+      },
+      "rows": [
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        },
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        },
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-03",
+        "total_amount": "186.00"
+      }
+    },
+    {
+      "id": "q05",
+      "split": "holdout",
+      "layout": "blank_price",
+      "source_type": "VENDOR_INVOICE",
+      "path": "q05.png",
+      "sha256": "4b78c12464463a7c22c580d113fc094885bf933172e9cd0f9cdf1486d8f38bd8",
+      "headers": {
+        "vendor_name": "Fictional Juniper Paper Works",
+        "invoice_number": "ROW-005",
+        "invoice_date": "2026-10-03",
+        "currency": "INR",
+        "subtotal_amount": "161.50",
+        "tax_amount": "0.00",
+        "total_amount": "161.50"
+      },
+      "rows": [
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        },
+        {
+          "description": "Blue record labels",
+          "quantity": "3",
+          "amount": "37.50"
+        },
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [
+        "lines.1.unit_price"
+      ],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-03",
+        "total_amount": "161.50"
+      }
+    },
+    {
+      "id": "q06",
+      "split": "holdout",
+      "layout": "two_blank_cells",
+      "source_type": "VENDOR_INVOICE",
+      "path": "q06.pdf",
+      "sha256": "9d94efcfa8201e43bce7d5c8174276381ce7489f74492aa3e8a19ba0547d547b",
+      "headers": {
+        "vendor_name": "Fictional Juniper Paper Works",
+        "invoice_number": "ROW-006",
+        "invoice_date": "2026-10-03",
+        "currency": "INR",
+        "subtotal_amount": "161.50",
+        "tax_amount": "0.00",
+        "total_amount": "161.50"
+      },
+      "rows": [
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        },
+        {
+          "description": "Blue record labels",
+          "amount": "37.50"
+        },
+        {
+          "description": "Canvas file pouches",
+          "quantity": "2",
+          "unit_price": "31.00",
+          "amount": "62.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [
+        "lines.1.quantity",
+        "lines.1.unit_price"
+      ],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-03",
+        "total_amount": "161.50"
+      }
+    }
+  ]
+}
