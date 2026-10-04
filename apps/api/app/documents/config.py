@@ -31,6 +31,9 @@ class ProviderSettings:
     endpoint: str | None = None
     model: str | None = None
     tokenizer_path: str | None = None
+    transport: str = 'SDK'
+    gateway_token_env: str = 'AP_TYPELLM_GATEWAY_TOKEN'
+    model_revision: str | None = None
     timeout_seconds: int = 30
     maximum_rows: int = 200
     maximum_calls: int = 32
@@ -39,6 +42,10 @@ class ProviderSettings:
     ocr_library_directory: str | None = None
 
     def __post_init__(self):
+        import re
+        if self.transport not in ('SDK','TYPELLM_GATEWAY'): raise ValueError('Unsupported extraction transport')
+        if not re.fullmatch(r'[A-Z][A-Z0-9_]{0,79}',self.gateway_token_env): raise ValueError('Use a named gateway secret environment variable')
+        if self.model_revision is not None and not re.fullmatch(r'[a-f0-9]{40}',self.model_revision): raise ValueError('Use a pinned model revision')
         if not 1 <= self.timeout_seconds <= 120: raise ValueError('Provider timeout must be bounded')
         if not 1 <= self.maximum_rows <= 200: raise ValueError('Rows must fit extraction-v1')
         if not 1 <= self.maximum_calls <= 256: raise ValueError('Provider call budget must be bounded')

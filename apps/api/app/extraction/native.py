@@ -90,21 +90,64 @@ def reconcile(primary,other):
     if any(getattr(primary,k)!=getattr(other,k) for k in ('document_id','document_version','tenant_id','legal_entity_id','schema_version')):
         raise ValueError('Provider binding disagreement')
     by={f.field_path:f for f in other.header_fields}
+    currency=None
+    a_currency=next((f for f in primary.header_fields if f.field_path=='currency' and f.state is State.PRESENT),None)
+    b_currency=by.get('currency')
+    if a_currency and b_currency and b_currency.state is State.PRESENT:
+        from app.documents.normalizer import normalize_currency,NormalizationError
+        try:
+            a_unit=normalize_currency(a_currency.raw_value);b_unit=normalize_currency(b_currency.raw_value)
+            if a_unit==b_unit:currency=a_unit
+        except NormalizationError:pass
+    def same_literal(a,b):
+        if a.raw_value==b.raw_value:return True
+        name=a.field_path.split('.')[-1]
+        if name in ('quantity','tax_rate') or (currency and (name.endswith('_amount') or name in ('unit_price','amount'))):
+            from app.documents.normalizer import normalize_money,normalized_value,NormalizationError
+            from decimal import Decimal
+            try:
+                if name in ('quantity','tax_rate'):
+                    return Decimal(normalized_value(name,a.raw_value)[0])==Decimal(normalized_value(name,b.raw_value)[0])
+                return Decimal(normalize_money(a.raw_value,currency))==Decimal(normalize_money(b.raw_value,currency))
+            except NormalizationError:return False
+        return False
     headers=[]
     for a in primary.header_fields:
         b=by.get(a.field_path)
         if b is None:headers.append(a);continue
-        if a.state is State.PRESENT and b.state is State.PRESENT and a.raw_value!=b.raw_value:
+        if a.state is State.PRESENT and b.state is State.PRESENT and not same_literal(a,b):
             headers.append(FieldObservation(a.field_path,State.AMBIGUOUS,f'{a.raw_value} | {b.raw_value}',source=a.source,
                 diagnostic_note='Provider disagreement; both candidates retained.'))
-        elif a.state is not State.PRESENT and b.state is State.PRESENT and a.state is State.MISSING:headers.append(b)
+        elif a.state is State.MISSING:headers.append(b)
         elif a.state is State.PRESENT and b.state in (State.AMBIGUOUS,State.ILLEGIBLE):
             headers.append(FieldObservation(a.field_path,State.AMBIGUOUS,f'{a.raw_value} | {b.raw_value or b.state.value}',source=a.source,
                 diagnostic_note='Independent provider cannot corroborate critical observation.'))
+        elif a.state is State.PRESENT and b.state is State.PRESENT and a.raw_value!=b.raw_value:
+            headers.append(replace(a,diagnostic_note=f'Equivalent Decimal amount with agreed explicit currency; alternate provider literal: {b.raw_value}'))
         else:headers.append(a)
+    primary_names={f.field_path for f in primary.header_fields}
+    headers.extend(f for f in other.header_fields if f.field_path not in primary_names)
     rows=primary.line_items
-    if primary.line_items and other.line_items and [tuple(f.raw_value for f in r.fields) for r in rows]!=[tuple(f.raw_value for f in r.fields) for r in other.line_items]:
-        rows=tuple(replace(r,fields=tuple(FieldObservation(f.field_path,State.AMBIGUOUS,f.raw_value or 'unresolved',source=f.source,
-            diagnostic_note='Provider table disagreement.') for f in r.fields)) for r in rows)
+    if primary.line_items and other.line_items:
+        if len(primary.line_items)!=len(other.line_items):
+            # Keep the larger candidate set visible, without asserting that its
+            # coverage is correct. The worker retains both provider outputs.
+            rows=primary.line_items if len(primary.line_items)>=len(other.line_items) else other.line_items
+            rows=tuple(replace(r,fields=tuple(FieldObservation(f.field_path,State.AMBIGUOUS,f.raw_value or 'unresolved',source=f.source,
+                diagnostic_note='Provider table row-count disagreement.') for f in r.fields)) for r in rows)
+        else:
+            combined=[]
+            for a_row,b_row in zip(primary.line_items,other.line_items):
+                other_fields={f.field_path:f for f in b_row.fields};fields=[]
+                for a in a_row.fields:
+                    b=other_fields.get(a.field_path)
+                    if b is not None and ((a.state is State.PRESENT and b.state is State.PRESENT and not same_literal(a,b)) or
+                        (a.state is State.PRESENT and b.state in (State.AMBIGUOUS,State.ILLEGIBLE))):
+                        fields.append(FieldObservation(a.field_path,State.AMBIGUOUS,a.raw_value or 'unresolved',source=a.source,diagnostic_note='Provider table field disagreement.'))
+                    elif a.state is State.MISSING and b is not None:fields.append(b)
+                    else:fields.append(a)
+                names={f.field_path for f in fields};fields.extend(f for f in b_row.fields if f.field_path not in names)
+                combined.append(replace(a_row,fields=tuple(fields)))
+            rows=tuple(combined)
     elif not rows:rows=other.line_items
     return replace(primary,header_fields=tuple(headers),line_items=rows,status=ExtractionStatus.PARTIAL)

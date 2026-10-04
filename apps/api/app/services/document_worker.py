@@ -51,22 +51,45 @@ def bundle_for(doc,identity,page_data):
         tuple(BundlePage(p['page'],p['native_text'] or None,artifact_ref=p['preview_key']) for p in page_data),synthetic=False)
 
 
+def mapping_gaps(observed,source_type,diagnostics=()):
+    """Coverage is an extraction-routing gate, never a finance decision."""
+    required=('vendor_name','invoice_number','invoice_date','currency','subtotal_amount','tax_amount','total_amount',
+        'document_discount_amount','shipping_amount','other_charges_amount','tax_basis') if source_type=='VENDOR_INVOICE' else (
+        'merchant_name','receipt_number','expense_date','currency','total_amount','category','local_timezone','receipt_type')
+    by={f.field_path:f for f in observed.header_fields}
+    gaps=[name for name in required if name not in by or by[name].state.value!='PRESENT']
+    if source_type=='VENDOR_INVOICE':
+        if not observed.line_items:gaps.append('LINE_ITEMS_NOT_MAPPED')
+        elif any(f.state.value!='PRESENT' for row in observed.line_items for f in row.fields):gaps.append('LINE_ITEMS_INCOMPLETE')
+    if diagnostics:gaps.extend(diagnostics)
+    return list(dict.fromkeys(gaps))
+
+
 def extract(doc,identity,page_data,storage,providers):
     bundle=bundle_for(doc,identity,page_data);adapter=NativeTextExtractionAdapter(page_data)
     native=adapter.extract(bundle,SCHEMA_VERSION);diagnostics=list(adapter.diagnostics)
-    routing={'version':'extraction-routing-v1','paths':[],'ocr_status':'NOT_CONFIGURED','vlm_status':'NOT_CONFIGURED',
+    routing={'version':'extraction-routing-v2','paths':['NATIVE_TEXT'] if any(p['native_text'] for p in page_data) else [],'ocr_status':'NOT_CONFIGURED','vlm_status':'NOT_CONFIGURED',
         'segmentation':'UNCERTAIN' if 'SEGMENTATION_UNCERTAIN' in diagnostics else 'UNCONFIRMED',
         'fallback':'HUMAN_REVIEW','model_quality':'NOT_MEASURED'}
     visual=[p for p in page_data if p['route']!='NATIVE_TEXT_AVAILABLE']
-    if not visual:
+    gaps=mapping_gaps(native,doc['source_type'],diagnostics)
+    routing['cheap_mapping_gaps']=gaps
+    if 'SEGMENTATION_UNCERTAIN' in diagnostics:
+        # A model cannot choose which of two printed invoice identities owns a
+        # bundle. Preserve both and request confirmed segmentation.
+        routing['vlm_status']='CONFIGURED_NOT_NEEDED' if providers.endpoint else 'NOT_CONFIGURED'
+        routing['sufficiency']='HUMAN_SEGMENTATION_REQUIRED'
+        return native,diagnostics,routing
+    if not visual and not gaps:
         if providers.endpoint:routing['vlm_status']='CONFIGURED_NOT_NEEDED'
         routing['paths']=['NATIVE_TEXT'];return native,diagnostics,routing
     ocr=UnconfiguredOCRAdapter()
     if providers.ocr_executable:
         ocr=TesseractOCRAdapter(providers.ocr_executable,providers.ocr_data_directory or '',providers.ocr_library_directory)
         routing['ocr_status']='CONFIGURED'
-    ocr_pages=[];deadline=time.monotonic()+30
-    if providers.ocr_executable:
+    ocr_pages=page_data;deadline=time.monotonic()+30
+    if providers.ocr_executable and visual:
+        ocr_pages=[]
         for p in page_data:
             if p not in visual:ocr_pages.append(p);continue
             if time.monotonic()>=deadline:raise DocumentFailure('OCR_DOCUMENT_TIME_LIMIT')
@@ -79,17 +102,35 @@ def extract(doc,identity,page_data,storage,providers):
         native=reconcile(native,observed);native=replace(native,metadata=observed.metadata)
         diagnostics.extend(ocr_adapter.diagnostics);routing['paths'].append('LOCAL_OCR')
         routing['ocr_status']='SUCCEEDED'
-    unresolved=[f for f in native.header_fields if f.field_path in ('total_amount','currency','invoice_number' if doc['source_type']=='VENDOR_INVOICE' else 'receipt_number') and f.state.value!='PRESENT']
-    if providers.endpoint and (unresolved or not providers.ocr_executable):
+    gaps=mapping_gaps(native,doc['source_type'],diagnostics)
+    routing['cheap_mapping_gaps']=gaps
+    if providers.endpoint and gaps:
         routing['vlm_status']='CONFIGURED'
-        enterprise=TypeLLMExtractionAdapter(providers,image_loader=lambda p:'data:image/png;base64,'+base64.b64encode(storage.get(identity,p.artifact_ref)).decode())
-        extracted=enterprise.extract(bundle,SCHEMA_VERSION)
+        from app.extraction.grid import row_crops
+        crop_cache={}
+        def row_image(page,ordinal,count):
+            if page.page not in crop_cache:crop_cache[page.page]=row_crops(storage.get(identity,page.artifact_ref),providers.maximum_rows)
+            crops=crop_cache[page.page]
+            if len(crops)!=count:return None
+            content,trace=crops[ordinal-1]
+            key,sha=storage.put(identity,content,maximum=4*1024*1024)
+            if sha!=trace['sha256']:raise DocumentFailure('DERIVED_INTEGRITY_FAILURE')
+            trace=trace|{'preview_key':page.artifact_ref,'storage_key':key,
+                'page_transform':next(p['transform'] for p in page_data if p['page']==page.page)}
+            return 'data:image/png;base64,'+base64.b64encode(content).decode(),trace
+        enterprise=TypeLLMExtractionAdapter(providers,
+            image_loader=lambda p:'data:image/png;base64,'+base64.b64encode(storage.get(identity,p.artifact_ref)).decode(),row_image_loader=row_image)
+        extracted=enterprise.extract(bundle_for(doc,identity,ocr_pages),SCHEMA_VERSION)
+        if native.line_items and extracted.line_items and len(native.line_items)!=len(extracted.line_items):
+            from app.domain.extraction import to_data
+            routing['row_count_disagreement']={'version':'provider-candidates-v1',
+                'primary':to_data(native),'visual':to_data(extracted)}
         native=reconcile(native,extracted);native=replace(native,metadata=extracted.metadata)
         routing['paths'].append('ENTERPRISE_VLM');routing['vlm_status']='SUCCEEDED'
         routing['enterprise']=enterprise.sidecar
         if enterprise.sidecar['table_coverage']=='UNCERTAIN':diagnostics.append('TABLE_COVERAGE_UNCERTAIN')
     elif providers.endpoint:routing['vlm_status']='CONFIGURED_NOT_NEEDED'
-    if not providers.ocr_executable and not providers.endpoint:raise DocumentFailure('VISUAL_PROVIDER_NOT_CONFIGURED')
+    if visual and not providers.ocr_executable and not providers.endpoint:raise DocumentFailure('VISUAL_PROVIDER_NOT_CONFIGURED')
     return native,diagnostics,routing
 
 

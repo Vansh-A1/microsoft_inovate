@@ -4,10 +4,10 @@ from decimal import Decimal, localcontext
 import re
 import unicodedata
 
-NORMALIZER_VERSION='document-normalizer-v1'
+NORMALIZER_VERSION='document-normalizer-v2'
 CURRENCIES=frozenset(('INR','USD','EUR','GBP','JPY','CAD','AUD','CHF','SGD','AED'))
 AMOUNTS=frozenset(('subtotal_amount','document_discount_amount','tax_amount','shipping_amount','other_charges_amount',
-    'total_amount','unit_price','discount_amount','net_amount','gross_amount','quantity','tax_rate','eligible_nights'))
+    'total_amount','unit_price','amount','discount_amount','net_amount','gross_amount','quantity','tax_rate','eligible_nights'))
 
 
 class NormalizationError(ValueError):

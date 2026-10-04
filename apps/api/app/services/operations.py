@@ -256,10 +256,17 @@ def dependencies(database,storage,settings,identity):
     except Exception:db_state='UNAVAILABLE'
     storage_state='AVAILABLE' if storage.root.is_dir() and __import__('os').access(storage.root,__import__('os').R_OK|__import__('os').W_OK) else 'UNAVAILABLE'
     if settings.storage_mode=='AZURE_BLOB':storage_state='CONFIGURED_UNVERIFIED'
+    provider={'status':'CONFIGURED_UNVERIFIED' if settings.document_providers.endpoint else 'NOT_CONFIGURED'}
+    if settings.document_providers.endpoint and settings.document_providers.transport=='TYPELLM_GATEWAY':
+        from app.extraction.gateway import GatewayTransport
+        provider=GatewayTransport(settings.document_providers).health()
     return {'database':db_state,'storage':storage_state,'job_executor':'DATABASE_LEASED_POLLING',
+        'native_pdf':'AVAILABLE',
         'ocr':'CONFIGURED' if settings.document_providers.ocr_executable else 'NOT_CONFIGURED',
-        'enterprise_vlm':'CONFIGURED_UNVERIFIED' if settings.document_providers.endpoint else 'NOT_CONFIGURED',
-        'enterprise_runtime':'DEFERRED_EXTERNAL_PREREQUISITE','malware':'NOT_CONFIGURED','risk_model':risk_status}
+        'enterprise_vlm':provider['status'],
+        **{'extraction_'+k:v for k,v in provider.items() if k!='status'},
+        'enterprise_runtime':'AVAILABLE' if provider['status']=='AVAILABLE' else 'DEFERRED_EXTERNAL_PREREQUISITE',
+        'malware':'NOT_CONFIGURED','risk_model':risk_status}
 
 def replay(session,identity,evaluation_id,correlation):
     read_permission(identity);finance.scope_lock(session,identity)
