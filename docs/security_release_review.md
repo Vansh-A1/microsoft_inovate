@@ -2,6 +2,27 @@
 
 This is practical local validation of a synthetic application and deployment boundaries, not a penetration test, legal compliance certificate or production authorization. Exact final commands/counts are recorded in the [exit review](phase6_exit_review.md).
 
+## Final continuous release supplement — 2026-10-04
+
+Current results are in the [final exit](final_project_exit_review.md). The new
+development walkthrough resolves scoped persisted decisions, not seed outcomes;
+another tenant cannot retrieve links or scoped form templates. Narrow identities
+keep review, approval, audit/export and operations separate. Lifecycle checks UID,
+script and start ticks before signals, uses atomic private state and refuses
+destructive cleanup while services run. Startup never resets/migrates finance data.
+
+Accepted local inference is isolated/authenticated and bound to actual runtime
+pins. Provider outage creates no draft/decision; bounded audited retry recovers
+the retained stage. Commercial Qwen research-license approval and enterprise
+serving/network are external gates. Optional Bicep gateway injection uses a named
+Key Vault secret after explicit private-gateway approval, never a frontend token.
+
+Timing output is bounded/scoped and omits source text, provider payloads and
+credentials. Required audit failure logs only a fixed event and raises to roll
+back business effects. Final tracked/pending source is scanned; private runtime
+is ignored. Malware remains NOT_CONFIGURED. Hosted Entra/Blob, OS/container scans
+or penetration results are not inferred from local checks.
+
 ## Executed controls
 
 PostgreSQL integration tests exercise forced tenant/entity RLS, composite scope links, cross-tenant evidence/audit/review denial, unauthorized policy/master activation, forged actors/roles, self-approval, waiver authority, stale approvals/review writes, idempotency and audit rollback. Release tests add future policy version retention and scope checks, permission revocation before cached administration replies, narrow finance access and redacted request telemetry. Domain monetary values remain Decimal/decimal strings; original rules and historical policies/evaluations are retained.

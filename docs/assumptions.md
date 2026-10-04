@@ -7,6 +7,30 @@ change the original assumptions or pretend synthetic policy is company policy.
 
 ## Current real-extraction experiment — 2026-10-04
 
+### Final continuous release
+
+The approved Phase-5 fallback is complete: cutoff-safe features, transparent
+statistical anomaly factors, feedback/dataset provenance and governed model
+lifecycle. Synthetic history and development feedback do not justify a
+supervised classifier. **SUPERVISED_TRAINING_NOT_JUSTIFIED** remains the actual
+gate; no held-out classifier metrics, calibrated probability or SHAP is claimed.
+
+The hackathon profile now starts the owned API/worker/frontend and accepted native
+inference without Docker, checking actual model hashes/pins/GPU headroom and
+authenticated health. An actual bounded outage/recovery drill verifies native
+independence and explicit visual failure. Start/stop never migrate/reset financial
+data or delete evidence/model caches. Eight computed entries cover six families
+in a separate fictional tenant; the partial-delivery case has independent capacity.
+Policies, references, approvals and amounts are synthetic demonstration data.
+
+Live Azure is **BLOCKED_EXTERNAL_INPUT**: approved subscription, region, spend,
+identities, network/residency and deployment authority are absent. IaC/contracts
+and runbooks are delivered; private gateway secret injection is conditional on
+explicit approval. No GPU/cloud resources are created. Commercial checkpoint
+licensing and institutional acceptance remain external. Current measured checks
+are in the [final project exit](final_project_exit_review.md); earlier sections
+retain their historical facts rather than describing the accepted current runtime.
+
 The priority override authorizes the isolated local experiment in [ADR-0015](adr/0015-current-driver-compatible-real-vlm.md).
 Actual Qwen2.5-VL-3B BF16, SGLang 0.4.6.post5/PyTorch CUDA 12.4 and TypeLLM 0.5.1
 now execute with driver 550.120 unchanged. Separate Python 3.12 serving/client

@@ -8,6 +8,8 @@
 | CSV/XLSX imports and cell evidence | COMPLETE | Explicit mapping/defaults and retained errors; formulas rejected and real document links required. |
 | TypeLLM extraction application boundary | COMPLETE | Actual pinned TypeLLM 0.5.1 + Qwen visual generation, opt-in real uploads/rows/normalization, contract tests, strings for money and explicit uncertainty. |
 | Real local VLM/SGLang execution, latency/VRAM/quality smoke | OPERATIONAL FOR TESTED CASES | Qwen2.5-VL-3B BF16, SGLang 0.4.6.post5/CUDA 12.4, unchanged driver 550.120; five source variants and real app integration. [Measured record](real_vlm_acceptance.md). |
+| Owned hackathon lifecycle and retained real-engine walkthrough | COMPLETE | Docker-free start/stop/restart/health, actual GPU hashes/pins/health, CPU degraded mode, bounded outage/retry and eight persisted entries. [Runbook](runbooks/hackathon-demo.md). |
+| Scoped operational timing measurements | COMPLETE | Actual extraction/provider/stage samples and queue states; null empty values and content-free audit failure signal; no SLA claims. |
 | Production enterprise inference/license/representative quality | DEFERRED_EXTERNAL | Tested checkpoint has Qwen RESEARCH LICENSE AGREEMENT. Shared private service, commercial permission, representative quality and capacity need separate gates; local loopback smoke is not universal accuracy. |
 | Rules-only and governed statistical anomaly modes | COMPLETE | Twenty PIT features, median/MAD signals, feedback/dataset provenance, candidate/shadow/activation/rollback/monitoring; no fraud probability. |
 | Supervised classifier, calibrated probability and SHAP | DEFERRED_DATA | Representative independent final adjudications required. Synthetic engine outcomes do not qualify. |
@@ -23,3 +25,7 @@
 | Payment execution / ERP payment handoff / online learning | NOT_IN_SCOPE | No implementation or authority granted. |
 
 The local delivery exit is allowed by the Phase-6 specification's explicit external-input fallback. It does not satisfy AC20's deployed-pilot gate or imply production readiness. Optional classifier-specific T30/T31/T34 stay partial/deferred.
+
+The latest [final project exit](final_project_exit_review.md) records continuous
+integration, frozen actual VLM, demo, security/recovery/performance evidence and
+external gates. Historical phase reviews retain their original executed results.

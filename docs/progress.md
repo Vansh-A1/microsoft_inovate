@@ -1,5 +1,71 @@
 # Implementation progress
 
+## Final project integration — continuous approval, 2026-10-04
+
+Final scope covers P5-01–P5-05, P6-01–P6-04 and hackathon integration/handoff in
+one continuous run. Existing implementations and accepted ADR-0015 inference
+remain. Starting baseline was clean main `74fcbcf`; no finance rule, money/domain
+behavior, used migration, host driver or accepted model was replaced.
+
+Batch A verifies the existing cutoff-safe feature/anomaly/feedback/registry
+system: **38 tests pass**, 241.93 s. Available history/development adjudications are
+synthetic; **SUPERVISED_TRAINING_NOT_JUSTIFIED** remains the correct gate. The
+approved anomaly-only alternative is complete; no classifier, probability or
+SHAP is fabricated. T01–T42 remains 39 complete, T30 partial, T31/T34 data-deferred.
+
+Batch B delivers owned `start-demo.sh`, `stop-demo.sh`, `demo-health.sh`, private
+process/checkpoint state and inference restart/cleanup guards. Startup checks
+actual hashes, both Python runtimes/package pins, GPU headroom, database role/head
+and authenticated provider health. Cold start/stop/CPU degraded behavior and
+actual bounded three-attempt provider outage/recovery pass. Native READY is
+independent; visual outage produces no draft/finance decision. Permissioned retry
+is audited/idempotent. Cleanup guards pass; model caches are retained.
+
+Batch C prepares a separate fictional tenant and narrow independent actors, then
+computes eight entries across six families through actual HTTP/worker APIs. A
+ruled-table image requires real VLM/TypeLLM, source verification and independent
+approval before PASS. Its printed row required zero corrections in this run.
+An independent native partial case asserts 100 ordered / 50 available / 70 billed
+→ HOLD, 20 shortfall. Paid duplicate, employee allowance and shared capacity flows
+compute actual decisions. Correction v1 PASS → v2 HOLD → v3 PASS retains its
+original HOLD. Repeating preparation/actions leaves 10 versions, 11 evaluations,
+223 audit events and 10 finance allocations unchanged.
+
+Batch D adds scoped bounded actual timing projections and content-free audit
+failure logging without weakening rollback, conditional Key Vault inference
+secret injection, CPU-only CI preparation, accessible walkthrough/error copy and
+stale-candidate/approval-request browser waits. Final focused backend passes **16**,
+84.55 s; final zombie/pin guard refinement passes **13**, 0.04 s. Actual GPU suite
+passes **6**, 348.12 s, including preserved original HOLD followed by independent
+approvals and PASS across 28 controls. Final restart TypeLLM smoke passes **1**,
+0.69 s. Serving Python is checked locally without extending the strict provider
+metadata contract.
+
+Final browser: **39 passed / one conditional retained-outage skip**, 3.3 min;
+the actual outage-specific batch previously passes three. Laptop/mobile screenshots
+were inspected. **824 passed / six opt-in GPU skipped**, 3011.36 s, exit 0. Collection is 830 including six
+opt-in; overlapping focused counts are not added into a fake full run.
+TypeScript/build, migration drift/contracts, Bicep/workflow gates, fatal lint,
+domain typing, three environment integrity checks, locked dependency scans,
+source/secret scans and original/spec/fixture preservation pass. Actual CPU/history
+benchmarks and a 150.795-second disposable restore verify 62 tables/61 forced RLS,
+577 reports/evaluations, 7,760 audit events and 405 objects; source unchanged.
+Document-linked transaction/version/evaluation/report digest survives restart.
+
+The [final exit](final_project_exit_review.md), [demo runbook](runbooks/hackathon-demo.md),
+[performance](performance_phase6.md), coverage/dictionary/assumptions/security and
+ADR-0016 record actual behavior. Historical phase reviews remain unchanged.
+Private uploads, weights, credentials and runtime reports stay ignored. Reviewed
+local commits only; no push or authentication work under this approval.
+Implementation checkpoint: `7573c70`; final handoff/evidence is committed separately.
+
+Live Azure remains **BLOCKED_EXTERNAL_INPUT**: no approved subscription, region,
+spend, identities/network/residency or deployment authority. IaC/CI/deployment,
+identity/storage/secret interfaces and recovery/handoff assets are delivered.
+Commercial Qwen research-license choice, institutional pilot and representative
+supervised labels remain external gates. Next task: none within independent
+authorized local scope; external prerequisites are explicit in the final exit.
+
 ## Current priority override — real local document inference
 
 The 2026-10-04 direct request authorizes an isolated current-driver VLM experiment

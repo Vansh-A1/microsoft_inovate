@@ -1,5 +1,27 @@
 # Domain glossary and implemented foundational contracts
 
+## Final local release additions — 2026-10-04
+
+No business table or migration is added. Existing immutable finance/document
+records remain authoritative. New private metadata and scoped projections are:
+
+| Object | Meaning and controls |
+|---|---|
+| `runtime/demo/state.json` | Atomic mode-0600 supervisor/app PID and `/proc` start-tick identity. UID/script/start-tick checks prevent signaling unrelated or reused PIDs. Not a business decision. |
+| `runtime/demo/scenarios.json` | Private versioned fictional scope, idempotent checkpoints and retained evaluation/source IDs. Not authoritative for decisions: the API reloads scoped persisted evaluations. |
+| `runtime/demo/templates/{vendor,employee}.json` | Private scope envelopes around synthetic form defaults. Returned only for matching authenticated tenant/entity in development. |
+| `runtime/demo/reference/` | Ignored remapped fictional references with independent scenario capacity and explicit activation history. Original Git fixtures are unchanged. |
+| `development/scenarios` | Development-only permissioned links, retained decision/version and current version. Historical PASS is explicitly superseded when facts change. Other scopes receive no rows. |
+| `operations/measurements` | Seven-day projection of up to 500 extraction runs and 2,000 stage audit events: actual count/median/maximum milliseconds, provider header/row/inventory durations, queue state/age and selected incomplete controls. Empty samples are null; stage timings include commit overhead. |
+| `audit_write_failed` | Fixed content-free log event when required audit persistence raises. Business effects roll back; retained failure count remains null because a failed event cannot be counted as committed audit. |
+
+The actual partial-delivery source has independent approved PO 100 / accepted
+GRN 50 / billed 70; exact Decimal evidence shows a 20-unit shortfall. The visual
+case retains raw strings, normalizer-v2 traces, source confirmation, independent
+approvals and versions 1 PASS / 2 HOLD / 3 PASS. Historical scores/evaluations bind
+to their original versions. Originals, credentials, model shards, reports and
+backups remain ignored; no predictive identifiers or hidden reasoning are added.
+
 ## Current real-extraction sidecar — 2026-10-04
 
 This integration adds no database table or migration and retains `extraction-v1`.

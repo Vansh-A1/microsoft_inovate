@@ -32,6 +32,16 @@ Set `AP_ENVIRONMENT=enterprise`; supply approved `AP_CONFIG_FILE` or Key Vault-b
 
 Web needs enterprise mode, HTTPS `AP_API_ORIGIN`, exact HTTPS `AP_WEB_ORIGIN` and the verified EasyAuth API-token integration. Development/demo identities remain disabled even if a demo flag is accidentally set. No client-provided scope or role is accepted.
 
+`release.bicep` defaults `useApprovedInferenceGateway=false`. Enable it only for
+a separately approved, reachable private HTTPS gateway and licensed model.
+API/worker then receive `AP_TYPELLM_GATEWAY_TOKEN` via the named Key Vault secret
+`ap-typellm-gateway-token` and their managed identity; the frontend receives no
+gateway credential. Populate that secret through the approved secret-management
+process and explicitly verify access/health. This parameter does not create GPU
+compute or confer commercial permission for the local Qwen research checkpoint.
+The native hackathon runtime remains documented independently in
+[local inference](local-inference.md) and the [demo runbook](hackathon-demo.md).
+
 ## Rollback and release integrity
 
 Revert to a previously approved compatible application image digest through a reviewed release parameter file and protected workflow with rollback enabled; migrations are skipped. Keep historical evaluations/ledger/audit/evidence. A previous image must understand the current expanded schema; review compatibility rather than assume it. Never destructively roll back financial tables. After image rollback repeat permissions, processing, rules/report, audit and capacity smoke.

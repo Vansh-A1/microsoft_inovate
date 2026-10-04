@@ -1,4 +1,66 @@
 # Phase-6 measured local performance
+
+## Final continuous verification — 2026-10-04
+
+The final run uses the same local machine/runtime described below, with the
+accepted resident BF16 VLM and other release checks sharing the host. These CPU
+samples do not measure GPU throughput. Commands actually returned exit 0:
+`scripts/benchmark/release_phase6.py`, `finance_phase3.py` and `workflow_phase4.py`
+using the finance `.venv`. Private reports remain in ignored runtime/generated.
+
+| Warm loopback HTTP | Samples | Median ms | p95 ms | Maximum ms |
+|---|---:|---:|---:|---:|
+| List 25 | 20 | 81.919 | 132.138 | 150.019 |
+| Case detail | 20 | 4.519 | 6.975 | 7.381 |
+| Review queue 25 | 20 | 24.739 | 31.073 | 34.641 |
+| Audit timeline | 20 | 8.796 | 12.743 | 14.062 |
+| Report | 20 | 30.167 | 35.183 | 36.771 |
+| Admin catalog | 20 | 47.180 | 97.591 | 109.874 |
+
+HTTP targets retained synthetic development data, not 10k API rows. The separate
+owned-schema benchmark actually loads 10k generated history and 200 structured
+transactions:
+
+| Finance operation | Samples | Median ms | p95 ms | Maximum ms |
+|---|---:|---:|---:|---:|
+| Duplicate candidate lookup | 25 | 3.234 | 6.979 | 12.694 |
+| Pure rules including PO/GRN | 10 | 3.108 | 3.715 | 5.294 |
+| Transactional finalization including budget | 10 | 182.464 | 490.085 | 716.465 |
+| Enqueue/claim/context/finalization | 10 | 415.362 | 730.657 | 1299.633 |
+
+Workflow measurements use 100 actual computed synthetic cases, retained query
+plans and existing indexes:
+
+| Workflow operation | Samples | Median ms | p95 ms | Maximum ms |
+|---|---:|---:|---:|---:|
+| Review queue 25 | 10 | 19.902 | 24.426 | 25.075 |
+| Case detail | 10 | 2.112 | 3.217 | 3.555 |
+| Audit timeline 50 | 10 | 3.635 | 6.088 | 68.258 |
+| Dashboard | 10 | 3.906 | 4.753 | 7.248 |
+| Assignment | 10 | 502.614 | 737.417 | 1662.781 |
+| Report export generation | 10 | 438.776 | 1349.973 | 1409.301 |
+| Reconciliation batch | 3 | 740.494 | 740.494 | 784.941 |
+| Correction and reevaluation | 1 | 3102.568 | 3102.568 | 3102.568 |
+| Cancellation | 1 | 889.228 | 889.228 | 889.228 |
+
+Write/commit tails differ materially from the earlier less-loaded samples below.
+They are shared-host observations, not production SLA or statistically robust
+tails; one-sample correction/cancellation cannot establish a percentile. Database
+durability/isolation were not weakened. Existing indexes were sufficient for the
+measured query plans; no speculative migration/index was introduced.
+
+The accepted serial VLM baseline is in [real acceptance](real_vlm_acceptance.md):
+33.717 seconds primary supplied image, 117.735 seconds two-page case near the
+120-second budget, peak observed 14,733 MiB. Final six real hardware tests pass
+in 348.12 seconds. These are compatibility/quality samples and suite elapsed
+time, not concurrent throughput. Large uncertain/truncated documents cannot PASS.
+
+Final local logical restore verifies 62 tables / 61 forced-RLS business tables,
+577 reports/evaluations, 7,760 audit events and 405 objects in 150.795 seconds;
+source unchanged. No cloud recovery, RTO/RPO or universal accuracy is claimed.
+
+## Historical Phase-6 measurements
+
 Environment: Intel(R) Core(TM) Ultra 7 265; 20 logical CPUs; 65,278,588 KiB reported RAM (~62.3 GiB); Ubuntu 24.04/glibc 2.39, Linux 6.11 x86_64; Python 3.13.11, PostgreSQL 16.15, Node 24.21.0, CPU Tesseract 5.3.4. Measurements used warm loopback/development processes and synthetic data on a shared host while release checks also ran. No VLM, cloud throughput or production SLA is measured.
 
 Executed benchmark commands (each exit 0):

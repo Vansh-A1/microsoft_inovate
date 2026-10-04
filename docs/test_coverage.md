@@ -1,5 +1,29 @@
 # Mandatory test coverage
 
+## Final continuous project verification — 2026-10-04
+
+The [final exit](final_project_exit_review.md) records complete invocations and
+limits. Final intelligence verification passes **38 tests**; final lifecycle,
+scoped-demo/measurement/audit verification passes **16 tests**; actual TypeLLM/GPU
+acceptance passes **6 tests**, 348.12 seconds. The real scan reaches PASS across
+28 controls only after independent approvals, preserving its original HOLD and
+source corrections. Ordinary CI requires neither GPU nor model download.
+
+The complete ordinary suite passes **824**, with **six opt-in GPU skipped**,
+3011.36 seconds, exit 0. Final collection is **830**; collection is not a passing
+test. Separate focused and hardware runs overlap and are not added into a fake
+full-run count. Final live-browser verification passes **39**, with one conditional
+retained-provider-failure check skipped after recovery; that actual outage browser
+batch previously passed **3**. Native READY/visual three-attempt failure and
+idempotent real retry are separately exercised through the actual provider.
+
+New tests verify scope/role/private-template isolation, manifest outcome integrity,
+safe measurements, audit rollback, PID reuse/malformed state, model hash/memory
+readiness and guarded cleanup. The real `/demo` checks source/report links,
+retained/current versions and keyboard/mobile presentation. Repeated preparation
+preserves versions/evaluations/audit/capacity. T01–T42 remains **39 passing / one
+partial / two data-deferred**; no fabricated classifier/SHAP closes the matrix.
+
 ## Current real VLM integration — 2026-10-04
 
 The approved priority override supplements the historical phase results below.
