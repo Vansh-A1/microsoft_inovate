@@ -86,6 +86,14 @@ def mapping_gaps(observed,source_type,diagnostics=()):
     return list(dict.fromkeys(gaps))
 
 
+def printed_table_complete(observed,diagnostics=()):
+    if diagnostics or not observed.line_items:return False
+    for row in observed.line_items:
+        fields={f.field_path:f for f in row.fields if f.state.value=='PRESENT'}
+        if not {'description','quantity','unit_price'}<=fields.keys() or not {'amount','net_amount','gross_amount'}&fields.keys():return False
+    return True
+
+
 def printed_mapping_complete(observed,source_type,diagnostics=()):
     """Sufficient *printed* coverage to stop inference, never financial clearance.
 
@@ -98,11 +106,7 @@ def printed_mapping_complete(observed,source_type,diagnostics=()):
     by={f.field_path:f for f in observed.header_fields}
     if any(name not in by or by[name].state.value!='PRESENT' for name in required):return False
     if source_type!='VENDOR_INVOICE':return True
-    if not observed.line_items:return False
-    for row in observed.line_items:
-        fields={f.field_path:f for f in row.fields if f.state.value=='PRESENT'}
-        if not {'description','quantity','unit_price'}<=fields.keys() or not {'amount','net_amount','gross_amount'}&fields.keys():return False
-    return True
+    return printed_table_complete(observed,diagnostics)
 
 
 def extract(doc,identity,page_data,storage,providers):
@@ -163,15 +167,17 @@ def extract(doc,identity,page_data,storage,providers):
             trace=trace|{'preview_key':page.artifact_ref,'storage_key':key,
                 'page_transform':next(p['transform'] for p in page_data if p['page']==page.page)}
             return 'data:image/png;base64,'+base64.b64encode(content).decode(),trace
-        mapped_headers={};printed_columns={}
+        mapped_headers={};printed_columns={};mapped_rows={}
         from app.extraction.layout import table_columns
         for p in ocr_pages:
-            per_page=NativeTextExtractionAdapter([p]).extract(bundle_for(doc,identity,[p]),SCHEMA_VERSION)
+            page_adapter=NativeTextExtractionAdapter([p])
+            per_page=page_adapter.extract(bundle_for(doc,identity,[p]),SCHEMA_VERSION)
             mapped_headers[p['page']]=per_page.header_fields
             printed_columns[p['page']]=table_columns(p)
+            if printed_table_complete(per_page,page_adapter.diagnostics):mapped_rows[p['page']]=per_page.line_items
         enterprise=TypeLLMExtractionAdapter(providers,
             image_loader=lambda p:'data:image/png;base64,'+base64.b64encode(storage.get(identity,p.artifact_ref)).decode(),row_image_loader=row_image,
-            header_observations=mapped_headers,printed_columns=printed_columns)
+            header_observations=mapped_headers,printed_columns=printed_columns,row_observations=mapped_rows)
         extracted=enterprise.extract(bundle_for(doc,identity,ocr_pages),SCHEMA_VERSION)
         # A model can read amounts but cannot establish accounting tax treatment
         # from their arithmetic or a sales-tax summary. Preserve the unsupported
@@ -199,8 +205,14 @@ def extract(doc,identity,page_data,storage,providers):
             from app.domain.extraction import to_data
             routing['row_count_disagreement']={'version':'provider-candidates-v1',
                 'primary':to_data(native),'visual':to_data(extracted)}
-        native=reconcile(native,extracted);native=replace(native,metadata=extracted.metadata)
-        routing['paths'].append('ENTERPRISE_VLM');routing['vlm_status']='SUCCEEDED'
+        native=reconcile(native,extracted)
+        if enterprise.sidecar.get('calls',0):
+            native=replace(native,metadata=extracted.metadata)
+            routing['paths'].append('ENTERPRISE_VLM');routing['vlm_status']='SUCCEEDED'
+        else:
+            # Per-page complete observations may leave only a document-level
+            # conflict. Reuse does not constitute a model invocation/provenance.
+            routing['vlm_status']='CONFIGURED_NOT_NEEDED'
         routing['enterprise']=enterprise.sidecar
         if enterprise.sidecar['table_coverage']=='UNCERTAIN':diagnostics.append('TABLE_COVERAGE_UNCERTAIN')
     elif providers.endpoint:

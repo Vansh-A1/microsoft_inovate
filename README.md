@@ -13,6 +13,9 @@ See [ClearLedger hardening and measured limits](docs/clearledger_hardening.md).
 The continued [twelve-layout validation](docs/clearledger_validation.md) records
 before/after benchmarks, actual cold/warm and upload/queue timings, remaining
 table failures and [optional isolated CPU OCR](docs/runbooks/cpu-ocr-experiment.md).
+The [CL-06 table correctness checkpoint](docs/clearledger_table_correctness.md)
+fixes the two spent failures, preserves genuinely unknown values and records
+eight fresh reserved variants without rewriting the previous benchmark.
 
 Phase 6 delivers the local application and release/handoff artifacts under an explicit external-infrastructure fallback. The subsequent approved priority override establishes **real local VLM + TypeLLM invoice extraction** on the unchanged GPU driver. This is a development experiment, not a deployed production pilot. See the [real inference acceptance record](docs/real_vlm_acceptance.md), [Phase-6 exit review](docs/phase6_exit_review.md) and [capability matrix](docs/release_matrix.md).
 

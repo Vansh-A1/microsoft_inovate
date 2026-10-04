@@ -4,3 +4,5 @@ data/documents_phase2/*.png binary
 data/documents_phase2/*.jpg binary
 data/clearledger_challenge/*.pdf binary
 data/clearledger_challenge/*.png binary
+data/clearledger_reserved/*.pdf binary
+data/clearledger_reserved/*.png binary

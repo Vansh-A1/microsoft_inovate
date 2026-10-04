@@ -21,7 +21,7 @@ ORIGIN='http://127.0.0.1:3000'
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--label',required=True)
-    p.add_argument('--case',choices=['t01','t04'],default='t04');args=p.parse_args()
+    p.add_argument('--case',choices=['t01','t04','h01','h04'],default='t04');args=p.parse_args()
     if not re.fullmatch('[a-z0-9-]{1,64}',args.label):raise SystemExit('Use a bounded lowercase measurement label')
     os.umask(0o077)
     manifest=json.loads((ROOT/'data/clearledger_challenge/manifest.json').read_text())

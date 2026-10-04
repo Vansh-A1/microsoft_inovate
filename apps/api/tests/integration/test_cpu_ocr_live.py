@@ -67,6 +67,26 @@ def test_missing_cpu_runtime_uses_real_tesseract_and_records_failure(environment
     assert doc['draft']['candidate']['total_amount']=='500.00'
 
 
+def test_actual_wrapped_scan_recovers_missed_glyph_with_measured_crop_without_vlm(environment):
+    doc=upload(environment,ROOT/'data/clearledger_challenge/h04.png','VENDOR_INVOICE',providers())
+    assert doc['state']=='NEEDS_INPUT' and doc['finance_decision'] is None
+    routing=doc['extraction_runs'][0]['metadata']['routing']
+    assert routing['paths']==['LOCAL_OCR']
+    retry=routing['ocr_provenance'][0]['runtime']['row_retries']
+    assert len(retry)==1 and retry[0]['field']=='quantity' and retry[0]['status']=='MEASURED_CELL_READ'
+    assert retry[0]['scale']==2 and len(retry[0]['crop_extents_pixels'])==4
+    candidate=doc['draft']['candidate']
+    assert candidate['lines.0.description']=='Notebook cases recycled paper'
+    assert [candidate[f'lines.{i}.quantity'] for i in range(2)]==['2','1']
+    by={o['field_path']:o for o in doc['observations']}
+    assert by['lines.1.quantity']['state']=='PRESENT'
+    source=by['lines.1.quantity']['source'];box=source['bbox']
+    assert source['page']==1 and source['observed_value']=='1'
+    assert .48<box['x1']<box['x2']<.55 and .44<box['y1']<box['y2']<.49
+    assert box['x2']-box['x1']<.03  # actual detected glyph region, not full row crop
+    assert by['lines.1.tax_amount']['state']=='MISSING' and candidate.get('lines.1.tax_amount') is None
+
+
 def test_cpu_source_scope_and_owned_child_restart_preserve_actual_reading(tmp_path):
     original=ROOT/'data/clearledger_challenge/t04.png';file=tmp_path/'derived.png';file.write_bytes(original.read_bytes())
     from PIL import Image

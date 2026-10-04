@@ -61,3 +61,14 @@ but the form was misleading. Blank unsupported financial fields and eligible
 night defaults, preserving explicit business-reference choices. Native v4 retains
 unread row fields as MISSING observations with no raw value/box for the existing
 audited correction controls. Finance rules and historical records stay unchanged.
+
+## CL-06 implementation refinement — 2026-10-04
+
+Actual spent h04 detections miss a printed quantity glyph, while the same pinned
+CPU model reads it from a bounded measured row crop. Use at most three local
+in-memory row-context retries with exact inverse detector coordinates, four-million
+scaled-pixel cap and the original page budget. Crops are routing extents, never
+field boxes or confidence. Complete independent tables survive header-only VLM
+fallback; incomplete/uncertain pages remain subject to review. No RapidTable,
+PPStructure, new model or dependency is justified by this specific failure.
+See [CL-06 evidence and remaining failures](../clearledger_table_correctness.md).

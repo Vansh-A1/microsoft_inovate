@@ -7,6 +7,7 @@ Tesseract fallback remains available; errors never become extracted facts.
 import atexit
 import json
 import os
+import math
 from pathlib import Path
 import selectors
 import subprocess
@@ -31,6 +32,9 @@ def validate_handshake(data):
 def mapped_spans(data,transform):
     width,height=transform['derived_dimensions'];spans=[]
     if not isinstance(data,dict) or not isinstance(data.get('spans'),list) or len(data['spans'])>20000:raise DocumentFailure('OCR_RESPONSE_INVALID')
+    for name in ('seconds','memory_peak_kib'):
+        value=data.get(name,0)
+        if isinstance(value,bool) or not isinstance(value,(int,float)) or not math.isfinite(value) or value<0:raise DocumentFailure('OCR_RESPONSE_INVALID')
     for item in data['spans']:
         if not isinstance(item,dict):raise DocumentFailure('OCR_RESPONSE_INVALID')
         text=item.get('text');pixels=item.get('pixels')
@@ -43,6 +47,21 @@ def mapped_spans(data,transform):
         spans.append({'text':text,'bbox':original_box(box,transform.get('exif_orientation',1)),'layout_bbox':box,'kind':'line'})
     if sum(len(s['text']) for s in spans)>300000:raise DocumentFailure('OCR_RESPONSE_INVALID')
     return tuple(spans)
+
+
+def missing_cell_read(spans,region):
+    """Accept one new measured detector region wholly inside the missing cell.
+
+    The crop is context for OCR, not evidence. Competing, crossing or vertically
+    unrelated reads cannot fill a cell. No arithmetic supplies the missing value.
+    """
+    cell=region['cell'];selected=[]
+    for span in spans:
+        box=span['layout_bbox']
+        overlap=min(box['y2'],cell['y2'])-max(box['y1'],cell['y1'])
+        height=min(box['y2']-box['y1'],cell['y2']-cell['y1'])
+        if cell['x1']<=box['x1']<box['x2']<=cell['x2'] and overlap>=height*.55:selected.append(span)
+    return selected[0] if len(selected)==1 else None
 
 
 class CPUOCR:
@@ -87,16 +106,38 @@ class CPUOCR:
 
     def recognize(self,path,transform):
         with self.lock:
+            deadline=time.monotonic()+min(30,self.timeout_seconds)
             path=Path(path)
             if path.is_symlink() or not path.resolve().is_relative_to(self.root) or not path.is_file():raise DocumentFailure('OCR_SOURCE_SCOPE_INVALID')
             if self.process.poll() is not None:self._start()
             try:
                 self.process.stdin.write(json.dumps({'path':str(path.resolve())})+'\n');self.process.stdin.flush()
-                data=self._read(min(30,self.timeout_seconds))
+                data=self._read(max(0,deadline-time.monotonic()))
             except OSError:self.close();raise DocumentFailure('OCR_FAILED') from None
             if data.get('failure'):raise DocumentFailure('OCR_FAILED')
             spans=mapped_spans(data,transform)
-            self.metadata.update(last_seconds=data.get('seconds'),memory_peak_kib=data.get('memory_peak_kib'))
+            from app.extraction.layout import table_retry_regions
+            retries=[];elapsed=data.get('seconds',0)
+            width,height=transform['derived_dimensions']
+            for region in table_retry_regions({'spans':spans}):
+                crop=region['crop'];pixels=[math.floor(crop['x1']*width),math.floor(crop['y1']*height),math.ceil(crop['x2']*width),math.ceil(crop['y2']*height)]
+                if (pixels[2]-pixels[0])*(pixels[3]-pixels[1])*4>4000000:
+                    retries.append({'field':region['field'],'status':'CROP_LIMIT'});continue
+                if deadline-time.monotonic()<.1:
+                    retries.append({'field':region['field'],'status':'TIME_BUDGET'});break
+                try:
+                    self.process.stdin.write(json.dumps({'path':str(path.resolve()),'crop':pixels})+'\n');self.process.stdin.flush()
+                    retried=self._read(max(0,deadline-time.monotonic()))
+                except OSError:self.close();raise DocumentFailure('OCR_FAILED') from None
+                if retried.get('failure'):raise DocumentFailure('OCR_FAILED')
+                actual=missing_cell_read(mapped_spans(retried,transform),region)
+                elapsed+=retried.get('seconds',0)
+                retries.append({'field':region['field'],'crop_extents_pixels':pixels,'scale':2,'seconds':retried.get('seconds'),
+                    'status':'MEASURED_CELL_READ' if actual else 'UNRESOLVED'})
+                if actual:spans=spans+(actual|{'origin':'bounded-cpu-row-retry'},)
+                data=retried
+            self.metadata.update(last_seconds=elapsed,memory_peak_kib=data.get('memory_peak_kib'),
+                geometry_retry_version='missing-numeric-cell-v1',row_retries=retries)
             return OCRPage('\n'.join(s['text'] for s in spans),spans,'RAPIDOCR_CPU',self.version)
 
     def close(self):

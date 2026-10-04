@@ -6,13 +6,13 @@ The legacy labeled/pipe parser remains intact. No arithmetic supplies raw facts.
 """
 import re
 
-VERSION = 'printed-layout-v2'
+VERSION = 'printed-layout-v3'
 HEADER_ALIASES = {
     'supplier': 'vendor_name', 'vendor': 'vendor_name', 'supplier name': 'vendor_name',
-    'vendor name': 'vendor_name', 'merchant': 'merchant_name',
-    'invoice number': 'invoice_number', 'invoice no': 'invoice_number', 'invoice': 'invoice_number',
+    'vendor name': 'vendor_name', 'seller': 'vendor_name', 'merchant': 'merchant_name',
+    'invoice number': 'invoice_number', 'invoice no': 'invoice_number', 'invoice id': 'invoice_number', 'invoice': 'invoice_number',
     'receipt number': 'receipt_number', 'receipt no': 'receipt_number',
-    'invoice date': 'invoice_date', 'expense date': 'expense_date', 'date': 'invoice_date',
+    'invoice date': 'invoice_date', 'issue date': 'invoice_date', 'expense date': 'expense_date', 'date': 'invoice_date',
     'due date': 'due_date', 'po reference': 'po_reference', 'purchase order': 'po_reference', 'po': 'po_reference',
     'currency': 'currency', 'subtotal': 'subtotal_amount', 'sub total': 'subtotal_amount',
     'discount': 'document_discount_amount', 'tax': 'tax_amount', 'sales tax': 'tax_amount',
@@ -138,6 +138,42 @@ def column_cells(row,columns):
         cells[sum(center>=b for b in bounds)].append(span)
         crossing |= any(box['x1']<b<box['x2'] for b in bounds)
     return cells,crossing
+
+
+def table_retry_regions(details, maximum=3):
+    """Bounded OCR retries for one absent numeric cell in a measured table row.
+
+    Three independently detected cells and unique complete headings establish
+    a candidate row region, never its missing value. Crossing/multiple missing
+    cells, notes and isolated descriptions cannot request retries. Crop extents
+    are routing metadata; only the new detector's measured box is evidence.
+    """
+    rows=groups(details);columns=None;table_y=None;out=[]
+    for row in rows:
+        found=heading_columns(row)
+        if found:
+            columns=found if len({f for f,_ in found})==len(found) else None
+            table_y=max(p['bbox']['y2'] for p in row)
+            continue
+        if not columns:continue
+        if min(p['bbox']['y1'] for p in row)-(table_y or 0)>.08:
+            columns=None;continue
+        cells,crossing=column_cells(row,columns)
+        missing=[i for i,c in enumerate(cells) if not c]
+        description=next(i for i,(field,_) in enumerate(columns) if field=='description')
+        if cells[description] and not any(c for i,c in enumerate(cells) if i!=description):
+            table_y=max(p['bbox']['y2'] for p in row);continue
+        if crossing or not cells[description]:columns=None;continue
+        if len(missing)==1 and len(columns)>=4 and columns[missing[0]][0] in ('quantity','unit_price','amount','net_amount','gross_amount'):
+            i=missing[0];box=union(row);height=box['y2']-box['y1']
+            bounds=[0]+[(a[1]['x2']+b[1]['x1'])/2 for a,b in zip(columns,columns[1:])]+[1]
+            crop={'x1':max(0,min(box['x1'],columns[0][1]['x1'])-.02),
+                  'x2':min(1,max(box['x2'],columns[-1][1]['x2'])+.02),
+                  'y1':max(0,box['y1']-height*.7),'y2':min(1,box['y2']+height*.7)}
+            out.append({'field':columns[i][0],'crop':crop,'cell':{'x1':bounds[i],'x2':bounds[i+1],'y1':box['y1'],'y2':box['y2']}})
+            if len(out)>=maximum:break
+        table_y=max(p['bbox']['y2'] for p in row)
+    return out
 
 
 def printed_layout(details):

@@ -1404,3 +1404,49 @@ h01/h04 may be diagnosed/tuned as spent layouts, never relabeled unseen. Actual
 identity/scanner, commercial attribution/stronger provider and cloud inputs remain
 separate. Preserve current local work and historical exit reviews; publication is
 not requested for ClearLedger.
+
+## CL-06 — bounded table correctness continuation
+
+Phase-6/final local hardening, completed 2026-10-04. Goal: diagnose and fix the
+two spent incomplete tables from CL-04/05 while preserving genuine uncertainty.
+Requirements: independent source grounding, layout completeness, scope/version,
+bounded retry/idempotency, unchanged finance controls and honest reserved evidence.
+Files: layout/native/CPU/TypeLLM adapters, document-worker routing, frozen reserved
+corpus/harness, actual CPU/browser regressions and supporting documentation.
+No finance-domain, migration, dependency, GPU/driver, name/redesign, cloud or push change.
+
+h01 native rows were already complete; redundant VLM inference corrupted row two.
+Printed alias association and complete-table reuse now preserve measured facts.
+h04's OCR omitted a visibly printed quantity 1. The same pinned CPU model reads
+it from a measured bounded crop with an actual glyph box. These spent regressions
+now map 8/8 each, in 0.224/2.985 pipeline seconds with zero VLM calls. Historical
+holdout results are unchanged. New eight-variant baseline was frozen/sealed before
+tuning; after checks improve 80/96→96/96 scored row literals, headers remain 55/55,
+all four required abstentions pass. The deliberately incomplete r07 is excluded
+from that row score: OCR finds no unprinted quantity and VLM repeats rows; all
+row candidates stay ambiguous/noncanonical. r02 still leaves two absent fields
+ambiguous. No representative accuracy/PASS follows. A heavier table stack is not
+warranted by these specific failures and was not installed.
+
+Executed focused regression **133 passed / 3.49 s / exit 0**; migrated pipeline,
+source/finance/actual CPU and concurrent idempotent admission **24 / 367.23 s /
+exit 0**; actual browser **13 passed / one conditional outage skip / 67.629 s /
+exit 0**, one worker/no retries. Laptop/phone source and Admin screenshots inspected.
+Computed clean PASS/paid-duplicate HOLD, current eligibility/citations and original
+correction HOLD pass the eight-scenario read-only judge check. Future fictional
+INR 8000→9000 policy activation preserves actor/reason/version/history and old reports.
+Actual h04 cold/warm-worker queue measurements are 6.641/6.494 s, NEEDS_INPUT/no
+finance decision. The previous 5.021/4.282 s values specifically refer to fictional
+t04.png; exact screenshot Library IDs are recorded in the new report.
+
+Compileall, whitespace, frozen sources/original input/spec preservation and scoped
+secret checks pass. App/model remain loopback, phone port 3001 closed. Accepted runtime
+and finance Python remain intact. Exact commands/provenance/limitations are in
+[CL-06 correctness](clearledger_table_correctness.md).
+
+Next bounded responsibility: lawful independent 40–60 invoice acceptance with
+adjudicated truth/new reserved layouts and approved business/source inputs. r07
+requires confirmed row associations and an authorized source for the absent
+quantity; ambiguous currencies/dates and unprinted tax/accounting remain review
+questions. Current research-model commercial attribution, actual identity/scanner
+and authorized stronger-provider inputs remain separate. No publication is requested.

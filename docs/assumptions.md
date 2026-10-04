@@ -357,3 +357,21 @@ The brief executor disconnect did not interrupt existing measurements or the
 integration process; jobs were resumed/read, not duplicated. Only fictional
 screenshots were saved to Library using its documented direct fallback. No
 private invoice was transmitted. Temporary phone port 3001 remains closed.
+
+## CL-06 table correctness — 2026-10-04
+
+h01/h04 became spent development/regression layouts; their frozen prior outcomes
+remain unchanged. Eight fresh fictional variants were frozen before tuning and
+baseline output sealed until afterwards. These remain synthetic layout evidence,
+not independently adjudicated customer data or a 40–60 acceptance corpus. r07's
+intentionally absent quantity is checked for abstention but excluded from literal
+row scoring; its source contains three candidate rows. VLM repeats/misassociates
+them, and none becomes canonical. r02's unprinted tax-basis guess remains ambiguous.
+
+Actual h04 evidence supports a bounded same-model CPU crop retry; no heavier table
+stack or new inference dependency is justified/installed. Crop extents are not
+field boxes, source values are not arithmetic, and complete printed mapping is
+not finance clearance. Single shared-host measurements, resident inference and
+worker cold/warm timings remain distinct. No generalized speed/VRAM/accuracy
+improvement or real-company policy follows from these fixtures. The current
+model, driver and isolated runtime pins are retained; phone access remains closed.

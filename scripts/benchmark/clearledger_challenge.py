@@ -13,6 +13,7 @@ import hashlib
 from io import BytesIO
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -144,6 +145,7 @@ def freeze():
 
 
 def run(label,split,force_vlm=False,only=None,rapid=False,production_rapid=False):
+    if not re.fullmatch('[a-z0-9-]{1,64}',label):raise ValueError('Use a bounded lowercase measurement label')
     from app.core.config import Settings
     from app.core.identity import Identity
     from app.db.models import Base
@@ -153,6 +155,8 @@ def run(label,split,force_vlm=False,only=None,rapid=False,production_rapid=False
     from app.domain.extraction import to_data
     from app.documents.normalizer import Normalizer,validate_draft
     manifest=freeze();settings=Settings.load();providers=settings.document_providers
+    cases=json.loads(manifest.read_text())['cases']
+    if not any(c['split']==split and (only is None or c['id']==only) for c in cases):raise ValueError('No matching frozen sources; no benchmark ran')
     os.environ[providers.gateway_token_env]=(ROOT/'runtime/inference/gateway.key').read_text().strip()
     if force_vlm:providers=replace(providers,ocr_executable=None,ocr_data_directory=None,ocr_library_directory=None,ocr_backend='TESSERACT',ocr_python=None)
     elif production_rapid:providers=replace(providers,ocr_backend='RAPIDOCR_CPU_EXPERIMENTAL',ocr_python=str(ROOT/'runtime/ocr-rapid/.venv/bin/python'))
@@ -171,7 +175,7 @@ def run(label,split,force_vlm=False,only=None,rapid=False,production_rapid=False
     git=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     code_hashes={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in
         [ROOT/'apps/api/app/extraction'/n for n in ('layout.py','native.py','typellm.py','cpu_ocr.py','rapidocr_runtime.py')]+[ROOT/'apps/api/app/services/document_worker.py'] if p.is_file()}
-    for case in json.loads(manifest.read_text())['cases']:
+    for case in cases:
         if case['split']!=split or only and case['id']!=only:continue
         source=manifest.parent/case['path']
         if hashlib.sha256(source.read_bytes()).hexdigest()!=case['sha256']:raise RuntimeError('Frozen source changed')
@@ -227,7 +231,7 @@ def run(label,split,force_vlm=False,only=None,rapid=False,production_rapid=False
             'limitations':'Pipeline timing excludes upload/database queue/UI and candidate OCR startup, which is reported separately. VRAM is whole device including resident weights and other processes. No accuracy claim beyond these fictional sources.',
             'cases':results},indent=2)+'\n')
         # Baseline holdout results remain sealed until tuning is complete.
-        if split=='holdout' and label=='baseline':print(json.dumps({'id':case['id'],'baseline_sealed':True}),flush=True)
+        if split=='holdout' and label in ('baseline','reserved-baseline'):print(json.dumps({'id':case['id'],'baseline_sealed':True}),flush=True)
         else:print(json.dumps({k:v for k,v in data.items() if k not in ('observed','candidate','traces','findings','routing','diagnostics')}),flush=True)
     if candidate_ocr:candidate_ocr.close()
 

@@ -475,3 +475,15 @@ No table or migration is added; extraction-v1 and financial record semantics rem
 | OCR_RUNTIME_PIN_MISMATCH / OCR_CPU_PROVIDER_REQUIRED | Startup attestation failure closes the child. An independently configured actual fallback records failure; no fabricated extraction. |
 | Challenge score | Literal observations/core rows on frozen fictional layouts. Distinct from canonical completeness, representative accuracy, source confirmation or PASS. |
 | Source-derived form defaults | Missing/ambiguous financial fields and unconfirmed eligible nights stay null/blank, even in development mode. Templates may offer explicit fictional business references; they cannot supply source amounts. |
+
+## CL-06 table correctness
+
+| Field / version | Meaning and controls |
+|---|---|
+| printed-layout-v3 / labeled-header-table-layout-v5 | Explicit common Seller/Invoice ID/Issue date aliases and independent measured-table association. No source identity exception or financial inference. |
+| geometry_retry_version | missing-numeric-cell-v1: one absent numeric cell under unique printed headings with other measured row cells. At most three retries within the original deadline. |
+| routing.ocr_provenance.runtime.row_retries | Actual field, integer crop_extents_pixels, scale 2, seconds and MEASURED_CELL_READ/UNRESOLVED/CROP_LIMIT/TIME_BUDGET. Crop extents never serve as evidence boxes. |
+| bounded-cpu-row-retry span origin | Newly measured detector region, inverse crop-offset/scale and EXIF mapped to actual original coordinates. Competing/crossing/unrelated reads cannot fill a cell. |
+| routing.enterprise.version / reused_tables | extraction-routing-v4; complete independent per-page observations retain source/scope/version and row count during header fallback. Strict extraction-v1 is unchanged. |
+| table_coverage UNCERTAIN | An unread/uncertain page stays uncertain even if another page has observed or reused rows; it cannot silently satisfy full coverage. |
+| Reserved row literal denominator | Checked fields on seven of eight new variants. r07 intentionally incomplete rows are excluded; its required missing-quantity canonical abstention is scored separately. Not invoice-level accuracy. |

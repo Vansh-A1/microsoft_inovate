@@ -1,5 +1,10 @@
 # ClearLedger extraction validation — 2026-10-04
 
+Historical CL-04/CL-05 results are preserved below. The subsequent
+[CL-06 table correctness checkpoint](clearledger_table_correctness.md) diagnoses
+and fixes h01/h04 as spent regressions and evaluates eight freshly reserved
+variants. It does not relabel these previous failures as unseen successes.
+
 Continuation of [the first hardening checkpoint](clearledger_hardening.md).
 CL-04/CL-05 improve extraction robustness, speed and source grounding while
 preserving ClearLedger, its finance engine and accepted ADR-0015 runtime. No

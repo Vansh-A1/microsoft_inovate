@@ -1,0 +1,403 @@
+{
+  "version": "clearledger-reserved-v1",
+  "created_before_tuning_commit": "db1095fd2b1822de71b87517606cfdd978f36b9e",
+  "provenance": "Original CC0 fictional ReportLab/PyMuPDF/Pillow sources; no downloads/private data.",
+  "limitations": "Eight synthetic variants reserved before CL-06 tuning. Shared vocabulary, no customer distribution or supervised truth.",
+  "cases": [
+    {
+      "id": "r01",
+      "split": "holdout",
+      "layout": "landscape",
+      "source_type": "VENDOR_INVOICE",
+      "path": "r01.pdf",
+      "sha256": "ee0e938d570a9c06e2640b5f04f3cb203eae2893e666d588ce8fe9ecfc0f190f",
+      "headers": {
+        "vendor_name": "Fictional Harbor Stationery Co",
+        "invoice_number": "RS-001",
+        "invoice_date": "2026-10-02",
+        "currency": "EUR",
+        "subtotal_amount": "119.75",
+        "tax_amount": "0.00",
+        "total_amount": "119.75"
+      },
+      "rows": [
+        {
+          "description": "Felt document sleeves",
+          "quantity": "3",
+          "unit_price": "24.50",
+          "amount": "73.50"
+        },
+        {
+          "description": "Desk index tabs",
+          "quantity": "1",
+          "unit_price": "19.25",
+          "amount": "19.25"
+        },
+        {
+          "description": "Binder spines",
+          "quantity": "4",
+          "unit_price": "6.75",
+          "amount": "27.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [],
+      "required_diagnostics": [],
+      "normalized": {
+        "currency": "EUR",
+        "invoice_date": "2026-10-02",
+        "total_amount": "119.75"
+      }
+    },
+    {
+      "id": "r02",
+      "split": "holdout",
+      "layout": "unknown_header",
+      "source_type": "VENDOR_INVOICE",
+      "path": "r02.pdf",
+      "sha256": "65ca94540004573feac5770ea6947e6018a5528914f24546096f8855e4fc148a",
+      "headers": {
+        "vendor_name": "Fictional Harbor Stationery Co",
+        "invoice_number": "RS-002",
+        "invoice_date": "2026-10-02",
+        "currency": "INR",
+        "subtotal_amount": "119.75",
+        "tax_amount": "0.00",
+        "total_amount": "119.75"
+      },
+      "rows": [
+        {
+          "description": "Felt document sleeves",
+          "quantity": "3",
+          "unit_price": "24.50",
+          "amount": "73.50"
+        },
+        {
+          "description": "Desk index tabs",
+          "quantity": "1",
+          "unit_price": "19.25",
+          "amount": "19.25"
+        },
+        {
+          "description": "Binder spines",
+          "quantity": "4",
+          "unit_price": "6.75",
+          "amount": "27.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [],
+      "required_diagnostics": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-02",
+        "total_amount": "119.75"
+      }
+    },
+    {
+      "id": "r03",
+      "split": "holdout",
+      "layout": "continuation",
+      "source_type": "VENDOR_INVOICE",
+      "path": "r03.pdf",
+      "sha256": "b29408cceffc5b7bec3da2481074de110cb1e0e70101e7dc219687b0a1bdac8b",
+      "headers": {
+        "vendor_name": "Fictional Harbor Stationery Co",
+        "invoice_number": "RS-003",
+        "invoice_date": "2026-10-02",
+        "currency": "EUR",
+        "subtotal_amount": "119.75",
+        "tax_amount": "0.00",
+        "total_amount": "119.75"
+      },
+      "rows": [
+        {
+          "description": "Felt document sleeves",
+          "quantity": "3",
+          "unit_price": "24.50",
+          "amount": "73.50"
+        },
+        {
+          "description": "Desk index tabs",
+          "quantity": "1",
+          "unit_price": "19.25",
+          "amount": "19.25"
+        },
+        {
+          "description": "Binder spines",
+          "quantity": "4",
+          "unit_price": "6.75",
+          "amount": "27.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [],
+      "required_diagnostics": [],
+      "normalized": {
+        "currency": "EUR",
+        "invoice_date": "2026-10-02",
+        "total_amount": "119.75"
+      }
+    },
+    {
+      "id": "r04",
+      "split": "holdout",
+      "layout": "wrapped",
+      "source_type": "VENDOR_INVOICE",
+      "path": "r04.png",
+      "sha256": "1a53216a06f695b4c0758a0925ebccb2492683943bc0c9fb9a528b841ce61d64",
+      "headers": {
+        "vendor_name": "Fictional Harbor Stationery Co",
+        "invoice_number": "RS-004",
+        "invoice_date": "2026-10-02",
+        "currency": "INR",
+        "subtotal_amount": "119.75",
+        "tax_amount": "0.00",
+        "total_amount": "119.75"
+      },
+      "rows": [
+        {
+          "description": "Felt document sleeves assorted colors",
+          "quantity": "3",
+          "unit_price": "24.50",
+          "amount": "73.50"
+        },
+        {
+          "description": "Desk index tabs",
+          "quantity": "1",
+          "unit_price": "19.25",
+          "amount": "19.25"
+        },
+        {
+          "description": "Binder spines",
+          "quantity": "4",
+          "unit_price": "6.75",
+          "amount": "27.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [],
+      "required_diagnostics": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-02",
+        "total_amount": "119.75"
+      }
+    },
+    {
+      "id": "r05",
+      "split": "holdout",
+      "layout": "wrapped",
+      "source_type": "VENDOR_INVOICE",
+      "path": "r05.png",
+      "sha256": "27bd32df62ac9059ecc456dae2a505b9ca86ad413abf617183e35dd13f164203",
+      "headers": {
+        "vendor_name": "Fictional Harbor Stationery Co",
+        "invoice_number": "RS-005",
+        "invoice_date": "2026-10-02",
+        "currency": "EUR",
+        "subtotal_amount": "119.75",
+        "tax_amount": "0.00",
+        "total_amount": "119.75"
+      },
+      "rows": [
+        {
+          "description": "Felt document sleeves assorted colors",
+          "quantity": "3",
+          "unit_price": "24.50",
+          "amount": "73.50"
+        },
+        {
+          "description": "Desk index tabs",
+          "quantity": "1",
+          "unit_price": "19.25",
+          "amount": "19.25"
+        },
+        {
+          "description": "Binder spines",
+          "quantity": "4",
+          "unit_price": "6.75",
+          "amount": "27.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [],
+      "required_diagnostics": [],
+      "normalized": {
+        "currency": "EUR",
+        "invoice_date": "2026-10-02",
+        "total_amount": "119.75"
+      }
+    },
+    {
+      "id": "r06",
+      "split": "holdout",
+      "layout": "wrapped",
+      "source_type": "VENDOR_INVOICE",
+      "path": "r06.png",
+      "sha256": "0be646950d732717770118404c3f4f25647c0a0314a041ad474456ac25459b42",
+      "headers": {
+        "vendor_name": "Fictional Harbor Stationery Co",
+        "invoice_number": "RS-006",
+        "invoice_date": "04/05/2026",
+        "currency": "$",
+        "subtotal_amount": "119.75",
+        "tax_amount": "0.00",
+        "total_amount": "119.75"
+      },
+      "rows": [
+        {
+          "description": "Felt document sleeves assorted colors",
+          "quantity": "3",
+          "unit_price": "24.50",
+          "amount": "73.50"
+        },
+        {
+          "description": "Desk index tabs",
+          "quantity": "1",
+          "unit_price": "19.25",
+          "amount": "19.25"
+        },
+        {
+          "description": "Binder spines",
+          "quantity": "4",
+          "unit_price": "6.75",
+          "amount": "27.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [
+        "currency",
+        "invoice_date"
+      ],
+      "required_diagnostics": [],
+      "normalized": {}
+    },
+    {
+      "id": "r07",
+      "split": "holdout",
+      "layout": "missing_quantity",
+      "source_type": "VENDOR_INVOICE",
+      "path": "r07.png",
+      "sha256": "78c38aae42dd662e29604163ba0f713256a94800601e7c3090d15c9f53bb0f5c",
+      "headers": {
+        "vendor_name": "Fictional Harbor Stationery Co",
+        "invoice_number": "RS-007",
+        "invoice_date": "2026-10-02",
+        "currency": "EUR",
+        "subtotal_amount": "119.75",
+        "tax_amount": "0.00",
+        "total_amount": "119.75"
+      },
+      "rows": [],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [
+        "lines.1.quantity"
+      ],
+      "required_diagnostics": [],
+      "normalized": {
+        "currency": "EUR",
+        "invoice_date": "2026-10-02",
+        "total_amount": "119.75"
+      }
+    },
+    {
+      "id": "r08",
+      "split": "holdout",
+      "layout": "conflicting",
+      "source_type": "VENDOR_INVOICE",
+      "path": "r08.pdf",
+      "sha256": "b301932629c4abeaa96ba5be18fe0c6b646f408955228baed6b8fded082ef8cf",
+      "headers": {
+        "vendor_name": "Fictional Harbor Stationery Co",
+        "invoice_date": "2026-10-02",
+        "currency": "INR",
+        "subtotal_amount": "119.75",
+        "tax_amount": "0.00",
+        "total_amount": "119.75"
+      },
+      "rows": [
+        {
+          "description": "Felt document sleeves",
+          "quantity": "3",
+          "unit_price": "24.50",
+          "amount": "73.50"
+        },
+        {
+          "description": "Desk index tabs",
+          "quantity": "1",
+          "unit_price": "19.25",
+          "amount": "19.25"
+        },
+        {
+          "description": "Binder spines",
+          "quantity": "4",
+          "unit_price": "6.75",
+          "amount": "27.00"
+        },
+        {
+          "description": "Felt document sleeves",
+          "quantity": "3",
+          "unit_price": "24.50",
+          "amount": "73.50"
+        },
+        {
+          "description": "Desk index tabs",
+          "quantity": "1",
+          "unit_price": "19.25",
+          "amount": "19.25"
+        },
+        {
+          "description": "Binder spines",
+          "quantity": "4",
+          "unit_price": "6.75",
+          "amount": "27.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "tax_basis"
+      ],
+      "abstain": [
+        "invoice_number"
+      ],
+      "required_diagnostics": [
+        "SEGMENTATION_UNCERTAIN"
+      ],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-02",
+        "total_amount": "119.75"
+      }
+    }
+  ]
+}

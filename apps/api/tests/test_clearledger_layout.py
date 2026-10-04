@@ -137,3 +137,95 @@ def test_model_inferred_tax_treatment_cannot_become_normalized_source_fact(monke
     assert basis.raw_value=='EXCLUSIVE' and basis.state.value=='AMBIGUOUS'
     assert 'Model-only tax treatment' in basis.diagnostic_note
     assert normalized(out)[0]['tax_basis'] is None
+
+
+def test_complete_native_rows_survive_header_only_model_fallback():
+    from app.domain.extraction import ExtractionObservationState as State
+    from types import SimpleNamespace
+    b,r,_,_=positioned()
+    known=tuple(replace(f,state=State.MISSING,raw_value=None,source=None) if f.field_path=='vendor_name' else f for f in r.header_fields)
+    calls=[]
+    class HeaderTransport:
+        def generate(self,**kwargs):
+            calls.append(kwargs)
+            assert 'row_count_raw' not in kwargs['questions'] and 'description_raw' not in kwargs['questions']
+            data={name:('MISSING' if name.endswith('_state') else None) for name in kwargs['questions']}
+            data.update(vendor_name_state='PRESENT',vendor_name_raw='Fictional Cedar Ltd')
+            return SimpleNamespace(result=data)
+    adapter=TypeLLMExtractionAdapter(ProviderSettings(endpoint='http://test.example',model='test'),HeaderTransport(),
+        image_loader=lambda p:'data:image/png;base64,test',header_observations={1:known},row_observations={1:r.line_items})
+    out=adapter.extract(b,SCHEMA_VERSION)
+    assert len(calls)==1 and out.line_items==r.line_items
+    assert adapter.sidecar['reused_tables']==[{'page':1,'rows':1,'reason':'COMPLETE_INDEPENDENT_PRINTED_TABLE'}]
+    assert out.line_items[0].fields[0].source.bbox==r.line_items[0].fields[0].source.bbox
+    assert next(f for f in out.line_items[0].fields if f.field_path=='tax_amount').state is State.MISSING
+
+
+def test_reused_rows_keep_contiguous_indices_across_pages_and_reject_other_tenants():
+    b,r,_,_=positioned()
+    b=replace(b,pages=b.pages+(DocumentPage(2,b.pages[0].available_text),))
+    second=tuple(replace(row,fields=tuple(replace(f,source=replace(f.source,page=2)) if f.source else f for f in row.fields)) for row in r.line_items)
+    class NoCalls:
+        def generate(self,**kwargs):raise AssertionError('Complete independently read pages require no calls')
+    adapter=TypeLLMExtractionAdapter(ProviderSettings(endpoint='http://test.example',model='test'),NoCalls(),
+        header_observations={1:r.header_fields,2:r.header_fields},row_observations={1:r.line_items,2:second})
+    out=adapter.extract(b,SCHEMA_VERSION)
+    assert [row.row_index for row in out.line_items]==[1,2]
+    assert out.line_items[1].fields[0].source.page==2
+    foreign=replace(r.line_items[0],fields=tuple(replace(f,source=replace(f.source,tenant_id=uuid4())) if f.source else f for f in r.line_items[0].fields))
+    adapter.row_observations={1:(foreign,)}
+    with pytest.raises(ValueError,match='scope mismatch'):adapter.extract(b,SCHEMA_VERSION)
+
+
+def test_incomplete_or_uncertain_tables_are_not_reuse_candidates():
+    from app.services.document_worker import printed_table_complete
+    from app.domain.extraction import ExtractionObservationState as State
+    _,r,_,_=positioned()
+    assert printed_table_complete(r)
+    assert not printed_table_complete(r,['TABLE_COVERAGE_UNCERTAIN'])
+    bad=replace(r,line_items=tuple(replace(row,fields=tuple(replace(f,state=State.MISSING,raw_value=None,source=None) if f.field_path=='quantity' else f for f in row.fields)) for row in r.line_items))
+    assert not printed_table_complete(bad) and not printed_table_complete(replace(r,line_items=()))
+
+
+def test_complete_first_page_cannot_hide_unread_second_page_table_coverage():
+    from types import SimpleNamespace
+    b,r,_,_=positioned();b=replace(b,pages=b.pages+(DocumentPage(2,'Unclear table continuation'),))
+    class UnclearInventory:
+        def generate(self,**kwargs):
+            assert set(kwargs['questions'])=={'row_count_raw','row_count_state'}
+            return SimpleNamespace(result={'row_count_raw':'unclear continuation','row_count_state':'AMBIGUOUS'})
+    adapter=TypeLLMExtractionAdapter(ProviderSettings(endpoint='http://test.example',model='test'),UnclearInventory(),
+        image_loader=lambda p:'data:image/png;base64,test',header_observations={1:r.header_fields,2:r.header_fields},row_observations={1:r.line_items})
+    out=adapter.extract(b,SCHEMA_VERSION)
+    assert len(out.line_items)==1 and adapter.sidecar['table_coverage']=='UNCERTAIN'
+
+
+def test_complete_pages_with_conflicting_vendor_do_not_claim_unexecuted_vlm(monkeypatch):
+    import copy
+    from app.core.identity import Identity
+    from app.services import document_worker as worker
+    b,_,_,pages=positioned();first=pages[0]|{'preview_key':'unit-page-1','route':'NATIVE_TEXT_AVAILABLE'}
+    second=copy.deepcopy(first);second['page']=2;second['preview_key']='unit-page-2'
+    second['native_text']=second['native_text'].replace('Fictional Cedar Ltd','Fictional Willow Ltd')
+    for s in second['spans']:s['text']=s['text'].replace('Fictional Cedar Ltd','Fictional Willow Ltd')
+    class NeverGenerate:
+        def generate(self,**kwargs):raise AssertionError('No actual model call is needed')
+    monkeypatch.setattr('app.extraction.typellm.SDKTransport',lambda config:NeverGenerate())
+    storage=type('Storage',(),{'get':lambda self,*args:b'Unit image boundary; never supplied to inference'})()
+    identity=Identity(b.tenant_id,b.legal_entity_id,uuid4(),frozenset({'FINANCE_REVIEWER'}),'Unit provenance check')
+    out,diagnostics,routing=worker.extract({'id':b.document_id,'source_type':'VENDOR_INVOICE'},identity,[first,second],storage,
+        ProviderSettings(endpoint='http://test.example',model='test'))
+    assert routing['enterprise']['calls']==0 and len(routing['enterprise']['reused_tables'])==2
+    assert routing['paths']==['NATIVE_TEXT'] and routing['vlm_status']=='CONFIGURED_NOT_NEEDED'
+    assert out.metadata.provider_id=='NATIVE_TEXT'
+    assert next(f for f in out.header_fields if f.field_path=='vendor_name').state.value=='AMBIGUOUS'
+    assert len(out.line_items)==2 and not diagnostics
+
+
+@pytest.mark.parametrize('labels',[('Seller:','Invoice ID:','Issue date:'),('Supplier:','Invoice number:','Invoice date:')])
+def test_explicit_common_header_labels_retain_measured_associations(labels):
+    words=[span(labels[0],.03,.1,.10),span('Cedar Ltd',.14,.1,.14),span(labels[1],.37,.1,.12),span('A-28',.51,.1,.07),
+           span(labels[2],.7,.1,.1),span('2026-09-19',.83,.1,.14)]
+    headers,rows,diagnostics=printed_layout({'spans':words})
+    assert [(f,v) for f,v,_ in headers]==[('vendor_name','Cedar Ltd'),('invoice_number','A-28'),('invoice_date','2026-09-19')]
+    assert not rows and not diagnostics

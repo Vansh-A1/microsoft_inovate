@@ -322,3 +322,32 @@ final laptop/phone screenshots were inspected. Typecheck/production build and
 source/secret/contracts/locked dependency/preservation checks pass. The conditional
 UI skip is not an actual outage pass; real refused-connection behavior is tested
 in the model suite. Exact commands and failure history are in the validation report.
+
+## CL-06 table correctness
+
+Final focused extraction/boundaries: **133 passed / 3.49 s / exit 0**. New checks
+cover independent table reuse, contiguous multi-page rows, tenant/source binding,
+incomplete-table rejection, cross-page coverage uncertainty, exact inverse-EXIF
+retry geometry and competing/crossing/invalid telemetry rejection. Earlier
+post-change checks passed 94 existing cases, then 131 and 132 with new regressions.
+Final zero-call provenance retains native/provider metadata when no VLM executed.
+
+Actual migrated pipeline/source/finance/CPU/concurrency: **24 passed / 367.23 s /
+exit 0**. Actual h04 crop recovers quantity 1 with an actual glyph box, retains
+missing row accounting, blocks unconfirmed finance commit and preserves child/
+fallback boundaries. Three concurrency scenarios verify idempotent capacity
+admission. Scope is recorded; no new full-backend run is claimed.
+
+Actual browser: **13 passed / one conditional outage skip / 67.629 s / exit 0**,
+no retries/flakiness. Finance/Admin authorization, actual recovered source boxes
+and blank unknown values, r07 uncertainty, phone/laptop layouts, computed result
+history and future hotel policy audit/report preservation pass; final screenshots
+were inspected. Eight read-only judge scenarios pass with all 28 current controls.
+
+Eight fresh reserved variants retain real code/source provenance; 55/55 headers,
+96/96 checked row literals and 4/4 required abstentions pass. r07 is excluded from
+literal row scoring because its blank quantity/full-table association remains
+unresolved. Two absent r02 header fields remain ambiguous. Model raw failures
+are retained. The previous holdout results are not rewritten or relabeled unseen.
+Actual h04 cold/warm-worker queue is 6.641/6.494 s. Exact commands and measurement/
+acceptance limits: [CL-06 correctness](clearledger_table_correctness.md).

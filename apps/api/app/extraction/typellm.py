@@ -57,7 +57,7 @@ class SDKTransport:
 
 class TypeLLMExtractionAdapter:
     capabilities=AdapterCapabilities(True,False,True,True)
-    def __init__(self,config=None,transport=None,image_loader=None,row_image_loader=None,header_observations=None,printed_columns=None):
+    def __init__(self,config=None,transport=None,image_loader=None,row_image_loader=None,header_observations=None,printed_columns=None,row_observations=None):
         self.config=config or ProviderSettings()
         if transport is None and self.config.transport=='TYPELLM_GATEWAY':
             from app.extraction.gateway import GatewayTransport
@@ -67,13 +67,15 @@ class TypeLLMExtractionAdapter:
         self.row_image_loader=row_image_loader
         self.header_observations=header_observations or {}
         self.printed_columns=printed_columns or {}
+        self.row_observations=row_observations or {}
         try: package_version=version('typellm')
         except PackageNotFoundError: package_version='NOT_INSTALLED'
         self.metadata=AdapterMetadata('typellm-sglang-client','1','ENTERPRISE_VLM',model_id=self.config.model,
             prompt_template_version=PROMPT_VERSION,runtime_versions=(VersionMetadata('typellm',package_version),VersionMetadata('prompt_sha256',PROMPT_HASH)))
-        self.sidecar={'version':'extraction-routing-v3','prompt_sha256':PROMPT_HASH,'question_scope_version':QUESTION_SCOPE_VERSION,
+        self.sidecar={'version':'extraction-routing-v4','prompt_sha256':PROMPT_HASH,'question_scope_version':QUESTION_SCOPE_VERSION,
             'calls':0,'table_coverage':'UNKNOWN','call_metrics':[],
-            'header_seconds':0.0,'line_seconds':0.0,'row_inventory_seconds':0.0,'row_regions':[],'header_fields_requested':[]}
+            'header_seconds':0.0,'line_seconds':0.0,'row_inventory_seconds':0.0,'row_regions':[],'header_fields_requested':[],
+            'reused_tables':[]}
 
     def call(self,text,fields,images,deadline,scope=None):
         if self.sidecar['calls']>=self.config.maximum_calls:raise DocumentFailure('PROVIDER_CALL_BUDGET')
@@ -144,6 +146,16 @@ class TypeLLMExtractionAdapter:
             headers=tuple(new.get(f) or known.get(f) or FieldObservation(f,State.MISSING) for f in fields)
             per_page=result(bundle,self.metadata,headers)
             headers_by_page.append(per_page)
+            preserved=self.row_observations.get(page.page,())
+            if preserved:
+                # Supplied only by the independent complete-table gate. Reuse
+                # its raw observations and actual locators during header fallback.
+                result(bundle,self.metadata,headers,preserved)  # validate all scope/source bindings
+                if len(rows)+len(preserved)>self.config.maximum_rows:raise DocumentFailure('TABLE_ROW_LIMIT')
+                offset=len(rows)
+                rows.extend(replace(row,row_index=offset+index+1) for index,row in enumerate(preserved))
+                self.sidecar['reused_tables'].append({'page':page.page,'rows':len(preserved),'reason':'COMPLETE_INDEPENDENT_PRINTED_TABLE'})
+                continue
             # Application-managed candidate rows. No deeply nested schema claims.
             candidates=[s for s in (page.available_text or '').splitlines() if '|' in s and not s.lower().startswith('description')]
             if not candidates and images and bundle.source_type.value=='EMPLOYEE_RECEIPT':
@@ -178,5 +190,6 @@ class TypeLLMExtractionAdapter:
                     diagnostic_note='No such independently printed table column was observed; no value inferred.') for f in fields)))
         combined=headers_by_page[0]
         for page_result in headers_by_page[1:]:combined=reconcile(combined,page_result)
-        self.sidecar['table_coverage']='OBSERVED_ROWS' if rows else self.sidecar['table_coverage']
+        # Rows on one page cannot establish coverage of another unread page.
+        if rows and self.sidecar['table_coverage']!='UNCERTAIN':self.sidecar['table_coverage']='OBSERVED_ROWS'
         return replace(combined,metadata=self.metadata,line_items=tuple(rows))

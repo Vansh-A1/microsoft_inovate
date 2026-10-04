@@ -95,3 +95,39 @@ def test_valid_cpu_primary_does_not_depend_on_stale_tesseract_paths(monkeypatch,
     assert adapter.recognize(tmp_path,{}).provider=='UNIT_REAL_CONTRACT'
     with pytest.raises(DocumentFailure,match='OCR_NOT_CONFIGURED'):
         configured_ocr(ProviderSettings(ocr_executable='/stale/tesseract'),None)
+
+
+def incomplete_table():
+    from test_clearledger_layout import span
+    return [span('Description',.05,.1,.15),span('Qty',.4,.1),span('Unit price',.55,.1,.12),span('Amount',.8,.1,.1),
+            span('Paper wallets',.05,.15,.18),span('17.25',.55,.15,.08),span('17.25',.8,.15,.08)]
+
+
+def test_missing_single_numeric_cell_routes_bounded_context_crop_not_fake_evidence():
+    from app.extraction.layout import table_retry_regions
+    words=incomplete_table();regions=table_retry_regions({'spans':words})
+    assert len(regions)==1 and regions[0]['field']=='quantity'
+    assert regions[0]['crop']['y1']<.15 and regions[0]['crop']['y2']>.17
+    assert not table_retry_regions({'spans':words[:-1]})  # two absent columns
+    assert not table_retry_regions({'spans':words[4:]})  # no printed heading ownership
+    crossing=[dict(s) for s in words];crossing[4]=crossing[4]|{'bbox':{'x1':.05,'x2':.5,'y1':.15,'y2':.17}}
+    assert not table_retry_regions({'spans':crossing})
+
+
+def test_retry_accepts_only_one_measured_cell_and_maps_rotated_original_box():
+    from app.extraction.cpu_ocr import missing_cell_read
+    from app.extraction.layout import table_retry_regions
+    region=table_retry_regions({'spans':incomplete_table()})[0]
+    data={'spans':[{'text':'1','pixels':{'x1':41,'x2':43,'y1':15,'y2':17}}]}
+    spans=mapped_spans(data,{'derived_dimensions':[100,100],'exif_orientation':6})
+    actual=missing_cell_read(spans,region)
+    assert actual['text']=='1' and actual['bbox']==pytest.approx({'x1':.15,'x2':.17,'y1':.57,'y2':.59})
+    assert missing_cell_read(spans+spans,region) is None
+    assert missing_cell_read(tuple(s|{'layout_bbox':{'x1':.2,'x2':.7,'y1':.15,'y2':.17}} for s in spans),region) is None
+    assert missing_cell_read(tuple(s|{'layout_bbox':{'x1':.41,'x2':.43,'y1':.3,'y2':.32}} for s in spans),region) is None
+
+
+@pytest.mark.parametrize('name,value',[('seconds','1.2'),('seconds',float('nan')),('memory_peak_kib',False)])
+def test_retry_telemetry_cannot_bypass_bounded_response_validation(name,value):
+    data={'spans':[],name:value}
+    with pytest.raises(DocumentFailure,match='OCR_RESPONSE_INVALID'):mapped_spans(data,{'derived_dimensions':[100,100]})

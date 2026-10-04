@@ -1,5 +1,15 @@
 # Optional ClearLedger CPU OCR experiment
 
+CL-06 adds bounded missing-cell retries inside this same pinned CPU child; no
+package/model change or table stack is required. See the
+[correctness and actual source-box evidence](../clearledger_table_correctness.md).
+Three measured row-context retries maximum, 2× scaling/four-million-pixel cap and
+the original page timeout apply. `geometry_retry_version=missing-numeric-cell-v1`
+and per-page `row_retries` retain actual crop extents, timing and measured/unresolved
+outcome. Only actual inverse-mapped detector boxes become evidence; a blank cell
+does not acquire a value from the retry or accounting arithmetic. Existing rollback
+to Tesseract remains unchanged and preserves other current server configuration.
+
 The repository defaults to Tesseract. The current local demo explicitly selects
 the experimental CPU engine; the finance and Qwen/TypeLLM environments are intact.
 This is an operator configuration, never an uploaded document instruction.

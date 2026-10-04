@@ -37,7 +37,7 @@ def result(bundle,metadata,headers,rows=(),failure=None):
 
 
 class NativeTextExtractionAdapter:
-    metadata=AdapterMetadata('native-label-parser','4','NATIVE_TEXT',prompt_template_version='labeled-header-table-layout-v4')
+    metadata=AdapterMetadata('native-label-parser','5','NATIVE_TEXT',prompt_template_version='labeled-header-table-layout-v5')
     capabilities=AdapterCapabilities(True,True,True,False)
 
     def __init__(self, page_details=()):
