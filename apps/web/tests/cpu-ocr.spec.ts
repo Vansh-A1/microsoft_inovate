@@ -1,3 +1,4 @@
+import {sourceFacts,businessReferences} from './support/disclosure';
 import {test,expect} from '@playwright/test';
 import {resolve} from 'node:path';
 
@@ -11,6 +12,7 @@ async function upload(page:import('@playwright/test').Page,caseId:string,corpus=
  await expect(page.locator('.page-title')).toContainText('Needs your confirmation',{timeout:60000});
  const id=page.url().split('/').at(-1)!;
  const response=await page.request.get('/api/documents/'+id);expect(response.status()).toBe(200);
+ await sourceFacts(page);await businessReferences(page);
  return response.json();
 }
 
@@ -21,12 +23,12 @@ test('actual CPU scan exposes measured source boxes and missing accounting witho
  expect(doc.extraction_runs[0].metadata.routing.paths).not.toContain('ENTERPRISE_VLM');
  expect(doc.draft.candidate['lines.1.amount']).toBe('50.00');
  expect(doc.draft.candidate['lines.0.tax_amount']??null).toBeNull();
- await expect(page.getByLabel('Correct lines.0.tax_amount',{exact:true})).toHaveValue('');
+ await expect(page.locator('input[data-field-path="lines.0.tax_amount"]')).toHaveValue('');
  const firstLine=page.locator('.business-facts fieldset').filter({has:page.getByText('Invoice line 1',{exact:true})});
  await expect(firstLine.getByLabel('quantity',{exact:true})).toHaveValue('2');
  await expect(firstLine.getByLabel('unit price',{exact:true})).toHaveValue('75.00');
  for(const label of ['net amount','tax rate','tax amount','gross amount','uom'])await expect(firstLine.getByLabel(label,{exact:true})).toHaveValue('');
- await page.getByRole('button',{name:'lines.1.amount',exact:true}).click();
+ await page.locator('button.evidence[data-field-path="lines.1.amount"]').click();
  await expect(page.getByLabel('Actual source bounding box')).toBeVisible();
  await expect(page.getByText('Extracted · confirm against source',{exact:false}).first()).toBeVisible();
  await page.screenshot({path:'../../output/playwright/clearledger-cpu-source-laptop.png',fullPage:true});
@@ -44,9 +46,9 @@ test('spent wrapped scan recovers actual quantity box and keeps missing accounti
  expect(doc.draft.candidate['lines.0.description']).toBe('Notebook cases recycled paper');
  expect(doc.draft.candidate['lines.1.quantity']).toBe('1');
  expect(doc.draft.candidate['lines.1.tax_amount']??null).toBeNull();
- await page.getByRole('button',{name:'lines.1.quantity',exact:true}).click();
+ await page.locator('button.evidence[data-field-path="lines.1.quantity"]').click();
  await expect(page.getByLabel('Actual source bounding box')).toBeVisible();
- await expect(page.getByLabel('Correct lines.1.tax_amount',{exact:true})).toHaveValue('');
+ await expect(page.locator('input[data-field-path="lines.1.tax_amount"]')).toHaveValue('');
  await page.screenshot({path:'../../output/playwright/cl06-wrapped-source-laptop.png',fullPage:true});
  await page.setViewportSize({width:390,height:844});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -64,10 +66,10 @@ test('genuinely absent scan quantity remains unresolved and requires source revi
  expect(doc.extraction_runs[0].metadata.routing.source_rows).toHaveLength(3);
  expect(by['lines.1.quantity'].source.bbox).toBeNull();
  await expect(page.locator('.notice')).toContainText('What quantity is shown for line 2 (Desk index tabs) on page 1?');
- await page.getByRole('button',{name:'lines.1.quantity',exact:true}).click();
+ await page.locator('button.evidence[data-field-path="lines.1.quantity"]').click();
  await expect(page.getByLabel('Actual source bounding box')).toHaveCount(0);
- await expect(page.locator('.observation-table tr').filter({has:page.getByRole('button',{name:'lines.1.quantity',exact:true})})).toContainText('Source value not read');
- await expect(page.getByLabel('Correct lines.1.quantity',{exact:true})).toHaveValue('');
+ await expect(page.locator('.observation-table tr').filter({has:page.locator('button.evidence[data-field-path="lines.1.quantity"]')})).toContainText('Source value not read');
+ await expect(page.locator('input[data-field-path="lines.1.quantity"]')).toHaveValue('');
  await page.screenshot({path:'../../output/playwright/cl07-missing-quantity-laptop.png',fullPage:true});
  await page.setViewportSize({width:390,height:844});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -83,7 +85,7 @@ test('separate identical items across pages survive actual native extraction',as
  expect(new Set(rows.map((r:{identity:string})=>r.identity)).size).toBe(3);
  for(let i=0;i<3;i++){
   expect(doc.draft.candidate[`lines.${i}.quantity`]).toBe('2');
-  await expect(page.locator('.observation-table tr').filter({has:page.getByRole('button',{name:`lines.${i}.description`,exact:true})})).toContainText('Canvas file pouches');
+  await expect(page.locator('.observation-table tr').filter({has:page.locator(`button.evidence[data-field-path="lines.${i}.description"]`)})).toContainText('Canvas file pouches');
  }
 });
 
@@ -94,15 +96,15 @@ test('actual unassigned VLM rows stay collapsed and noncanonical for source revi
  expect(doc.extraction_runs[0].metadata.routing.row_count_disagreement).toBeTruthy();
  expect(doc.draft.candidate['lines.0.quantity']).toBeNull();
  await expect(page.locator('.notice')).toContainText('Confirm the distinct printed line items against the original source.');
- const row=page.locator('.observation-table tr').filter({has:page.getByRole('button',{name:'lines.0.quantity',exact:true})});
+ const row=page.locator('.observation-table tr').filter({has:page.locator('button.evidence[data-field-path="lines.0.quantity"]')});
  await expect(row).toContainText('Unassigned candidate');
  const detail=row.locator('details').filter({has:page.getByText('Unassigned model candidate',{exact:true})});
  await expect(detail).not.toHaveAttribute('open','');
- await expect(row.getByLabel('Correct lines.0.quantity',{exact:true})).toHaveValue('');
+ await expect(row.locator('input[data-field-path="lines.0.quantity"]')).toHaveValue('');
  await detail.locator('summary').click();
  const observed=doc.observations.find((o:{field_path:string})=>o.field_path==='lines.0.quantity');
  await expect(detail.locator('p')).toHaveText(observed.raw_value??'No value generated for this inventory slot.');
- await page.getByRole('button',{name:'lines.0.quantity',exact:true}).click();
+ await page.locator('button.evidence[data-field-path="lines.0.quantity"]').click();
  await expect(page.getByLabel('Actual source bounding box')).toHaveCount(0);
  await page.screenshot({path:'../../output/playwright/cl07-unassigned-model-review.png',fullPage:true});
 });

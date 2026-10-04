@@ -1,3 +1,5 @@
+import {auditHistory} from './support/disclosure';
+import {caseDetails} from './support/disclosure';
 import {test,expect,type Page} from '@playwright/test';
 
 // Read retained fictional history only. No uploads, evaluations, approvals,
@@ -35,7 +37,7 @@ test('current clean source-confirmed invoice displays readiness only with financ
  await page.goto(sample.case_url);await expect(page.locator('.result-summary h2')).toHaveText('Ready for processing');
  await expect(page.getByLabel('Screening result')).toContainText('The current facts satisfy the applicable checks. Payment remains a separate process.');
  await expect(page.getByRole('heading',{name:'Rule findings'})).not.toBeVisible();
- await expect(page.getByRole('heading',{name:'Audit timeline',exact:true})).toBeVisible();
+ await auditHistory(page);await expect(page.getByRole('heading',{name:'Audit timeline',exact:true})).toBeVisible();
  await page.screenshot({path:'../../output/playwright/acceptance-ready-laptop.png',fullPage:true});
  await page.getByLabel('Screening result').screenshot({path:'../../output/playwright/acceptance-ready-result-laptop.png'});
  await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -61,8 +63,8 @@ test('duplicate allowance and delivery exceptions match actual pinned evidence a
    const canonical=record.versions.at(-1).payload;
    for(const field of ['vendor_id','invoice_number','invoice_date','total_amount','currency'])expect(resolved.source[field]).toBe(canonical[field]);
    expect(resolved.source.settlement_status).toBe('PAID');
-   await expect(summary).toContainText(finding.reason);
-   await expect(summary).toContainText('Inspect the possible duplicate and record its disposition.');
+   await expect(summary).toContainText('This invoice matches a paid record');
+   await expect(summary).toContainText('Review the matching invoice and record an authorized disposition.');
   }else if(name==='employee-allowance'){
    expect(finding.observed.daily_limit).toBe(resolved.source.allowance_amount);
    expect(finding.observed.aggregate_amount).toBe('1800.00');expect(finding.observed.daily_limit).toBe('1500.00');
@@ -72,7 +74,7 @@ test('duplicate allowance and delivery exceptions match actual pinned evidence a
     const previous=await get(page,'evidence/'+e.id);expect(previous.source.claimed_amount).toBe('600.00');
     expect(previous.source.employee_id).toBe(canonical.employee_id);expect(previous.source.expense_date).toBe(finding.observed.local_date);
    }
-   expect(canonical.requested_amount).toBe('600.00');await expect(summary).toContainText(finding.reason);
+   expect(canonical.requested_amount).toBe('600.00');await expect(summary).toContainText('Claims total INR 1800.00');
    await expect(summary).toContainText('Review the allowance calculation and record an authorized resolution.');
   }else{
    const line=finding.observed[0];expect(line.requested_quantity).toBe('70');expect(line.eligible_new_quantity).toBe('50.0000');expect(line.quantity_shortfall).toBe('20.0000');
@@ -80,7 +82,7 @@ test('duplicate allowance and delivery exceptions match actual pinned evidence a
    await expect(summary).toContainText(`Goods receipt covers ${line.eligible_new_quantity} units; this line bills ${line.requested_quantity}. Verify the remaining ${line.quantity_shortfall} units or correct the invoice.`);
    await expect(summary).toContainText('Verify goods receipt or correct the billed quantity.');
   }
-  await page.getByText('View detailed checks',{exact:true}).click();
+  await caseDetails(page);await page.getByText('View detailed checks',{exact:true}).click();
   const rule=page.locator('article.rule').filter({has:page.locator('.rule-head strong',{hasText:new RegExp('^'+id+'$')})});
   await rule.getByText('Observed, expected & evidence',{exact:true}).click();
   await rule.getByRole('button',{name:new RegExp('^'+kind)}).first().click();
@@ -118,7 +120,7 @@ test('retained future allowance form and audit history load without policy activ
  await page.screenshot({path:'../../output/playwright/acceptance-policy-phone.png',fullPage:true});
  expect(await get(page,'admin/records/'+hotel.id+'/versions')).toEqual(versions);
  await page.goto('/login');await page.getByRole('button',{name:'Finance workspace Upload, source review and finance exceptions',exact:true}).click();
- await expect(page.getByRole('heading',{name:'Finance dashboard'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Your finance workspace'})).toBeVisible();
  expect((await page.request.get('/api/admin/catalog')).status()).toBe(403);
  await expect(page.getByRole('link',{name:'Admin Console',exact:true})).toHaveCount(0);
  expect(await page.evaluate(()=>Object.keys({...localStorage,...sessionStorage}))).toEqual([]);

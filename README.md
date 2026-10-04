@@ -1,4 +1,4 @@
-# ClearLedger
+# Kivo
 
 Invoice and expense exception workspace · repository: microsoft_inovate
 
@@ -6,9 +6,10 @@ The application screens vendor invoices and employee claims using source evidenc
 
 The normal UI presents **Ready for processing / Needs review / On hold**, separate
 Finance and Admin workspaces, Auto intake, source uncertainty and versioned policy
-forms. Open [ClearLedger locally](http://127.0.0.1:3000/login). The local entry uses
+forms. Open [Kivo locally](http://127.0.0.1:3000/welcome). The local entry uses
 fictional server-configured identities; real organization SSO remains externally
 configured. Set `NEXT_PUBLIC_PRODUCT_NAME` before the web build to change the name.
+Kivo is the configurable working name for the existing ClearLedger/AP assistant; no trademark or domain availability is asserted. See the [first polished UI checkpoint](docs/kivo_ui_verification.md) and [policy guide](docs/kivo_user_guide.md).
 See [ClearLedger hardening and measured limits](docs/clearledger_hardening.md).
 The continued [twelve-layout validation](docs/clearledger_validation.md) records
 before/after benchmarks, actual cold/warm and upload/queue timings, remaining

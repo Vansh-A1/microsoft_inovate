@@ -1,3 +1,4 @@
+import {sourceFacts} from './support/disclosure';
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
@@ -17,7 +18,7 @@ async function source(page:Page,id:string){
  const response=await page.request.get('/api/documents/'+saved.document.id);expect(response.status()).toBe(200);
  const doc=await response.json();expect(doc.state).toBe('NEEDS_INPUT');expect(doc.finance_decision).toBeNull();
  expect(doc.draft.normalizer_version).toBe('document-normalizer-v4');
- await expect(page.locator('.page-title')).toContainText('Needs your confirmation');return doc;
+ await expect(page.locator('.page-title')).toContainText('Needs your confirmation');await sourceFacts(page);return doc;
 }
 
 test('actual repaired dense tax and European values retain measured evidence and require confirmation',async({page})=>{
@@ -27,15 +28,15 @@ test('actual repaired dense tax and European values retain measured evidence and
  expect(tax.raw_value).toBe('AED 11.85');expect(tax.source.bbox).not.toBeNull();
  expect(doc.extraction_runs[0].metadata.routing.enterprise.calls).toBe(1);
  expect(doc.extraction_runs[0].metadata.routing.enterprise.reused_tables[0].rows).toBe(3);
- await page.getByRole('button',{name:'tax_amount',exact:true}).click();
+ await page.locator('button.evidence[data-field-path="tax_amount"]').click();
  await expect(page.getByLabel('Actual source bounding box')).toBeVisible();
  await page.screenshot({path:'../../output/playwright/cl09-dense-source-laptop.png',fullPage:true});
  doc=await source(page,'p03');
  expect(doc.draft.candidate.currency).toBe('EUR');expect(doc.draft.candidate.total_amount).toBe('1198.93');
  expect(doc.draft.candidate.tax_basis??null).toBeNull();
- const total=page.locator('.observation-table tr').filter({has:page.getByRole('button',{name:'total_amount',exact:true})});
+ const total=page.locator('.observation-table tr').filter({has:page.locator('button.evidence[data-field-path="total_amount"]')});
  await expect(total).toContainText('1.198,93 €');await expect(total).toContainText('1198.93');
- await page.getByRole('button',{name:'total_amount',exact:true}).click();
+ await page.locator('button.evidence[data-field-path="total_amount"]').click();
  await expect(page.getByLabel('Actual source bounding box')).toBeVisible();
  await expect(page.getByRole('button',{name:'Verify facts and evaluate'})).toBeDisabled();
  await page.screenshot({path:'../../output/playwright/cl09-european-source-laptop.png',fullPage:true});
@@ -51,12 +52,12 @@ test('actual multi-page headers keep original page ownership and ambiguous dolla
  expect(total.state).toBe('PRESENT');expect(total.raw_value).toBe('$5,906.74');expect(total.source.page).toBe(2);
  expect(doc.extraction_runs[0].metadata.routing.enterprise.calls).toBe(1);
  expect(doc.extraction_runs[0].metadata.routing.enterprise.reused_tables.map((r:{rows:number})=>r.rows)).toEqual([8,4]);
- await page.getByRole('button',{name:'total_amount',exact:true}).click();
+ await page.locator('button.evidence[data-field-path="total_amount"]').click();
  await expect(page.getByRole('combobox',{name:/^Source page/})).toHaveValue('2');
  await expect(page.getByLabel('Actual source bounding box')).toBeVisible();
- const row=page.locator('.observation-table tr').filter({has:page.getByRole('button',{name:'currency',exact:true})});
+ const row=page.locator('.observation-table tr').filter({has:page.locator('button.evidence[data-field-path="currency"]')});
  await expect(row).toContainText('Ambiguous');await expect(row).toContainText('Unresolved');
- await expect(page.getByLabel('Correct currency',{exact:true})).toHaveValue('');
+ await expect(page.locator('input[data-field-path="currency"]')).toHaveValue('');
  await page.screenshot({path:'../../output/playwright/cl09-multipage-source-laptop.png',fullPage:true});
  await page.setViewportSize({width:390,height:844});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);

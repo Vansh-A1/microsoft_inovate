@@ -1,3 +1,4 @@
+import {sourceFacts} from './support/disclosure';
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
@@ -12,7 +13,7 @@ async function source(page:Page,file:string){
  const response=await page.request.get('/api/documents/'+saved.document.id);expect(response.status()).toBe(200);
  const doc=await response.json();expect(doc.state).toBe('NEEDS_INPUT');expect(doc.finance_decision).toBeNull();
  expect(doc.original.sha256).toBe(saved.source_sha256);
- await expect(page.locator('.page-title')).toContainText('Needs your confirmation');
+ await expect(page.locator('.page-title')).toContainText('Needs your confirmation');await sourceFacts(page);
  await expect(page.getByRole('button',{name:'Verify facts and evaluate'})).toBeDisabled();return doc;
 }
 
@@ -22,7 +23,7 @@ test('actual rotated source boxes highlight original bytes at laptop and phone s
  const by=Object.fromEntries(doc.observations.map((o:{field_path:string})=>[o.field_path,o]));
  expect(by['lines.0.amount'].raw_value).toBe('42.75');
  const box=by['lines.0.amount'].source.bbox;expect(box.x1).toBeGreaterThan(.23);expect(box.y2).toBeLessThan(.11);
- await page.getByRole('button',{name:'lines.0.amount',exact:true}).click();
+ await page.locator('button.evidence[data-field-path="lines.0.amount"]').click();
  const overlay=page.getByLabel('Actual source bounding box');await expect(overlay).toBeVisible();
  await overlay.scrollIntoViewIfNeeded();
  await page.screenshot({path:'../../output/playwright/cl10-rotation-source-laptop.png'});
@@ -37,9 +38,10 @@ test('actual skewed partial source keeps both unread cells and exact next questi
  expect(doc.draft.candidate['lines.1.quantity']).toBeNull();expect(doc.draft.candidate['lines.1.unit_price']).toBeNull();
  const questions=doc.draft.findings.filter((f:{code:string;field:string})=>f.code==='SOURCE_CELL_UNREAD'&&f.field.startsWith('lines.1.'));
  expect(questions).toHaveLength(2);
+ await expect(page.getByLabel('Document progress')).toContainText('Prepare review');await expect(page.getByLabel('Document progress')).not.toContainText('Confirm source');
  expect(questions.every((f:{message:string})=>f.message.includes('Braided file loops')&&f.message.includes('do not calculate'))).toBe(true);
  for(const question of questions)await expect(page.getByText(question.message,{exact:true})).toBeVisible();
- await page.getByRole('button',{name:'lines.1.amount',exact:true}).click();
+ await page.locator('button.evidence[data-field-path="lines.1.amount"]').click();
  await expect(page.getByLabel('Actual source bounding box')).toBeVisible();
  await page.screenshot({path:'../../output/playwright/cl10-partial-source-laptop.png'});
  await page.setViewportSize({width:390,height:844});
@@ -58,7 +60,7 @@ test('actual final public deskew keeps valid tax source and reports excluded bor
  const tax=doc.observations.find((o:{field_path:string})=>o.field_path==='tax_amount');
  expect(tax.state).toBe('PRESENT');expect(tax.raw_value).toBe('AED 3.00');
  expect(doc.draft.candidate.tax_basis??null).toBeNull();
- await page.getByRole('button',{name:'tax_amount',exact:true}).click();
+ await page.locator('button.evidence[data-field-path="tax_amount"]').click();
  await expect(page.getByLabel('Actual source bounding box')).toBeVisible();
  await page.getByLabel('Actual source bounding box').scrollIntoViewIfNeeded();
  await page.screenshot({path:'../../output/playwright/cl10-public-deskew-source-laptop.png'});

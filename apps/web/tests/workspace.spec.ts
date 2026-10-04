@@ -1,3 +1,4 @@
+import {caseDetails} from './support/disclosure';
 import { test,expect } from '@playwright/test';
 const vendor='30000000-0000-4000-8000-000000000001';
 const employee='30000000-0000-4000-8000-000000000005';
@@ -5,7 +6,7 @@ const duplicate='30000000-0000-4000-8000-000000000002';
 const expense='30000000-0000-4000-8000-000000000008';
 test('overview shows actual persisted cases and has no browser token',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('/');await expect(page.getByRole('heading',{name:'Finance dashboard'})).toBeVisible();
+ await page.goto('/');await expect(page.getByRole('heading',{name:'Your finance workspace'})).toBeVisible();
  // The overview is bounded and ordered by recency; compare an actual returned record by UUID.
  const latest=(await (await page.request.get('/api/transactions?limit=25')).json()).items[0];
  const facts=latest.versions.at(-1).payload;
@@ -18,7 +19,7 @@ test('overview shows actual persisted cases and has no browser token',async({pag
 });
 for(const [id,outcome] of [[vendor,'PASS'],[employee,'PASS'],[duplicate,'HOLD'],[expense,'REVIEW']]){
  test(`persisted case ${outcome} ${id.slice(-3)} resolves evidence and report`,async({page})=>{
-  await page.goto('/cases/'+id);await page.getByText('View detailed checks',{exact:true}).click();await expect(page.getByRole('heading',{name:'Rule findings'})).toBeVisible();
+  await page.goto('/cases/'+id);await caseDetails(page);await page.getByText('View detailed checks',{exact:true}).click();await expect(page.getByRole('heading',{name:'Rule findings'})).toBeVisible();
   const current=await (await page.request.get('/api/transactions/'+id)).json();
   const retained=await (await page.request.get('/api/evaluations/'+current.latest_evaluation_id)).json();
   expect(retained.decision).toBe(outcome);
@@ -47,7 +48,7 @@ for(const choice of ['vendor','employee']){
   await expect(page).toHaveURL(/\/cases\/[a-f0-9-]{36}$/);
   await expect(page.getByRole('heading',{name:number,exact:true})).toBeVisible();
   await expect(page.locator('.result-summary h2')).toHaveText('On hold',{timeout:25000});
-  await page.getByText('View detailed checks',{exact:true}).click();await expect(page.locator('.rule').filter({hasText:'APR-001'}).getByText('FAIL',{exact:true})).toBeVisible();
+  await caseDetails(page);await page.getByText('View detailed checks',{exact:true}).click();await expect(page.locator('.rule').filter({hasText:'APR-001'}).getByText('FAIL',{exact:true})).toBeVisible();
   await page.reload();await expect(page.getByRole('heading',{name:number,exact:true})).toBeVisible();
  });
 }
@@ -73,7 +74,7 @@ test('loading and API error states remain visible and actionable',async({page})=
  await page.goto('/transactions');await expect(page.getByRole('status')).toHaveText('Loading persisted records…');await expect(page.locator('tbody tr').first()).toBeVisible();
  await page.unroute('**/api/transactions?*');await page.route('**/api/transactions?*',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({error:{message:'API connection unavailable. Start the API and try again.'}})}));
  await page.reload();await expect(page.locator('.error[role=alert]')).toContainText('API connection unavailable');
- await page.unroute('**/api/transactions?*');await page.reload();
+ await page.unroute('**/api/transactions?*');await page.getByRole('button',{name:'Try loading again',exact:true}).click();
  await expect(page.locator('tbody tr').first()).toBeVisible();await expect(page.locator('.error[role=alert]')).toHaveCount(0);
 });
 test('proxy rejects a cross-origin mutation',async({request})=>{
