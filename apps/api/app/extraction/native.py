@@ -37,7 +37,7 @@ def result(bundle,metadata,headers,rows=(),failure=None):
 
 
 class NativeTextExtractionAdapter:
-    metadata=AdapterMetadata('native-label-parser','1','NATIVE_TEXT',prompt_template_version='labeled-header-table-v1')
+    metadata=AdapterMetadata('native-label-parser','2','NATIVE_TEXT',prompt_template_version='labeled-header-table-layout-v2')
     capabilities=AdapterCapabilities(True,True,True,False)
 
     def __init__(self, page_details=()):
@@ -48,6 +48,9 @@ class NativeTextExtractionAdapter:
         if schema_version != SCHEMA_VERSION: raise ValueError('Unsupported schema')
         seen={k:[] for k in HEADER_FIELDS};rows=[]
         for page in bundle.pages:
+            from app.extraction.layout import printed_layout
+            candidates,layout_rows,notes=printed_layout(self.details.get(page.page,{}))
+            layout_fields={field for field,raw,bbox in candidates}
             table=False
             spans=self.details.get(page.page,{}).get('spans',[])
             for line in (page.available_text or '').splitlines():
@@ -56,6 +59,9 @@ class NativeTextExtractionAdapter:
                 match=re.fullmatch(r'([^:]{1,40}):\s*(.{1,1000})',line)
                 if match and match[1].casefold() in LABELS:
                     field=LABELS[match[1].casefold()];raw=match[2].strip()
+                    # PyMuPDF sorted text may flatten independent columns into
+                    # one line. Measured label regions own that page's mapping.
+                    if field in layout_fields:table=False;continue
                     matching=[s for s in spans if s['text'].strip()==line]
                     bbox=matching[0].get('bbox') if len(matching)==1 else None
                     seen[field].append(FieldObservation(field,State.PRESENT,raw,source=source(bundle,page.page,field,bbox,raw),
@@ -73,6 +79,16 @@ class NativeTextExtractionAdapter:
                 elif table and '|' in line:
                     self.diagnostics.append('TABLE_COVERAGE_UNCERTAIN');table=False
                 elif table and line.startswith('SYNTHETIC - Page'): table=False
+            self.diagnostics.extend(notes)
+            for field,raw,bbox in candidates:
+                if field not in seen:continue
+                seen[field].append(FieldObservation(field,State.PRESENT,raw,source=source(bundle,page.page,field,bbox,raw),
+                    diagnostic_note='Printed label/value association from measured text regions; not yet human confirmed.'))
+            for cells in layout_rows:
+                if len(rows)>=200:self.diagnostics.append('TABLE_ROW_LIMIT');break
+                rows.append(LineItemObservation(len(rows)+1,tuple(FieldObservation(field,State.PRESENT,raw,
+                    source=source(bundle,page.page,field,bbox,raw),diagnostic_note='Printed column association from measured cell text regions.')
+                    for field,raw,bbox in cells)))
         headers=[]
         for field,candidates in seen.items():
             distinct=list(dict.fromkeys(f.raw_value for f in candidates))

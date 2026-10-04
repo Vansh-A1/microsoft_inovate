@@ -301,3 +301,30 @@ credential changes, retries, alternate publication or force-push occurred.
 - Local restore validation covers an actual disposable copy and private object hashes. Cloud point-in-time/object recovery remains a separate gate. No organization-specific retention period, SLA, spend, FX rate or production model has been invented.
 - The existing code-bound anomaly artifact became incompatible with the release storage integration; an explicit governed RULES_ONLY deployment preserved all old scores. Compatible candidates/shadow/activation/rollback continue through existing governance. No classifier/SHAP or online learning is introduced.
 - The single authorized ordinary main push occurs only after final local verification. Authentication failure is recorded without credential repair, retry, alternate publication or force-push.
+
+## ClearLedger hardening inputs — 2026-10-04
+
+The three-layout benchmark is lawful generated synthetic content, frozen before
+extraction development with one reserved layout. A 100% checked-value match on
+this tiny set is not representative invoice accuracy. Cold/warm measurements are
+separate; whole-device GPU usage includes other processes. The supplied invoice
+still has date/currency and OCR glyph uncertainty. Missing tax semantics are not
+inferred into canonical finance facts. See [the measurement record](clearledger_hardening.md).
+
+ClearLedger local entry selects existing fictional server identities; it is not
+an actual production SSO deployment. Synthetic policies remain visibly fictional
+after business-form versioning. Company-approved masters/policies are not supplied.
+No scanner executable/definitions were installed or configured. The new local
+ClamAV adapter is a tested integration contract; production scanner/signature
+acceptance is still external. A stronger inference provider and commercial use of
+the research checkpoint remain unapproved. The accepted BF16 runtime and finance
+Python 3.13 environment are unchanged. No Git push or deployment is authorized
+for this delegated milestone.
+
+Concurrent full fresh-schema regression and browser mutations exposed slow local
+PostgreSQL writes: read-only activity showed CREATE TABLE waiting on
+DataFileImmediateSync while some UI mutations exceeded existing timeouts. The
+worker recovery fix keeps services alive, but does not establish throughput under
+that load. Final functional browser checks run separately after the database suite;
+production storage/capacity acceptance and suitable-infrastructure load validation
+remain unproven. No host/database durability setting is weakened to accelerate tests.

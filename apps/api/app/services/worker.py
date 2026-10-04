@@ -87,6 +87,31 @@ def worker_identities(settings):
     return identities
 
 
+def run_scoped_cycle(database,identity,storage,settings):
+    """A rolled-back transient DB operation must not terminate other services.
+
+    Claims/finalizations keep their existing transaction and lease semantics.
+    No success or new attempt is fabricated here; a committed lease recovers
+    through expiry when its failure disposition could not be recorded.
+    """
+    import json
+    from sqlalchemy.exc import DBAPIError
+    from app.core.observability import log
+    from app.services.document_worker import run_once as run_document_once
+    for stage,action in [('FINANCE',lambda:run_once(database,identity)),
+                         ('DOCUMENT',lambda:run_document_once(database,identity,storage,settings))]:
+        try:action()
+        except DBAPIError as exc:
+            state=getattr(exc.orig,'sqlstate',None)
+            contention=state in ('40P01','40001','55P03')
+            unavailable=exc.connection_invalidated or isinstance(state,str) and state.startswith('08')
+            if not contention and not unavailable:raise
+            log.warning(json.dumps({'event':'worker_backoff','stage':stage,
+                'reason':'DATABASE_CONTENTION' if contention else 'DATABASE_UNAVAILABLE'},sort_keys=True))
+            return False
+    return True
+
+
 def main():
     import argparse,time
     from app.core.config import Settings
@@ -95,15 +120,14 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--once',action='store_true');args=parser.parse_args()
     settings=Settings.load();database=Database(settings.database_url);database.settings=settings
     from app.integrations.blob_storage import configured_storage
-    from app.services.document_worker import run_once as run_document_once
     storage=configured_storage(settings)
     identities=worker_identities(settings)
     while True:
+        healthy=True
         for identity in identities.values():
-            run_once(database,identity)
-            run_document_once(database,identity,storage,settings)
+            healthy=run_scoped_cycle(database,identity,storage,settings) and healthy
         if args.once:break
-        time.sleep(.5)
+        time.sleep(.5 if healthy else 1)
 
 
 if __name__=='__main__':main()

@@ -13,7 +13,7 @@ from app.db.session import scope_query
 from app.services.finance import get, audit, scope_lock
 from app.services.documents import enqueue_stage, pages, STAGES, PIPELINE_VERSION
 from app.documents.processor import DocumentProcessor, DocumentFailure, PROCESSOR_VERSION
-from app.documents.malware import UnconfiguredMalwareAdapter
+from app.documents.malware import UnconfiguredMalwareAdapter,configured_scanner
 from app.documents.normalizer import Normalizer, NORMALIZER_VERSION, validate_draft
 from app.domain.extraction import DocumentBundle, DocumentPage as BundlePage, DocumentSourceType, SCHEMA_VERSION, to_data
 from app.extraction.native import NativeTextExtractionAdapter, reconcile
@@ -65,6 +65,25 @@ def mapping_gaps(observed,source_type,diagnostics=()):
     return list(dict.fromkeys(gaps))
 
 
+def printed_mapping_complete(observed,source_type,diagnostics=()):
+    """Sufficient *printed* coverage to stop inference, never financial clearance.
+
+    Missing tax treatment/charges/UOM stay missing and require source confirmation.
+    A VLM is not asked to fabricate fields that have no printed label/column.
+    """
+    if diagnostics:return False
+    required=('vendor_name','invoice_number','invoice_date','currency','subtotal_amount','tax_amount','total_amount') if source_type=='VENDOR_INVOICE' else (
+        'merchant_name','expense_date','currency','total_amount')
+    by={f.field_path:f for f in observed.header_fields}
+    if any(name not in by or by[name].state.value!='PRESENT' for name in required):return False
+    if source_type!='VENDOR_INVOICE':return True
+    if not observed.line_items:return False
+    for row in observed.line_items:
+        fields={f.field_path:f for f in row.fields if f.state.value=='PRESENT'}
+        if not {'description','quantity','unit_price'}<=fields.keys() or not {'amount','net_amount','gross_amount'}&fields.keys():return False
+    return True
+
+
 def extract(doc,identity,page_data,storage,providers):
     bundle=bundle_for(doc,identity,page_data);adapter=NativeTextExtractionAdapter(page_data)
     native=adapter.extract(bundle,SCHEMA_VERSION);diagnostics=list(adapter.diagnostics)
@@ -80,8 +99,9 @@ def extract(doc,identity,page_data,storage,providers):
         routing['vlm_status']='CONFIGURED_NOT_NEEDED' if providers.endpoint else 'NOT_CONFIGURED'
         routing['sufficiency']='HUMAN_SEGMENTATION_REQUIRED'
         return native,diagnostics,routing
-    if not visual and not gaps:
+    if not visual and (not gaps or printed_mapping_complete(native,doc['source_type'],diagnostics)):
         if providers.endpoint:routing['vlm_status']='CONFIGURED_NOT_NEEDED'
+        if gaps:routing['sufficiency']='PRINTED_FACTS_MAPPED_REVIEW_REQUIRED'
         routing['paths']=['NATIVE_TEXT'];return native,diagnostics,routing
     ocr=UnconfiguredOCRAdapter()
     if providers.ocr_executable:
@@ -104,7 +124,7 @@ def extract(doc,identity,page_data,storage,providers):
         routing['ocr_status']='SUCCEEDED'
     gaps=mapping_gaps(native,doc['source_type'],diagnostics)
     routing['cheap_mapping_gaps']=gaps
-    if providers.endpoint and gaps:
+    if providers.endpoint and gaps and not printed_mapping_complete(native,doc['source_type'],diagnostics):
         routing['vlm_status']='CONFIGURED'
         from app.extraction.grid import row_crops
         crop_cache={}
@@ -118,9 +138,23 @@ def extract(doc,identity,page_data,storage,providers):
             trace=trace|{'preview_key':page.artifact_ref,'storage_key':key,
                 'page_transform':next(p['transform'] for p in page_data if p['page']==page.page)}
             return 'data:image/png;base64,'+base64.b64encode(content).decode(),trace
+        mapped_headers={}
+        for p in ocr_pages:
+            per_page=NativeTextExtractionAdapter([p]).extract(bundle_for(doc,identity,[p]),SCHEMA_VERSION)
+            mapped_headers[p['page']]=per_page.header_fields
         enterprise=TypeLLMExtractionAdapter(providers,
-            image_loader=lambda p:'data:image/png;base64,'+base64.b64encode(storage.get(identity,p.artifact_ref)).decode(),row_image_loader=row_image)
+            image_loader=lambda p:'data:image/png;base64,'+base64.b64encode(storage.get(identity,p.artifact_ref)).decode(),row_image_loader=row_image,
+            header_observations=mapped_headers)
         extracted=enterprise.extract(bundle_for(doc,identity,ocr_pages),SCHEMA_VERSION)
+        # A model can read amounts but cannot establish accounting tax treatment
+        # from their arithmetic or a sales-tax summary. Preserve the unsupported
+        # candidate for review; only independently labeled text can corroborate it.
+        basis=next((f for f in native.header_fields if f.field_path=='tax_basis'),None)
+        if basis is None or basis.state.value!='PRESENT':
+            from app.domain.extraction import ExtractionObservationState as ObservationState
+            extracted=replace(extracted,header_fields=tuple(replace(f,state=ObservationState.AMBIGUOUS,
+                diagnostic_note='Model-only tax treatment is unconfirmed; inspect an explicit source statement or apply an authorized policy.')
+                if f.field_path=='tax_basis' and f.state.value=='PRESENT' else f for f in extracted.header_fields))
         if native.line_items and extracted.line_items and len(native.line_items)!=len(extracted.line_items):
             from app.domain.extraction import to_data
             routing['row_count_disagreement']={'version':'provider-candidates-v1',
@@ -129,7 +163,9 @@ def extract(doc,identity,page_data,storage,providers):
         routing['paths'].append('ENTERPRISE_VLM');routing['vlm_status']='SUCCEEDED'
         routing['enterprise']=enterprise.sidecar
         if enterprise.sidecar['table_coverage']=='UNCERTAIN':diagnostics.append('TABLE_COVERAGE_UNCERTAIN')
-    elif providers.endpoint:routing['vlm_status']='CONFIGURED_NOT_NEEDED'
+    elif providers.endpoint:
+        routing['vlm_status']='CONFIGURED_NOT_NEEDED'
+        if gaps:routing['sufficiency']='PRINTED_FACTS_MAPPED_REVIEW_REQUIRED'
     if visual and not providers.ocr_executable and not providers.endpoint:raise DocumentFailure('VISUAL_PROVIDER_NOT_CONFIGURED')
     return native,diagnostics,routing
 
@@ -142,7 +178,8 @@ def load_work(database,identity,job_id):
         run=s.scalar(scope_query(select(ExtractionRun),ExtractionRun,identity).where(ExtractionRun.document_id==doc.id,ExtractionRun.status.in_(['COMPLETED','PARTIAL'])).order_by(ExtractionRun.created_at.desc()).limit(1))
         observations=[] if run is None else [projection({'id':o.id,'field_path':o.field_path,'state':o.state,'raw_value':o.raw_value,'source':o.source}) for o in s.scalars(scope_query(select(Observation),Observation,identity).where(Observation.extraction_run_id==run.id))]
         draft=s.scalar(scope_query(select(DocumentDraft),DocumentDraft,identity).where(DocumentDraft.document_id==doc.id).order_by(DocumentDraft.created_at.desc()).limit(1))
-        return {'stage':job.stage,'attempt':job.attempts,'id':doc.id,'source_type':doc.source_type,'original_key':original.storage_key,
+        from app.services.documents import intake_hint
+        return {'stage':job.stage,'attempt':job.attempts,'id':doc.id,'source_type':doc.source_type,'intake_hint':intake_hint(s,identity,doc),'original_key':original.storage_key,
             'original_sha':original.sha256,'pages':page_data,'run_id':run.id if run else None,'observations':observations,
             'diagnostics':run.metadata_json.get('diagnostics',[]) if run else [],
             'draft':None if draft is None else {'candidate':draft.candidate,'traces':draft.traces,'findings':draft.findings}}
@@ -161,6 +198,21 @@ def perform(work,identity,storage,settings,scanner):
         for p in data['pages']:
             image=base64.b64decode(p.pop('preview_base64'));p['preview_key'],sha=storage.put(identity,image,maximum=settings.document_limits.maximum_derived_bytes)
             if sha!=p['page_sha256']:raise DocumentFailure('DERIVED_INTEGRITY_FAILURE')
+        if work.get('intake_hint')=='AUTO':
+            from app.documents.classification import classify
+            classification_pages=[]
+            deadline=time.monotonic()+30
+            providers=settings.document_providers
+            for p in data['pages']:
+                candidate=p
+                if not p['native_text'].strip() and providers.ocr_executable:
+                    remaining=int(deadline-time.monotonic())
+                    if remaining<=0:raise DocumentFailure('OCR_DOCUMENT_TIME_LIMIT')
+                    ocr=TesseractOCRAdapter(providers.ocr_executable,providers.ocr_data_directory or '',providers.ocr_library_directory,timeout_seconds=min(15,remaining))
+                    text=ocr.recognize(storage.path(identity,p['preview_key']),p['transform'])
+                    candidate=p|{'native_text':text.text,'spans':text.spans}
+                classification_pages.append(candidate)
+            data['classification']=classify(bundle_for(work,identity,classification_pages),classification_pages)
         return data
     if work['stage']=='EXTRACT':
         observed,diagnostics,routing=extract(work,identity,work['pages'],storage,settings.document_providers)
@@ -183,6 +235,16 @@ def persist(database,identity,job_id,owner,work,output,started):
             for p in output['pages']:
                 s.add(DocumentPage(**identity.scope(),document_id=doc.id,document_version=1,processor_version=PROCESSOR_VERSION,**p))
             job.result_metadata={'scan':output['scan'],'processor_version':PROCESSOR_VERSION,'page_count':len(output['pages'])}
+            if 'classification' in output:
+                job.result_metadata['classification']=output['classification']
+                if output['classification']['source_type']:
+                    doc.source_type=output['classification']['source_type']
+                    audit(s,identity,'DOCUMENT_PURPOSE_SUGGESTED',doc.id,1,'Printed document labels suggest a purpose; source verification still required',job.correlation_id,output['classification'])
+                else:
+                    job.state='SUCCEEDED';job.lease_until=None;job.updated_at=utcnow();doc.last_successful_stage='PREPROCESS'
+                    doc.state='NEEDS_INPUT';doc.last_error='DOCUMENT_TYPE_UNCONFIRMED'
+                    audit(s,identity,'DOCUMENT_PURPOSE_REQUIRED',doc.id,1,'Confirm document type before extraction',job.correlation_id,output['classification'])
+                    return
         elif job.stage=='EXTRACT':
             r=output['result'];run=ExtractionRun(**identity.scope(),id=__import__('uuid').UUID(r['run_id']),document_id=doc.id,document_version=1,
                 job_id=job.id,attempt=job.attempts,status=r['status'],adapter=r['metadata']['adapter_id'],
@@ -229,7 +291,7 @@ def run_once(database,identity,storage,settings,scanner=None):
     execution=Identity(identity.tenant_id,identity.legal_entity_id,actor,identity.roles,identity.label)
     started=utcnow();work=load_work(database,execution,job_id)
     try:
-        output=perform(work,execution,storage,settings,scanner or UnconfiguredMalwareAdapter())
+        output=perform(work,execution,storage,settings,scanner or configured_scanner())
         persist(database,execution,job_id,owner,work,output,started)
     except DocumentFailure as exc:record_failure(database,execution,job_id,owner,work,exc,started)
     except Exception as exc:

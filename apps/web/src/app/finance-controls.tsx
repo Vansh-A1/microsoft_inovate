@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import {useEffect,useRef,useState} from 'react';
 import {api,mutate,type Evaluation,type Canonical} from '@/lib/api';
+import {workspaceIdentity} from '@/lib/presentation';
 import {SourceViewer,type DocumentDetail} from './documents';
 type Json=Record<string,unknown>;
 type Comparison={id:string;candidate_id:string;candidate_version:number;classification:string;signals:Json;disposition:string|null};
@@ -13,7 +14,7 @@ function Table({rows,columns}:{rows:Json[];columns:[string,string][]}){return ro
 export function DemoIdentity(){
  const [choices,setChoices]=useState<{label:string;roles:string[]}[]>([]),[selected,setSelected]=useState(''),[error,setError]=useState('');
  useEffect(()=>{fetch('/api/development/session').then(r=>r.json()).then(d=>setChoices(d.identities||[])).catch(()=>{});api<{label:string}>('me').then(d=>setSelected(d.label)).catch(()=>{});},[]);
- return choices.length>1?<div className="demo-identity"><label>Configured demo identity<select aria-label="Configured demo identity" value={selected} onChange={async e=>{try{const r=await fetch('/api/development/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({label:e.target.value})});if(!r.ok)throw new Error('Identity selection rejected');window.location.reload();}catch(e){setError((e as Error).message);}}}>{choices.map(c=><option key={c.label}>{c.label}</option>)}</select></label><small>Local synthetic identities. Permissions remain server configured.</small><ErrorBox message={error}/></div>:null;
+ return choices.length>1?<div className="demo-identity"><label>Configured demo identity<select aria-label="Configured demo identity" value={selected} onChange={async e=>{try{const r=await fetch('/api/development/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({label:e.target.value})});if(!r.ok)throw new Error('Identity selection rejected');window.location.reload();}catch(e){setError((e as Error).message);}}}>{choices.map(c=><option key={c.label} value={c.label}>{workspaceIdentity(c.label)}</option>)}</select></label><small>Local synthetic identities. Permissions remain server configured.</small><ErrorBox message={error}/></div>:null;
 }
 export function FinanceControls({id,version,evaluation,onChange,refreshKey=0,canonical}:{id:string;version:number;evaluation:Evaluation|null;onChange:()=>Promise<unknown>;refreshKey?:number;canonical:Canonical}){
  const [data,setData]=useState<Controls|null>(null),[comparisons,setComparisons]=useState<Comparison[]>([]),[approvals,setApprovals]=useState<Approval[]>([]),[shares,setShares]=useState<Json[]>([]),[allocations,setAllocations]=useState<Json[]>([]),[error,setError]=useState(''),[busy,setBusy]=useState(false),[reason,setReason]=useState(''),[share,setShare]=useState(''),[shareItem,setShareItem]=useState(''),[shareAmount,setShareAmount]=useState(''),[shareQuantity,setShareQuantity]=useState('1'),[waiver,setWaiver]=useState('EXP-003'),[source,setSource]=useState<Record<string,DocumentDetail>>({}),[roles,setRoles]=useState<string[]>([]),[reviewBinding,setReviewBinding]=useState<Record<string,unknown>>({});

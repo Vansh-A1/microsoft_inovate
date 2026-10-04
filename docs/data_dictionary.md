@@ -441,3 +441,23 @@ supervised gate. See [model card](../ml/model_card.md) and
 - **Operational health:** minimal public live/ready response versus permissioned dependency state. CONFIGURED_UNVERIFIED is not AVAILABLE; NOT_CONFIGURED malware is not CLEAN.
 - **Request telemetry:** route template, method, status, duration_ms, correlation_id. No raw URL/query, token, body, financial/source content or exception text.
 - **Release approval:** private operator inputs including subscription/resource group/region/spend/identity/network/residency/GPU disposition and recovery/auth/rollback checks; binds a full release commit and reviewed parameter SHA-256. The dispatcher verifies the active account and target before migrations/deployment. It is not a model, policy or payment approval.
+
+## ClearLedger additive projections — 2026-10-04
+
+No table or migration is added; extraction-v1 and financial record semantics remain.
+
+| Field / sidecar | Meaning and controls |
+|---|---|
+| printed-layout-v1 | Measured PDF spans/OCR words associate explicit labels/headings; uncertain crossing/wrapped cells abstain. Not confidence or finance sufficiency. |
+| OCR layout_bbox | Upright preview coordinate for association only; bbox remains the actual inverse-EXIF original coordinate used by evidence. Word/line kind prevents duplicate association. |
+| PRINTED_FACTS_MAPPED_REVIEW_REQUIRED | Routing sufficiency when observed core facts exist but financial mapping gaps remain. It skips unnecessary model guessing, not validation/source confirmation. |
+| header_fields_requested | Actual per-page model header field list; empty only when core printed headers are independently covered. Rows/inventory retain real contract calls when needed. |
+| UPLOAD_SESSION_CREATED.payload.intake_hint | Immutable original AUTO or explicit user purpose; legacy events fall back to retained source_type. Not authorization. |
+| PREPROCESS.classification | document-purpose-v1 SUGGESTED/NEEDS_CONFIRMATION, printed-label method, source_type and evidence_pages; manual source verification always true. |
+| DOCUMENT_TYPE_UNCONFIRMED | Processing NEEDS_INPUT after safety preprocessing; no extraction/finance decision until scoped generation-bound purpose confirmation. |
+| documents.generation | Existing retry/freshness generation; purpose confirmation increments it and schedules one idempotent EXTRACT stage. Old pages/original audit are retained. |
+| documents/intake-capabilities | Authenticated bounded limits, malware_required and explicit scanner configuration/availability. No executable path, credentials or clean-file claim. |
+| AP_MALWARE_SCANNER_EXECUTABLE | Operator-supplied absolute local engine; no downloads, shell, file deletion or invoice content logging. Configuration is not successful scanning. |
+| NEXT_PUBLIC_PRODUCT_NAME | Public build-time UI name, default ClearLedger; no effect on financial state, roles or tenant scope. |
+| Human outcome labels | PASS→Ready for processing, REVIEW→Needs review, HOLD→On hold; processing/stale eligibility/approval remain separate and detailed original states accessible. |
+| worker_backoff | Allowlisted FINANCE/DOCUMENT stage and DATABASE_CONTENTION/DATABASE_UNAVAILABLE reason. No SQL, driver exception, document values, credential or success claim; existing durable lease/attempt semantics remain. |

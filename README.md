@@ -1,8 +1,15 @@
-# microsoft_inovate
+# ClearLedger
 
-Accounts-Payable Exception Assistant · Microsoft Innovate 2026 · AI BATTALION 1 · Team ID 152
+Invoice and expense exception workspace · repository: microsoft_inovate
 
 The application screens vendor invoices and employee claims using source evidence, versioned finance rules, matching, approvals and budgets. It produces **PASS / REVIEW / HOLD**, preserves the original decision and shows the next action. It executes no payments.
+
+The normal UI presents **Ready for processing / Needs review / On hold**, separate
+Finance and Admin workspaces, Auto intake, source uncertainty and versioned policy
+forms. Open [ClearLedger locally](http://127.0.0.1:3000/login). The local entry uses
+fictional server-configured identities; real organization SSO remains externally
+configured. Set `NEXT_PUBLIC_PRODUCT_NAME` before the web build to change the name.
+See [ClearLedger hardening and measured limits](docs/clearledger_hardening.md).
 
 Phase 6 delivers the local application and release/handoff artifacts under an explicit external-infrastructure fallback. The subsequent approved priority override establishes **real local VLM + TypeLLM invoice extraction** on the unchanged GPU driver. This is a development experiment, not a deployed production pilot. See the [real inference acceptance record](docs/real_vlm_acceptance.md), [Phase-6 exit review](docs/phase6_exit_review.md) and [capability matrix](docs/release_matrix.md).
 
@@ -29,6 +36,12 @@ PASS means current screening eligibility at the recorded snapshot, not paid. REV
 ## Admin Console
 
 Administration has separate navigation and permissions. Typed business forms edit supported allowance/effective-date/approval-band/delegation/master fields through validated drafts and new reference versions; budgets use audited ledger adjustments. A policy administrator cannot activate vendor/budget masters. The future hotel allowance demonstration retains 8,000 and creates 9,000 from 2026-11-01, with actor/reason/time. Model author/governor and operational health permissions remain separate. There is no arbitrary code/SQL or set-PASS control.
+
+The local malware engine is **not configured**. An operator may connect an
+already installed local clamscan with `AP_MALWARE_SCANNER_EXECUTABLE`; no scanner or
+definitions are installed by the application. Intake/Admin disclose configuration
+and availability explicitly. Required-scanning settings remain fail-closed;
+configuration alone is not CLEAN. See the [local hardening runbook](docs/clearledger_hardening.md).
 
 ## Architecture and modes
 

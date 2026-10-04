@@ -2,9 +2,13 @@ import {test,expect} from '@playwright/test';
 const origin='http://127.0.0.1:3000';
 async function identity(page:import('@playwright/test').Page,label:string){
  const response=await page.request.post('/api/development/session',{headers:{Origin:origin},data:{label}});expect(response.status()).toBe(200);await page.reload();
+ const me=await (await page.request.get('/api/me')).json();
+ const finance=me.roles.some((r:string)=>['FINANCE_REVIEWER','AUDITOR','EMPLOYEE','FINANCE_CONTROLLER','MANAGER','DEPARTMENT_HEAD','CFO','DIRECTOR','APPROVER'].includes(r));
+ const admin=me.roles.some((r:string)=>['POLICY_ADMIN','REFERENCE_ADMIN','LEDGER_ADMIN','OPERATIONS_ADMIN','ML_ADMIN','ML_GOVERNANCE'].includes(r));
+ if(admin&&!finance&&!['/admin','/operations','/reference-imports','/intelligence'].includes(new URL(page.url()).pathname))await page.waitForURL(/\/admin$/,{waitUntil:'load'});
 }
 test('scoped walkthrough reads actual evaluations and connects source, correction history and laptop/mobile views',async({page})=>{
- await page.goto('/');await identity(page,'Hackathon finance reviewer');await page.getByRole('link',{name:'Hackathon walkthrough',exact:true}).click();
+ await page.goto('/');await identity(page,'Hackathon finance reviewer');await page.getByText('Local sample access',{exact:true}).click();await page.getByRole('link',{name:'Sample walkthrough',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Hackathon walkthrough',exact:true})).toBeVisible();
  const data=await (await page.request.get('/api/development/scenarios')).json();
  if(data.ready){
@@ -13,7 +17,7 @@ test('scoped walkthrough reads actual evaluations and connects source, correctio
   const record=await (await page.request.get('/api'+visual.report_url.replace('/reports/','/evaluations/'))).json();expect(record.decision).toBe('PASS');expect(record.transaction_version).toBe(visual.transaction_version);
   await page.setViewportSize({width:1280,height:800});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'../../output/playwright/final-demo-laptop.png',fullPage:true});
   await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:'../../output/playwright/final-demo-mobile.png',fullPage:true});
-  await page.setViewportSize({width:1280,height:800});await page.getByRole('link',{name:'View original HOLD',exact:true}).click();await expect(page.getByRole('heading',{name:'Screening report',exact:true})).toBeVisible();await expect(page.locator('main .badge')).toHaveText('HOLD');
+  await page.setViewportSize({width:1280,height:800});await page.getByRole('link',{name:'View original HOLD',exact:true}).click();await expect(page.getByRole('heading',{name:'Screening report',exact:true})).toBeVisible();await expect(page.locator('main .badge')).toHaveText('On hold');
   await page.goto(visual.document_url);await expect(page.getByRole('heading',{name:'Original source page'})).toBeVisible();await expect(page.getByRole('combobox',{name:/^Source page/})).toHaveValue('1');await page.getByRole('link',{name:'Download preserved original'}).focus();await expect(page.getByRole('link',{name:'Download preserved original'})).toBeFocused();
  }else{await expect(page.getByRole('heading',{name:'Prepare the walkthrough'})).toBeVisible();}
  await identity(page,'Synthetic finance workspace');const other=await (await page.request.get('/api/development/scenarios')).json();expect(other.items).toHaveLength(0);if(data.ready)expect(other.message).toContain('Select Hackathon');

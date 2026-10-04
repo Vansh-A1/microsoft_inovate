@@ -1284,6 +1284,130 @@
         }
       }
     },
+    "/api/v1/documents/intake-capabilities": {
+      "get": {
+        "summary": "Intake Capabilities",
+        "operationId": "intake_capabilities_api_v1_documents_intake_capabilities_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{document_id}/purpose": {
+      "post": {
+        "summary": "Confirm Purpose",
+        "operationId": "confirm_purpose_api_v1_documents__document_id__purpose_post",
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurposeConfirmation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/documents/{document_id}/commit": {
       "post": {
         "summary": "Commit",
@@ -7212,6 +7336,37 @@
         ],
         "title": "Monitoring"
       },
+      "PurposeConfirmation": {
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "enum": [
+              "VENDOR_INVOICE",
+              "EMPLOYEE_RECEIPT"
+            ],
+            "title": "Source Type"
+          },
+          "expected_generation": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Expected Generation"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "source_type",
+          "expected_generation",
+          "reason"
+        ],
+        "title": "PurposeConfirmation"
+      },
       "ReferenceEntry": {
         "properties": {
           "kind": {
@@ -7760,6 +7915,7 @@
           "source_type": {
             "type": "string",
             "enum": [
+              "AUTO",
               "VENDOR_INVOICE",
               "EMPLOYEE_RECEIPT",
               "SUPPORTING_DOCUMENT"

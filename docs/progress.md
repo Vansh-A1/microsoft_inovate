@@ -1273,3 +1273,78 @@ At the user's explicit request to publish through the plugin, its authenticated 
 The user replied **Done** after enabling the required workflow permission, authorizing the requested complete publication. Fresh source/security checks pass (296 text files; Gitleaks zero findings plus positive redacted probe). Normal `git push -u origin main`, with the credential entered at a non-echoing prompt and helpers disabled, returned **exit 0** and created remote `main`, preserving the full existing history. No token was placed in a command argument, repository file, remote URL or credential helper; no force-push or workflow removal.
 
 Independent `git ls-remote` verified **`3bc70198b14d5c21d8fe9a05456e3334836b75d5`**. GitHub's recursive tree at that immutable commit matched **all 310 local tracked file modes/blob hashes**, including `.github/workflows/pilot.yml` and `validate.yml`; the local working tree was clean. **COMPLETE SOURCE/HISTORY PUBLISHED TO Vansh-A1/microsoft_inovate/main.** This documentation-only follow-up updates the README/exit review to avoid a stale blocked-publication claim and is published as part of the same handoff. Actual hosted CI, cloud provisioning and external/data gates remain unverified/deferred. No new phase or code behavior change.
+
+## ClearLedger hardening — delegated continuous local scope, 2026-10-04
+
+CL-01 (Phase-6 follow-up): improve printed invoice association and avoid unnecessary
+inference while preserving source uncertainty and financial controls. Expected
+files: extraction native/layout/OCR/TypeLLM, worker, focused tests and benchmark.
+Verification: frozen development/reserved synthetic layouts, real TypeLLM/Qwen
+provenance/row/source tests, existing extraction/document regression and unchanged
+finance/domain/migration checks. Source pack and ADR-0015 runtime are preserved.
+
+Implemented measured label/column association, EXIF upright/original separation,
+conservative printed mapping, independently reread incomplete headers and ambiguous
+model-only tax treatment. Final frozen after measurements: 0.249/0.390/0.565 s,
+5/5 headers each and 18/18, 8/8, 18/18 checked row values. Baseline
+74.093/74.154/114.216 s; tiny synthetic set, no representative accuracy claim.
+Real-model suite: 6 passed, 264.37 s, exit 0. Layout suite: 11 passed, exit 0.
+Initial failures and honest unknown invoice outcomes are in the new hardening record.
+
+CL-02 (Phase-6 follow-up): polished role-aware Finance/Admin, Auto purpose and
+source progress, human-readable outcomes and policy change previews. Expected
+files: existing web components, presentation/login/product modules, scoped document
+services/routes and tests, generated API contract. No finance engine rebuild or
+schema change. Browser validation covers both roles and laptop/phone, source
+correction, authority, policy version/history and loading/error/empty states.
+
+CL-03 (Phase-6 follow-up): fail-closed operator-supplied scanner path, health
+transparency, full regression, cold/warm timing, recovery/handoff and local commits.
+No scanner/SSO/provider installation, host change, publication or deployment.
+
+Current implementation/benchmark/limitations: [ClearLedger hardening](clearledger_hardening.md),
+[ADR-0016](adr/0016-clearledger-grounded-intake.md). Full backend, corrected browser
+and cold/warm probes were running at this checkpoint; success is not yet claimed.
+Next bounded action: complete those checks, document exact results and commit the
+reviewed local milestone without pushing. External representative data/provider,
+commercial licensing, identity and scanner acceptance remain separate inputs.
+
+CL-03 verification exposed an actual worker outage under PostgreSQL contention:
+a 55P03 claim timeout escaped the worker and stopped the owned app services.
+Added a narrow scoped-cycle guard with safe event logging and one-second backoff;
+transaction/lease/finalization logic is unchanged. Unknown database/business errors
+are not hidden. New pure recovery checks: 13 passed in 1.84 s, exit 0. The actual
+owned app survived a read-only 6.5-second scoped lock with its process unchanged,
+API/web READY and worker RUNNING; the log contains only worker_backoff /
+DATABASE_CONTENTION / FINANCE. Fresh PostgreSQL recovery and final browser results
+are recorded after execution in the hardening report.
+
+### Final ClearLedger local checkpoint
+
+CL-01/CL-02/CL-03 implementation and local verification are complete. The final
+UI preserves mandatory On hold even when a new screening is required, prevents
+stale PASS from implying current readiness, and distinguishes recorded dashboard
+screenings from live eligibility. Historical decisions/controls are unchanged.
+
+Executed verification: full backend **846 passed / six opt-in model skips /
+4339.74 s / exit 0**; the skipped cases separately passed with actual TypeLLM/Qwen
+**six passed / 264.37 s / exit 0**. Fourteen recovery cases added after the full
+852-case collection separately pass **14 / 18.54 s / exit 0**. Current collection
+is 866, not a passing run. Final complete browser suite **42 passed / one conditional
+unconfigured-provider scenario skipped / 5.0 min / exit 0**, no retries. Actual
+Finance/Admin laptop and phone screenshots were inspected. Typecheck/build,
+migration drift, OpenAPI/client, dependency check, release contracts, 343-file
+source scan, redacted Gitleaks/probe and all input manifests pass.
+
+The frozen synthetic benchmark and cold/warm single-invoice timings remain small,
+qualified measurements. Actual unknown invoice identifier/date/currency/tax
+uncertainty is retained. No representative accuracy, calibrated confidence,
+supervised classifier, production pilot or live identity/scanner acceptance is
+claimed. The observed concurrent PostgreSQL write limitation is recorded rather
+than masked by durability/host/test-timeout changes. Originals, rules, domain and
+migrations remain preserved. The reviewed local milestone stays in this checkout;
+no push or deployment is authorized.
+
+Next bounded responsibility requires independent lawful adjudicated invoice
+layouts and business-approved policies/identity/scanner/provider inputs for broader
+acceptance. This local hardening does not provision those inputs or publish the app.

@@ -52,7 +52,7 @@ class SDKTransport:
 
 class TypeLLMExtractionAdapter:
     capabilities=AdapterCapabilities(True,False,True,True)
-    def __init__(self,config=None,transport=None,image_loader=None,row_image_loader=None):
+    def __init__(self,config=None,transport=None,image_loader=None,row_image_loader=None,header_observations=None):
         self.config=config or ProviderSettings()
         if transport is None and self.config.transport=='TYPELLM_GATEWAY':
             from app.extraction.gateway import GatewayTransport
@@ -60,12 +60,13 @@ class TypeLLMExtractionAdapter:
         self.transport=transport or SDKTransport(self.config)
         self.image_loader=image_loader
         self.row_image_loader=row_image_loader
+        self.header_observations=header_observations or {}
         try: package_version=version('typellm')
         except PackageNotFoundError: package_version='NOT_INSTALLED'
         self.metadata=AdapterMetadata('typellm-sglang-client','1','ENTERPRISE_VLM',model_id=self.config.model,
             prompt_template_version=PROMPT_VERSION,runtime_versions=(VersionMetadata('typellm',package_version),VersionMetadata('prompt_sha256',PROMPT_HASH)))
         self.sidecar={'version':'extraction-routing-v2','prompt_sha256':PROMPT_HASH,'calls':0,'table_coverage':'UNKNOWN',
-            'header_seconds':0.0,'line_seconds':0.0,'row_inventory_seconds':0.0,'row_regions':[]}
+            'header_seconds':0.0,'line_seconds':0.0,'row_inventory_seconds':0.0,'row_regions':[],'header_fields_requested':[]}
 
     def call(self,text,fields,images,deadline,scope=None):
         if self.sidecar['calls']>=self.config.maximum_calls:raise DocumentFailure('PROVIDER_CALL_BUDGET')
@@ -117,8 +118,19 @@ class TypeLLMExtractionAdapter:
         for page in bundle.pages:
             images=[self.image_loader(page)] if self.image_loader else []
             fields=VISUAL_HEADERS if images else HEADER_FIELDS
-            data=self.call(page.available_text or '',fields,images,deadline)
-            headers=self.observations(bundle,page.page,fields,data)
+            known={f.field_path:f for f in self.header_observations.get(page.page,())}
+            core=('vendor_name','invoice_number','invoice_date','currency','subtotal_amount','tax_amount','total_amount') if bundle.source_type.value=='VENDOR_INVOICE' else ('merchant_name','expense_date','currency','total_amount')
+            if known and all(name in known and known[name].state is State.PRESENT for name in core):
+                requested=()
+            # When coverage is incomplete, retain independent corroboration of
+            # all headers: an OCR PRESENT status does not guarantee correct glyphs.
+            else:requested=fields
+            self.sidecar['header_fields_requested'].append({'page':page.page,'fields':list(requested)})
+            if requested:
+                data=self.call(page.available_text or '',requested,images,deadline)
+                new={f.field_path:f for f in self.observations(bundle,page.page,requested,data)}
+            else:new={}
+            headers=tuple(new.get(f) or known.get(f) or FieldObservation(f,State.MISSING) for f in fields)
             per_page=result(bundle,self.metadata,headers)
             headers_by_page.append(per_page)
             # Application-managed candidate rows. No deeply nested schema claims.

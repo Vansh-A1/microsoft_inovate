@@ -328,6 +328,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/documents/intake-capabilities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Intake Capabilities */
+        get: operations["intake_capabilities_api_v1_documents_intake_capabilities_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/purpose": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm Purpose */
+        post: operations["confirm_purpose_api_v1_documents__document_id__purpose_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/documents/{document_id}/commit": {
         parameters: {
             query?: never;
@@ -1782,6 +1816,18 @@ export interface components {
             /** Dataset Id */
             dataset_id?: string | null;
         };
+        /** PurposeConfirmation */
+        PurposeConfirmation: {
+            /**
+             * Source Type
+             * @enum {string}
+             */
+            source_type: "VENDOR_INVOICE" | "EMPLOYEE_RECEIPT";
+            /** Expected Generation */
+            expected_generation: number;
+            /** Reason */
+            reason: string;
+        };
         /** ReferenceEntry */
         ReferenceEntry: {
             /** Kind */
@@ -1957,7 +2003,7 @@ export interface components {
              * Source Type
              * @enum {string}
              */
-            source_type: "VENDOR_INVOICE" | "EMPLOYEE_RECEIPT" | "SUPPORTING_DOCUMENT";
+            source_type: "AUTO" | "VENDOR_INVOICE" | "EMPLOYEE_RECEIPT" | "SUPPORTING_DOCUMENT";
         };
         /** ValidationError */
         ValidationError: {
@@ -2652,6 +2698,75 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    intake_capabilities_api_v1_documents_intake_capabilities_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    confirm_purpose_api_v1_documents__document_id__purpose_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+                authorization?: string | null;
+            };
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PurposeConfirmation"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {

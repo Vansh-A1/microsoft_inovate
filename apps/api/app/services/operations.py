@@ -16,6 +16,7 @@ from app.db.document_models import (Document, DocumentJob, DocumentOutbox, Docum
 from app.db.workflow_models import ReviewAction, OperationRecord
 from app.db.session import scope_query
 from app.services import finance
+from app.documents.malware import scanner_health
 
 OPEN=('OPEN','ASSIGNED','AWAITING_INFORMATION')
 NEXT={'DOC-001':('CORRECT_AMBIGUOUS_TOTAL','Verify unreadable or ambiguous source facts'),
@@ -266,7 +267,7 @@ def dependencies(database,storage,settings,identity):
         'enterprise_vlm':provider['status'],
         **{'extraction_'+k:v for k,v in provider.items() if k!='status'},
         'enterprise_runtime':'AVAILABLE' if provider['status']=='AVAILABLE' else 'DEFERRED_EXTERNAL_PREREQUISITE',
-        'malware':'NOT_CONFIGURED','risk_model':risk_status}
+        'malware':scanner_health(),'risk_model':risk_status}
 
 def replay(session,identity,evaluation_id,correlation):
     read_permission(identity);finance.scope_lock(session,identity)

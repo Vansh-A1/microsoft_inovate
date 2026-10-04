@@ -21,12 +21,12 @@ def create_upload(session, identity, body, limits, correlation):
     if body['mime'] not in MIMES or PurePath(name).suffix.lower() not in MIMES[body['mime']]:
         raise DomainError(400,'DOCUMENT_FORMAT','Declare PDF, PNG or JPEG with a matching filename.')
     if any(ord(c) < 32 for c in name): raise DomainError(400,'DOCUMENT_NAME','Control characters are unsupported.')
-    document = Document(**identity.scope(), id=uuid4(), source_type=body['source_type'], display_name=name[:160])
+    document = Document(**identity.scope(), id=uuid4(), source_type='SUPPORTING_DOCUMENT' if body['source_type']=='AUTO' else body['source_type'], display_name=name[:160])
     session.add(document); session.flush()
     upload = UploadSession(**identity.scope(),id=uuid4(),document_id=document.id,actor_id=identity.actor_id,
         correlation_id=correlation,declared_mime=body['mime'],expires_at=utcnow()+timedelta(seconds=limits.upload_lifetime_seconds))
     session.add(upload); session.flush()
-    audit(session,identity,'UPLOAD_SESSION_CREATED',document.id,1,'Private document upload session created',correlation)
+    audit(session,identity,'UPLOAD_SESSION_CREATED',document.id,1,'Private document upload session created',correlation,{'intake_hint':body['source_type']})
     return projection({'id':upload.id,'document_id':document.id,'state':upload.state,'expires_at':upload.expires_at,
         'maximum_bytes':limits.maximum_bytes,'bytes_url':f'/api/v1/uploads/{upload.id}/bytes'})
 
@@ -103,6 +103,26 @@ def pages(session, identity, document_id):
     return session.scalars(scope_query(select(DocumentPage),DocumentPage,identity).where(DocumentPage.document_id==document_id,DocumentPage.document_version==1).order_by(DocumentPage.page)).all()
 
 
+def intake_hint(session,identity,doc):
+    from app.db.models import AuditEvent
+    event=session.scalar(scope_query(select(AuditEvent),AuditEvent,identity).where(AuditEvent.object_id==doc.id,
+        AuditEvent.action=='UPLOAD_SESSION_CREATED').order_by(AuditEvent.sequence).limit(1))
+    return event.payload.get('intake_hint',doc.source_type) if event else doc.source_type
+
+
+def confirm_purpose(session,identity,document_id,data,correlation):
+    from app.services.finance import scope_lock
+    scope_lock(session,identity)
+    doc=get(session,Document,identity,document_id)
+    if doc.generation!=data['expected_generation']:raise DomainError(409,'DOCUMENT_CHANGED','Refresh the current document before choosing its type.')
+    if intake_hint(session,identity,doc)!='AUTO' or doc.source_type!='SUPPORTING_DOCUMENT' or doc.last_error!='DOCUMENT_TYPE_UNCONFIRMED':
+        raise DomainError(409,'PURPOSE_ALREADY_SET','This source has already been classified; preserve its extraction and use the source correction workflow.')
+    doc.source_type=data['source_type'];doc.generation+=1;doc.state='QUEUED';doc.last_error=None
+    enqueue_stage(session,identity,doc,'EXTRACT',identity.actor_id,correlation)
+    audit(session,identity,'DOCUMENT_PURPOSE_CONFIRMED',doc.id,1,data['reason'],correlation,{'source_type':doc.source_type,'generation':doc.generation})
+    return detail(session,identity,doc.id)
+
+
 def detail(session, identity, document_id):
     doc=get(session,Document,identity,document_id)
     version=session.scalar(scope_query(select(DocumentVersion),DocumentVersion,identity).where(DocumentVersion.id==doc.id,DocumentVersion.version==1))
@@ -114,7 +134,7 @@ def detail(session, identity, document_id):
             'parsed_candidate':r.parsed_candidate,'source':r.source,'diagnostic':r.diagnostic})
             for r in session.scalars(scope_query(select(Observation),Observation,identity).where(Observation.extraction_run_id==runs[-1].id).order_by(Observation.field_path))]
     draft=session.scalar(scope_query(select(DocumentDraft),DocumentDraft,identity).where(DocumentDraft.document_id==doc.id).order_by(DocumentDraft.created_at.desc()).limit(1))
-    return projection({'id':doc.id,'display_name':doc.display_name,'source_type':doc.source_type,'state':doc.state,
+    return projection({'id':doc.id,'display_name':doc.display_name,'source_type':doc.source_type,'state':doc.state,'generation':doc.generation,'intake_hint':intake_hint(session,identity,doc),
         'last_error':doc.last_error,'last_successful_stage':doc.last_successful_stage,'segmentation_state':doc.segmentation_state,
         'finance_decision':None,'original':None if not version else {'version':version.version,'sha256':version.sha256,
             'byte_size':version.byte_size,'detected_mime':version.detected_mime,'actor_id':version.actor_id,'correlation_id':version.correlation_id,'created_at':version.created_at,'storage_version':version.storage_version},

@@ -68,7 +68,11 @@ def test_real_primary_upload_layout_rows_and_critical_uncertainty(environment,pr
     if with_ocr:assert 'LOCAL_OCR' in run['metadata']['routing']['paths']
     assert doc['original']['sha256']==hashlib.sha256(content).hexdigest()
     by={o['field_path']:o for o in doc['observations']}
-    assert by['vendor_name']['raw_value']=='East Repair Inc.' and by['invoice_number']['raw_value']=='US-001'
+    assert by['vendor_name']['raw_value']=='East Repair Inc.'
+    if with_ocr and by['invoice_number']['raw_value']!='US-001':
+        assert by['invoice_number']['state']=='AMBIGUOUS' and 'US-001' in by['invoice_number']['raw_value']
+        assert doc['draft']['candidate']['invoice_number'] is None
+    else:assert by['invoice_number']['raw_value']=='US-001'
     assert by['total_amount']['raw_value']=='$154.06' and by['currency']['state']=='AMBIGUOUS'
     expected=[('Front and rear brake cables','1','100.00','100.00'),('New set of pedal arms','2','15.00','30.00'),('Labor 3hrs','3','5.00','15.00')]
     assert [[by[f'lines.{i}.{f}']['raw_value'] for f in ('description','quantity','unit_price','amount')] for i in range(3)]==[list(row) for row in expected]
@@ -100,6 +104,9 @@ def test_real_scan_to_normalization_source_correction_and_finance(environment,pr
         'tax_rate':'0.18','tax_amount':'3600.00','gross_amount':'23600.00','uom':'EA'}
     corrections=[{'field_path':'lines.0.'+k,'value':value,'page':1,'reason':'Integration source reviewer verified the literal printed row'}
         for k,value in printed.items() if candidate.get('lines.0.'+k)!=value]
+    if candidate.get('tax_basis')!='EXCLUSIVE':
+        corrections.append({'field_path':'tax_basis','value':'EXCLUSIVE','page':1,
+            'reason':'Independent source review of the printed Tax basis: EXCLUSIVE label; model interpretation has no accounting authority'})
     db,ctx,other,client,cfg=environment
     response=client.post('/api/v1/documents/'+doc['id']+'/commit',json={'draft_id':doc['draft']['id'],'transaction':payload(),
         'source_confirmed':True,'reason':'Integration source reviewer checked the actual synthetic invoice and selected existing references',

@@ -17,7 +17,13 @@ from app.services import document_facts
 class UploadRequest(Strict):
     filename: str = Field(min_length=1,max_length=160)
     mime: Literal['application/pdf','image/png','image/jpeg']
-    source_type: Literal['VENDOR_INVOICE','EMPLOYEE_RECEIPT','SUPPORTING_DOCUMENT']
+    source_type: Literal['AUTO','VENDOR_INVOICE','EMPLOYEE_RECEIPT','SUPPORTING_DOCUMENT']
+
+
+class PurposeConfirmation(Strict):
+    source_type: Literal['VENDOR_INVOICE','EMPLOYEE_RECEIPT']
+    expected_generation: int = Field(ge=1)
+    reason: str = Field(min_length=3,max_length=500)
 
 
 class FieldCorrection(Strict):
@@ -61,6 +67,19 @@ class Attachment(Strict):
 
 
 def mount(app,settings,database,storage,identity,writer,mutation):
+    @app.get('/api/v1/documents/intake-capabilities')
+    def intake_capabilities(ctx=Depends(identity)):
+        from app.documents.malware import scanner_health
+        return {'malware_required':settings.document_limits.malware_required,
+                'malware_scanner':scanner_health(),
+                'maximum_bytes':settings.document_limits.maximum_bytes,
+                'maximum_pages':settings.document_limits.maximum_pages}
+
+    @app.post('/api/v1/documents/{document_id}/purpose')
+    def confirm_purpose(document_id:UUID,body:PurposeConfirmation,request:Request,ctx=Depends(writer),key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):
+        data=body.model_dump(mode='json')
+        return mutation(request,ctx,key,data,200,lambda s:documents.confirm_purpose(s,ctx,document_id,data,request.state.correlation))
+
     @app.post('/api/v1/documents/{document_id}/commit',status_code=201)
     def commit(document_id:UUID,body:DocumentCommit,request:Request,ctx=Depends(writer),key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):
         data=body.model_dump(mode='json')

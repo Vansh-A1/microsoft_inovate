@@ -243,3 +243,40 @@ The current tracker is **39 complete / one partial T30 / two data-deferred T31 a
 The final browser suite returns **36 passed, 2.7 min**, real backend and worker, no retries. [Release flows](../apps/web/tests/release.spec.ts) cover small finance navigation, separate Admin future allowance version/history/report preservation and actual document-to-result/audit/report/reload without JSON editing. The development-free presentation check overrides only the UI mode flag and rejects development-template requests; it does not simulate a live SSO deployment. [Loaded viewport checks](../apps/web/tests/visual-release.spec.ts) exercise 1280/1024/390 widths and keyboard focus; actual screenshots were inspected. Existing document, duplicate, policy/approval, review, operations and statistical governance cases remain in the full run.
 
 TypeScript, normal/standalone production build, actual standalone minimal health, fresh migrations/drift, OpenAPI/client, dependency/secret/source checks, Bicep/workflow/approval contracts, actual restart persistence and disposable restore all pass. [Exit review](phase6_exit_review.md) records exact commands and AC01–AC20; [performance](performance_phase6.md) records real local scopes/sample counts. Live VLM/SGLang, hosted cloud/SSO/Blob/restore/rollback, container image builds and representative classifier/SHAP remain deferred rather than promoted from contract tests.
+
+## ClearLedger hardening verification — 2026-10-04
+
+New focused tests cover real positioned PDF labels/cells, actual OCR word geometry,
+upright association/original rotated boxes, ambiguity/segmentation/crossing gates,
+no inference for complete printed facts, model-only tax abstention, scoped Auto
+purpose confirmation/idempotency, authenticated scanner status and bounded scanner
+contracts. Existing TypeLLM/worker/normalization and finance invariants remain.
+
+Actual model suite: 6 passed, 264.37 s, exit 0. Layout suite: 11 passed, exit 0.
+Complete final invocation/results and repaired failures are recorded in
+[ClearLedger hardening](clearledger_hardening.md). Full backend regression,
+corrected real-backend browser tests and cold/warm probe are still running at this
+checkpoint; their final counts are appended only after execution. No expected
+benchmark answer enters extraction and no extraction confidence/model metric is
+fabricated. Historical T01–T42 status and previous exit reviews remain unchanged.
+
+The additional worker recovery tests distinguish 55P03/deadlock/serialization and
+lost connections from permission/schema/business errors, verify the next cycle
+continues, and reject driver/SQL/value logging. A migrated PostgreSQL case verifies
+the actual timed-out claim remains QUEUED with zero attempts, then finalizes once
+after lock release with required approvals still HOLD. The initial full backend
+run was already collected before these cases were added; their result is a separate
+execution, never counted as part of that original run.
+
+Final hardening execution: **846 passed / six opt-in skips / 4339.74 s / exit 0**
+in the original 852-case full backend run; **14 passed / 18.54 s / exit 0** in the
+separate recovery run. Current collection is 866 unique cases. The six opt-in cases
+separately returned **six passed / 264.37 s / exit 0** against the actual pinned
+TypeLLM/Qwen provider. Do not add these executions into a fictitious single suite.
+Final complete browser run: **42 passed / one conditional unconfigured-provider
+skip / 5.0 min / exit 0**, without retries. Both roles and actual laptop/phone
+screenshots were inspected. Stale HOLD cannot soften to review; stale PASS rows
+cannot imply readiness, and retained reports remain checked. Earlier failures,
+repaired worker outage and concurrent-write limits are recorded in the hardening
+report. One nonfatal upstream Starlette/httpx warning accompanies backend runs;
+dependencies are not changed to silence it.

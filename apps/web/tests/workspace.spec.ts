@@ -10,6 +10,8 @@ test('overview shows actual persisted cases and has no browser token',async({pag
  const latest=(await (await page.request.get('/api/transactions?limit=25')).json()).items[0];
  const facts=latest.versions.at(-1).payload;
  await expect(page.locator('a[href="/cases/'+latest.id+'"]').filter({hasText:facts.invoice_number||facts.claim_number})).toBeVisible();
+ const currentRow=page.locator('tbody tr').filter({has:page.locator('a[href="/cases/'+latest.id+'"]')});
+ await expect(currentRow.locator('.badge')).toHaveText(latest.decision==='PASS'&&!latest.eligible?'Needs review':{PASS:'Ready for processing',REVIEW:'Needs review',HOLD:'On hold'}[latest.decision as 'PASS'|'REVIEW'|'HOLD']||'Awaiting screening');
  await expect(page.getByText('NOT_CONFIGURED',{exact:false})).toHaveCount(0);
  await page.screenshot({path:'../../output/playwright/overview.png',fullPage:true});
  const browserStorage=await page.evaluate(()=>({...localStorage,...sessionStorage}));expect(Object.keys(browserStorage)).toHaveLength(0);expect(errors).toEqual([]);
@@ -17,7 +19,12 @@ test('overview shows actual persisted cases and has no browser token',async({pag
 for(const [id,outcome] of [[vendor,'PASS'],[employee,'PASS'],[duplicate,'HOLD'],[expense,'REVIEW']]){
  test(`persisted case ${outcome} ${id.slice(-3)} resolves evidence and report`,async({page})=>{
   await page.goto('/cases/'+id);await page.getByText('View detailed checks',{exact:true}).click();await expect(page.getByRole('heading',{name:'Rule findings'})).toBeVisible();
-  await expect(page.locator('.page-title .badge')).toHaveText(outcome);
+  const current=await (await page.request.get('/api/transactions/'+id)).json();
+  const retained=await (await page.request.get('/api/evaluations/'+current.latest_evaluation_id)).json();
+  expect(retained.decision).toBe(outcome);
+  const requiresFresh=retained.evaluation_status!=='CURRENT'||outcome==='PASS'&&!current.eligible;
+  await expect(page.locator('.result-summary h2')).toHaveText(requiresFresh&&outcome!=='HOLD'?'Needs review':{PASS:'Ready for processing',HOLD:'On hold',REVIEW:'Needs review'}[outcome as 'PASS'|'HOLD'|'REVIEW']);
+  if(requiresFresh)await expect(page.getByText('A fresh screening is required. Evaluate the current version before processing.')).toBeVisible();
   await expect(page.locator('.rule')).toHaveCount(20);
   await page.locator('.rule').first().getByText('Observed, expected & evidence').click();
   await page.locator('.rule').first().getByRole('button',{name:/TRANSACTION/}).first().click();
@@ -39,7 +46,7 @@ for(const choice of ['vendor','employee']){
   await page.getByRole('button',{name:'Create and evaluate'}).click();
   await expect(page).toHaveURL(/\/cases\/[a-f0-9-]{36}$/);
   await expect(page.getByRole('heading',{name:number,exact:true})).toBeVisible();
-  await expect(page.locator('.page-title .badge')).toHaveText('HOLD',{timeout:25000});
+  await expect(page.locator('.result-summary h2')).toHaveText('On hold',{timeout:25000});
   await page.getByText('View detailed checks',{exact:true}).click();await expect(page.locator('.rule').filter({hasText:'APR-001'}).getByText('FAIL',{exact:true})).toBeVisible();
   await page.reload();await expect(page.getByRole('heading',{name:number,exact:true})).toBeVisible();
  });

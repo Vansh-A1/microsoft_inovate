@@ -6,7 +6,7 @@ async function upload(page:import('@playwright/test').Page,name:string,purpose='
  await page.goto('/documents');await page.getByLabel('Document purpose').selectOption(purpose);
  await page.getByLabel('Document files').setInputFiles(resolve(corpus,name));
  await page.getByRole('button',{name:'Upload and process'}).click();await expect(page).toHaveURL(/\/documents\/[a-f0-9-]{36}$/);
- await expect(page.locator('.page-title')).toContainText(state,{timeout:30000});
+ await expect(page.locator('.page-title')).toContainText(({READY:'Ready to verify',NEEDS_INPUT:'Needs your confirmation',QUARANTINED:'File quarantined'} as Record<string,string>)[state]||state,{timeout:30000});
  return page.url().split('/').at(-1)!;
 }
 
@@ -23,7 +23,7 @@ test('native PDF upload, actual field box, source verification and persisted fin
  await page.getByLabel('Verification / correction reason').fill('Reviewed native invoice source and reference mapping');
  await page.getByText('I reviewed the source pages and confirm the observable facts.').click();
  await page.getByRole('button',{name:'Verify facts and evaluate'}).click();await expect(page).toHaveURL(/\/cases\/[a-f0-9-]{36}$/);
- await expect(page.locator('.page-title .badge')).toHaveText('HOLD',{timeout:25000});
+ await expect(page.locator('.result-summary h2')).toHaveText('On hold',{timeout:25000});
  await page.getByText('View detailed checks',{exact:true}).click();await expect(page.locator('.rule').filter({hasText:'DOC-001'}).getByText('PASS',{exact:true})).toBeVisible();
  await expect(page.getByRole('heading',{name:'Document lineage & attachments'})).toBeVisible();
  await page.reload();await expect(page.getByRole('link',{name:'vendor_native.pdf',exact:true})).toBeVisible();
@@ -33,12 +33,12 @@ test('native PDF upload, actual field box, source verification and persisted fin
 
 test('actual photo OCR and employee source produce finance result without approval authority',async({page})=>{
  await upload(page,'receipt_photo.jpg','EMPLOYEE_RECEIPT');
- await expect(page.getByText('500.00',{exact:true})).toBeVisible();
+ await expect(page.locator('.observation-table tr').filter({has:page.getByRole('button',{name:'total_amount',exact:true})})).toContainText('500.00');
  await page.getByRole('button',{name:'total_amount',exact:true}).click();await expect(page.getByLabel('Actual source bounding box')).toBeVisible();
  await page.getByLabel('Verification / correction reason').fill('Receipt photograph and expense details reviewed');
  await page.getByText('I reviewed the source pages and confirm the observable facts.').click();
  await page.getByRole('button',{name:'Verify facts and evaluate'}).click();
- await expect(page).toHaveURL(/\/cases\/[a-f0-9-]{36}$/);await expect(page.locator('.page-title .badge')).toHaveText('HOLD',{timeout:25000});
+ await expect(page).toHaveURL(/\/cases\/[a-f0-9-]{36}$/);await expect(page.locator('.result-summary h2')).toHaveText('On hold',{timeout:25000});
  await page.getByText('View detailed checks',{exact:true}).click();await expect(page.locator('.rule').filter({hasText:'DOC-001'}).getByText('PASS',{exact:true})).toBeVisible();
  await page.screenshot({path:'../../output/playwright/document-employee-case.png',fullPage:true});
 });
@@ -51,7 +51,7 @@ test('ambiguous date requires source-linked correction, then a material revision
  await expect(page.locator('.error[role="alert"]')).toContainText('invoice_date');
  await page.getByLabel('Correct invoice_date',{exact:true}).fill('2026-09-25');
  await page.getByRole('button',{name:'Verify facts and evaluate'}).click();await expect(page).toHaveURL(/\/cases\/[a-f0-9-]{36}$/);
- await expect(page.locator('.page-title .badge')).toHaveText('HOLD',{timeout:25000});
+ await expect(page.locator('.result-summary h2')).toHaveText('On hold',{timeout:25000});
  await page.getByRole('link',{name:'View source / append correction →'}).click();
  await page.getByLabel('Correct invoice_date',{exact:true}).fill('2026-09-26');
  await page.getByLabel('Verification / correction reason').fill('Correct source date in a new canonical version');
@@ -69,7 +69,7 @@ test('multi-page navigation, explicit page-level row evidence and uncertain bund
  await expect(page.locator('.source-viewer .hint')).toContainText('Page-level evidence. No field box is available.');
  await upload(page,'uncertain_bundle.pdf','VENDOR_INVOICE','NEEDS_INPUT');
  await expect(page.getByRole('button',{name:'Verify facts and evaluate'})).toBeDisabled();
- await expect(page.locator('.notice').filter({hasText:'SEGMENTATION_UNCERTAIN'})).toBeVisible();
+ await page.getByText('Detailed validation findings',{exact:true}).click();await expect(page.locator('.notice').filter({hasText:'SEGMENTATION_UNCERTAIN'})).toBeVisible();
 });
 
 test('corrupt source quarantine, loading/error states and mobile document workspace',async({page})=>{

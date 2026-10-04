@@ -76,6 +76,12 @@ class TesseractOCRAdapter:
                 bbox={'x1':min(w[1] for w in words)/width,'y1':min(w[2] for w in words)/height,
                     'x2':max(w[1]+w[3] for w in words)/width,'y2':max(w[2]+w[4] for w in words)/height}
                 bbox=original_box(bbox,transform.get('exif_orientation',1))
-                spans.append({'text':text,'bbox':bbox})
-            return OCRPage('\n'.join(s['text'] for s in spans),tuple(spans),'TESSERACT',self.version)
+                spans.append({'text':text,'bbox':bbox,'kind':'line'})
+            text='\n'.join(s['text'] for s in spans)
+            for words in groups.values():
+                for word,x,y,w,h in words:
+                    box={'x1':x/width,'y1':y/height,'x2':(x+w)/width,'y2':(y+h)/height}
+                    spans.append({'text':word,'bbox':original_box(box,transform.get('exif_orientation',1)),
+                                  'layout_bbox':box,'kind':'word'})
+            return OCRPage(text,tuple(spans),'TESSERACT',self.version)
         except (ValueError,KeyError,UnicodeError):raise DocumentFailure('OCR_RESPONSE_INVALID') from None
