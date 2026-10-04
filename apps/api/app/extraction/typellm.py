@@ -139,7 +139,7 @@ class TypeLLMExtractionAdapter:
             def source_question(f):
                 return f is not None and f.state is State.AMBIGUOUS and (
                     (f.diagnostic_note or '').startswith('DERIVED_SOURCE_CURRENCY_AMBIGUOUS:') or
-                    f.bbox is not None and (f.diagnostic_note or '').startswith(('Conflicting repeated labels','Provider disagreement')))
+                    f.bbox is not None and (f.diagnostic_note or '').startswith(('Conflicting repeated labels','Provider disagreement','OCR_ALIGNMENT_READ_DISAGREEMENT:')))
             solved=lambda name:name in known and (known[name].state is State.PRESENT or source_question(known[name]))
             measured=sum(f.state is State.PRESENT and f.bbox is not None for f in known.values())
             if known and all(solved(name) for name in core):

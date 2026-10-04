@@ -40,12 +40,19 @@ def test_single_unread_cell_keeps_its_source_row_and_following_legitimate_equal_
     assert 'line 2 (Different item) on page 1' in question and 'do not calculate' in question
 
 
-def test_multiple_blank_cells_crossing_values_and_ocr_conflicts_do_not_satisfy_reviewable_gate():
+def test_two_blank_cells_retain_partial_evidence_but_crossing_and_conflicts_stay_unreviewable():
     b,r,_,_=positioned()
     middle=item(.4)[::3]
     _,rows,notes=printed_layout({'spans':table()+item(.34)+middle+item(.46)})
-    assert len(rows)==1 and notes==['TABLE_COVERAGE_UNCERTAIN']
-    assert not source_table_reviewable(r,notes)
+    assert len(rows)==3 and notes==['TABLE_CELL_UNREAD']
+    detail={'page':1,'native_text':'','spans':table()+item(.34)+middle+item(.46)}
+    a=NativeTextExtractionAdapter([detail]);partial=a.extract(replace(b,pages=(DocumentPage(1,''),)),SCHEMA_VERSION)
+    assert source_table_reviewable(partial,a.diagnostics)
+    candidate=normalized(partial)[0]
+    assert candidate['lines.1.quantity'] is candidate['lines.1.unit_price'] is None
+    crossing=middle[:-1]+[span('10.00',.5,.4,.4)]
+    _,_,uncertain=printed_layout({'spans':table()+item(.34)+crossing})
+    assert uncertain==['TABLE_COVERAGE_UNCERTAIN'] and not source_table_reviewable(r,uncertain)
     other=replace(r,line_items=(replace(r.line_items[0],fields=tuple(replace(f,raw_value='99.00') if f.field_path=='unit_price' else f for f in r.line_items[0].fields)),))
     conflict=reconcile(r,other)
     assert not source_table_reviewable(conflict)

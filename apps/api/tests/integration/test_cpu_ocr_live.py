@@ -135,3 +135,66 @@ def test_cpu_source_scope_and_owned_child_restart_preserve_actual_reading(tmp_pa
         assert engine.process.pid!=pid and first.text==second.text and '236.00' in second.text
         assert first.provider==second.provider=='RAPIDOCR_CPU'
     finally:engine.close()
+
+
+def test_actual_rotated_scan_preserves_original_hash_boxes_and_derivative_attestation(environment):
+    doc=upload(environment,ROOT/'data/clearledger_rotation/d03.png','VENDOR_INVOICE',providers())
+    assert doc['state']=='NEEDS_INPUT' and doc['finance_decision'] is None
+    routing=doc['extraction_runs'][0]['metadata']['routing'];engine=routing['ocr_provenance'][0]['runtime']
+    assert routing['paths']==['LOCAL_OCR'] and engine['layout_alignment']['clockwise_degrees']==90
+    derivative=engine['aligned_pixel_read']
+    assert derivative['image_bytes_transformed'] is True and len(derivative['derived_sha256'])==64
+    assert derivative['source_to_layout']['source_dimensions']==[992,1440]
+    candidate=doc['draft']['candidate']
+    assert [candidate[f'lines.{i}.amount'] for i in range(3)]==['42.75','20.00','19.50']
+    by={o['field_path']:o for o in doc['observations']}
+    # Measured source coordinates locate the original rotated scan, not the
+    # upright OCR derivative. The first-row amount is near its original top.
+    box=by['lines.0.amount']['source']['bbox']
+    assert .23<box['x1']<box['x2']<.28 and .04<box['y1']<box['y2']<.11
+    assert candidate['tax_basis'] is None and candidate.get('lines.0.tax_amount') is None
+
+
+def test_actual_two_blank_cells_keep_partial_rows_and_block_canonical_commit(environment):
+    configured=Settings.load().document_providers
+    doc=upload(environment,ROOT/'data/clearledger_row_identity/q06.pdf','VENDOR_INVOICE',
+        replace(providers(),endpoint=configured.endpoint,model=configured.model))
+    assert doc['state']=='NEEDS_INPUT' and doc['finance_decision'] is None
+    routing=doc['extraction_runs'][0]['metadata']['routing']
+    assert routing['paths']==['NATIVE_TEXT'] and 'ENTERPRISE_VLM' not in routing['paths']
+    candidate=doc['draft']['candidate'];by={o['field_path']:o for o in doc['observations']}
+    assert [candidate[f'lines.{i}.description'] for i in range(3)]==['Canvas file pouches','Blue record labels','Canvas file pouches']
+    assert candidate['lines.1.amount']=='37.50'
+    for field in ('quantity','unit_price'):
+        path='lines.1.'+field
+        assert candidate[path] is None and by[path]['state']=='MISSING' and by[path]['raw_value'] is None
+        question=next(f['message'] for f in doc['draft']['findings'] if f['field']==path and f.get('code')=='SOURCE_CELL_UNREAD')
+        assert 'line 2 (Blue record labels)' in question and 'do not calculate' in question
+    _,_,_,client,_=environment
+    response=client.post('/api/v1/documents/'+doc['id']+'/commit',json={'draft_id':doc['draft']['id'],'transaction':payload(),
+        'source_confirmed':True,'reason':'Two absent cells must remain unknown','corrections':[]},headers=headers())
+    assert response.status_code==422 and response.json()['error']['code']=='CANONICAL_SOURCE_UNRESOLVED'
+
+
+def test_actual_deskew_border_padding_is_excluded_without_losing_valid_source_regions(tmp_path):
+    import base64,json
+    from app.documents.processor import DocumentProcessor
+    from app.extraction.layout import printed_layout
+    manifest=json.loads((ROOT/'data/clearledger_public/manifest.json').read_text())
+    reference=next(c['source'] for c in manifest['cases'] if c['id']=='p02')
+    source=ROOT/'runtime/clearledger/public-research'/reference['local_path']
+    assert hashlib.sha256(source.read_bytes()).hexdigest()==reference['sha256']
+    page=DocumentProcessor().process(source)['pages'][0]
+    preview=tmp_path/'preview.png';content=base64.b64decode(page['preview_base64']);preview.write_bytes(content)
+    engine=CPUOCR(ROOT/'runtime/ocr-rapid/.venv/bin/python',tmp_path)
+    try:
+        actual=engine.recognize(preview,page['transform'])
+        assert actual.provider=='RAPIDOCR_CPU' and preview.read_bytes()==content
+        excluded=engine.metadata['aligned_pixel_read']['excluded_source_regions']
+        assert len(excluded)==1 and excluded[0]['reason']=='DETECTOR_REGION_OUTSIDE_ORIGINAL_CANVAS'
+        assert excluded[0]['mapped_pixels']['y1']<0
+        assert all(0<=v<=1 for s in actual.spans for v in s['bbox'].values())
+        assert excluded[0]['text'] not in [s['text'] for s in actual.spans]
+        h,rows,_=printed_layout({'spans':actual.spans})
+        assert dict((f,v) for f,v,_ in h)['tax_amount']=='AED 3.00' and len(rows)==1
+    finally:engine.close()

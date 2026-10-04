@@ -8,3 +8,5 @@ data/clearledger_reserved/*.pdf binary
 data/clearledger_reserved/*.png binary
 data/clearledger_row_identity/*.pdf binary
 data/clearledger_row_identity/*.png binary
+data/clearledger_rotation/*.pdf binary
+data/clearledger_rotation/*.png binary

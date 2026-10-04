@@ -144,7 +144,7 @@ def freeze():
     return manifest
 
 
-def run(label,split,force_vlm=False,only=None,rapid=False,production_rapid=False):
+def run(label,split,force_vlm=False,only=None,rapid=False,production_rapid=False,cpu_only=False):
     if not re.fullmatch('[a-z0-9-]{1,64}',label):raise ValueError('Use a bounded lowercase measurement label')
     from app.core.config import Settings
     from app.core.identity import Identity
@@ -155,6 +155,7 @@ def run(label,split,force_vlm=False,only=None,rapid=False,production_rapid=False
     from app.domain.extraction import to_data
     from app.documents.normalizer import Normalizer,validate_draft
     manifest=freeze();settings=Settings.load();providers=settings.document_providers
+    if cpu_only:providers=replace(providers,endpoint=None,model=None)
     cases=json.loads(manifest.read_text())['cases']
     if not any(c['split']==split and (only is None or c['id']==only) for c in cases):raise ValueError('No matching frozen sources; no benchmark ran')
     os.environ[providers.gateway_token_env]=(ROOT/'runtime/inference/gateway.key').read_text().strip()
@@ -174,7 +175,7 @@ def run(label,split,force_vlm=False,only=None,rapid=False,production_rapid=False
     if output.exists():raise RuntimeError('Benchmark output already exists; use a fresh label')
     git=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     code_hashes={str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in
-        [ROOT/'apps/api/app/extraction'/n for n in ('layout.py','native.py','typellm.py','cpu_ocr.py','rapidocr_runtime.py','row_grounding.py')]+[ROOT/'apps/api/app/services/document_worker.py',ROOT/'apps/api/app/documents/normalizer.py'] if p.is_file()}
+        [ROOT/'apps/api/app/extraction'/n for n in ('layout.py','native.py','typellm.py','cpu_ocr.py','rapidocr_runtime.py','row_grounding.py','orientation.py')]+[ROOT/'apps/api/app/services/document_worker.py',ROOT/'apps/api/app/documents/normalizer.py'] if p.is_file()}
     for case in cases:
         if case['split']!=split or only and case['id']!=only:continue
         source=manifest.parent/case['path']
@@ -227,7 +228,7 @@ def run(label,split,force_vlm=False,only=None,rapid=False,production_rapid=False
         results.append(data)
         output.write_text(json.dumps({'version':'clearledger-challenge-run-v1','label':label,'code_commit':git,'code_sha256':code_hashes,'split':split,
             'temperature':'Resident model; first request after idle then sequential requests. Not cold weight loading.',
-            'force_vlm':force_vlm,'ocr_candidate':None if not candidate_ocr else {'startup':candidate_ocr.startup,'metrics':candidate_ocr.metrics},
+            'force_vlm':force_vlm,'cpu_only':cpu_only,'ocr_candidate':None if not candidate_ocr else {'startup':candidate_ocr.startup,'metrics':candidate_ocr.metrics},
             'limitations':'Pipeline timing excludes upload/database queue/UI and candidate OCR startup, which is reported separately. VRAM is whole device including resident weights and other processes. No accuracy claim beyond these fictional sources.',
             'cases':results},indent=2)+'\n')
         # Baseline holdout results remain sealed until tuning is complete.

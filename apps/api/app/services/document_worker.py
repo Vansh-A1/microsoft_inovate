@@ -95,7 +95,7 @@ def printed_table_complete(observed,diagnostics=()):
 
 
 def source_table_reviewable(observed,diagnostics=()):
-    """Distinct measured rows with one unread core cell require human input.
+    """Distinct measured rows with unread core cells require human input.
 
     OCR absence is not proof of a blank cell. Do not ask a model to fill it from
     prices/totals, or discard following measured rows. Competing/crossing geometry
@@ -108,7 +108,10 @@ def source_table_reviewable(observed,diagnostics=()):
         if amount is None:return False
         core=[fields.get(f) for f in ('description','quantity','unit_price',amount)]
         if core[0] is None or core[0].state.value!='PRESENT':return False
-        if sum(f is not None and f.state.value=='PRESENT' for f in core)<3:return False
+        present=sum(f is not None and f.state.value=='PRESENT' for f in core)
+        two_missing=(present==2 and core[1] is not None and core[2] is not None and
+            core[1].state.value==core[2].state.value=='MISSING' and core[3] is not None and core[3].state.value=='PRESENT')
+        if present<3 and not two_missing:return False
         if any(f is None or f.state.value not in ('PRESENT','MISSING') for f in core):return False
         if any(f.state.value=='PRESENT' and (f.source is None or f.bbox is None) for f in core):return False
     return True
@@ -118,7 +121,12 @@ def source_mapping_reviewable(observed,source_type,diagnostics=()):
     if source_type!='VENDOR_INVOICE':return False
     headers={f.field_path:f for f in observed.header_fields}
     core=('vendor_name','invoice_number','invoice_date','currency','subtotal_amount','tax_amount','total_amount')
-    return all(f in headers and headers[f].state.value=='PRESENT' for f in core) and source_table_reviewable(observed,diagnostics)
+    def measured_or_question(f):
+        return f.state.value=='PRESENT' or (f.state.value=='AMBIGUOUS' and f.source is not None and f.bbox is not None and
+            (f.diagnostic_note or '').startswith('OCR_ALIGNMENT_READ_DISAGREEMENT:'))
+    # This gate stops inference, never normalization or finance validation.
+    # Conflicting measured reads need source confirmation, not a model vote.
+    return all(f in headers and measured_or_question(headers[f]) for f in core) and source_table_reviewable(observed,diagnostics)
 
 
 def printed_mapping_complete(observed,source_type,diagnostics=()):
@@ -177,6 +185,20 @@ def extract(doc,identity,page_data,storage,providers):
         observed=ocr_adapter.extract(bundle_for(doc,identity,ocr_pages),SCHEMA_VERSION)
         engines='+'.join(sorted({p['provider']+'-'+p['version'] for p in routing['ocr_provenance']}))
         observed=replace(observed,metadata=replace(observed.metadata,provider_id='LOCAL_OCR',adapter_id='ocr-label-parser',model_id=engines))
+        # Corresponding measured cells with contradictory OCR reads remain
+        # human questions; better layout coverage cannot silently choose a fact.
+        disagreements=[(p['page'],item) for p in routing['ocr_provenance'] for item in p['runtime'].get('alignment_read_disagreements',[])]
+        def uncertain(f):
+            if f.source is None or f.bbox is None or f.raw_value is None:return f
+            box=to_data(f.bbox)
+            conflicts=[item for page,item in disagreements if page==f.page and
+                box['x1']<=((item['bbox']['x1']+item['bbox']['x2'])/2)<=box['x2'] and
+                box['y1']<=((item['bbox']['y1']+item['bbox']['y2'])/2)<=box['y2']]
+            if not conflicts:return f
+            from app.domain.extraction import ExtractionObservationState as ObservationState
+            return replace(f,state=ObservationState.AMBIGUOUS,diagnostic_note='OCR_ALIGNMENT_READ_DISAGREEMENT: corresponding measured source cells have conflicting reads; source confirmation required.')
+        observed=replace(observed,header_fields=tuple(uncertain(f) for f in observed.header_fields),
+            line_items=tuple(replace(row,fields=tuple(uncertain(f) for f in row.fields)) for row in observed.line_items))
         native=reconcile(native,observed);native=replace(native,metadata=observed.metadata)
         diagnostics.extend(ocr_adapter.diagnostics);routing['paths'].append('LOCAL_OCR')
         routing['ocr_status']='SUCCEEDED'
@@ -243,7 +265,6 @@ def extract(doc,identity,page_data,storage,providers):
         enterprise.sidecar['accounting_grounding_version']='independent-item-column-v1'
         enterprise.sidecar['header_accounting_grounding_version']='independent-document-summary-v1'
         if native.line_items and extracted.line_items and len(native.line_items)!=len(extracted.line_items):
-            from app.domain.extraction import to_data
             routing['row_count_disagreement']={'version':'provider-candidates-v1',
                 'primary':to_data(native),'visual':to_data(extracted)}
         native=reconcile(native,extracted)

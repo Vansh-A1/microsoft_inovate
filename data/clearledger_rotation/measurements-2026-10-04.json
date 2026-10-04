@@ -1,0 +1,4536 @@
+{
+  "version": "clearledger-rotation-measurement-v1",
+  "limitations": "Selected literal/state/source checks on three original invented CC0 families. Two reserved families opened once after tuning. Correlated rotations, no real-company or model-training holdout claim. CPU baseline/final differ from full configured-provider development comparison. Timings include preprocessing/production CPU child startup when first, exclude database/upload/UI; resident GPU, not cold weights. Whole-device VRAM is incidental resident-service telemetry, not per-request use. Failed intermediate development runs remain ignored/private and are disclosed in report. No false finance clearance.",
+  "records": [
+    {
+      "private_file": "challenge-rotation-baseline-tuning.json",
+      "raw_sha256": "bfd69c76b81d044ce0a69ee6522671fddde8d21613cd893854cb7ebfd33128e7",
+      "code_commit": "0c690800b82d8597debb19876c3b2e25c79ef722",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "62897b33ea571e1a9a8bcf36043aafb4f784ca731ea0eeef96eadd3a243661ab",
+        "apps/api/app/extraction/native.py": "909295bd977ba2d2942056d60d46ffa86439b9d8b71891a56fc2beb7f44e1add",
+        "apps/api/app/extraction/typellm.py": "cfb6312ce8880defe3e30b9c5d42bea73c9563ad23e3df2937b887d97e42be03",
+        "apps/api/app/extraction/cpu_ocr.py": "665353b2ac49a0762597482d79ed4a953b2c89c1ed69f3ec513b35b0106e88ff",
+        "apps/api/app/extraction/rapidocr_runtime.py": "41eb45e70feec46851b37117c8ff7e64005e4230d58856e1deefde27cc55a396",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/services/document_worker.py": "41004d7c5dbddbc4f4cca4ac0ecebe592b21c85bd4c5f83e87a62cb53ddea0ea",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cpu_only": false,
+      "cases": [
+        {
+          "id": "d01",
+          "split": "tuning",
+          "source_sha256": "c09c409c7cdfee6b31efea175706e0161c44d8afe2a7662dd77731c1fae46197",
+          "seconds": 27.665,
+          "preprocess_seconds": 0.167,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": false,
+            "invoice_date": false,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 0,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": false,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14824,
+          "paths": [
+            "LOCAL_OCR",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_calls": 3,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.27328848402248695,
+              "memory_peak_kib": 394472,
+              "last_seconds": 1.473830956965685,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "PRESENT",
+              "raw": "Fictional Rotation Workshop 1 Description Qty Unit price Amount"
+            },
+            {
+              "field": "invoice_number",
+              "state": "PRESENT",
+              "raw": "ROT-2026-001 Cork shelf pads 3 14.25 42.75"
+            },
+            {
+              "field": "invoice_date",
+              "state": "PRESENT",
+              "raw": "2026-10-04 Metal label clips 20.00"
+            }
+          ]
+        },
+        {
+          "id": "d02",
+          "split": "tuning",
+          "source_sha256": "432a3ec0858b489013587a6441359945222fe9f1ffbe025b10cecdc08ae4c3f8",
+          "seconds": 61.396,
+          "preprocess_seconds": 0.188,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": false,
+            "total_amount": true
+          },
+          "row_matches": 0,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 4,
+          "absent_checks": {
+            "tax_basis": false,
+            "document_discount_amount": false,
+            "shipping_amount": false,
+            "other_charges_amount": false,
+            "po_reference": false,
+            "payment_account_token": false
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 15625,
+          "paths": [
+            "LOCAL_OCR",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_calls": 4,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.27328848402248695,
+              "memory_peak_kib": 488492,
+              "last_seconds": 1.706416854984127,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "tax_amount",
+              "state": "AMBIGUOUS",
+              "raw": "0.00"
+            }
+          ]
+        },
+        {
+          "id": "d03",
+          "split": "tuning",
+          "source_sha256": "024f96f46a4f960e85c0dc89e49c2ebfb9b655845639269357abb6514dffc1e1",
+          "seconds": 45.909,
+          "preprocess_seconds": 0.167,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": false,
+            "total_amount": true
+          },
+          "row_matches": 4,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [
+            {
+              "row": 1,
+              "field": "uom",
+              "raw": "Qty"
+            },
+            {
+              "row": 2,
+              "field": "uom",
+              "raw": "Qty"
+            },
+            {
+              "row": 3,
+              "field": "uom",
+              "raw": "Qty"
+            }
+          ],
+          "unsupported_row_canonical": [
+            {
+              "row": 1,
+              "field": "uom",
+              "value": "Qty"
+            },
+            {
+              "row": 2,
+              "field": "uom",
+              "value": "Qty"
+            },
+            {
+              "row": 3,
+              "field": "uom",
+              "value": "Qty"
+            }
+          ],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 15111,
+          "paths": [
+            "LOCAL_OCR",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_calls": 5,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.27328848402248695,
+              "memory_peak_kib": 488492,
+              "last_seconds": 1.355730110022705,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "tax_amount",
+              "state": "AMBIGUOUS",
+              "raw": "0.00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "private_file": "challenge-rotation-cpu-baseline-tuning.json",
+      "raw_sha256": "67cfaa23089e41d83eabfe5532fc47ad65868d1014ad932f89dc610dd9913160",
+      "code_commit": "0c690800b82d8597debb19876c3b2e25c79ef722",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "62897b33ea571e1a9a8bcf36043aafb4f784ca731ea0eeef96eadd3a243661ab",
+        "apps/api/app/extraction/native.py": "909295bd977ba2d2942056d60d46ffa86439b9d8b71891a56fc2beb7f44e1add",
+        "apps/api/app/extraction/typellm.py": "cfb6312ce8880defe3e30b9c5d42bea73c9563ad23e3df2937b887d97e42be03",
+        "apps/api/app/extraction/cpu_ocr.py": "665353b2ac49a0762597482d79ed4a953b2c89c1ed69f3ec513b35b0106e88ff",
+        "apps/api/app/extraction/rapidocr_runtime.py": "41eb45e70feec46851b37117c8ff7e64005e4230d58856e1deefde27cc55a396",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/services/document_worker.py": "41004d7c5dbddbc4f4cca4ac0ecebe592b21c85bd4c5f83e87a62cb53ddea0ea",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cpu_only": true,
+      "cases": [
+        {
+          "id": "d01",
+          "split": "tuning",
+          "source_sha256": "c09c409c7cdfee6b31efea175706e0161c44d8afe2a7662dd77731c1fae46197",
+          "seconds": 2.253,
+          "preprocess_seconds": 0.164,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": false,
+            "invoice_date": false,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 0,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 0,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": false,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13676,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.26351005700416863,
+              "memory_peak_kib": 395652,
+              "last_seconds": 1.4581209829775617,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "PRESENT",
+              "raw": "Fictional Rotation Workshop 1 Description Qty Unit price Amount"
+            },
+            {
+              "field": "invoice_number",
+              "state": "PRESENT",
+              "raw": "ROT-2026-001 Cork shelf pads 3 14.25 42.75"
+            },
+            {
+              "field": "invoice_date",
+              "state": "PRESENT",
+              "raw": "2026-10-04 Metal label clips 20.00"
+            }
+          ]
+        },
+        {
+          "id": "d02",
+          "split": "tuning",
+          "source_sha256": "432a3ec0858b489013587a6441359945222fe9f1ffbe025b10cecdc08ae4c3f8",
+          "seconds": 1.912,
+          "preprocess_seconds": 0.177,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": false,
+            "invoice_date": false,
+            "currency": false,
+            "subtotal_amount": false,
+            "tax_amount": false,
+            "total_amount": false
+          },
+          "row_matches": 0,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 0,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": false,
+            "invoice_date": false,
+            "total_amount": false
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13664,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.26351005700416863,
+              "memory_peak_kib": 479340,
+              "last_seconds": 1.6860578120104037,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_number",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_date",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "currency",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "subtotal_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "tax_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "total_amount",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        },
+        {
+          "id": "d03",
+          "split": "tuning",
+          "source_sha256": "024f96f46a4f960e85c0dc89e49c2ebfb9b655845639269357abb6514dffc1e1",
+          "seconds": 1.587,
+          "preprocess_seconds": 0.171,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": false,
+            "subtotal_amount": false,
+            "tax_amount": false,
+            "total_amount": false
+          },
+          "row_matches": 0,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 0,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": false,
+            "invoice_date": true,
+            "total_amount": false
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13664,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.26351005700416863,
+              "memory_peak_kib": 479340,
+              "last_seconds": 1.367607029969804,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "currency",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "subtotal_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "tax_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "total_amount",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "private_file": "challenge-rotation-cpu-baseline-holdout.json",
+      "raw_sha256": "635fea20db374f9d28fd1b118228cb6569e14524a1f0f61bdcfa5f806c2b41fe",
+      "code_commit": "0c690800b82d8597debb19876c3b2e25c79ef722",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "62897b33ea571e1a9a8bcf36043aafb4f784ca731ea0eeef96eadd3a243661ab",
+        "apps/api/app/extraction/native.py": "909295bd977ba2d2942056d60d46ffa86439b9d8b71891a56fc2beb7f44e1add",
+        "apps/api/app/extraction/typellm.py": "cfb6312ce8880defe3e30b9c5d42bea73c9563ad23e3df2937b887d97e42be03",
+        "apps/api/app/extraction/cpu_ocr.py": "665353b2ac49a0762597482d79ed4a953b2c89c1ed69f3ec513b35b0106e88ff",
+        "apps/api/app/extraction/rapidocr_runtime.py": "41eb45e70feec46851b37117c8ff7e64005e4230d58856e1deefde27cc55a396",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/services/document_worker.py": "41004d7c5dbddbc4f4cca4ac0ecebe592b21c85bd4c5f83e87a62cb53ddea0ea",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cpu_only": true,
+      "cases": [
+        {
+          "id": "r01",
+          "split": "holdout",
+          "source_sha256": "02a4fc32ae85255ca58cbe68358a0469dafbd41061d03ad1515d9a9d56fd116c",
+          "seconds": 2.174,
+          "preprocess_seconds": 0.163,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13777,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2644171050051227,
+              "memory_peak_kib": 415972,
+              "last_seconds": 1.6630419069551863,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        },
+        {
+          "id": "r02",
+          "split": "holdout",
+          "source_sha256": "1913345d8d3b6d42785187d495213ee87a2b4f1c8e17ec22fbdd722b4cc7ffe1",
+          "seconds": 2.196,
+          "preprocess_seconds": 0.174,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": false,
+            "invoice_date": false,
+            "currency": false,
+            "subtotal_amount": false,
+            "tax_amount": false,
+            "total_amount": false
+          },
+          "row_matches": 0,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 0,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": false,
+            "invoice_date": false,
+            "total_amount": false
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13777,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2644171050051227,
+              "memory_peak_kib": 504868,
+              "last_seconds": 1.5502887510228902,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "PRESENT",
+              "raw": "Fictional Rotation Workshop 2 Description Canvas desk rails Ink label ribbons Slate index boards Original invented CCO fixture. No customer data,"
+            },
+            {
+              "field": "invoice_number",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_date",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "currency",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "subtotal_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "tax_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "total_amount",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        },
+        {
+          "id": "r03",
+          "split": "holdout",
+          "source_sha256": "db0238ac0f48e378f9cf8944c1d2cb1e7138277094cba4c611a6f1f35c975a1c",
+          "seconds": 1.778,
+          "preprocess_seconds": 0.166,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": false,
+            "invoice_date": false,
+            "currency": false,
+            "subtotal_amount": false,
+            "tax_amount": false,
+            "total_amount": false
+          },
+          "row_matches": 0,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 0,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": false,
+            "invoice_date": false,
+            "total_amount": false
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13777,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2644171050051227,
+              "memory_peak_kib": 504868,
+              "last_seconds": 1.5666264130268246,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_number",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_date",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "currency",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "subtotal_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "tax_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "total_amount",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        },
+        {
+          "id": "r04",
+          "split": "holdout",
+          "source_sha256": "9c3fe84e3cd0f863d437f4f641af36b908cb5aec4fcdcca07bf1012c2954f275",
+          "seconds": 1.749,
+          "preprocess_seconds": 0.174,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": false,
+            "invoice_date": false,
+            "currency": false,
+            "subtotal_amount": false,
+            "tax_amount": false,
+            "total_amount": false
+          },
+          "row_matches": 0,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 0,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": false,
+            "invoice_date": false,
+            "total_amount": false
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13777,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2644171050051227,
+              "memory_peak_kib": 528476,
+              "last_seconds": 1.533926683012396,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "PRESENT",
+              "raw": "FICTIONAL SUPPLY STATEMENT"
+            },
+            {
+              "field": "invoice_number",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_date",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "currency",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "subtotal_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "tax_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "total_amount",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        },
+        {
+          "id": "r05",
+          "split": "holdout",
+          "source_sha256": "accba0deeea90e72d2ad9f860374624d8764c9b2b0b38854d9a1f818b30be495",
+          "seconds": 1.94,
+          "preprocess_seconds": 0.182,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": false,
+            "invoice_date": false,
+            "currency": false,
+            "subtotal_amount": false,
+            "tax_amount": false,
+            "total_amount": true
+          },
+          "row_matches": 0,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 0,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": false,
+            "invoice_date": false,
+            "total_amount": false
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13777,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2644171050051227,
+              "memory_peak_kib": 528476,
+              "last_seconds": 1.7057668960187584,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_number",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_date",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "currency",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "subtotal_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "tax_amount",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        },
+        {
+          "id": "r06",
+          "split": "holdout",
+          "source_sha256": "5dd3ed5a2ed47b08d454c407918c45c5d2a749df16a64acf42352834c019c6b4",
+          "seconds": 2.165,
+          "preprocess_seconds": 0.196,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": false,
+            "invoice_date": false,
+            "currency": false,
+            "subtotal_amount": false,
+            "tax_amount": false,
+            "total_amount": false
+          },
+          "row_matches": 0,
+          "row_checked": 10,
+          "expected_rows": 3,
+          "actual_rows": 0,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": false,
+            "invoice_date": false,
+            "total_amount": false
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13800,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2644171050051227,
+              "memory_peak_kib": 623340,
+              "last_seconds": 1.9058428300195374,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_number",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_date",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "currency",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "subtotal_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "tax_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "total_amount",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        },
+        {
+          "id": "r07",
+          "split": "holdout",
+          "source_sha256": "1bf625f350839f7cdfe3c99bf6d9728e1d364ade71ca7477dda8eb4fd17bd9be",
+          "seconds": 1.988,
+          "preprocess_seconds": 0.178,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": false,
+            "invoice_date": false,
+            "currency": false,
+            "subtotal_amount": false,
+            "tax_amount": false,
+            "total_amount": false
+          },
+          "row_matches": 0,
+          "row_checked": 10,
+          "expected_rows": 3,
+          "actual_rows": 0,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": false,
+            "invoice_date": false,
+            "total_amount": false
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13814,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2644171050051227,
+              "memory_peak_kib": 623340,
+              "last_seconds": 1.7656614449806511,
+              "geometry_retry_version": "missing-numeric-cell-v1",
+              "row_retries": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_number",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "invoice_date",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "currency",
+              "state": "PRESENT",
+              "raw": "Description Natural paper covers Braided file loops Brass shelf markers"
+            },
+            {
+              "field": "subtotal_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "tax_amount",
+              "state": "MISSING",
+              "raw": null
+            },
+            {
+              "field": "total_amount",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "private_file": "challenge-rotation-provider-final-tuning.json",
+      "raw_sha256": "a35d3e0eca94ccb41b2352496fec33bc77f4a799a6050a7657e2f7bb6f01b753",
+      "code_commit": "0c690800b82d8597debb19876c3b2e25c79ef722",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/cpu_ocr.py": "e75db4c9cf0e34363c121e346fd6ba03b35d99484d93c4f7e2326f3491551c14",
+        "apps/api/app/extraction/rapidocr_runtime.py": "2ca7721abe55a6247e5048e79b3af4c1d96c80a2d91f4a8c25ce0cfc4ae3b47c",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cpu_only": false,
+      "cases": [
+        {
+          "id": "d01",
+          "split": "tuning",
+          "source_sha256": "c09c409c7cdfee6b31efea175706e0161c44d8afe2a7662dd77731c1fae46197",
+          "seconds": 1.986,
+          "preprocess_seconds": 0.164,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2641880589653738,
+              "memory_peak_kib": 394800,
+              "last_seconds": 1.4642102519865148,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 0,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    1.0,
+                    -0.0,
+                    -0.0,
+                    0.0,
+                    1.0,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1440,
+                    992
+                  ],
+                  "layout_dimensions": [
+                    1440.0,
+                    992.0
+                  ]
+                },
+                "printed_headers": 7,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 23,
+                "support_count": 22,
+                "residual_clockwise_degrees": 0.0
+              },
+              "aligned_pixel_read": null,
+              "alignment_read_disagreements": []
+            }
+          ],
+          "unresolved_checked_fields": []
+        },
+        {
+          "id": "d02",
+          "split": "tuning",
+          "source_sha256": "432a3ec0858b489013587a6441359945222fe9f1ffbe025b10cecdc08ae4c3f8",
+          "seconds": 3.83,
+          "preprocess_seconds": 0.178,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2641880589653738,
+              "memory_peak_kib": 536780,
+              "last_seconds": 3.5130013210582547,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 0,
+                "layout_only_deskew_degrees": 5.339236803737581,
+                "transform": {
+                  "matrix": [
+                    0.9956612082761611,
+                    -0.0930524493716038,
+                    105.89368738488513,
+                    0.0930524493716038,
+                    0.9956612082761611,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1536,
+                    1138
+                  ],
+                  "layout_dimensions": [
+                    1635.2293032970688,
+                    1275.9910172530547
+                  ]
+                },
+                "printed_headers": 7,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 23,
+                "support_count": 22,
+                "residual_clockwise_degrees": -5.339236803737581,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "78b7f39ca298b8b86d3e4b72c3608143b02ea290558d9e23e0d1b97ed39abc61",
+                "derived_dimensions": [
+                  1636,
+                  1276
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    0.9956612082761611,
+                    -0.09305244937160385,
+                    105.89368738488518,
+                    0.09305244937160385,
+                    0.9956612082761611,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1536,
+                    1138
+                  ],
+                  "layout_dimensions": [
+                    1635.2293032970688,
+                    1275.991017253055
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true
+              },
+              "alignment_read_disagreements": []
+            }
+          ],
+          "unresolved_checked_fields": []
+        },
+        {
+          "id": "d03",
+          "split": "tuning",
+          "source_sha256": "024f96f46a4f960e85c0dc89e49c2ebfb9b655845639269357abb6514dffc1e1",
+          "seconds": 3.312,
+          "preprocess_seconds": 0.163,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2641880589653738,
+              "memory_peak_kib": 545168,
+              "last_seconds": 2.7176338749704883,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 90,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1440.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    992,
+                    1440
+                  ],
+                  "layout_dimensions": [
+                    1440.0,
+                    992.0000000000001
+                  ]
+                },
+                "printed_headers": 7,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 23,
+                "support_count": 22,
+                "residual_clockwise_degrees": 0.0,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "21eb1313838642c73049b5a347afa36da222d8ece9381628c5b533a0c4c2de56",
+                "derived_dimensions": [
+                  1440,
+                  993
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1440.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    992,
+                    1440
+                  ],
+                  "layout_dimensions": [
+                    1440.0,
+                    992.0000000000001
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.9445564516129031,
+                    "y1": 0.607638888888889,
+                    "x2": 0.9657258064516128,
+                    "y2": 0.9534722222222223
+                  },
+                  "first_raw": "Oine ue o o r t sn on ou on  i",
+                  "second_raw": "Original invented CCo fixture. No customer data, corporate policy or payment authority."
+                }
+              ]
+            }
+          ],
+          "unresolved_checked_fields": []
+        }
+      ]
+    },
+    {
+      "private_file": "challenge-rotation-cpu-final-holdout.json",
+      "raw_sha256": "61652c33d9469ac8c992f5ee960c86534fc9146f4970767a86c3f7f7f6d289fb",
+      "code_commit": "0c690800b82d8597debb19876c3b2e25c79ef722",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/cpu_ocr.py": "e75db4c9cf0e34363c121e346fd6ba03b35d99484d93c4f7e2326f3491551c14",
+        "apps/api/app/extraction/rapidocr_runtime.py": "2ca7721abe55a6247e5048e79b3af4c1d96c80a2d91f4a8c25ce0cfc4ae3b47c",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cpu_only": true,
+      "cases": [
+        {
+          "id": "r01",
+          "split": "holdout",
+          "source_sha256": "02a4fc32ae85255ca58cbe68358a0469dafbd41061d03ad1515d9a9d56fd116c",
+          "seconds": 2.218,
+          "preprocess_seconds": 0.172,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2718288030009717,
+              "memory_peak_kib": 415048,
+              "last_seconds": 1.6721091020153835,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 0,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    1.0,
+                    -0.0,
+                    -0.0,
+                    0.0,
+                    1.0,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1472,
+                    1056
+                  ],
+                  "layout_dimensions": [
+                    1472.0,
+                    1056.0
+                  ]
+                },
+                "printed_headers": 6,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 27,
+                "support_count": 27,
+                "residual_clockwise_degrees": 0.0
+              },
+              "aligned_pixel_read": null,
+              "alignment_read_disagreements": []
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        },
+        {
+          "id": "r02",
+          "split": "holdout",
+          "source_sha256": "1913345d8d3b6d42785187d495213ee87a2b4f1c8e17ec22fbdd722b4cc7ffe1",
+          "seconds": 4.033,
+          "preprocess_seconds": 0.185,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2718288030009717,
+              "memory_peak_kib": 503660,
+              "last_seconds": 3.1218999000266194,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 90,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1472.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1056,
+                    1472
+                  ],
+                  "layout_dimensions": [
+                    1472.0,
+                    1056.0
+                  ]
+                },
+                "printed_headers": 6,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 27,
+                "support_count": 27,
+                "residual_clockwise_degrees": 0.0,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "0346b3a6ff368d16a9eff679d7d61de917dd4d63df91f336182df7a04be3b480",
+                "derived_dimensions": [
+                  1472,
+                  1056
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1472.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1056,
+                    1472
+                  ],
+                  "layout_dimensions": [
+                    1472.0,
+                    1056.0
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.949810606060606,
+                    "y1": 0.4979619565217392,
+                    "x2": 0.9668560606060606,
+                    "y2": 0.954483695652174
+                  },
+                  "first_raw": "Coort at d ott at.",
+                  "second_raw": "Oootr  r o ttr r r nt tr  tr t."
+                },
+                {
+                  "bbox": {
+                    "x1": 0.949810606060606,
+                    "y1": 0.4979619565217392,
+                    "x2": 0.9668560606060606,
+                    "y2": 0.954483695652174
+                  },
+                  "first_raw": "Original invented CCO fixture. No customer data,",
+                  "second_raw": "Oootr  r o ttr r r nt tr  tr t."
+                }
+              ]
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        },
+        {
+          "id": "r03",
+          "split": "holdout",
+          "source_sha256": "db0238ac0f48e378f9cf8944c1d2cb1e7138277094cba4c611a6f1f35c975a1c",
+          "seconds": 3.391,
+          "preprocess_seconds": 0.166,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 11,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2718288030009717,
+              "memory_peak_kib": 581636,
+              "last_seconds": 3.098847319954075,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 180,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    -1.0,
+                    -1.2246467991473532e-16,
+                    1472.0000000000002,
+                    1.2246467991473532e-16,
+                    -1.0,
+                    1056.0
+                  ],
+                  "source_dimensions": [
+                    1472,
+                    1056
+                  ],
+                  "layout_dimensions": [
+                    1472.0000000000002,
+                    1056.0000000000002
+                  ]
+                },
+                "printed_headers": 6,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 27,
+                "support_count": 27,
+                "residual_clockwise_degrees": 0.0,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "022769a319c099da061b19f96b912b06be73fa4cd0622167972539430c3360a0",
+                "derived_dimensions": [
+                  1473,
+                  1057
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    -1.0,
+                    -1.2246467991473532e-16,
+                    1472.0000000000002,
+                    1.2246467991473532e-16,
+                    -1.0,
+                    1056.0
+                  ],
+                  "source_dimensions": [
+                    1472,
+                    1056
+                  ],
+                  "layout_dimensions": [
+                    1472.0000000000002,
+                    1056.0000000000002
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.4972826086956523,
+                    "y1": 0.03219696969696981,
+                    "x2": 0.9544836956521741,
+                    "y2": 0.05018939393939415
+                  },
+                  "first_raw": "Original invented Cco fixture. No customer data, corporate policy or payment authority.",
+                  "second_raw": "Orr t r od ttr  c  t   tt tt."
+                },
+                {
+                  "bbox": {
+                    "x1": 0.4959239130434783,
+                    "y1": 0.4952651515151516,
+                    "x2": 0.5067934782608696,
+                    "y2": 0.5151515151515152
+                  },
+                  "first_raw": "9",
+                  "second_raw": "6"
+                }
+              ]
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        },
+        {
+          "id": "r04",
+          "split": "holdout",
+          "source_sha256": "9c3fe84e3cd0f863d437f4f641af36b908cb5aec4fcdcca07bf1012c2954f275",
+          "seconds": 3.413,
+          "preprocess_seconds": 0.175,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 11,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2718288030009717,
+              "memory_peak_kib": 636524,
+              "last_seconds": 3.0939555839868262,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 270,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    -1.8369701987210297e-16,
+                    1.0,
+                    1.9398405298494073e-13,
+                    -1.0,
+                    -1.8369701987210297e-16,
+                    1056.0000000000002
+                  ],
+                  "source_dimensions": [
+                    1056,
+                    1472
+                  ],
+                  "layout_dimensions": [
+                    1472.0000000000002,
+                    1056.0000000000002
+                  ]
+                },
+                "printed_headers": 6,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 27,
+                "support_count": 27,
+                "residual_clockwise_degrees": 0.0,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "f0def2ad92da66be997e56dfb076bc8680bb8f7f2d93e868033146276d7a7b1b",
+                "derived_dimensions": [
+                  1473,
+                  1057
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    -1.8369701987210297e-16,
+                    1.0,
+                    1.9398405298494073e-13,
+                    -1.0,
+                    -1.8369701987210297e-16,
+                    1056.0000000000002
+                  ],
+                  "source_dimensions": [
+                    1056,
+                    1472
+                  ],
+                  "layout_dimensions": [
+                    1472.0000000000002,
+                    1056.0000000000002
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.03219696969696981,
+                    "y1": 0.04551630434782596,
+                    "x2": 0.05018939393939415,
+                    "y2": 0.5027173913043477
+                  },
+                  "first_raw": "Original invented CC0 fixture. No customer data, corporate policy or payment authority.",
+                  "second_raw": "Orr t r od ttr  c  t   tt tt."
+                },
+                {
+                  "bbox": {
+                    "x1": 0.925189393939394,
+                    "y1": 0.046195652173913034,
+                    "x2": 0.9469696969696972,
+                    "y2": 0.3702445652173913
+                  },
+                  "first_raw": "FICTIONAL",
+                  "second_raw": "FICTIONAL SUPPLY STATEMENT"
+                },
+                {
+                  "bbox": {
+                    "x1": 0.925189393939394,
+                    "y1": 0.046195652173913034,
+                    "x2": 0.9469696969696972,
+                    "y2": 0.3702445652173913
+                  },
+                  "first_raw": "SUPPLY STATEMENT",
+                  "second_raw": "FICTIONAL SUPPLY STATEMENT"
+                },
+                {
+                  "bbox": {
+                    "x1": 0.4952651515151516,
+                    "y1": 0.4932065217391304,
+                    "x2": 0.5151515151515152,
+                    "y2": 0.5040760869565216
+                  },
+                  "first_raw": "9",
+                  "second_raw": "6"
+                }
+              ]
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "vendor_name",
+              "state": "MISSING",
+              "raw": null
+            }
+          ]
+        },
+        {
+          "id": "r05",
+          "split": "holdout",
+          "source_sha256": "accba0deeea90e72d2ad9f860374624d8764c9b2b0b38854d9a1f818b30be495",
+          "seconds": 4.057,
+          "preprocess_seconds": 0.179,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2718288030009717,
+              "memory_peak_kib": 636524,
+              "last_seconds": 3.6171000549802557,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 0,
+                "layout_only_deskew_degrees": 4.019582487837468,
+                "transform": {
+                  "matrix": [
+                    0.9975401507060981,
+                    -0.07009741599556364,
+                    81.1728077228627,
+                    0.07009741599556364,
+                    0.9975401507060981,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1544,
+                    1158
+                  ],
+                  "layout_dimensions": [
+                    1621.3748004130782,
+                    1263.3819048148118
+                  ]
+                },
+                "printed_headers": 7,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 27,
+                "support_count": 26,
+                "residual_clockwise_degrees": -4.019582487837468,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "f80a3b36b0d168908ffad1702a8d379507e62dda639df218e0bb926b24e6f435",
+                "derived_dimensions": [
+                  1622,
+                  1264
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    0.9975401507060981,
+                    -0.07009741599556364,
+                    81.1728077228627,
+                    0.07009741599556364,
+                    0.9975401507060981,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1544,
+                    1158
+                  ],
+                  "layout_dimensions": [
+                    1621.3748004130782,
+                    1263.3819048148118
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.08951121026052963,
+                    "y1": 0.9083852453635866,
+                    "x2": 0.5245363606351497,
+                    "y2": 0.9654307776713883
+                  },
+                  "first_raw": "Original invented cco fixture. No customer data, corporate policy or payment authority.",
+                  "second_raw": "otr t  o tt ' n t  c tr tt"
+                }
+              ]
+            }
+          ],
+          "unresolved_checked_fields": []
+        },
+        {
+          "id": "r06",
+          "split": "holdout",
+          "source_sha256": "5dd3ed5a2ed47b08d454c407918c45c5d2a749df16a64acf42352834c019c6b4",
+          "seconds": 5.092,
+          "preprocess_seconds": 0.189,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 10,
+          "row_checked": 10,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2718288030009717,
+              "memory_peak_kib": 726124,
+              "last_seconds": 4.183784075023141,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 0,
+                "layout_only_deskew_degrees": -5.055130193362963,
+                "transform": {
+                  "matrix": [
+                    0.996110375397324,
+                    0.08811424417086135,
+                    -0.0,
+                    -0.08811424417086135,
+                    0.996110375397324,
+                    115.60588835217008
+                  ],
+                  "source_dimensions": [
+                    1312,
+                    1602
+                  ],
+                  "layout_dimensions": [
+                    1448.055831683009,
+                    1711.3747097386831
+                  ]
+                },
+                "printed_headers": 7,
+                "readable_core_cells": 10,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 20,
+                "support_count": 19,
+                "residual_clockwise_degrees": 5.055130193362963,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "de1f1a84d518b73656f3dfcd1d5c342cf8f6e33376db29a25248f4d2cde8aa11",
+                "derived_dimensions": [
+                  1449,
+                  1712
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    0.996110375397324,
+                    0.08811424417086122,
+                    -0.0,
+                    -0.08811424417086122,
+                    0.996110375397324,
+                    115.60588835216993
+                  ],
+                  "source_dimensions": [
+                    1312,
+                    1602
+                  ],
+                  "layout_dimensions": [
+                    1448.0558316830088,
+                    1711.3747097386831
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.053899984930168954,
+                    "y1": 0.9053821144550516,
+                    "x2": 0.4044892056361037,
+                    "y2": 0.9431191680296725
+                  },
+                  "first_raw": "Original invented CCO fixture. No customer data, corporate policy or payment authority.",
+                  "second_raw": "Original invented CCo fixture. No customer data, corporate policy or payment authority."
+                }
+              ]
+            }
+          ],
+          "unresolved_checked_fields": []
+        },
+        {
+          "id": "r07",
+          "split": "holdout",
+          "source_sha256": "1bf625f350839f7cdfe3c99bf6d9728e1d364ade71ca7477dda8eb4fd17bd9be",
+          "seconds": 3.724,
+          "preprocess_seconds": 0.177,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": false,
+            "total_amount": true
+          },
+          "row_matches": 10,
+          "row_checked": 10,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2718288030009717,
+              "memory_peak_kib": 726124,
+              "last_seconds": 3.4098075490328483,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 90,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1184.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1504,
+                    1184
+                  ],
+                  "layout_dimensions": [
+                    1184.0,
+                    1504.0
+                  ]
+                },
+                "printed_headers": 7,
+                "readable_core_cells": 10,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 23,
+                "support_count": 23,
+                "residual_clockwise_degrees": 0.0,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "5e57b0d544d0fd977831ebffe1efff13c72b44a338335188576178e7a0454ae6",
+                "derived_dimensions": [
+                  1184,
+                  1504
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1184.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1504,
+                    1184
+                  ],
+                  "layout_dimensions": [
+                    1184.0,
+                    1504.0
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.7832446808510638,
+                    "y1": 0.22719594594594605,
+                    "x2": 0.7978723404255319,
+                    "y2": 0.26013513513513525
+                  },
+                  "first_raw": "00",
+                  "second_raw": "0.00"
+                }
+              ]
+            }
+          ],
+          "unresolved_checked_fields": [
+            {
+              "field": "tax_amount",
+              "state": "AMBIGUOUS",
+              "raw": "0.00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "private_file": "challenge-rotation-cpu-first-process-tuning.json",
+      "raw_sha256": "ba2005f12e97078d62fdd043704f20e84a30f793dfc226b1281b7cedefa68d86",
+      "code_commit": "0c690800b82d8597debb19876c3b2e25c79ef722",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/cpu_ocr.py": "e75db4c9cf0e34363c121e346fd6ba03b35d99484d93c4f7e2326f3491551c14",
+        "apps/api/app/extraction/rapidocr_runtime.py": "2ca7721abe55a6247e5048e79b3af4c1d96c80a2d91f4a8c25ce0cfc4ae3b47c",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cpu_only": true,
+      "cases": [
+        {
+          "id": "d03",
+          "split": "tuning",
+          "source_sha256": "024f96f46a4f960e85c0dc89e49c2ebfb9b655845639269357abb6514dffc1e1",
+          "seconds": 3.432,
+          "preprocess_seconds": 0.167,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2617125130491331,
+              "memory_peak_kib": 505300,
+              "last_seconds": 2.792328354960773,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 90,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1440.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    992,
+                    1440
+                  ],
+                  "layout_dimensions": [
+                    1440.0,
+                    992.0000000000001
+                  ]
+                },
+                "printed_headers": 7,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 23,
+                "support_count": 22,
+                "residual_clockwise_degrees": 0.0,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "21eb1313838642c73049b5a347afa36da222d8ece9381628c5b533a0c4c2de56",
+                "derived_dimensions": [
+                  1440,
+                  993
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1440.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    992,
+                    1440
+                  ],
+                  "layout_dimensions": [
+                    1440.0,
+                    992.0000000000001
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.9445564516129031,
+                    "y1": 0.607638888888889,
+                    "x2": 0.9657258064516128,
+                    "y2": 0.9534722222222223
+                  },
+                  "first_raw": "Oine ue o o r t sn on ou on  i",
+                  "second_raw": "Original invented CCo fixture. No customer data, corporate policy or payment authority."
+                }
+              ]
+            }
+          ],
+          "unresolved_checked_fields": []
+        }
+      ]
+    },
+    {
+      "private_file": "challenge-rotation-cpu-same-process-repeat-tuning.json",
+      "raw_sha256": "569678f5699cee3ea9548086e61c6ad3269e2e9dbba58222837df3e206c40858",
+      "code_commit": "0c690800b82d8597debb19876c3b2e25c79ef722",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/cpu_ocr.py": "e75db4c9cf0e34363c121e346fd6ba03b35d99484d93c4f7e2326f3491551c14",
+        "apps/api/app/extraction/rapidocr_runtime.py": "2ca7721abe55a6247e5048e79b3af4c1d96c80a2d91f4a8c25ce0cfc4ae3b47c",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cpu_only": true,
+      "cases": [
+        {
+          "id": "d03",
+          "split": "tuning",
+          "source_sha256": "024f96f46a4f960e85c0dc89e49c2ebfb9b655845639269357abb6514dffc1e1",
+          "seconds": 3.054,
+          "preprocess_seconds": 0.173,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "normalized_checks": {
+            "currency": true,
+            "invoice_date": true,
+            "total_amount": true
+          },
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 13679,
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.2617125130491331,
+              "memory_peak_kib": 515536,
+              "last_seconds": 2.748458018002566,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 90,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1440.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    992,
+                    1440
+                  ],
+                  "layout_dimensions": [
+                    1440.0,
+                    992.0000000000001
+                  ]
+                },
+                "printed_headers": 7,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 23,
+                "support_count": 22,
+                "residual_clockwise_degrees": 0.0,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "21eb1313838642c73049b5a347afa36da222d8ece9381628c5b533a0c4c2de56",
+                "derived_dimensions": [
+                  1440,
+                  993
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1440.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    992,
+                    1440
+                  ],
+                  "layout_dimensions": [
+                    1440.0,
+                    992.0000000000001
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.9445564516129031,
+                    "y1": 0.607638888888889,
+                    "x2": 0.9657258064516128,
+                    "y2": 0.9534722222222223
+                  },
+                  "first_raw": "Oine ue o o r t sn on ou on  i",
+                  "second_raw": "Original invented CCo fixture. No customer data, corporate policy or payment authority."
+                }
+              ]
+            }
+          ],
+          "unresolved_checked_fields": []
+        }
+      ]
+    },
+    {
+      "private_file": "challenge-rotation-cpu-verified-spent-holdout.json",
+      "raw_sha256": "e6da8f5dbc8c5244f9ee3804c79753542bd9563073fb928d367288beb97db441",
+      "code_commit": "0c690800b82d8597debb19876c3b2e25c79ef722",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/cpu_ocr.py": "e75db4c9cf0e34363c121e346fd6ba03b35d99484d93c4f7e2326f3491551c14",
+        "apps/api/app/extraction/rapidocr_runtime.py": "e4b746a222b0611f3fd96a5c8f3f8c6f1dafe7c042312a640166e8bad85708da",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cpu_only": true,
+      "status": "Spent replay after source-canvas boundary correction; initial reserved measurement is retained. No retuning on reserved facts.",
+      "cases": [
+        {
+          "id": "r01",
+          "source_sha256": "02a4fc32ae85255ca58cbe68358a0469dafbd41061d03ad1515d9a9d56fd116c",
+          "seconds": 2.207,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14155,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.26947407703846693,
+              "memory_peak_kib": 416452,
+              "last_seconds": 1.6450921039795503,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 0,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    1.0,
+                    -0.0,
+                    -0.0,
+                    0.0,
+                    1.0,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1472,
+                    1056
+                  ],
+                  "layout_dimensions": [
+                    1472.0,
+                    1056.0
+                  ]
+                },
+                "printed_headers": 6,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 27,
+                "support_count": 27,
+                "residual_clockwise_degrees": 0.0
+              },
+              "aligned_pixel_read": null,
+              "alignment_read_disagreements": []
+            }
+          ]
+        },
+        {
+          "id": "r02",
+          "source_sha256": "1913345d8d3b6d42785187d495213ee87a2b4f1c8e17ec22fbdd722b4cc7ffe1",
+          "seconds": 3.443,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14155,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.26947407703846693,
+              "memory_peak_kib": 505064,
+              "last_seconds": 3.1184517379733734,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 90,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1472.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1056,
+                    1472
+                  ],
+                  "layout_dimensions": [
+                    1472.0,
+                    1056.0
+                  ]
+                },
+                "printed_headers": 6,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 27,
+                "support_count": 27,
+                "residual_clockwise_degrees": 0.0,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "0346b3a6ff368d16a9eff679d7d61de917dd4d63df91f336182df7a04be3b480",
+                "derived_dimensions": [
+                  1472,
+                  1056
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1472.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1056,
+                    1472
+                  ],
+                  "layout_dimensions": [
+                    1472.0,
+                    1056.0
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true,
+                "excluded_source_regions": []
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.949810606060606,
+                    "y1": 0.4979619565217392,
+                    "x2": 0.9668560606060606,
+                    "y2": 0.954483695652174
+                  },
+                  "first_raw": "Coort at d ott at.",
+                  "second_raw": "Oootr  r o ttr r r nt tr  tr t."
+                },
+                {
+                  "bbox": {
+                    "x1": 0.949810606060606,
+                    "y1": 0.4979619565217392,
+                    "x2": 0.9668560606060606,
+                    "y2": 0.954483695652174
+                  },
+                  "first_raw": "Original invented CCO fixture. No customer data,",
+                  "second_raw": "Oootr  r o ttr r r nt tr  tr t."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "r03",
+          "source_sha256": "db0238ac0f48e378f9cf8944c1d2cb1e7138277094cba4c611a6f1f35c975a1c",
+          "seconds": 3.5,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 11,
+          "row_checked": 12,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14155,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.26947407703846693,
+              "memory_peak_kib": 588536,
+              "last_seconds": 3.179491412069183,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 180,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    -1.0,
+                    -1.2246467991473532e-16,
+                    1472.0000000000002,
+                    1.2246467991473532e-16,
+                    -1.0,
+                    1056.0
+                  ],
+                  "source_dimensions": [
+                    1472,
+                    1056
+                  ],
+                  "layout_dimensions": [
+                    1472.0000000000002,
+                    1056.0000000000002
+                  ]
+                },
+                "printed_headers": 6,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 27,
+                "support_count": 27,
+                "residual_clockwise_degrees": 0.0,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "022769a319c099da061b19f96b912b06be73fa4cd0622167972539430c3360a0",
+                "derived_dimensions": [
+                  1473,
+                  1057
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    -1.0,
+                    -1.2246467991473532e-16,
+                    1472.0000000000002,
+                    1.2246467991473532e-16,
+                    -1.0,
+                    1056.0
+                  ],
+                  "source_dimensions": [
+                    1472,
+                    1056
+                  ],
+                  "layout_dimensions": [
+                    1472.0000000000002,
+                    1056.0000000000002
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true,
+                "excluded_source_regions": []
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.4972826086956523,
+                    "y1": 0.03219696969696981,
+                    "x2": 0.9544836956521741,
+                    "y2": 0.05018939393939415
+                  },
+                  "first_raw": "Original invented Cco fixture. No customer data, corporate policy or payment authority.",
+                  "second_raw": "Orr t r od ttr  c  t   tt tt."
+                },
+                {
+                  "bbox": {
+                    "x1": 0.4959239130434783,
+                    "y1": 0.4952651515151516,
+                    "x2": 0.5067934782608696,
+                    "y2": 0.5151515151515152
+                  },
+                  "first_raw": "9",
+                  "second_raw": "6"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "r04",
+          "source_sha256": "9c3fe84e3cd0f863d437f4f641af36b908cb5aec4fcdcca07bf1012c2954f275",
+          "seconds": 3.636,
+          "header_checks": {
+            "vendor_name": false,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 11,
+          "row_checked": 12,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14155,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.26947407703846693,
+              "memory_peak_kib": 639208,
+              "last_seconds": 3.1515114310313947,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 270,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    -1.8369701987210297e-16,
+                    1.0,
+                    1.9398405298494073e-13,
+                    -1.0,
+                    -1.8369701987210297e-16,
+                    1056.0000000000002
+                  ],
+                  "source_dimensions": [
+                    1056,
+                    1472
+                  ],
+                  "layout_dimensions": [
+                    1472.0000000000002,
+                    1056.0000000000002
+                  ]
+                },
+                "printed_headers": 6,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 27,
+                "support_count": 27,
+                "residual_clockwise_degrees": 0.0,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "f0def2ad92da66be997e56dfb076bc8680bb8f7f2d93e868033146276d7a7b1b",
+                "derived_dimensions": [
+                  1473,
+                  1057
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    -1.8369701987210297e-16,
+                    1.0,
+                    1.9398405298494073e-13,
+                    -1.0,
+                    -1.8369701987210297e-16,
+                    1056.0000000000002
+                  ],
+                  "source_dimensions": [
+                    1056,
+                    1472
+                  ],
+                  "layout_dimensions": [
+                    1472.0000000000002,
+                    1056.0000000000002
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true,
+                "excluded_source_regions": []
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.03219696969696981,
+                    "y1": 0.04551630434782596,
+                    "x2": 0.05018939393939415,
+                    "y2": 0.5027173913043477
+                  },
+                  "first_raw": "Original invented CC0 fixture. No customer data, corporate policy or payment authority.",
+                  "second_raw": "Orr t r od ttr  c  t   tt tt."
+                },
+                {
+                  "bbox": {
+                    "x1": 0.925189393939394,
+                    "y1": 0.046195652173913034,
+                    "x2": 0.9469696969696972,
+                    "y2": 0.3702445652173913
+                  },
+                  "first_raw": "FICTIONAL",
+                  "second_raw": "FICTIONAL SUPPLY STATEMENT"
+                },
+                {
+                  "bbox": {
+                    "x1": 0.925189393939394,
+                    "y1": 0.046195652173913034,
+                    "x2": 0.9469696969696972,
+                    "y2": 0.3702445652173913
+                  },
+                  "first_raw": "SUPPLY STATEMENT",
+                  "second_raw": "FICTIONAL SUPPLY STATEMENT"
+                },
+                {
+                  "bbox": {
+                    "x1": 0.4952651515151516,
+                    "y1": 0.4932065217391304,
+                    "x2": 0.5151515151515152,
+                    "y2": 0.5040760869565216
+                  },
+                  "first_raw": "9",
+                  "second_raw": "6"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "r05",
+          "source_sha256": "accba0deeea90e72d2ad9f860374624d8764c9b2b0b38854d9a1f818b30be495",
+          "seconds": 4.027,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 12,
+          "row_checked": 12,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {},
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14155,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.26947407703846693,
+              "memory_peak_kib": 639208,
+              "last_seconds": 3.679556337010581,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 0,
+                "layout_only_deskew_degrees": 4.019582487837468,
+                "transform": {
+                  "matrix": [
+                    0.9975401507060981,
+                    -0.07009741599556364,
+                    81.1728077228627,
+                    0.07009741599556364,
+                    0.9975401507060981,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1544,
+                    1158
+                  ],
+                  "layout_dimensions": [
+                    1621.3748004130782,
+                    1263.3819048148118
+                  ]
+                },
+                "printed_headers": 7,
+                "readable_core_cells": 12,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 27,
+                "support_count": 26,
+                "residual_clockwise_degrees": -4.019582487837468,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "f80a3b36b0d168908ffad1702a8d379507e62dda639df218e0bb926b24e6f435",
+                "derived_dimensions": [
+                  1622,
+                  1264
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    0.9975401507060981,
+                    -0.07009741599556364,
+                    81.1728077228627,
+                    0.07009741599556364,
+                    0.9975401507060981,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1544,
+                    1158
+                  ],
+                  "layout_dimensions": [
+                    1621.3748004130782,
+                    1263.3819048148118
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true,
+                "excluded_source_regions": []
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.08951121026052963,
+                    "y1": 0.9083852453635866,
+                    "x2": 0.5245363606351497,
+                    "y2": 0.9654307776713883
+                  },
+                  "first_raw": "Original invented cco fixture. No customer data, corporate policy or payment authority.",
+                  "second_raw": "otr t  o tt ' n t  c tr tt"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "r06",
+          "source_sha256": "5dd3ed5a2ed47b08d454c407918c45c5d2a749df16a64acf42352834c019c6b4",
+          "seconds": 4.568,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": true,
+            "total_amount": true
+          },
+          "row_matches": 10,
+          "row_checked": 10,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14155,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.26947407703846693,
+              "memory_peak_kib": 717864,
+              "last_seconds": 4.159994188987184,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 0,
+                "layout_only_deskew_degrees": -5.055130193362963,
+                "transform": {
+                  "matrix": [
+                    0.996110375397324,
+                    0.08811424417086135,
+                    -0.0,
+                    -0.08811424417086135,
+                    0.996110375397324,
+                    115.60588835217008
+                  ],
+                  "source_dimensions": [
+                    1312,
+                    1602
+                  ],
+                  "layout_dimensions": [
+                    1448.055831683009,
+                    1711.3747097386831
+                  ]
+                },
+                "printed_headers": 7,
+                "readable_core_cells": 10,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 20,
+                "support_count": 19,
+                "residual_clockwise_degrees": 5.055130193362963,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "de1f1a84d518b73656f3dfcd1d5c342cf8f6e33376db29a25248f4d2cde8aa11",
+                "derived_dimensions": [
+                  1449,
+                  1712
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    0.996110375397324,
+                    0.08811424417086122,
+                    -0.0,
+                    -0.08811424417086122,
+                    0.996110375397324,
+                    115.60588835216993
+                  ],
+                  "source_dimensions": [
+                    1312,
+                    1602
+                  ],
+                  "layout_dimensions": [
+                    1448.0558316830088,
+                    1711.3747097386831
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true,
+                "excluded_source_regions": []
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.053899984930168954,
+                    "y1": 0.9053821144550516,
+                    "x2": 0.4044892056361037,
+                    "y2": 0.9431191680296725
+                  },
+                  "first_raw": "Original invented CCO fixture. No customer data, corporate policy or payment authority.",
+                  "second_raw": "Original invented CCo fixture. No customer data, corporate policy or payment authority."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "r07",
+          "source_sha256": "1bf625f350839f7cdfe3c99bf6d9728e1d364ade71ca7477dda8eb4fd17bd9be",
+          "seconds": 3.735,
+          "header_checks": {
+            "vendor_name": true,
+            "invoice_number": true,
+            "invoice_date": true,
+            "currency": true,
+            "subtotal_amount": true,
+            "tax_amount": false,
+            "total_amount": true
+          },
+          "row_matches": 10,
+          "row_checked": 10,
+          "actual_rows": 3,
+          "absent_checks": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "abstention_checks": {
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true
+          },
+          "unsupported_present": {},
+          "unsupported_row_present": [],
+          "unsupported_row_canonical": [],
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "peak_whole_device_memory_mib": 14155,
+          "ocr_geometry": [
+            {
+              "packages": {
+                "rapidocr": "3.9.2",
+                "onnxruntime": "1.23.2"
+              },
+              "models": {
+                "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+                "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+                "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+              },
+              "providers": {
+                "text_det": [
+                  "CPUExecutionProvider"
+                ],
+                "text_cls": [
+                  "CPUExecutionProvider"
+                ],
+                "text_rec": [
+                  "CPUExecutionProvider"
+                ]
+              },
+              "cold_initialization_seconds": 0.26947407703846693,
+              "memory_peak_kib": 717864,
+              "last_seconds": 3.3434333029435948,
+              "geometry_retry_version": "missing-numeric-cell-v2",
+              "row_retries": [],
+              "layout_alignment": {
+                "version": "measured-ocr-layout-alignment-v1",
+                "status": "ALIGNED",
+                "clockwise_degrees": 90,
+                "layout_only_deskew_degrees": 0,
+                "transform": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1184.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1504,
+                    1184
+                  ],
+                  "layout_dimensions": [
+                    1184.0,
+                    1504.0
+                  ]
+                },
+                "printed_headers": 7,
+                "readable_core_cells": 10,
+                "image_bytes_transformed": false,
+                "deskew_status": "MEASURED_GLOBAL_BASELINES",
+                "baseline_count": 23,
+                "support_count": 23,
+                "residual_clockwise_degrees": 0.0,
+                "refined_from_aligned_pixel_read": true
+              },
+              "aligned_pixel_read": {
+                "derived_sha256": "5e57b0d544d0fd977831ebffe1efff13c72b44a338335188576178e7a0454ae6",
+                "derived_dimensions": [
+                  1184,
+                  1504
+                ],
+                "source_to_layout": {
+                  "matrix": [
+                    6.123233995736766e-17,
+                    -1.0,
+                    1184.0,
+                    1.0,
+                    6.123233995736766e-17,
+                    -0.0
+                  ],
+                  "source_dimensions": [
+                    1504,
+                    1184
+                  ],
+                  "layout_dimensions": [
+                    1184.0,
+                    1504.0
+                  ]
+                },
+                "pillow_version": "12.3.0",
+                "image_bytes_transformed": true,
+                "excluded_source_regions": []
+              },
+              "alignment_read_disagreements": [
+                {
+                  "bbox": {
+                    "x1": 0.7832446808510638,
+                    "y1": 0.22719594594594605,
+                    "x2": 0.7978723404255319,
+                    "y2": 0.26013513513513525
+                  },
+                  "first_raw": "00",
+                  "second_raw": "0.00"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "live_records": [
+    {
+      "private_file": "public-cl10-d03.json",
+      "raw_sha256": "32583fc9fffe587ec4dbbf7822e545d92af4b638e9c8433d95192c4e344459b0",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "e75db4c9cf0e34363c121e346fd6ba03b35d99484d93c4f7e2326f3491551c14",
+        "apps/api/app/extraction/rapidocr_runtime.py": "2ca7721abe55a6247e5048e79b3af4c1d96c80a2d91f4a8c25ce0cfc4ae3b47c",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "d03",
+          "source_sha256": "024f96f46a4f960e85c0dc89e49c2ebfb9b655845639269357abb6514dffc1e1",
+          "upload_seconds": 0.161,
+          "end_to_end_seconds": 6.915,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "required_abstentions": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "failed_header_checks": {},
+          "ocr_providers": [
+            "RAPIDOCR_CPU"
+          ],
+          "original_hash_verified": true
+        }
+      ]
+    },
+    {
+      "private_file": "public-cl10-final.json",
+      "raw_sha256": "4334e7d491fd48afe1b3aad080106ba3c9fceddbad19892a2b3d8171852f05a2",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "e75db4c9cf0e34363c121e346fd6ba03b35d99484d93c4f7e2326f3491551c14",
+        "apps/api/app/extraction/rapidocr_runtime.py": "2ca7721abe55a6247e5048e79b3af4c1d96c80a2d91f4a8c25ce0cfc4ae3b47c",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "p01",
+          "source_sha256": "9b097daecae02527a661f8175db42d5faef9cc7074ebaf00ce99ecf39e8c4422",
+          "upload_seconds": 0.112,
+          "end_to_end_seconds": 15.628,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 8,
+          "header_checked": 8,
+          "row_matches": 21,
+          "row_checked": 21,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "required_abstentions": {
+            "tax_basis": true
+          },
+          "paths": [
+            "LOCAL_OCR",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_calls": 1,
+          "failed_header_checks": {},
+          "ocr_providers": [
+            "RAPIDOCR_CPU"
+          ],
+          "original_hash_verified": true
+        },
+        {
+          "id": "p02",
+          "source_sha256": "c57552a94f7ee3cd0a8647a8bd1a06652ad78667d9a2835d6ee73e57808a17ca",
+          "upload_seconds": 0.115,
+          "end_to_end_seconds": 28.499,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 5,
+          "header_checked": 7,
+          "row_matches": 5,
+          "row_checked": 5,
+          "expected_rows": 1,
+          "actual_rows": 1,
+          "required_abstentions": {
+            "tax_basis": true
+          },
+          "paths": [
+            "LOCAL_OCR",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_calls": 2,
+          "failed_header_checks": {
+            "vendor_name": {
+              "read": false,
+              "page": true,
+              "state": "AMBIGUOUS",
+              "raw": "FOR SOFTWARE TESTING | invoice. Not",
+              "candidate": null
+            },
+            "tax_amount": {
+              "read": false,
+              "page": true,
+              "state": "AMBIGUOUS",
+              "raw": "INVOICE | customs or",
+              "candidate": null
+            }
+          },
+          "ocr_providers": [
+            "TESSERACT"
+          ],
+          "original_hash_verified": true
+        },
+        {
+          "id": "p03",
+          "source_sha256": "670616475f7dc45a156fd3357e0d314853079c1d6338c65df410a9e53a038c94",
+          "upload_seconds": 0.109,
+          "end_to_end_seconds": 14.02,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 8,
+          "header_checked": 8,
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "required_abstentions": {
+            "tax_basis": true
+          },
+          "paths": [
+            "NATIVE_TEXT",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_calls": 1,
+          "failed_header_checks": {},
+          "ocr_providers": [],
+          "original_hash_verified": true
+        },
+        {
+          "id": "p04",
+          "source_sha256": "a66b0af03b6ae32a73c3738d59b0b067202f2e12b4163b2d261a99c2d3d673a0",
+          "upload_seconds": 0.11,
+          "end_to_end_seconds": 14.081,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 8,
+          "header_checked": 8,
+          "row_matches": 48,
+          "row_checked": 48,
+          "expected_rows": 12,
+          "actual_rows": 12,
+          "required_abstentions": {
+            "currency": true,
+            "tax_basis": true
+          },
+          "paths": [
+            "NATIVE_TEXT",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_calls": 1,
+          "failed_header_checks": {},
+          "ocr_providers": [],
+          "original_hash_verified": true
+        }
+      ]
+    },
+    {
+      "private_file": "public-cl10-r02.json",
+      "raw_sha256": "bfbd16440c13dbeb5c2c93e5d4199d1e40bbe6aec8046966ad876d33b0d26ea6",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "e75db4c9cf0e34363c121e346fd6ba03b35d99484d93c4f7e2326f3491551c14",
+        "apps/api/app/extraction/rapidocr_runtime.py": "2ca7721abe55a6247e5048e79b3af4c1d96c80a2d91f4a8c25ce0cfc4ae3b47c",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "r02",
+          "source_sha256": "1913345d8d3b6d42785187d495213ee87a2b4f1c8e17ec22fbdd722b4cc7ffe1",
+          "upload_seconds": 0.113,
+          "end_to_end_seconds": 13.032,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 12,
+          "row_checked": 12,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "required_abstentions": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true
+          },
+          "paths": [
+            "LOCAL_OCR",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_calls": 1,
+          "failed_header_checks": {},
+          "ocr_providers": [
+            "RAPIDOCR_CPU"
+          ],
+          "original_hash_verified": true
+        }
+      ]
+    },
+    {
+      "private_file": "public-cl10-r06.json",
+      "raw_sha256": "f93bc275cf3e0f568aea203eec5544b69152f211ade0197f051d018ca554e253",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "e75db4c9cf0e34363c121e346fd6ba03b35d99484d93c4f7e2326f3491551c14",
+        "apps/api/app/extraction/rapidocr_runtime.py": "2ca7721abe55a6247e5048e79b3af4c1d96c80a2d91f4a8c25ce0cfc4ae3b47c",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "r06",
+          "source_sha256": "5dd3ed5a2ed47b08d454c407918c45c5d2a749df16a64acf42352834c019c6b4",
+          "upload_seconds": 0.19,
+          "end_to_end_seconds": 7.44,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 10,
+          "row_checked": 10,
+          "expected_rows": 3,
+          "actual_rows": 3,
+          "required_abstentions": {
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "po_reference": true,
+            "payment_account_token": true,
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true
+          },
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_calls": 0,
+          "failed_header_checks": {},
+          "ocr_providers": [
+            "RAPIDOCR_CPU"
+          ],
+          "original_hash_verified": true
+        }
+      ]
+    },
+    {
+      "private_file": "public-cl10-p02-final.json",
+      "raw_sha256": "b9b34f70b36baaf13d6438fe8bac0985dc3a2ad93672d6dd33f020ba35c644c8",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "e75db4c9cf0e34363c121e346fd6ba03b35d99484d93c4f7e2326f3491551c14",
+        "apps/api/app/extraction/rapidocr_runtime.py": "e4b746a222b0611f3fd96a5c8f3f8c6f1dafe7c042312a640166e8bad85708da",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "p02",
+          "source_sha256": "c57552a94f7ee3cd0a8647a8bd1a06652ad78667d9a2835d6ee73e57808a17ca",
+          "upload_seconds": 0.157,
+          "end_to_end_seconds": 19.3,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 5,
+          "row_checked": 5,
+          "expected_rows": 1,
+          "actual_rows": 1,
+          "required_abstentions": {
+            "tax_basis": true
+          },
+          "paths": [
+            "LOCAL_OCR",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_calls": 1,
+          "failed_header_checks": {},
+          "ocr_providers": [
+            "RAPIDOCR_CPU"
+          ],
+          "original_hash_verified": true
+        }
+      ]
+    },
+    {
+      "private_file": "public-cl10-p02-safety-final.json",
+      "raw_sha256": "f4c7289e1fed2b01c6986e1f386799cbb12149e2ee5ab4832e3943b7fb3177fc",
+      "code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "ec0840f01b798acab69109eb8edc84a0bfcea6cf0660b9bd23161f4d59d5a1bd",
+        "apps/api/app/extraction/rapidocr_runtime.py": "e4b746a222b0611f3fd96a5c8f3f8c6f1dafe7c042312a640166e8bad85708da",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "p02",
+          "source_sha256": "c57552a94f7ee3cd0a8647a8bd1a06652ad78667d9a2835d6ee73e57808a17ca",
+          "upload_seconds": 1.232,
+          "end_to_end_seconds": 20.359,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 5,
+          "row_checked": 5,
+          "actual_rows": 1,
+          "required_abstentions": {
+            "tax_basis": true
+          },
+          "paths": [
+            "LOCAL_OCR",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_calls": 1,
+          "ocr_providers": [
+            "RAPIDOCR_CPU"
+          ],
+          "original_hash_verified": true
+        }
+      ]
+    }
+  ]
+}

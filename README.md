@@ -152,3 +152,13 @@ fictional development invoices; all still require source/accounting confirmation
 The report retains failed attempts, actual timings, additional-probe limits and
 unresolved rotated/multi-blank rows. No fine-tuning, data/model acquisition, push
 or deployment follows from this checkpoint.
+
+[CL-10 measured rotation/partial-row repair](docs/clearledger_rotation_robustness.md)
+adds bounded source-preserving CPU orientation/deskew/crop projection and honest
+missing-cell capture on the existing engine. It preserves original evidence,
+conflicting-read/null holds and actual provider provenance. Baselines, first new
+reserved-family results, spent replays and the repaired real border failure are
+recorded separately. [Consolidated hackathon readiness](docs/clearledger_hackathon_readiness.md)
+defines the local fictional demo claim, remaining real-data/business/identity/
+scanner/pilot gates and the current core stopping point. Further UI redesign is
+deferred; local commit only, no push or deploy.

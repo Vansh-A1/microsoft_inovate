@@ -455,3 +455,13 @@ English/selected fields do not establish Arabic fidelity or complete accounting.
 The rotated scan and spent multi-blank q06 still need improvement/authorized source
 clarification. Resident model timings do not establish cold-weight/VRAM or a
 universal warm-speed promise. See [CL-09 evidence](clearledger_source_repair.md).
+
+## CL-10 measured rotation stopping point — 2026-10-04
+
+Three invented CC0 layout families/ten correlated variants were frozen before geometry tuning. Seven reserved variants belong to two NEW synthetic families; baseline remained sealed until first final execution. They are now spent. This supplies bounded orientation/blank-cell evidence, not real-company adjudication, independent ten-layout accuracy or model-training holdout provenance. No new source/model acquisition/training occurred.
+
+Measured orthogonal/small-global-skew transforms change layout and at most one bounded private CPU derivative, never originals. Source field boxes come only from actual detector regions inverse-projected to the unchanged preview/EXIF source. Crop extents are context. Out-of-canvas detector padding is excluded and recorded, never clipped into a fabricated field locator. Disagreeing measured reads remain ambiguous/canonical null even if a known expected value equals the second read. Missing quantity AND price can retain measured description/amount/other rows; no arithmetic fills them. Separate human confirmation/accounting/business controls still block clearance.
+
+The repaired spent public p02 uses actual configured Qwen/TypeLLM for one unresolved header call, with 19.300 s actual upload/durable timing versus CL-09 39.226 s/three calls; selected facts remain complete. Initial real boundary fallback failure is retained. CPU startup/repeat and pipeline/API timings are separate observations with resident GPU weights/shared-host activity; no cold GPU/request VRAM/general latency guarantee. Four reserved supplier reads/two quantity conflicts/one tax conflict and Arabic/perspective/mixed rotations remain unresolved.
+
+CL-10 closes bounded core extraction/readiness and stops before UI redesign. Existing small original rotated previews/technical source tables need separate polish; development role login is not hosted SSO. Original fictional policy version 46/history is preserved. Real adjudicated corpus/business sources, identity/scanner/hosted release inputs are unsupplied; no production readiness/accuracy/compliance is inferred. See [readiness](clearledger_hackathon_readiness.md).

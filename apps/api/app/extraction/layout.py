@@ -6,7 +6,7 @@ The legacy labeled/pipe parser remains intact. No arithmetic supplies raw facts.
 """
 import re
 
-VERSION = 'printed-layout-v5'
+VERSION = 'printed-layout-v6'
 HEADER_ALIASES = {
     'supplier': 'vendor_name', 'vendor': 'vendor_name', 'supplier name': 'vendor_name',
     'vendor name': 'vendor_name', 'seller': 'vendor_name', 'merchant': 'merchant_name',
@@ -82,15 +82,26 @@ def label_at(row, index, aliases):
 
 
 def heading_columns(row):
-    found=[];cursor=0
-    while cursor<len(row):
-        heading=label_at(row,cursor,COLUMN_ALIASES)
-        if not heading:return None
-        count,field,parts=heading;found.append((field,union(parts)));cursor+=count
-    names=[field for field,_ in found]
-    if {'description','quantity','unit_price'}<=set(names) and set(names)&{'amount','net_amount','gross_amount'}:
-        return found
-    return None
+    candidates=[]
+    for start in range(len(row)):
+        found=[];cursor=start
+        while cursor<len(row):
+            heading=label_at(row,cursor,COLUMN_ALIASES)
+            if not heading:break
+            count,field,parts=heading;found.append((field,union(parts)));cursor+=count
+        names=[field for field,_ in found]
+        if {'description','quantity','unit_price'}<=set(names) and set(names)&{'amount','net_amount','gross_amount'}:
+            candidates.append(found)
+    if not candidates:return None
+    largest=max(map(len,candidates));best=[c for c in candidates if len(c)==largest]
+    return best[0] if len(best)==1 else None  # competing independently printed schemas abstain
+
+
+def first_cluster(parts):
+    """One contiguous value, never a separate far column on the same baseline."""
+    for i,(a,b) in enumerate(zip(parts,parts[1:]),1):
+        if b['bbox']['x1']-a['bbox']['x2']>.06:return parts[:i]
+    return parts
 
 
 def table_columns(details):
@@ -122,30 +133,39 @@ def stacked_headers(rows):
         # Unrelated text may belong to an independently separated left column.
         # Text to the right of a label can be its inline value; never claim
         # that row as stacked and replace it with the following row's text.
-        if any(p['bbox']['x1']>=labels[0][1][0]['bbox']['x1'] for p in unrelated):continue
+        if any(0<=p['bbox']['x1']-parts[-1]['bbox']['x2']<=.22 for p in unrelated for _,parts in labels):continue
         values=rows[index+1]
-        gap=min(p['bbox']['y1'] for p in values)-max(p['bbox']['y2'] for p in row)
         # PDF font extents can overlap even when consecutive printed baselines
         # are distinct. Limit this allowance to measured native font spans;
         # OCR boxes and material overlap still cannot associate labels/values.
-        minimum_gap=0
-        if all(0<p.get('font_size_points',0)<=512 for p in row+values):
-            minimum_gap=-min(p['bbox']['y2']-p['bbox']['y1'] for p in row+values)*.25
-        if not minimum_gap<=gap<=.04 or any(key(p['text']) in HEADER_ALIASES for p in values):continue
         associations=[];used=[]
         for n,(field,parts) in enumerate(labels):
             left=parts[0]['bbox']['x1']
             right=labels[n+1][1][0]['bbox']['x1']-.015 if n+1<len(labels) else 1
             assigned=[p for p in values if left-.018<=p['bbox']['x1'] and p['bbox']['x2']<=right]
             if not assigned or abs(assigned[0]['bbox']['x1']-left)>.03:break
+            assigned=first_cluster(assigned)
+            if any(key(p['text']) in HEADER_ALIASES for p in assigned):break
+            # Check this independently owned column, not distant table cells
+            # on a slightly different baseline. Tiny detector-box overlap is
+            # allowed only between vertically ordered label/value centers.
+            gap=min(p['bbox']['y1'] for p in assigned)-max(p['bbox']['y2'] for p in parts)
+            height=min(p['bbox']['y2']-p['bbox']['y1'] for p in parts+assigned)
+            allowance=.25 if all(0<p.get('font_size_points',0)<=512 for p in parts+assigned) else .10
+            if not -height*allowance<=gap<=.04:break
             used.extend(assigned)
             associations.append((field,' '.join(p['text'].strip() for p in assigned),union(parts+assigned,source=True)))
-        if len(associations)==len(labels) and len(used)==len(values):
-            out.extend(associations);claimed.update((index,index+1))
+        unassigned=[p for p in values if p not in used]
+        separated=all(all(p['bbox']['x2']+.06<=v['bbox']['x1'] or p['bbox']['x1']>=v['bbox']['x2']+.06 for v in used) for p in unassigned)
+        if len(associations)==len(labels) and separated:
+            out.extend(associations)
+            if not unrelated:claimed.add(index)
+            if not unassigned:claimed.add(index+1)
     return out,claimed
 
 
 def column_cells(row,columns):
+    row=[p for p in row if p['bbox']['x2']>columns[0][1]['x1']-.06]
     bounds=[(a[1]['x2']+b[1]['x1'])/2 for a,b in zip(columns,columns[1:])]
     text_fields={'sku','barcode','description'}
     ordered=sorted(row,key=lambda span:span['bbox']['x1'])
@@ -175,8 +195,9 @@ def column_cells(row,columns):
 def readable_partial_row(cells,columns):
     missing=[field for (field,_),cell in zip(columns,cells) if not cell]
     present={field for (field,_),cell in zip(columns,cells) if cell}
-    return (len(missing)==1 and missing[0] in ('quantity','unit_price','amount','net_amount','gross_amount')
-            and 'description' in present and len(present)>=3)
+    return ('description' in present and (
+        len(missing)==1 and missing[0] in ('quantity','unit_price','amount','net_amount','gross_amount') and len(present)>=3 or
+        set(missing)=={'quantity','unit_price'} and bool(present&{'amount','net_amount','gross_amount'})))
 
 
 def table_retry_regions(details, maximum=3):
@@ -215,9 +236,23 @@ def table_retry_regions(details, maximum=3):
     return out
 
 
-def printed_layout(details):
+def printed_layout(details, _split_panels=True):
     """Return header candidates, measured table rows and explicit diagnostics."""
     rows = groups(details)
+    # A table printed wholly in a separate right panel must not use a nearby
+    # left header as its row baseline. Split only on an independently measured
+    # complete schema and a clear gap; crossing regions stay with the table and
+    # retain the existing uncertainty checks. Source boxes are never changed.
+    if _split_panels:
+        starts=[found[0][1]['x1'] for row in rows if (found:=heading_columns(row))]
+        if starts and min(starts)>=.3 and max(starts)-min(starts)<=.02:
+            boundary=min(starts)-.06
+            left=[s for s in details.get('spans',[]) if s.get('layout_bbox',s.get('bbox',{})).get('x2',1)<=boundary]
+            right=[s for s in details.get('spans',[]) if s not in left]
+            if left and right:
+                lh,li,ld=printed_layout(details|{'spans':left},False)
+                rh,ri,rd=printed_layout(details|{'spans':right},False)
+                return lh+rh,li+ri,list(dict.fromkeys(ld+rd))
     headers, claimed = stacked_headers(rows)
     items, diagnostics = [], []
     columns = None
@@ -265,10 +300,10 @@ def printed_layout(details):
             else:
                 cursor += 1
         if anchors:
-            accepted = False
+            accepted = False;outside_table=columns is not None
             for n, (start, count, field, parts) in enumerate(anchors):
                 end = anchors[n + 1][0] if n + 1 < len(anchors) else len(expanded)
-                values = expanded[start + count:end]
+                values = first_cluster(expanded[start + count:end])
                 if not values:
                     continue
                 gap = values[0]['bbox']['x1'] - parts[-1]['bbox']['x2']
@@ -276,12 +311,14 @@ def printed_layout(details):
                     continue
                 raw = ' '.join(p['text'].strip() for p in values).strip()
                 headers.append((field, raw, union(parts + values,source=True)))
+                outside_table &= union(parts+values)['x2']<=columns[0][1]['x1']-.06 if columns else False
                 accepted = True
-            if accepted:
+            if accepted and not outside_table:
                 columns = None
                 continue
         if not columns:
             continue
+        if all(p['bbox']['x2']<=columns[0][1]['x1']-.06 for p in row):continue
         if table_y is not None and min(p['bbox']['y1'] for p in row)-table_y > .08:
             columns = None
             continue

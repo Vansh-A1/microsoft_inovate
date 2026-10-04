@@ -526,3 +526,17 @@ No table or migration is added; extraction-v1 and financial record semantics rem
 | reused_header_fields / header_fields_requested / call_metrics | Actual per-page known/requested field lists and executed model times/calls. No synthetic latency/confidence or extraction PASS. |
 | independent-document-summary-v1 / SOURCE_HEADER_AMOUNT_UNCONFIRMED | Model-only document tax/discount/shipping/other charges without an independently read summary label retain raw AMBIGUOUS and canonical null. Item tax/amount and guessed zero do not establish summary scope. |
 | CL-09 development/reserved probes | Four inspected development sources plus two additional source-fact probes frozen before tuning, sharing author/template families. All selected row fields remain counted; reserved null checks are distinct from literal success. No real-company or genuinely new-layout-family accuracy. |
+
+## CL-10 measured geometry and partial source rows
+
+| Field / version | Meaning and controls |
+|---|---|
+| measured-ocr-layout-alignment-v1 / native 8 / printed-layout-v6 | Four rigid measured layout candidates; unique printed ownership/physical axes select, weak/tied cases abstain. Small consistent global baselines ≤8° only. Not confidence or a finance decision. |
+| polygon_layout_pixels / layout_axis_pixels / layout_bbox | Actual detector quadrilateral in preview pixels; transformed physical dimensions/layout envelope used for association. Original normalized source `bbox` stays independently measured and unchanged. |
+| layout_alignment / transform | Status, actual cardinal/residual measured angle/support and rigid matrix/source/layout dimensions; source fixture angle never enters inference. `image_bytes_transformed:false` describes coordinate alignment only. |
+| aligned_pixel_read | Optional ONE actual private in-memory aligned CPU read: actual PNG hash/dimensions/source transform/Pillow version, `image_bytes_transformed:true`; no original/preview mutation. Layout refinement uses its measured polygons without another pixel read. |
+| excluded_source_regions | Actual aligned detector regions inverse-projecting outside original canvas, retained privately with raw text/extents/reason. Excluded from source facts; no clipped or invented source box. |
+| alignment_read_disagreements / OCR_ALIGNMENT_READ_DISAGREEMENT | Actual corresponding source-region conflicting read literals and original locator; AMBIGUOUS/canonical null/source confirmation, no model vote. Separate segmentation is not automatically disagreement. |
+| missing-numeric-cell-v2 / layout_to_preview_transform | Existing ≤3 numeric-cell retries share page/document deadlines; layout context inverse-projects to unchanged source preview, then measured new detector fields project through independent EXIF. Crop extents are not field boxes. |
+| Two unread quantity/price slots | Measured description+amount under unique independent columns can retain partial/following distinct rows. Both missing raw/canonical null, precise SOURCE_CELL_UNREAD questions, no arithmetic/value/UOM/tax guess. Crossing/unanchored/competing rows remain uncertain. |
+| clearledger-rotation-truth/measurement-v1 | Three frozen original-fictional families/ten correlated variants; two initially reserved families/seven variants now spent. All wrong/missing/ambiguous literals stay in denominator; safe null is scored separately. Baselines, first reserved, spent replay, failed/final live results remain distinct. |

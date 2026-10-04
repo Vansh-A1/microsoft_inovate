@@ -1,0 +1,587 @@
+{
+  "version": "clearledger-rotation-truth-v1",
+  "created_before_tuning_commit": "0c690800b82d8597debb19876c3b2e25c79ef722",
+  "provenance": "Original CC0 fictional ReportLab/PyMuPDF/Pillow content, frozen before rotation implementation; no downloaded or private invoices.",
+  "limitations": "Three development rotations of one family, seven reserved rotations of two NEW synthetic families. Rotations are correlated variants, not ten independent layouts or real-company accuracy. Expected rotations never enter extraction.",
+  "base_sources": [
+    {
+      "family": "development",
+      "path": "development.pdf",
+      "sha256": "220e360ed7495e2f3b65fb41eeb2b1aa1fd7825f30e13b3d46e56034b5e6deb6"
+    },
+    {
+      "family": "reserved_landscape",
+      "path": "reserved_landscape.pdf",
+      "sha256": "d2c2c124b26543dadab7ebbd8378fdb533383a2870ccb5ead96f67f25502518f"
+    },
+    {
+      "family": "reserved_portrait",
+      "path": "reserved_portrait.pdf",
+      "sha256": "7bf1449514f0d9bf1a78bb0da597b3e3493b862148e8a395c0149d62f42a424c"
+    }
+  ],
+  "cases": [
+    {
+      "id": "d01",
+      "split": "tuning",
+      "layout": "development",
+      "rotation_degrees_ccw": 0,
+      "source_type": "VENDOR_INVOICE",
+      "path": "d01.png",
+      "sha256": "c09c409c7cdfee6b31efea175706e0161c44d8afe2a7662dd77731c1fae46197",
+      "dimensions": [
+        1440,
+        992
+      ],
+      "headers": {
+        "vendor_name": "Fictional Rotation Workshop 1",
+        "invoice_number": "ROT-2026-001",
+        "invoice_date": "2026-10-04",
+        "currency": "INR",
+        "subtotal_amount": "82.25",
+        "tax_amount": "0.00",
+        "total_amount": "82.25"
+      },
+      "rows": [
+        {
+          "description": "Cork shelf pads",
+          "quantity": "3",
+          "unit_price": "14.25",
+          "amount": "42.75"
+        },
+        {
+          "description": "Metal label clips",
+          "quantity": "8",
+          "unit_price": "2.50",
+          "amount": "20.00"
+        },
+        {
+          "description": "Archive sleeves",
+          "quantity": "2",
+          "unit_price": "9.75",
+          "amount": "19.50"
+        }
+      ],
+      "absent": [
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "82.25"
+      }
+    },
+    {
+      "id": "d02",
+      "split": "tuning",
+      "layout": "development",
+      "rotation_degrees_ccw": 6,
+      "source_type": "VENDOR_INVOICE",
+      "path": "d02.png",
+      "sha256": "432a3ec0858b489013587a6441359945222fe9f1ffbe025b10cecdc08ae4c3f8",
+      "dimensions": [
+        1536,
+        1138
+      ],
+      "headers": {
+        "vendor_name": "Fictional Rotation Workshop 1",
+        "invoice_number": "ROT-2026-001",
+        "invoice_date": "2026-10-04",
+        "currency": "INR",
+        "subtotal_amount": "82.25",
+        "tax_amount": "0.00",
+        "total_amount": "82.25"
+      },
+      "rows": [
+        {
+          "description": "Cork shelf pads",
+          "quantity": "3",
+          "unit_price": "14.25",
+          "amount": "42.75"
+        },
+        {
+          "description": "Metal label clips",
+          "quantity": "8",
+          "unit_price": "2.50",
+          "amount": "20.00"
+        },
+        {
+          "description": "Archive sleeves",
+          "quantity": "2",
+          "unit_price": "9.75",
+          "amount": "19.50"
+        }
+      ],
+      "absent": [
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "82.25"
+      }
+    },
+    {
+      "id": "d03",
+      "split": "tuning",
+      "layout": "development",
+      "rotation_degrees_ccw": 90,
+      "source_type": "VENDOR_INVOICE",
+      "path": "d03.png",
+      "sha256": "024f96f46a4f960e85c0dc89e49c2ebfb9b655845639269357abb6514dffc1e1",
+      "dimensions": [
+        992,
+        1440
+      ],
+      "headers": {
+        "vendor_name": "Fictional Rotation Workshop 1",
+        "invoice_number": "ROT-2026-001",
+        "invoice_date": "2026-10-04",
+        "currency": "INR",
+        "subtotal_amount": "82.25",
+        "tax_amount": "0.00",
+        "total_amount": "82.25"
+      },
+      "rows": [
+        {
+          "description": "Cork shelf pads",
+          "quantity": "3",
+          "unit_price": "14.25",
+          "amount": "42.75"
+        },
+        {
+          "description": "Metal label clips",
+          "quantity": "8",
+          "unit_price": "2.50",
+          "amount": "20.00"
+        },
+        {
+          "description": "Archive sleeves",
+          "quantity": "2",
+          "unit_price": "9.75",
+          "amount": "19.50"
+        }
+      ],
+      "absent": [
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "82.25"
+      }
+    },
+    {
+      "id": "r01",
+      "split": "holdout",
+      "layout": "reserved_landscape",
+      "rotation_degrees_ccw": 0,
+      "source_type": "VENDOR_INVOICE",
+      "path": "r01.png",
+      "sha256": "02a4fc32ae85255ca58cbe68358a0469dafbd41061d03ad1515d9a9d56fd116c",
+      "dimensions": [
+        1472,
+        1056
+      ],
+      "headers": {
+        "vendor_name": "Fictional Rotation Workshop 2",
+        "invoice_number": "ROT-2026-002",
+        "invoice_date": "2026-10-04",
+        "currency": "INR",
+        "subtotal_amount": "142.50",
+        "tax_amount": "0.00",
+        "total_amount": "142.50"
+      },
+      "rows": [
+        {
+          "description": "Canvas desk rails",
+          "quantity": "4",
+          "unit_price": "16.50",
+          "amount": "66.00"
+        },
+        {
+          "description": "Ink label ribbons",
+          "quantity": "6",
+          "unit_price": "7.25",
+          "amount": "43.50"
+        },
+        {
+          "description": "Slate index boards",
+          "quantity": "3",
+          "unit_price": "11.00",
+          "amount": "33.00"
+        }
+      ],
+      "absent": [
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "142.50"
+      }
+    },
+    {
+      "id": "r02",
+      "split": "holdout",
+      "layout": "reserved_landscape",
+      "rotation_degrees_ccw": 90,
+      "source_type": "VENDOR_INVOICE",
+      "path": "r02.png",
+      "sha256": "1913345d8d3b6d42785187d495213ee87a2b4f1c8e17ec22fbdd722b4cc7ffe1",
+      "dimensions": [
+        1056,
+        1472
+      ],
+      "headers": {
+        "vendor_name": "Fictional Rotation Workshop 2",
+        "invoice_number": "ROT-2026-002",
+        "invoice_date": "2026-10-04",
+        "currency": "INR",
+        "subtotal_amount": "142.50",
+        "tax_amount": "0.00",
+        "total_amount": "142.50"
+      },
+      "rows": [
+        {
+          "description": "Canvas desk rails",
+          "quantity": "4",
+          "unit_price": "16.50",
+          "amount": "66.00"
+        },
+        {
+          "description": "Ink label ribbons",
+          "quantity": "6",
+          "unit_price": "7.25",
+          "amount": "43.50"
+        },
+        {
+          "description": "Slate index boards",
+          "quantity": "3",
+          "unit_price": "11.00",
+          "amount": "33.00"
+        }
+      ],
+      "absent": [
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "142.50"
+      }
+    },
+    {
+      "id": "r03",
+      "split": "holdout",
+      "layout": "reserved_landscape",
+      "rotation_degrees_ccw": 180,
+      "source_type": "VENDOR_INVOICE",
+      "path": "r03.png",
+      "sha256": "db0238ac0f48e378f9cf8944c1d2cb1e7138277094cba4c611a6f1f35c975a1c",
+      "dimensions": [
+        1472,
+        1056
+      ],
+      "headers": {
+        "vendor_name": "Fictional Rotation Workshop 2",
+        "invoice_number": "ROT-2026-002",
+        "invoice_date": "2026-10-04",
+        "currency": "INR",
+        "subtotal_amount": "142.50",
+        "tax_amount": "0.00",
+        "total_amount": "142.50"
+      },
+      "rows": [
+        {
+          "description": "Canvas desk rails",
+          "quantity": "4",
+          "unit_price": "16.50",
+          "amount": "66.00"
+        },
+        {
+          "description": "Ink label ribbons",
+          "quantity": "6",
+          "unit_price": "7.25",
+          "amount": "43.50"
+        },
+        {
+          "description": "Slate index boards",
+          "quantity": "3",
+          "unit_price": "11.00",
+          "amount": "33.00"
+        }
+      ],
+      "absent": [
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "142.50"
+      }
+    },
+    {
+      "id": "r04",
+      "split": "holdout",
+      "layout": "reserved_landscape",
+      "rotation_degrees_ccw": 270,
+      "source_type": "VENDOR_INVOICE",
+      "path": "r04.png",
+      "sha256": "9c3fe84e3cd0f863d437f4f641af36b908cb5aec4fcdcca07bf1012c2954f275",
+      "dimensions": [
+        1056,
+        1472
+      ],
+      "headers": {
+        "vendor_name": "Fictional Rotation Workshop 2",
+        "invoice_number": "ROT-2026-002",
+        "invoice_date": "2026-10-04",
+        "currency": "INR",
+        "subtotal_amount": "142.50",
+        "tax_amount": "0.00",
+        "total_amount": "142.50"
+      },
+      "rows": [
+        {
+          "description": "Canvas desk rails",
+          "quantity": "4",
+          "unit_price": "16.50",
+          "amount": "66.00"
+        },
+        {
+          "description": "Ink label ribbons",
+          "quantity": "6",
+          "unit_price": "7.25",
+          "amount": "43.50"
+        },
+        {
+          "description": "Slate index boards",
+          "quantity": "3",
+          "unit_price": "11.00",
+          "amount": "33.00"
+        }
+      ],
+      "absent": [
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "142.50"
+      }
+    },
+    {
+      "id": "r05",
+      "split": "holdout",
+      "layout": "reserved_landscape",
+      "rotation_degrees_ccw": 4,
+      "source_type": "VENDOR_INVOICE",
+      "path": "r05.png",
+      "sha256": "accba0deeea90e72d2ad9f860374624d8764c9b2b0b38854d9a1f818b30be495",
+      "dimensions": [
+        1544,
+        1158
+      ],
+      "headers": {
+        "vendor_name": "Fictional Rotation Workshop 2",
+        "invoice_number": "ROT-2026-002",
+        "invoice_date": "2026-10-04",
+        "currency": "INR",
+        "subtotal_amount": "142.50",
+        "tax_amount": "0.00",
+        "total_amount": "142.50"
+      },
+      "rows": [
+        {
+          "description": "Canvas desk rails",
+          "quantity": "4",
+          "unit_price": "16.50",
+          "amount": "66.00"
+        },
+        {
+          "description": "Ink label ribbons",
+          "quantity": "6",
+          "unit_price": "7.25",
+          "amount": "43.50"
+        },
+        {
+          "description": "Slate index boards",
+          "quantity": "3",
+          "unit_price": "11.00",
+          "amount": "33.00"
+        }
+      ],
+      "absent": [
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "abstain": [],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "142.50"
+      }
+    },
+    {
+      "id": "r06",
+      "split": "holdout",
+      "layout": "reserved_portrait",
+      "rotation_degrees_ccw": -5,
+      "source_type": "VENDOR_INVOICE",
+      "path": "r06.png",
+      "sha256": "5dd3ed5a2ed47b08d454c407918c45c5d2a749df16a64acf42352834c019c6b4",
+      "dimensions": [
+        1312,
+        1602
+      ],
+      "headers": {
+        "vendor_name": "Fictional Rotation Workshop 3",
+        "invoice_number": "ROT-2026-003",
+        "invoice_date": "2026-10-04",
+        "currency": "INR",
+        "subtotal_amount": "90.00",
+        "tax_amount": "0.00",
+        "total_amount": "90.00"
+      },
+      "rows": [
+        {
+          "description": "Natural paper covers",
+          "quantity": "2",
+          "unit_price": "27.50",
+          "amount": "55.00"
+        },
+        {
+          "description": "Braided file loops",
+          "amount": "18.75"
+        },
+        {
+          "description": "Brass shelf markers",
+          "quantity": "5",
+          "unit_price": "3.25",
+          "amount": "16.25"
+        }
+      ],
+      "absent": [
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "abstain": [
+        "lines.1.quantity",
+        "lines.1.unit_price"
+      ],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "90.00"
+      }
+    },
+    {
+      "id": "r07",
+      "split": "holdout",
+      "layout": "reserved_portrait",
+      "rotation_degrees_ccw": 90,
+      "source_type": "VENDOR_INVOICE",
+      "path": "r07.png",
+      "sha256": "1bf625f350839f7cdfe3c99bf6d9728e1d364ade71ca7477dda8eb4fd17bd9be",
+      "dimensions": [
+        1504,
+        1184
+      ],
+      "headers": {
+        "vendor_name": "Fictional Rotation Workshop 3",
+        "invoice_number": "ROT-2026-003",
+        "invoice_date": "2026-10-04",
+        "currency": "INR",
+        "subtotal_amount": "90.00",
+        "tax_amount": "0.00",
+        "total_amount": "90.00"
+      },
+      "rows": [
+        {
+          "description": "Natural paper covers",
+          "quantity": "2",
+          "unit_price": "27.50",
+          "amount": "55.00"
+        },
+        {
+          "description": "Braided file loops",
+          "amount": "18.75"
+        },
+        {
+          "description": "Brass shelf markers",
+          "quantity": "5",
+          "unit_price": "3.25",
+          "amount": "16.25"
+        }
+      ],
+      "absent": [
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "po_reference",
+        "payment_account_token"
+      ],
+      "abstain": [
+        "lines.1.quantity",
+        "lines.1.unit_price"
+      ],
+      "normalized": {
+        "currency": "INR",
+        "invoice_date": "2026-10-04",
+        "total_amount": "90.00"
+      }
+    }
+  ]
+}

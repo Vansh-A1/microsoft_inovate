@@ -8,6 +8,7 @@ import atexit
 import json
 import os
 import math
+import re
 from pathlib import Path
 import selectors
 import subprocess
@@ -44,9 +45,28 @@ def mapped_spans(data,transform):
         try:box={k:float(v)/(width if k.startswith('x') else height) for k,v in pixels.items()}
         except (ValueError,TypeError,ZeroDivisionError):raise DocumentFailure('OCR_RESPONSE_INVALID') from None
         if any(not 0<=v<=1 for v in box.values()) or box['x1']>=box['x2'] or box['y1']>=box['y2']:raise DocumentFailure('OCR_RESPONSE_INVALID')
-        spans.append({'text':text,'bbox':original_box(box,transform.get('exif_orientation',1)),'layout_bbox':box,'kind':'line'})
+        span={'text':text,'bbox':original_box(box,transform.get('exif_orientation',1)),'layout_bbox':box,'kind':'line'}
+        polygon=item.get('polygon_pixels')
+        if polygon is not None:
+            if not isinstance(polygon,list) or len(polygon)!=4:raise DocumentFailure('OCR_RESPONSE_INVALID')
+            for p in polygon:
+                if not isinstance(p,list) or len(p)!=2 or any(isinstance(v,bool) or not isinstance(v,(int,float)) or not math.isfinite(v) for v in p):raise DocumentFailure('OCR_RESPONSE_INVALID')
+                if not pixels['x1']-1e-6<=p[0]<=pixels['x2']+1e-6 or not pixels['y1']-1e-6<=p[1]<=pixels['y2']+1e-6:raise DocumentFailure('OCR_RESPONSE_INVALID')
+            if abs(sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(polygon,polygon[1:]+polygon[:1])))<1:raise DocumentFailure('OCR_RESPONSE_INVALID')
+            span['polygon_layout_pixels']=polygon
+        spans.append(span)
     if sum(len(s['text']) for s in spans)>300000:raise DocumentFailure('OCR_RESPONSE_INVALID')
     return tuple(spans)
+
+
+def alignment_read(data,transform):
+    value=data.get('alignment_read')
+    if not isinstance(value,dict) or value.get('source_to_layout')!=transform or value.get('image_bytes_transformed') is not True:
+        raise DocumentFailure('OCR_RESPONSE_INVALID')
+    if value.get('derived_dimensions')!=[math.ceil(v) for v in transform['layout_dimensions']] or not re.fullmatch('[a-f0-9]{64}',str(value.get('derived_sha256',''))):
+        raise DocumentFailure('OCR_RESPONSE_INVALID')
+    if not isinstance(value.get('pillow_version'),str) or not re.fullmatch(r'\d+\.\d+\.\d+',value['pillow_version']):raise DocumentFailure('OCR_RESPONSE_INVALID')
+    return value
 
 
 def missing_cell_read(spans,region):
@@ -65,7 +85,7 @@ def missing_cell_read(spans,region):
 
 
 class CPUOCR:
-    version='rapidocr-3.9.2-onnxruntime-1.23.2-CPU-PP-OCRv6-small'
+    version='rapidocr-3.9.2-onnxruntime-1.23.2-CPU-PP-OCRv6-small-layout-alignment-v1'
     def __init__(self,python,storage_root):
         self.python=Path(python);self.root=Path(storage_root).resolve();self.lock=threading.RLock();self.timeout_seconds=15
         self.process=None;self.metadata={}
@@ -116,11 +136,33 @@ class CPUOCR:
             except OSError:self.close();raise DocumentFailure('OCR_FAILED') from None
             if data.get('failure'):raise DocumentFailure('OCR_FAILED')
             spans=mapped_spans(data,transform)
+            from app.extraction.orientation import align_layout,aligned_spans,crop_pixels
+            width,height=transform['derived_dimensions']
+            spans,alignment,orientation=align_layout(spans,width,height)
             from app.extraction.layout import table_retry_regions
-            retries=[];elapsed=data.get('seconds',0)
+            retries=[];elapsed=data.get('seconds',0);disagreements=[];pixel_read=None
+            # One actual re-read on a private in-memory derivative can recover
+            # glyphs that were not detected on the rotated/skewed original.
+            if orientation.get('status')=='ALIGNED' and (orientation['clockwise_degrees'] or abs(orientation['layout_only_deskew_degrees'])>=.25) and deadline-time.monotonic()>.1:
+                try:
+                    self.process.stdin.write(json.dumps({'path':str(path.resolve()),'alignment':alignment})+'\n');self.process.stdin.flush()
+                    retried=self._read(max(0,deadline-time.monotonic()))
+                except OSError:self.close();raise DocumentFailure('OCR_FAILED') from None
+                if retried.get('failure'):raise DocumentFailure('OCR_FAILED')
+                mapped=mapped_spans(retried,transform)
+                actual,refined_alignment,refined_orientation=align_layout(mapped,width,height)
+                if refined_orientation.get('status')!='ALIGNED':actual=aligned_spans(mapped,alignment)
+                from app.extraction.orientation import quality,read_disagreements
+                elapsed+=retried.get('seconds',0);pixel_read=alignment_read(retried,alignment)
+                disagreements=read_disagreements(spans,actual)
+                if quality(actual)>=quality(spans):
+                    spans=actual
+                    if refined_orientation.get('status')=='ALIGNED':
+                        alignment=refined_alignment;orientation=refined_orientation|{'refined_from_aligned_pixel_read':True}
+                data=retried
             width,height=transform['derived_dimensions']
             for region in table_retry_regions({'spans':spans}):
-                crop=region['crop'];pixels=[math.floor(crop['x1']*width),math.floor(crop['y1']*height),math.ceil(crop['x2']*width),math.ceil(crop['y2']*height)]
+                crop=region['crop'];pixels=crop_pixels(crop,alignment)
                 if (pixels[2]-pixels[0])*(pixels[3]-pixels[1])*4>4000000:
                     retries.append({'field':region['field'],'status':'CROP_LIMIT'});continue
                 if deadline-time.monotonic()<.1:
@@ -130,14 +172,16 @@ class CPUOCR:
                     retried=self._read(max(0,deadline-time.monotonic()))
                 except OSError:self.close();raise DocumentFailure('OCR_FAILED') from None
                 if retried.get('failure'):raise DocumentFailure('OCR_FAILED')
-                actual=missing_cell_read(mapped_spans(retried,transform),region)
+                retry_spans=mapped_spans(retried,transform)
+                if retry_spans and all('polygon_layout_pixels' in s for s in retry_spans):retry_spans=aligned_spans(retry_spans,alignment)
+                actual=missing_cell_read(retry_spans,region)
                 elapsed+=retried.get('seconds',0)
                 retries.append({'field':region['field'],'crop_extents_pixels':pixels,'scale':2,'seconds':retried.get('seconds'),
-                    'status':'MEASURED_CELL_READ' if actual else 'UNRESOLVED'})
+                    'status':'MEASURED_CELL_READ' if actual else 'UNRESOLVED','layout_to_preview_transform':alignment})
                 if actual:spans=spans+(actual|{'origin':'bounded-cpu-row-retry'},)
                 data=retried
             self.metadata.update(last_seconds=elapsed,memory_peak_kib=data.get('memory_peak_kib'),
-                geometry_retry_version='missing-numeric-cell-v1',row_retries=retries)
+                geometry_retry_version='missing-numeric-cell-v2',row_retries=retries,layout_alignment=orientation,aligned_pixel_read=pixel_read,alignment_read_disagreements=disagreements)
             return OCRPage('\n'.join(s['text'] for s in spans),spans,'RAPIDOCR_CPU',self.version)
 
     def close(self):

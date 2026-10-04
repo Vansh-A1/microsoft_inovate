@@ -7,6 +7,8 @@ verified wheel; explicit paths and blocked HTTP prevent runtime downloads.
 import hashlib
 from importlib.metadata import version
 import json
+import math
+from io import BytesIO
 from pathlib import Path
 import resource
 import sys
@@ -58,11 +60,38 @@ for line in sys.stdin:
                 source=image.crop((x1,y1,x2,y2)).resize(((x2-x1)*scale,(y2-y1)*scale))
             # RapidOCR accepts a PIL image; no file/network side effects.
         else:source=str(path)
-        start=time.monotonic();result=engine(source);spans=[]
+        alignment=request.get('alignment');inverse=None;alignment_read=None
+        if alignment is not None:
+            from PIL import Image
+            if crop is not None or not isinstance(alignment,dict):raise ValueError('One bounded full alignment read required')
+            matrix=alignment.get('matrix');dimensions=alignment.get('layout_dimensions')
+            if not isinstance(matrix,list) or len(matrix)!=6 or not isinstance(dimensions,list) or len(dimensions)!=2:raise ValueError('Rigid transform required')
+            if any(isinstance(v,bool) or not isinstance(v,(int,float)) or not math.isfinite(v) for v in matrix+dimensions):raise ValueError('Finite transform required')
+            a,b,c,d,e,f=matrix;det=a*e-b*d
+            if abs(det-1)>1e-6 or abs(a*a+d*d-1)>1e-6 or abs(b*b+e*e-1)>1e-6 or abs(a*b+d*e)>1e-6:raise ValueError('Rigid transform required')
+            if not all(0<v<=3000 for v in dimensions) or math.prod(dimensions)>9000000:raise ValueError('Alignment pixel limit')
+            inverse=[e/det,-b/det,(b*f-e*c)/det,-d/det,a/det,(d*c-a*f)/det]
+            with Image.open(path) as original:
+                if alignment.get('source_dimensions')!=list(original.size):raise ValueError('Actual source dimensions required')
+                source=original.convert('RGB').transform(tuple(math.ceil(v) for v in dimensions),Image.Transform.AFFINE,inverse,
+                    resample=Image.Resampling.BICUBIC,fillcolor='white')
+            png=BytesIO();source.save(png,format='PNG')
+            alignment_read={'derived_sha256':hashlib.sha256(png.getvalue()).hexdigest(),'derived_dimensions':list(source.size),
+                'source_to_layout':alignment,'pillow_version':version('Pillow'),'image_bytes_transformed':True}
+        def mapped_point(x,y):
+            x=x/scale+offset[0];y=y/scale+offset[1]
+            return [inverse[0]*x+inverse[1]*y+inverse[2],inverse[3]*x+inverse[4]*y+inverse[5]] if inverse else [x,y]
+        start=time.monotonic();result=engine(source);spans=[];outside=[]
         if result.boxes is not None:
             for box,text,score in zip(result.boxes,result.txts,result.scores):
-                points=[[float(p[0])/scale+offset[0],float(p[1])/scale+offset[1]] for p in box.tolist()]
+                points=[mapped_point(float(p[0]),float(p[1])) for p in box.tolist()]
                 xs=[p[0] for p in points];ys=[p[1] for p in points]
+                if inverse and any(not 0<=x<=alignment['source_dimensions'][0] or not 0<=y<=alignment['source_dimensions'][1] for x,y in points):
+                    # Detector padding may cross the original canvas after a
+                    # rigid reread. Exclude that region; clipping it would
+                    # fabricate a precise source box for partially unseen text.
+                    outside.append({'text':text,'mapped_pixels':{'x1':min(xs),'y1':min(ys),'x2':max(xs),'y2':max(ys)},'reason':'DETECTOR_REGION_OUTSIDE_ORIGINAL_CANVAS'})
+                    continue
                 spans.append({'text':text,'pixels':{'x1':min(xs),'y1':min(ys),'x2':max(xs),'y2':max(ys)},
                               'polygon_pixels':points,'score_diagnostic_only':float(score)})
         word_boxes=[]
@@ -71,9 +100,10 @@ for line in sys.stdin:
                 if box is not None:
                     points=box.tolist() if hasattr(box,'tolist') else box
                     word_boxes.append({'text':text,'score_diagnostic_only':float(score),
-                        'polygon_pixels':[[float(p[0])/scale+offset[0],float(p[1])/scale+offset[1]] for p in points]})
+                        'polygon_pixels':[mapped_point(float(p[0]),float(p[1])) for p in points]})
+        if alignment_read is not None:alignment_read['excluded_source_regions']=outside
         response={'spans':spans,'word_boxes':word_boxes,'seconds':time.monotonic()-start,
-            'stage_seconds':result.elapse_list,'memory_peak_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss}
+            'stage_seconds':result.elapse_list,'alignment_read':alignment_read,'memory_peak_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss}
         if len(json.dumps(response))>2*1024*1024:raise ValueError('Bounded OCR response required')
         print(json.dumps(response),flush=True)
     except Exception:print(json.dumps({'failure':'CANDIDATE_OCR_FAILED'}),flush=True)

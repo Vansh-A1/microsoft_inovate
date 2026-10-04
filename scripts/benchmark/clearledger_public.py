@@ -23,7 +23,7 @@ ORIGIN='http://127.0.0.1:3000'
 FINAL={'READY','NEEDS_INPUT','QUARANTINED','FAILED_RETRYABLE','FAILED_FINAL','DEPENDENCY_UNAVAILABLE'}
 MONEY={'subtotal_amount','tax_amount','total_amount','document_discount_amount','shipping_amount','other_charges_amount',
        'unit_price','amount','discount_amount','net_amount','gross_amount'}
-CODE=[ROOT/'apps/api/app/extraction'/n for n in ('layout.py','native.py','typellm.py','row_grounding.py','cpu_ocr.py','rapidocr_runtime.py')]+[
+CODE=[ROOT/'apps/api/app/extraction'/n for n in ('layout.py','native.py','typellm.py','row_grounding.py','cpu_ocr.py','rapidocr_runtime.py','orientation.py')]+[
     ROOT/'apps/api/app/services/document_worker.py',ROOT/'apps/api/app/documents/normalizer.py']
 
 
@@ -61,17 +61,23 @@ def score(doc,case):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--label',required=True)
-    parser.add_argument('--case');parser.add_argument('--corpus',choices=['clearledger_public','clearledger_public_reserved'],default='clearledger_public');args=parser.parse_args()
+    parser.add_argument('--case');parser.add_argument('--corpus',choices=['clearledger_public','clearledger_public_reserved','clearledger_rotation'],default='clearledger_public');args=parser.parse_args()
     if not re.fullmatch('[a-z0-9-]{1,64}',args.label):raise ValueError('Bounded lowercase measurement label required')
     os.umask(0o077);target=ROOT/'runtime/clearledger'/('public-'+args.label+'.json')
     if target.exists():raise RuntimeError('Measurement exists; historical evidence cannot be overwritten')
     truth=ROOT/'data'/args.corpus/'manifest.json'
     manifest=json.loads(truth.read_text());hashes=code_hashes()
+    if args.corpus=='clearledger_rotation':
+        # Truth is adapted only for post-output scoring. Uploads contain bytes,
+        # never expected angles, fields, tables or the frozen manifest.
+        manifest['cases']=[c|{'rows':[r|{'page':1} for r in c['rows']], 'money_tokens':[],
+            'must_be_unresolved':c['absent']+c['abstain']} for c in manifest['cases']]
     if args.case and args.case not in {case['id'] for case in manifest['cases']}:raise ValueError('Case must belong to frozen corpus')
+    scope='Correlated rotations of three original invented families.' if args.corpus=='clearledger_rotation' else 'Externally authored fictional sources; additional probes share prior template families.'
     output={'version':'clearledger-public-measurement-v1','label':args.label,
         'code_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
         'code_sha256':hashes,'truth_sha256':hashlib.sha256(truth.read_bytes()).hexdigest(),'corpus':args.corpus,
-        'limitations':f"{len(manifest['cases'])} externally authored fictional sources in this frozen corpus, not real-company or new-template-family accuracy. Actual loopback upload/proxy/durable worker/result at 0.5s polling. Existing model is resident; first worker/client request can be cold. No cold weight load. Human review/approvals/browser render excluded. Truth enters only post-extraction scoring; production hashes remain unchanged during this run.",'cases':[]}
+        'limitations':f"{len(manifest['cases'])} fictional sources in this frozen corpus. {scope} Not real-company accuracy. Actual loopback upload/proxy/durable worker/result at 0.5s polling. Existing model is resident; first worker/client request can be cold. No cold weight load. Human review/approvals/browser render excluded. Truth enters only post-extraction scoring; production hashes remain unchanged during this run.",'cases':[]}
     with httpx.Client(base_url=ORIGIN,timeout=20,follow_redirects=False) as client:
         session=client.post('/api/development/session',headers={'Origin':ORIGIN},json={'label':'Synthetic finance workspace'});session.raise_for_status()
         def post(path,**kw):
@@ -80,9 +86,11 @@ def main():
         for case in manifest['cases']:
             if args.case and args.case!=case['id']:continue
             if hashes!=code_hashes():raise RuntimeError('Production code changed during frozen evaluation')
-            source=ROOT/'runtime/clearledger/public-research'/case['source']['local_path'];content=source.read_bytes()
-            if hashlib.sha256(content).hexdigest()!=case['source']['sha256']:raise ValueError('Pinned public source changed')
-            started=time.monotonic();value={'id':case['id'],'source_sha256':case['source']['sha256']};states=[]
+            source=truth.parent/case['path'] if args.corpus=='clearledger_rotation' else ROOT/'runtime/clearledger/public-research'/case['source']['local_path']
+            expected_sha=case['sha256'] if args.corpus=='clearledger_rotation' else case['source']['sha256']
+            content=source.read_bytes()
+            if hashlib.sha256(content).hexdigest()!=expected_sha:raise ValueError('Pinned public source changed')
+            started=time.monotonic();value={'id':case['id'],'source_sha256':expected_sha};states=[]
             upload=post('/api/uploads',json={'filename':'public-fictional-'+source.name,'mime':'image/png' if source.suffix=='.png' else 'application/pdf','source_type':'VENDOR_INVOICE'})
             post('/api/uploads/'+upload['id']+'/bytes',headers={'Content-Type':'application/octet-stream'},content=content)
             post('/api/uploads/'+upload['id']+'/finalize',json={});value['upload_seconds']=round(time.monotonic()-started,3)
