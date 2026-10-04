@@ -391,3 +391,34 @@ worker queue timings 6.469/6.883 s (warm slower), both NEEDS_INPUT/no finance re
 Source/secret/original preservation and dependency checks pass; no full-suite or
 representative production accuracy/performance claim. Commands and limitations:
 [CL-07 correctness](clearledger_row_correctness.md).
+
+## CL-08 independent public evaluation and local judge acceptance
+
+Unchanged real local pipeline processed four licensed independently authored
+fictional sources: 19 rows/five pages, frozen pixel truth before output. **25/31
+header and 72/86 row-field checks**; all failures counted, including wrong p01 tax/
+repeated item fields, p04 null-contaminated headers/false shipping and p03 unresolved
+normalization. All NEEDS_INPUT/no finance decision; 23/23 absent header canonical
+nulls, 14/23 explicit MISSING and five required canonical abstentions. Timings
+90.736/55.190/31.523/58.822 s include upload/proxy/durable processing/final polling.
+The benchmark exit 0 means measurements completed, not invoices passed accuracy.
+
+`PYTHONPATH=apps/api .venv/bin/python -m pytest apps/api/tests/test_public_evaluation.py -q --tb=short`:
+**three passed / 0.03 s / exit 0**. Comparator checks reject punctuation rewriting,
+wrong source page, ambiguous row-as-success, invented zero tax and ungrounded dollar
+state. No implementation-mirroring finance tests or engine changes were added.
+
+Actual browser **15 passed / one conditional outage skip / 116.310 s / exit 0**,
+one worker/zero retries. Role denial, Auto intake, source confirmation/correction/
+revision, blocked missing quantity, invoice/expense computed HOLD, corrupt quarantine,
+loading/error/phone and Admin effective policy version 44/history/report behavior
+pass; latest source/Finance/Admin laptop/phone screens inspected. The skip is not
+a new outage drill. Read-only judge: eight current computed scenarios with 28
+controls and retained correction HOLD pass. Local API/web/worker/model health READY.
+
+Compileall, whitespace, 382-text-file bounded source scan, cached Gitleaks zero
+findings plus one redacted detection probe, original nine hashes/spec and all 26
+previous frozen source/snapshot checks pass. Four public source/truth hashes and
+eight production hashes match the measured unchanged 0319cf4 code. No new full
+backend/browser, representative real-company accuracy, paired before/after or VRAM
+claim. Exact commands/method/failures: [CL-08 report](clearledger_independent_validation.md).

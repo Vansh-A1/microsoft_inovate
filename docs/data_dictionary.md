@@ -500,3 +500,15 @@ No table or migration is added; extraction-v1 and financial record semantics rem
 | ROW_ASSOCIATION_UNCONFIRMED / MODEL_ROW_ASSOCIATION_UNCONFIRMED | Raw candidates retained ambiguous, no canonical quantity/amount. Remaining unassigned slots are unread. Does not declare genuine equal items duplicates. |
 | document-normalizer-v3 / observation_diagnostic | New immutable traces preserve extraction diagnostic and source-specific/generic review findings. v2 histories remain retained; money arithmetic/finance decisions unchanged. |
 | CL-07 readable row denominator | All 67 printed row literals on six new fictional variants, including q06's unresolved ten. A required null abstention is distinct from successful extraction. |
+
+## CL-08 independent evaluation artifacts
+
+| Field / artifact | Meaning and controls |
+|---|---|
+| clearledger-public-pixel-truth-v1 | Before-inference manual pixels, exact pinned source/license/README revisions and hashes; no author expected JSON or fixture injection. Public sources are externally authored fictional data. |
+| money_tokens / contains_fields / accepted_states | Literal comparison only: printed currency token/whitespace removal for money, punctuation preserved; explicitly limited English substrings and accepted observation states. No locale normalization, Arabic fidelity or finance clearance. |
+| row_matches / row_checked | Correct literal, accepted state and correct source page for all selected fields on all 19 source rows. Wrong/missing/ambiguous rows stay in the 86-field denominator. |
+| absent / required_abstentions | Explicit MISSING/raw null is separate from canonical null. Safe null cannot inflate literal extraction success; invented zero does not satisfy missing tax. |
+| clearledger-public-results-v1 | Limited attributed source facts/observed failures plus timing/call/provenance metadata. Full outputs/source pixels stay ignored; no confidential invoice/export is tracked. |
+| source_classification_erratum | p01 frozen description says native but original PDF has zero native characters. Correction is explicit; frozen truth, originals and scores remain untouched. |
+| end_to_end_seconds / upload_seconds | Actual loopback proxy/durable final-state observations at 0.5 s polling with resident CPU/model; excludes human/browser/approval time. Not a cold-load, paired improvement or VRAM measurement. |

@@ -400,3 +400,28 @@ policies/identities/scanner paths from business/identity/security acceptance.
 Missing real inputs remain missing; lawful independent source evidence is being
 requested through the parent task. No restricted dataset, stronger provider, credential or
 host change, private export, publication or production pilot was authorized.
+
+## CL-08 independently authored public samples — 2026-10-04
+
+Four public samples have explicit fictional provenance and pinned CC BY 4.0/MIT
+reuse notices checked before downloads. English/selected facts were pixel-checked
+by this agent before output, not by an independent business adjudicator. Author
+truth/generators were not used; model-training overlap is unknown. They establish
+an independent layout probe, not customer accuracy, the requested 40–60 real/
+anonymized corpus or policy/accounting authority. Arabic fidelity is unscored.
+p01 is raster-only despite its frozen "native" label; an erratum preserves truth/
+score integrity. Current external sources are now spent regression inputs.
+
+Source confirmation still matters: wrong p01 tax/repeated details can enter an
+unconfirmed normalized draft. NEEDS_INPUT prevents current finance submission,
+but does not mean every false value is quarantined. Provider null text must not
+be mistaken for real source conflict; euro/comma reads are not trusted currency/
+amount normalization. Unprinted tax basis, dollar currency and q06 quantity/price
+remain unknown. No guessed accounting fact or zero is authorized by these results.
+
+The resident-service observations of 31.523–90.736 s have no cold-weight, paired
+before/after, load/VRAM or universal latency implication. Existing judge/browser
+human-review gates pass within local fictional scope; actual organization identity,
+scanner definitions, commercial attribution/provider and release approval remain
+separate. No production pilot or broader acceptance is inferred. See
+[CL-08 evidence](clearledger_independent_validation.md).

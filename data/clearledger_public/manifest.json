@@ -1,0 +1,379 @@
+{
+  "version": "clearledger-public-pixel-truth-v1",
+  "frozen_before_inference_commit": "0319cf4fda770ff004af6026370d6a27e87c2de0",
+  "frozen_utc": "2026-10-04T18:07:53.940445+00:00",
+  "sources": [
+    {
+      "key": "salor",
+      "repo": "SalorWorks/shopify-invoice-test-pack",
+      "commit": "bb2e531cfa504e6f7200243620121c523f9f7622",
+      "checked_utc": "2026-10-04T17:58:25.958964+00:00",
+      "method": "anonymous git ls-remote; API rate-limited, no token used",
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/SalorWorks/shopify-invoice-test-pack/bb2e531cfa504e6f7200243620121c523f9f7622/LICENSE",
+          "sha256": "6b9823c7bff7119b018575ffc00a8bba58d31cd2fa08b59e81287ea430c73bcb"
+        },
+        {
+          "path": "README.md",
+          "url": "https://raw.githubusercontent.com/SalorWorks/shopify-invoice-test-pack/bb2e531cfa504e6f7200243620121c523f9f7622/README.md",
+          "sha256": "b763a08c34eaf5a8201e7f969fc06b1699f02748f20f2c45688edf962ce9e815"
+        },
+        {
+          "path": "CITATION.cff",
+          "url": "https://raw.githubusercontent.com/SalorWorks/shopify-invoice-test-pack/bb2e531cfa504e6f7200243620121c523f9f7622/CITATION.cff",
+          "sha256": "7b09d4a0f09b0adab6a37a195e615c700c3304da8e65e14db59301ebcad5c2ae"
+        }
+      ],
+      "license": "CC-BY-4.0",
+      "fictional_provenance": "Author README explicitly identifies samples as generated fictional/synthetic; inspected visible documents contain sample business details, not real customer input."
+    },
+    {
+      "key": "merigaud",
+      "repo": "DylanMerigaud/ai-invoice-parser",
+      "commit": "5b54f4b5969452cc282b27f0327fbc886f9f6358",
+      "checked_utc": "2026-10-04T17:58:26.984077+00:00",
+      "method": "anonymous git ls-remote; API rate-limited, no token used",
+      "files": [
+        {
+          "path": "LICENSE",
+          "url": "https://raw.githubusercontent.com/DylanMerigaud/ai-invoice-parser/5b54f4b5969452cc282b27f0327fbc886f9f6358/LICENSE",
+          "sha256": "0e86755d06fc8acd9f5b86058eac4d5224bf3a4f0c4bce9cf0e7608c918e38f8"
+        },
+        {
+          "path": "README.md",
+          "url": "https://raw.githubusercontent.com/DylanMerigaud/ai-invoice-parser/5b54f4b5969452cc282b27f0327fbc886f9f6358/README.md",
+          "sha256": "306b15ba26e447ff8a82e6707322c349e0e371f32f68df4e8b44982693051792"
+        }
+      ],
+      "license": "MIT",
+      "fictional_provenance": "Author README explicitly identifies samples as generated fictional/synthetic; inspected visible documents contain sample business details, not real customer input."
+    }
+  ],
+  "cases": [
+    {
+      "id": "p01",
+      "layout": "Dense bilingual native table with SKU/barcode/unit/quantity/price/discount/tax/total columns",
+      "headers": {
+        "vendor_name": "Fictional Gulf Foods LLC",
+        "invoice_number": "INV-2026-015",
+        "invoice_date": "2026-08-15",
+        "currency": "AED",
+        "subtotal_amount": "237.00",
+        "document_discount_amount": "9.00",
+        "tax_amount": "11.85",
+        "total_amount": "248.85"
+      },
+      "contains_fields": [
+        "vendor_name",
+        "lines.0.description",
+        "lines.1.description",
+        "lines.2.description"
+      ],
+      "money_tokens": [
+        "AED"
+      ],
+      "rows": [
+        {
+          "page": 1,
+          "description": "Green Tea 25 bags",
+          "quantity": "12",
+          "unit_price": "8.00",
+          "amount": "96.00",
+          "discount_amount": "0.00",
+          "tax_amount": "4.80",
+          "uom": "EA"
+        },
+        {
+          "page": 1,
+          "description": "Olive Oil Soap 150g",
+          "quantity": "6",
+          "unit_price": "15.00",
+          "amount": "81.00",
+          "discount_amount": "9.00",
+          "tax_amount": "4.05",
+          "uom": "EA"
+        },
+        {
+          "page": 1,
+          "description": "Sparkling Water 330ml",
+          "quantity": "24",
+          "unit_price": "2.50",
+          "amount": "60.00",
+          "discount_amount": "0.00",
+          "tax_amount": "3.00",
+          "uom": "EA"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "shipping_amount",
+        "other_charges_amount",
+        "tax_basis"
+      ],
+      "must_be_unresolved": [
+        "tax_basis"
+      ],
+      "notes": "English description/name segments scored only; Arabic not adjudicated. Printed Total column does not establish gross-versus-net tax treatment. Header discount summary may repeat the line discount; no tax-basis inference or accounting policy is supplied.",
+      "source": {
+        "id": "p01",
+        "source": "salor",
+        "upstream_path": "fixtures/15-multicolumn/invoice.pdf",
+        "upstream_url": "https://raw.githubusercontent.com/SalorWorks/shopify-invoice-test-pack/bb2e531cfa504e6f7200243620121c523f9f7622/fixtures/15-multicolumn/invoice.pdf",
+        "local_path": "p01.pdf",
+        "sha256": "9b097daecae02527a661f8175db42d5faef9cc7074ebaf00ce99ecf39e8c4422",
+        "bytes": 64759
+      },
+      "source_type": "VENDOR_INVOICE",
+      "inspection": "Manual visual inspection of original public PNG or all original PDF pages rendered at 1.6x, before model/pipeline output. No author expected.json fetched."
+    },
+    {
+      "id": "p02",
+      "layout": "Rotated uneven-contrast external scan, one item",
+      "headers": {
+        "vendor_name": "Fictional Gulf Foods LLC",
+        "invoice_number": "INV-2026-014",
+        "invoice_date": "2026-08-14",
+        "currency": "AED",
+        "subtotal_amount": "60.00",
+        "tax_amount": "3.00",
+        "total_amount": "63.00"
+      },
+      "money_tokens": [
+        "AED"
+      ],
+      "rows": [
+        {
+          "page": 1,
+          "description": "Sparkling Water 330ml",
+          "quantity": "24",
+          "unit_price": "2.50",
+          "amount": "60.00",
+          "uom": "EA"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "tax_basis"
+      ],
+      "must_be_unresolved": [
+        "tax_basis"
+      ],
+      "notes": "Source visually readable despite rotation/contrast. No document or line discount/tax-basis convention is printed; zeros may not be supplied.",
+      "source": {
+        "id": "p02",
+        "source": "salor",
+        "upstream_path": "fixtures/14-poor-scan/invoice.png",
+        "upstream_url": "https://raw.githubusercontent.com/SalorWorks/shopify-invoice-test-pack/bb2e531cfa504e6f7200243620121c523f9f7622/fixtures/14-poor-scan/invoice.png",
+        "local_path": "p02.png",
+        "sha256": "c57552a94f7ee3cd0a8647a8bd1a06652ad78667d9a2835d6ee73e57808a17ca",
+        "bytes": 100791
+      },
+      "source_type": "VENDOR_INVOICE",
+      "inspection": "Manual visual inspection of original public PNG or all original PDF pages rendered at 1.6x, before model/pipeline output. No author expected.json fetched."
+    },
+    {
+      "id": "p03",
+      "layout": "Right-aligned seller, stacked labels, European comma decimal and dot grouping",
+      "headers": {
+        "vendor_name": "Nordlicht Components GmbH",
+        "invoice_number": "NL-9931",
+        "invoice_date": "2024-02-12",
+        "due_date": "2024-03-13",
+        "currency": "€",
+        "subtotal_amount": "1.007,50",
+        "tax_amount": "191,43",
+        "total_amount": "1.198,93"
+      },
+      "money_tokens": [
+        "€"
+      ],
+      "rows": [
+        {
+          "page": 1,
+          "description": "Aluminium profile 40x40, 2m",
+          "quantity": "25",
+          "unit_price": "18,90",
+          "amount": "472,50"
+        },
+        {
+          "page": 1,
+          "description": "Corner brackets, zinc",
+          "quantity": "100",
+          "unit_price": "1,45",
+          "amount": "145,00"
+        },
+        {
+          "page": 1,
+          "description": "Assembly service (hours)",
+          "quantity": "6",
+          "unit_price": "65,00",
+          "amount": "390,00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "tax_basis"
+      ],
+      "must_be_unresolved": [
+        "tax_basis"
+      ],
+      "notes": "Only euro glyph, not literal EUR code, appears. Copying 1.007,50 cannot silently become 100750/1.00750. Canonical locale/currency handling is assessed separately from literal read checks; no locale is injected into the pipeline.",
+      "source": {
+        "id": "p03",
+        "source": "merigaud",
+        "upstream_path": "eval/samples/multicurrency-eur.pdf",
+        "upstream_url": "https://raw.githubusercontent.com/DylanMerigaud/ai-invoice-parser/5b54f4b5969452cc282b27f0327fbc886f9f6358/eval/samples/multicurrency-eur.pdf",
+        "local_path": "p03.pdf",
+        "sha256": "670616475f7dc45a156fd3357e0d314853079c1d6338c65df410a9e53a038c94",
+        "bytes": 2310
+      },
+      "source_type": "VENDOR_INVOICE",
+      "inspection": "Manual visual inspection of original public PNG or all original PDF pages rendered at 1.6x, before model/pipeline output. No author expected.json fetched."
+    },
+    {
+      "id": "p04",
+      "layout": "Twelve items across two pages, repeated table and totals on page two; dollar glyph only",
+      "headers": {
+        "vendor_name": "Cascade Wholesale Foods",
+        "invoice_number": "CWF-77120",
+        "invoice_date": "2024-03-28",
+        "due_date": "2024-04-27",
+        "currency": "$",
+        "subtotal_amount": "5,469.20",
+        "tax_amount": "437.54",
+        "total_amount": "5,906.74"
+      },
+      "money_tokens": [
+        "$"
+      ],
+      "accepted_states": {
+        "currency": [
+          "AMBIGUOUS"
+        ]
+      },
+      "rows": [
+        {
+          "page": 1,
+          "description": "Organic flour, 25kg sack",
+          "quantity": "20",
+          "unit_price": "34.00",
+          "amount": "680.00"
+        },
+        {
+          "page": 1,
+          "description": "Cane sugar, 25kg sack",
+          "quantity": "15",
+          "unit_price": "28.50",
+          "amount": "427.50"
+        },
+        {
+          "page": 1,
+          "description": "Olive oil, 5L tin",
+          "quantity": "24",
+          "unit_price": "41.25",
+          "amount": "990.00"
+        },
+        {
+          "page": 1,
+          "description": "Sea salt, 10kg bag",
+          "quantity": "30",
+          "unit_price": "12.80",
+          "amount": "384.00"
+        },
+        {
+          "page": 1,
+          "description": "Black peppercorns, 5kg",
+          "quantity": "8",
+          "unit_price": "64.50",
+          "amount": "516.00"
+        },
+        {
+          "page": 1,
+          "description": "Canned tomatoes, case of 12",
+          "quantity": "40",
+          "unit_price": "18.90",
+          "amount": "756.00"
+        },
+        {
+          "page": 1,
+          "description": "Dried pasta, 10kg box",
+          "quantity": "22",
+          "unit_price": "26.40",
+          "amount": "580.80"
+        },
+        {
+          "page": 1,
+          "description": "Yeast, 1kg vacuum pack",
+          "quantity": "18",
+          "unit_price": "9.95",
+          "amount": "179.10"
+        },
+        {
+          "page": 2,
+          "description": "Baking soda, 5kg",
+          "quantity": "12",
+          "unit_price": "7.50",
+          "amount": "90.00"
+        },
+        {
+          "page": 2,
+          "description": "Vanilla extract, 1L",
+          "quantity": "6",
+          "unit_price": "58.00",
+          "amount": "348.00"
+        },
+        {
+          "page": 2,
+          "description": "Cocoa powder, 5kg",
+          "quantity": "9",
+          "unit_price": "44.20",
+          "amount": "397.80"
+        },
+        {
+          "page": 2,
+          "description": "Delivery surcharge",
+          "quantity": "1",
+          "unit_price": "120.00",
+          "amount": "120.00"
+        }
+      ],
+      "absent": [
+        "po_reference",
+        "payment_account_token",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "tax_basis"
+      ],
+      "must_be_unresolved": [
+        "currency",
+        "tax_basis"
+      ],
+      "notes": "Address does not establish USD. Delivery surcharge is an item row, not a second document-level shipping charge. All twelve readable rows are in the literal denominator.",
+      "source": {
+        "id": "p04",
+        "source": "merigaud",
+        "upstream_path": "eval/samples/multipage.pdf",
+        "upstream_url": "https://raw.githubusercontent.com/DylanMerigaud/ai-invoice-parser/5b54f4b5969452cc282b27f0327fbc886f9f6358/eval/samples/multipage.pdf",
+        "local_path": "p04.pdf",
+        "sha256": "a66b0af03b6ae32a73c3738d59b0b067202f2e12b4163b2d261a99c2d3d673a0",
+        "bytes": 4080
+      },
+      "source_type": "VENDOR_INVOICE",
+      "inspection": "Manual visual inspection of original public PNG or all original PDF pages rendered at 1.6x, before model/pipeline output. No author expected.json fetched."
+    }
+  ],
+  "comparison_policy": "Raw PRESENT literal after whitespace folding; remove only the independently printed currency tokens from money fields, preserving decimal/group punctuation. Explicit contains_fields score English segments only. p04 currency must be AMBIGUOUS, literal dollar and canonically unresolved. Row ordinals/pages and all fields are checked, missing/unassigned/failed rows fail literal checks. Source truth never enters inference.",
+  "limitations": "Four independently authored public synthetic samples, not real-company adjudication or representative accuracy. Independent of this project tuning; unknown model-training overlap. No tuning of pipeline against these samples in CL-08."
+}

@@ -21,6 +21,10 @@ retains unread cells and distinct repeated items, bounds unassigned VLM generati
 and records six fresh fictional variants. [Acceptance inputs](docs/clearledger_acceptance_inputs.md)
 separate the functioning local demo from independent corpus, business-policy,
 identity, scanner and production-pilot acceptance.
+The [CL-08 independent public evaluation](docs/clearledger_independent_validation.md)
+checks four externally authored licensed fictional sources through the unchanged
+pipeline. It records wrong draft values and unresolved headers/European amounts:
+the bounded judge walkthrough passes, broader invoice automation acceptance does not.
 
 Phase 6 delivers the local application and release/handoff artifacts under an explicit external-infrastructure fallback. The subsequent approved priority override establishes **real local VLM + TypeLLM invoice extraction** on the unchanged GPU driver. This is a development experiment, not a deployed production pilot. See the [real inference acceptance record](docs/real_vlm_acceptance.md), [Phase-6 exit review](docs/phase6_exit_review.md) and [capability matrix](docs/release_matrix.md).
 

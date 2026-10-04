@@ -1512,3 +1512,50 @@ Parent is requesting those inputs. q06 cannot be cleared without confirmed row
 association and an authorized source for absent quantity/price. Keep current
 fictional demo available; no further model/dependency/provisioning/publication
 work follows automatically from this checkpoint.
+
+## CL-08 — independent public validation and bounded demo gate
+
+Phase-6/final evaluation and handoff, completed 2026-10-04. Goal: independently
+probe the unchanged accepted pipeline, disclose failures and finish local judge/
+minimum human acceptance. Files: attributed frozen public pixel-truth manifest,
+reuse notices/limited metrics, local durable evaluation harness, three comparator
+checks and documentation. No extraction/finance/UI/runtime/dependency/migration,
+host, paid service or publication change. Original source packs, prior corpora and
+historical outcomes remain unchanged.
+
+Two independently authored public fictional sample projects explicitly permit
+reuse (CC BY 4.0/MIT); pinned notices/provenance were checked before four anonymous
+downloads. All five source pages were pixel-checked before inference; authors'
+truth/generators/services were not used. Results: **25/31 header literals, 72/86
+row fields**, all 19 rows counted, **23/23 absent canonical candidates null,
+14/23 explicit missing**, five required canonical abstentions. All NEEDS_INPUT,
+no finance transaction/decision. Wrong p01 tax/repeated item details can enter an
+unconfirmed draft; p04 provider nulls contaminate known headers and a delivery
+item is mistaken for shipping; p03 source euro/amount reads remain unresolved
+in normalization. These failures are retained, not excluded. p01's frozen native
+label is corrected as an erratum: raster-only PDF, scores/truth unchanged.
+
+Resident-service end-to-end observations: **90.736, 55.190, 31.523, 58.822 s**,
+respectively five/three/one/two VLM calls. No cold GPU load, paired old-code timing,
+new VRAM or representative accuracy claim. q06 remains the spent 0/10 hard case;
+its sidecar retains the true first row but main row recovery is incomplete. No
+missing quantity/price is filled or original benchmark rewritten.
+
+Actual browser **15 passed / one conditional outage skip / 116.310 s / exit 0**,
+one worker/no retries; roles, source confirmation, missing quantity, audit/revision,
+computed HOLD, future fictional allowance version 44 and report preservation.
+Laptop/phone/source screens inspected. Comparator tests **three / 0.03 s / exit 0**.
+Read-only judge verifies all eight current computed scenarios with 28 controls;
+local health READY. Compilation, 382-file bounded source scan, cached Gitleaks
+zero findings/one redacted probe, nine original hashes/spec, 26 previous frozen
+sources/all tracked snapshots and four public originals/truth/eight unchanged
+production hashes pass. No new full application suite is claimed.
+
+The bounded fictional judge demonstration passes; broader invoice automation and
+production acceptance remain unmet. Full evidence/commands/prioritized risks:
+[CL-08 independent validation](clearledger_independent_validation.md). Next bounded
+technical responsibility is header/item grounding and multi-page null handling
+against these now-spent failures, followed by genuinely new reserved evidence.
+The 40–60 independently adjudicated real/anonymized invoices, approved business
+sources, actual identity/scanner/model attribution and release inputs remain
+external gates; this lawful four-source probe does not supply them. No push/deploy.
