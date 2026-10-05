@@ -546,3 +546,20 @@ No table or migration is added; extraction-v1 and financial record semantics rem
 `NEXT_PUBLIC_PRODUCT_NAME` remains build-time public presentation only (trimmed, maximum48 characters); fallback is now Kivo. It changes the displayed name/monogram, never tenant/company identity, policy, source provider or authority. `Prepare review` labels existing FINALIZE job success and makes no human-confirmation assertion. Ready for processing remains existing PASS with current eligibility; stale PASS displays Needs review. PAID duplicate prose is derived only from resolved pinned historical evidence. No backend contract, database field, currency/Decimal representation or financial state was changed.
 
 The separately frozen `data/kivo_fresh/manifest.json` is benchmark truth, not extraction-v1/API/defaults. `family`, `scanned`, original source SHA256, literal header/row expectations, absent fields and canonical abstentions are used by the existing harness after extraction. Two families/four variants are correlated, now-spent fictional sources; expected values/instructions are never provider input other than untrusted original document pixels/text. Private timing/provenance/output, screenshots and PDF stay ignored. Native/OCR results and UNKNOWN/missing/ambiguous tax/date/currency/row behavior do not change canonical finance schemas or rules.
+
+
+## REL presentation replay and extraction sidecars
+
+| Name | Meaning and authority |
+|---|---|
+| `kivo:mutation:v1:<SHA256>` tab key | Hash of actual server `/me` tenant/entity/actor, endpoint and ordered input; value is random idempotency UUID. No plaintext document/policy/body/credentials stored. Transport replay only; never authorization/business identity. |
+| New source draft line `id` | Omitted when constructing a new source case; the existing backend assigns distinct UUIDs after canonical validation. Existing case-revision line IDs remain. No canonical schema change. |
+| `maximum_bytes`, `maximum_pages` | Existing intake-capabilities values displayed in upload UI; whole oversize selection rejected before upload sessions. Backend enforcement remains authoritative. |
+| Repeated `pages[].page_sha256` | Existing rendered-page digest identifies exact copies for a visible source correction notice. Original pages/rows retained; no automatic financial duplicate finding or deduplication. |
+| `printed-layout-v7`, native adapter `9` | Generic measured complete-heading association shared by table parsing/printed-column detection/bounded cell routing; original source boxes, generic row grouping and extraction-v1 unchanged. Unsafe/competing geometry abstains. |
+| `CONFIGURED_NOT_NEEDED`, `SOURCE_CELL_CONFIRMATION_REQUIRED` | Existing routing states observed after repaired h02 OCR captures readable cells; missing cells still require human/source information. Zero VLM calls is not model accuracy or a finance approval. |
+| `kivo-reliability-truth-v1` | Frozen original-fictional source hashes/literal scorer truth, split/family/correlation/required nulls. Reserved naming is historical; split is spent. Never production defaults/provider input. |
+| `kivo-reliability-sanitized-evidence-v1` | Recorded run labels, source/truth/code/measurement hashes, scores, actual paths/calls, elapsed seconds, abstentions and limitations. Private document IDs/full source outputs omitted. |
+| Bounded snapshot members | Same scoped immutable manifest/digest/UUID/member relation and database constraints, inserted in 500-row batches. No database schema or evaluation-selection change. |
+
+Financial strings/Decimal, UNKNOWN versus missing/ambiguous/zero, source confirmation and historical version/audit meanings are preserved. Actual displayed fictional hotel version 52/INR 9,000 does not overwrite version 48. [Verification](kivo_reliability_verification.md) records current and historical context separately.

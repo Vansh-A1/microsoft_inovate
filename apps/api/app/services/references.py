@@ -4,7 +4,7 @@ from decimal import Decimal
 import json
 from pathlib import Path
 from uuid import UUID, uuid4
-from sqlalchemy import select
+from sqlalchemy import insert, select
 from app.core.config import ROOT
 from app.core.serialization import digest
 from app.db.models import Tenant, LegalEntity, ReferenceRecord, ReferenceLink, ReferenceSnapshot, SnapshotMember
@@ -66,7 +66,11 @@ def snapshot_records(session,identity,records):
     if existing:return existing
     row=ReferenceSnapshot(**identity.scope(),id=uuid4(),content_digest=hashed,manifest={'records':manifest})
     session.add(row);session.flush()
-    for rid,version in records:session.add(SnapshotMember(**identity.scope(),snapshot_id=row.id,record_id=rid,record_version=version))
+    # Exact immutable membership is unchanged. Bounded inserts avoid constructing
+    # and tracking one ORM object per member while retaining database constraints.
+    for offset in range(0,len(records),500):
+        session.execute(insert(SnapshotMember),[dict(**identity.scope(),snapshot_id=row.id,record_id=rid,record_version=version)
+            for rid,version in records[offset:offset+500]])
     session.flush();return row
 
 

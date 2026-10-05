@@ -86,3 +86,5 @@ h1{font-size:38px;line-height:1.18;letter-spacing:-1.25px;font-weight:650}h2{fon
 
 /* Bound table intrinsic sizes; keep their own scroll and keyboard access. */
 .panel{min-width:0;overflow-wrap:anywhere}.table-wrap{contain:inline-size;overscroll-behavior-inline:contain}
+
+.policy-inputs { border: 0; padding: 0; margin: 0; min-width: 0; }

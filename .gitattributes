@@ -13,3 +13,6 @@ data/clearledger_rotation/*.png binary
 
 # Frozen original Kivo probe PDFs retain binary/xref bytes.
 /data/kivo_fresh/*.pdf binary
+
+# Frozen original reliability source PDFs preserve structural bytes.
+/data/kivo_reliability/*.pdf binary

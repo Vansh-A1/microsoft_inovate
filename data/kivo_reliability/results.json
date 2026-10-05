@@ -1,0 +1,507 @@
+{
+  "version": "kivo-reliability-sanitized-evidence-v1",
+  "fictional": true,
+  "purpose": "Sanitized measured results for review; never extraction input, defaults or training labels. Private document IDs, full observations and credentials omitted.",
+  "limitations": "Six original fictional variants in three families. Reserved split spent on its first opening; h02 repair is development evidence. Single end-to-end observations on shared loopback host with 0.25 s polling; model resident. First repaired observation followed CPU-worker restart, not GPU/model cold start. No request VRAM or real-world accuracy claim.",
+  "source_hashes_verified": 6,
+  "runs": [
+    {
+      "label": "baseline-development",
+      "measurement_sha256": "346776b9bb3e50478fa2352b13758caf921704ec121b79969708d6f4036c29f3",
+      "truth_sha256": "2c04560d4082a2cd0f7a0137016ca350df8bcaedad470f622452bfde095d7b9a",
+      "extraction_code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "ec0840f01b798acab69109eb8edc84a0bfcea6cf0660b9bd23161f4d59d5a1bd",
+        "apps/api/app/extraction/rapidocr_runtime.py": "e4b746a222b0611f3fd96a5c8f3f8c6f1dafe7c042312a640166e8bad85708da",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "d01",
+          "seconds": 3.364,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "source_sha256": "63372b99f86f6ba6206f0551879c0bb6fe312430335ad2a34a2962d89d9e2f12",
+          "paths": [
+            "NATIVE_TEXT"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        },
+        {
+          "id": "d02",
+          "seconds": 3.087,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 4,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "source_sha256": "15f5c6b59752a9a18ba959c64d3620d1b610a4f0089f4eba8d70fb949b36bd76",
+          "paths": [
+            "NATIVE_TEXT"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        }
+      ]
+    },
+    {
+      "label": "final-development",
+      "measurement_sha256": "eae827edc8d3d301b6edb1b2bf837007a3737b0cb35f507c833452fd048cd906",
+      "truth_sha256": "2c04560d4082a2cd0f7a0137016ca350df8bcaedad470f622452bfde095d7b9a",
+      "extraction_code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "ec0840f01b798acab69109eb8edc84a0bfcea6cf0660b9bd23161f4d59d5a1bd",
+        "apps/api/app/extraction/rapidocr_runtime.py": "e4b746a222b0611f3fd96a5c8f3f8c6f1dafe7c042312a640166e8bad85708da",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "d01",
+          "seconds": 18.568,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "source_sha256": "63372b99f86f6ba6206f0551879c0bb6fe312430335ad2a34a2962d89d9e2f12",
+          "paths": [
+            "NATIVE_TEXT"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        },
+        {
+          "id": "d02",
+          "seconds": 14.493,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 4,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "source_sha256": "15f5c6b59752a9a18ba959c64d3620d1b610a4f0089f4eba8d70fb949b36bd76",
+          "paths": [
+            "NATIVE_TEXT"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        }
+      ]
+    },
+    {
+      "label": "baseline-reserved",
+      "measurement_sha256": "cbc411ca5e453305239bc4afa953a968ceb1d3d2d8ee431be474e13b864f8041",
+      "truth_sha256": "2c04560d4082a2cd0f7a0137016ca350df8bcaedad470f622452bfde095d7b9a",
+      "extraction_code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "ec0840f01b798acab69109eb8edc84a0bfcea6cf0660b9bd23161f4d59d5a1bd",
+        "apps/api/app/extraction/rapidocr_runtime.py": "e4b746a222b0611f3fd96a5c8f3f8c6f1dafe7c042312a640166e8bad85708da",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "h01",
+          "seconds": 4.99,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 6,
+          "row_checked": 6,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true,
+            "invoice_date": true,
+            "currency": true
+          },
+          "source_sha256": "29e06b1bf74974c58df363a19205bfbd298a2ef520b642b815604f50d0da5cc1",
+          "paths": [
+            "NATIVE_TEXT"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        },
+        {
+          "id": "h02",
+          "seconds": 49.941,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 0,
+          "row_checked": 6,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true,
+            "invoice_date": true,
+            "currency": true
+          },
+          "source_sha256": "d4f820d8749d249ec49a97699a1712c92e2dd1292cff91bca7118868b9e1374c",
+          "paths": [
+            "LOCAL_OCR",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_status": "SUCCEEDED",
+          "actual_vlm_calls": 3
+        },
+        {
+          "id": "h03",
+          "seconds": 5.19,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "source_sha256": "29d5caa04ba790d2b85fd6d2aaabcdcf72e4479e710530b95e8aab645274e4b8",
+          "paths": [
+            "NATIVE_TEXT"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        },
+        {
+          "id": "h04",
+          "seconds": 9.506,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "source_sha256": "0d8f78fda3fa8274aa849b927682460244ac2a88c252e41118afd36b0a4d8680",
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        }
+      ]
+    },
+    {
+      "label": "final-reserved",
+      "measurement_sha256": "a902fcab83f361b46e1d4a0d9742c8ab0bce9892155d2dd0e0fd7fa517279aa5",
+      "truth_sha256": "2c04560d4082a2cd0f7a0137016ca350df8bcaedad470f622452bfde095d7b9a",
+      "extraction_code_sha256": {
+        "apps/api/app/extraction/layout.py": "d86895e5c5e47a0ace444851602c1ba54b87b31ed61473971afe4288d3f79d64",
+        "apps/api/app/extraction/native.py": "d535491ec61befaa11d3e34b69af4645ae6b4832dfaa26e17f4205e6db004320",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "ec0840f01b798acab69109eb8edc84a0bfcea6cf0660b9bd23161f4d59d5a1bd",
+        "apps/api/app/extraction/rapidocr_runtime.py": "e4b746a222b0611f3fd96a5c8f3f8c6f1dafe7c042312a640166e8bad85708da",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "h01",
+          "seconds": 3.984,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 6,
+          "row_checked": 6,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true,
+            "invoice_date": true,
+            "currency": true
+          },
+          "source_sha256": "29e06b1bf74974c58df363a19205bfbd298a2ef520b642b815604f50d0da5cc1",
+          "paths": [
+            "NATIVE_TEXT"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        },
+        {
+          "id": "h02",
+          "seconds": 53.097,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 0,
+          "row_checked": 6,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true,
+            "invoice_date": true,
+            "currency": true
+          },
+          "source_sha256": "d4f820d8749d249ec49a97699a1712c92e2dd1292cff91bca7118868b9e1374c",
+          "paths": [
+            "LOCAL_OCR",
+            "ENTERPRISE_VLM"
+          ],
+          "vlm_status": "SUCCEEDED",
+          "actual_vlm_calls": 3
+        },
+        {
+          "id": "h03",
+          "seconds": 3.079,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "source_sha256": "29d5caa04ba790d2b85fd6d2aaabcdcf72e4479e710530b95e8aab645274e4b8",
+          "paths": [
+            "NATIVE_TEXT"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        },
+        {
+          "id": "h04",
+          "seconds": 8.779,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 8,
+          "row_checked": 8,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true
+          },
+          "source_sha256": "0d8f78fda3fa8274aa849b927682460244ac2a88c252e41118afd36b0a4d8680",
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        }
+      ]
+    },
+    {
+      "label": "repaired-spent-scan-first",
+      "measurement_sha256": "7167e565ac93e37b3a4642eb77412bcf2b264c314c200dcc26a12ef90c180118",
+      "truth_sha256": "2c04560d4082a2cd0f7a0137016ca350df8bcaedad470f622452bfde095d7b9a",
+      "extraction_code_sha256": {
+        "apps/api/app/extraction/layout.py": "a2d82e3a81326d196d68d3a02f410c0bbcf5964c5f3b717dc71fe605186a88f4",
+        "apps/api/app/extraction/native.py": "b56ef4eb5129326b2b51f2069ac2e2f40d079a2d54843d8de1c18a197697b86e",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "ec0840f01b798acab69109eb8edc84a0bfcea6cf0660b9bd23161f4d59d5a1bd",
+        "apps/api/app/extraction/rapidocr_runtime.py": "e4b746a222b0611f3fd96a5c8f3f8c6f1dafe7c042312a640166e8bad85708da",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "h02",
+          "seconds": 8.631,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 6,
+          "row_checked": 6,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true,
+            "invoice_date": true,
+            "currency": true
+          },
+          "source_sha256": "d4f820d8749d249ec49a97699a1712c92e2dd1292cff91bca7118868b9e1374c",
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        }
+      ]
+    },
+    {
+      "label": "repaired-spent-scan-warm",
+      "measurement_sha256": "a933d30f8fe0799e76b67f414db05035378df18e2901a653da962e36e05966a6",
+      "truth_sha256": "2c04560d4082a2cd0f7a0137016ca350df8bcaedad470f622452bfde095d7b9a",
+      "extraction_code_sha256": {
+        "apps/api/app/extraction/layout.py": "a2d82e3a81326d196d68d3a02f410c0bbcf5964c5f3b717dc71fe605186a88f4",
+        "apps/api/app/extraction/native.py": "b56ef4eb5129326b2b51f2069ac2e2f40d079a2d54843d8de1c18a197697b86e",
+        "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+        "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+        "apps/api/app/extraction/cpu_ocr.py": "ec0840f01b798acab69109eb8edc84a0bfcea6cf0660b9bd23161f4d59d5a1bd",
+        "apps/api/app/extraction/rapidocr_runtime.py": "e4b746a222b0611f3fd96a5c8f3f8c6f1dafe7c042312a640166e8bad85708da",
+        "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+        "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+        "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+      },
+      "cases": [
+        {
+          "id": "h02",
+          "seconds": 8.456,
+          "state": "NEEDS_INPUT",
+          "finance_decision": null,
+          "header_matches": 7,
+          "header_checked": 7,
+          "row_matches": 6,
+          "row_checked": 6,
+          "expected_rows": 2,
+          "actual_rows": 2,
+          "required_abstentions": {
+            "payment_account_token": true,
+            "po_reference": true,
+            "tax_basis": true,
+            "document_discount_amount": true,
+            "shipping_amount": true,
+            "other_charges_amount": true,
+            "lines.1.quantity": true,
+            "lines.1.unit_price": true,
+            "invoice_date": true,
+            "currency": true
+          },
+          "source_sha256": "d4f820d8749d249ec49a97699a1712c92e2dd1292cff91bca7118868b9e1374c",
+          "paths": [
+            "LOCAL_OCR"
+          ],
+          "vlm_status": "CONFIGURED_NOT_NEEDED",
+          "actual_vlm_calls": 0
+        }
+      ]
+    }
+  ]
+}

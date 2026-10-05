@@ -1,16 +1,17 @@
 'use client';
 import Link from 'next/link';
 import {BusinessFacts} from './business-facts';
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {fieldLabel,processingLabel,observationLabel} from '@/lib/presentation';
 import {api,mutate,type Canonical} from '@/lib/api';
+import {replayMutation} from '@/lib/replay';
 
 type Box={x1:number;y1:number;x2:number;y2:number};
 type Source={page:number|null;bbox:Box|null;document_id:string};
 type Observation={id:string;field_path:string;state:string;raw_value:string|null;source:Source|null;diagnostic:string|null};
 type Document={id:string;generation:number;intake_hint:string;display_name:string;source_type:string;state:string;last_error:string|null;segmentation_state:string;
- pages:{page:number;preview_url:string;transform:{exif_orientation?:number};route:string;quality:Record<string,number>}[];
+ pages:{page:number;page_sha256?:string;preview_url:string;transform:{exif_orientation?:number};route:string;quality:Record<string,number>}[];
  observations:Observation[];draft:{id:string;candidate:Record<string,string|null>;findings:{field:string;code:string;message?:string}[];traces:{field_path:string;status:string;steps:string[]}[]}|null;
  original:{sha256:string;byte_size:number;detected_mime:string}|null;
  jobs:{stage:string;state:string;attempts:number;metadata:unknown}[];
@@ -45,53 +46,56 @@ export function SourceViewer({document,source}:{document:Document;source?:Source
 }
 
 export function Documents({id}:{id?:string}) {
- const router=useRouter();const [items,setItems]=useState<DocList[]|null>(null),[document,setDocument]=useState<Document|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false);
+ const router=useRouter();const mounted=useRef(true);useEffect(()=>{mounted.current=true;return()=>{mounted.current=false}},[]);const [items,setItems]=useState<DocList[]|null>(null),[document,setDocument]=useState<Document|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false);
  const [files,setFiles]=useState<File[]>([]),[kind,setKind]=useState('AUTO'),[source,setSource]=useState<Source|null>(null);
- const [intake,setIntake]=useState<{malware_required:boolean;malware_scanner:string}|null>(null);
- useEffect(()=>{void api<{malware_required:boolean;malware_scanner:string}>('documents/intake-capabilities').then(setIntake).catch(()=>setIntake(null))},[]);
+ const [intake,setIntake]=useState<{malware_required:boolean;malware_scanner:string;maximum_bytes:number;maximum_pages:number}|null>(null);
+ useEffect(()=>{void api<{malware_required:boolean;malware_scanner:string;maximum_bytes:number;maximum_pages:number}>('documents/intake-capabilities').then(setIntake).catch(()=>setIntake(null))},[]);
  const [edits,setEdits]=useState<Record<string,{value:string;page:number}>>({}),[reason,setReason]=useState(''),[confirmed,setConfirmed]=useState(false),[canonical,setCanonical]=useState(''),[existing,setExisting]=useState(''),[version,setVersion]=useState(1);
  useEffect(()=>{let active=true;let timer:ReturnType<typeof setTimeout>;
   async function load(){try{if(id){const d=await api<Document>('documents/'+id);if(active){setDocument(d);if(working.has(d.state))timer=setTimeout(load,900)}}else{const r=await api<{items:DocList[]}>('documents');if(active)setItems(r.items)}}catch(e){if(active)setError((e as Error).message)}}
   void load();return()=>{active=false;clearTimeout(timer)};
  },[id]);
- useEffect(()=>{if(!document?.draft)return;const branch=document.source_type==='EMPLOYEE_RECEIPT'?'employee':'vendor';
+ useEffect(()=>{if(!document?.draft)return;let active=true;const branch=document.source_type==='EMPLOYEE_RECEIPT'?'employee':'vendor';
   const caseId=new URLSearchParams(window.location.search).get('case');
   if(caseId){void api<{version:number;versions:{payload:Canonical}[]}>('transactions/'+caseId).then(record=>{
-   setExisting(caseId);setVersion(record.version);setCanonical(JSON.stringify(record.versions.at(-1)!.payload,null,2));
-  }).catch(e=>setError((e as Error).message));return;}
+   if(active){setExisting(caseId);setVersion(record.version);setCanonical(JSON.stringify(record.versions.at(-1)!.payload,null,2));}
+  }).catch(e=>{if(active)setError((e as Error).message)});return()=>{active=false};}
   api<{development:boolean}>('me').then(me=>me.development?api<Canonical>('development/templates/'+branch):Promise.resolve({document_type:'ORDINARY',branch:branch==='vendor'?'VENDOR_INVOICE':'EMPLOYEE_EXPENSE',lines:[],items:[]} as Canonical)).then(template=>{
    const candidate=document.draft!.candidate;const p={...template};
    if(branch==='vendor'){for(const k of ['invoice_number','invoice_date','currency','total_amount','subtotal_amount','tax_amount','document_discount_amount','shipping_amount','other_charges_amount','tax_basis','payment_account_token'] as const){(p as Record<string,unknown>)[k]=candidate[k]??null}p.source_document_id=document.id;
-    const indices=[...new Set(Object.keys(candidate).filter(k=>k.startsWith('lines.')).map(k=>k.split('.')[1]))];p.lines=indices.map((i,n)=>({...template.lines?.[Math.min(n,(template.lines?.length||1)-1)],...Object.fromEntries(['quantity','unit_price','discount_amount','net_amount','tax_rate','tax_amount','gross_amount','uom'].map(k=>[k,candidate[`lines.${i}.${k}`]??null])),currency:candidate.currency}));
+    const indices=[...new Set(Object.keys(candidate).filter(k=>k.startsWith('lines.')).map(k=>k.split('.')[1]))];p.lines=indices.map((i,n)=>{const line={...template.lines?.[Math.min(n,(template.lines?.length||1)-1)]};delete line.id;return {...line,...Object.fromEntries(['quantity','unit_price','discount_amount','net_amount','tax_rate','tax_amount','gross_amount','uom'].map(k=>[k,candidate[`lines.${i}.${k}`]??null])),currency:candidate.currency}});
    }else{p.expense_date=candidate.expense_date;p.currency=candidate.currency;p.requested_amount=candidate.total_amount;p.items=[{...template.items?.[0],source_document_id:document.id,expense_date:candidate.expense_date,currency:candidate.currency,category:candidate.category,local_timezone:candidate.local_timezone,receipt_total_amount:candidate.total_amount,claimed_amount:candidate.total_amount,eligible_nights:null}];}
-   setCanonical(JSON.stringify(p,null,2));
-  }).catch(e=>setError((e as Error).message));
+   if(active)setCanonical(JSON.stringify(p,null,2));
+  }).catch(e=>{if(active)setError((e as Error).message)});return()=>{active=false};
  },[document?.draft?.id]);
  async function upload(){setBusy(true);setError('');try{
+  if(intake&&files.some(file=>file.size>intake.maximum_bytes))throw new Error(`Document exceeds the configured ${intake.maximum_bytes} byte limit.`);
   let last='';for(const file of files){const key=crypto.randomUUID();const mime=file.type||(/\.pdf$/i.test(file.name)?'application/pdf':/\.png$/i.test(file.name)?'image/png':'image/jpeg');
    const s=await mutate<{id:string;document_id:string;bytes_url:string;maximum_bytes:number}>('uploads',{filename:file.name,mime,source_type:kind},key);
    if(file.size>s.maximum_bytes)throw new Error(`Document exceeds the configured ${s.maximum_bytes} byte limit.`);
    const stored=await api<{error?:string}>(s.bytes_url.replace('/api/v1/',''),{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:file});
    if(stored.error)throw new Error(stored.error);
    await mutate('uploads/'+s.id+'/finalize',{},key+'-finalize');last=s.document_id;
-  }router.push('/documents/'+last);
+  }if(mounted.current)router.push('/documents/'+last);
  }catch(e){setError((e as Error).message)}finally{setBusy(false)}}
  async function commit(){if(!document?.draft)return;setBusy(true);setError('');try{
   const body={draft_id:document.draft.id,transaction:JSON.parse(canonical),source_confirmed:confirmed,reason,
    corrections:Object.entries(edits).map(([field_path,e])=>({field_path,value:e.value,page:e.page,reason})),
    ...(existing?{transaction_id:existing,expected_version:version}:{})};
-  const result=await mutate<{id:string}>('documents/'+document.id+'/commit',body,crypto.randomUUID());router.push('/cases/'+result.id);
+  const result=await replayMutation<{id:string}>('documents/'+document.id+'/commit',body);if(mounted.current)router.push('/cases/'+result.id);
  }catch(e){setError((e as Error).message)}finally{setBusy(false)}}
  if(!id)return <><div className="page-title"><div><h1>Upload a document</h1><p>A clear next step starts with the source.</p></div></div>{error?<div role="alert" className="error">{error}</div>:null}
  <section className="panel upload-panel"><h2>Start with your document</h2><p>Choose an invoice or expense receipt. We keep the original and ask about anything that’s unclear.</p>
- <div className="upload-dropzone" onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();if(!busy)setFiles(Array.from(e.dataTransfer.files))}}><label>Document files<strong>Drop your file here, or choose one</strong><span>PDF, PNG or JPEG. Up to 25 MiB and 30 pages.</span><input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple disabled={busy} onChange={e=>setFiles(Array.from(e.target.files||[]))}/></label>{files.length?<p className="selected-files" role="status">{files.map(f=>f.name).join(', ')}</p>:null}</div>
+ <div className="upload-dropzone" onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();if(!busy)setFiles(Array.from(e.dataTransfer.files))}}><label>Document files<strong>Drop your file here, or choose one</strong><span>PDF, PNG or JPEG.{intake?` Up to ${Number((intake.maximum_bytes/1048576).toFixed(2))} MiB and ${intake.maximum_pages} pages.`:''}</span><input type="file" accept=".pdf,.png,.jpg,.jpeg" multiple disabled={busy} onChange={e=>setFiles(Array.from(e.target.files||[]))}/></label>{files.length?<p className="selected-files" role="status">{files.map(f=>f.name).join(', ')}</p>:null}</div>
  <div className="upload-actions"><label>Document purpose<select value={kind} onChange={e=>setKind(e.target.value)} disabled={busy}><option value="AUTO">Auto · Detect document type</option><option value="VENDOR_INVOICE">Vendor invoice</option><option value="EMPLOYEE_RECEIPT">Employee expense</option><option value="SUPPORTING_DOCUMENT">Supporting document / PO</option></select></label><button onClick={upload} disabled={busy||!files.length}>{busy?'Storing originals…':'Upload and process'}</button></div>
  <p className="intake-safety">{intake?.malware_scanner==='NOT_CONFIGURED'?'Malware scanner: not configured.':intake?.malware_scanner==='CONFIGURED_UNVERIFIED'?'Malware scanner: configured; actual file scanning must still succeed.':intake?.malware_scanner==='UNAVAILABLE'?'Malware scanner: unavailable.':'Malware scanner status is unavailable.'}</p><details className="safety-details"><summary>What this means for your file</summary><p>{intake?.malware_required?'This scope requires a successful scan before preprocessing. Required-scanning deployments block intake until a working engine is connected.':intake?'This local scope permits bounded preprocessing without an available scanner. Use only authorized documents; this is not production malware protection.':'Check Admin system health. No clean scan result is asserted.'} Source text is treated as data, never as instructions.</p></details>
  </section><section className="panel records-panel"><div className="section-title"><h2>Recent documents</h2><Link href="/transactions">View finance history</Link></div>{items?<div className="table-wrap"><table><thead><tr><th>Source</th><th>Purpose</th><th>Processing</th></tr></thead><tbody>{items.map(d=><tr key={d.id}><td><Link href={'/documents/'+d.id}>{d.display_name}</Link></td><td>{d.source_type==='VENDOR_INVOICE'?'Vendor invoice':d.source_type==='EMPLOYEE_RECEIPT'?'Employee expense':'Supporting / type to confirm'}</td><td>{processingLabel(d.state)}<small>{processingError(d.last_error)}</small></td></tr>)}</tbody></table>{!items.length?<div className="empty"><h3>Your first upload starts here.</h3><p>Choose a file above. Its progress and original source will stay available.</p></div>:null}</div>:<p role="status">Loading documents…</p>}</section></>;
  if(!document)return <p role="status">{error||'Loading source document…'}</p>;
+ const repeated=document.pages.flatMap((page,index)=>{if(!page.page_sha256||! /^[a-f0-9]{64}$/.test(page.page_sha256))return [];const first=document.pages.slice(0,index).find(p=>p.page_sha256===page.page_sha256);return first?[`${first.page} and ${page.page}`]:[]});
  return <><Link href="/documents" className="back">← Documents</Link><div className="page-title"><div><p className="eyebrow">Your preserved document</p><h1>{document.display_name}</h1><p>{processingLabel(document.state)} · {document.source_type==='VENDOR_INVOICE'?'Vendor invoice':document.source_type==='EMPLOYEE_RECEIPT'?'Employee expense':'Document type to confirm'}</p></div></div>{error?<div role="alert" className="error">{error}</div>:null}
  {working.has(document.state)?<div role="status" className="notice">Reading your document. This view updates automatically; you can leave and return to its history.</div>:null}
  {document.last_error?<div role="status" className="error">{processingError(document.last_error)} No finance decision has been made for this file.</div>:null}
+ {repeated.length?<div className="notice" role="status"><strong>Check repeated source pages</strong><p>Pages {repeated.join('; ')} have identical rendered content. Their line items remain separate. Confirm whether these are copied pages; upload a corrected file if they are. The original pages remain available for review.</p></div>:null}
  <ol className="document-progress" aria-label="Document progress">{['PREPROCESS','EXTRACT','NORMALIZE','VALIDATE','FINALIZE'].map((stage,i)=>{const job=document.jobs.find(j=>j.stage===stage);return <li key={stage} className={job?.state==='SUCCEEDED'?'done':job?.state==='RUNNING'?'active':''}><span>{i+1}</span>{['Store original','Read facts','Normalize','Check uncertainty','Prepare review'][i]}</li>})}</ol>{document.last_error==='DOCUMENT_TYPE_UNCONFIRMED'?<section className="panel purpose-confirmation"><h2>Confirm the document type</h2><p>Printed labels could not establish a single document type. Your choice starts extraction and does not approve a payment.</p><label>Confirmed document type<select value={kind} onChange={e=>setKind(e.target.value)}><option value="AUTO">Choose a type</option><option value="VENDOR_INVOICE">Vendor invoice</option><option value="EMPLOYEE_RECEIPT">Employee expense</option></select></label><label>Type confirmation reason<input value={reason} onChange={e=>setReason(e.target.value)} minLength={3}/></label><button disabled={busy||kind==='AUTO'||reason.trim().length<3} onClick={async()=>{setBusy(true);setError('');try{await mutate('documents/'+document.id+'/purpose',{source_type:kind,expected_generation:document.generation,reason},crypto.randomUUID());window.location.reload()}catch(e){setError((e as Error).message);setBusy(false)}}}>Confirm type and continue</button></section>:null}<div className="document-grid"><SourceViewer document={document} source={source}/><section className="panel"><h2>Check the source</h2><p className="hint">Extracted text needs confirmation against the source. Missing, ambiguous and illegible values stay unresolved. Corrections retain your reason and the original evidence.</p>
  {document.draft?.findings.length?<div className="notice"><strong>Needs your confirmation</strong><ul>{[...document.draft.findings].sort((a,b)=>Number(Boolean(b.message))-Number(Boolean(a.message))).map((f,i)=><li key={i}>{f.message||`${fieldLabel(f.field)}: ${f.code.includes('AMBIGUOUS')?'ambiguous; confirm the printed value':f.code.includes('MISSING')?'missing; provide source-backed information':'source or arithmetic check requires review'}`}</li>)}</ul><details><summary>Detailed validation findings</summary><pre>{JSON.stringify(document.draft.findings,null,2)}</pre></details></div>:null}
  <div className="source-key-facts">{['invoice_number','invoice_date','currency','total_amount'].map(field=>{const observation=document.observations.find(o=>o.field_path===field);return <div key={field}><button className="fact-source" data-field-path={field} disabled={!observation?.source} onClick={()=>setSource(observation?.source||null)}>{fieldLabel(field)}</button><strong>{observation?.state==='PRESENT'?observation.raw_value:'Needs confirmation'}</strong><small>{observation?observationLabel(observation.state):'Missing'}</small></div>})}</div><details className="all-source-facts"><summary>Review all extracted facts and correct values</summary>

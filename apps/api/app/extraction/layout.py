@@ -6,7 +6,7 @@ The legacy labeled/pipe parser remains intact. No arithmetic supplies raw facts.
 """
 import re
 
-VERSION = 'printed-layout-v6'
+VERSION = 'printed-layout-v7'
 HEADER_ALIASES = {
     'supplier': 'vendor_name', 'vendor': 'vendor_name', 'supplier name': 'vendor_name',
     'vendor name': 'vendor_name', 'seller': 'vendor_name', 'merchant': 'merchant_name',
@@ -97,6 +97,39 @@ def heading_columns(row):
     return best[0] if len(best)==1 else None  # competing independently printed schemas abstain
 
 
+def table_groups(details):
+    """Join two adjacent fragments only for one uniquely printed heading row.
+
+    Axis-aligned OCR rectangles can miss a mild baseline slope. This association
+    uses actual label regions only; generic header/value and item grouping stays
+    unchanged. Competing labels, overlapping columns and nonlinear rows abstain.
+    """
+    rows=groups(details);out=[];index=0
+    def labels_only(row):
+        cursor=0
+        while cursor<len(row):
+            hit=label_at(row,cursor,COLUMN_ALIASES)
+            if not hit:return False
+            cursor+=hit[0]
+        return True
+    while index<len(rows):
+        row=rows[index];merged=None
+        if index+1<len(rows) and not heading_columns(row) and labels_only(row) and labels_only(rows[index+1]):
+            candidate=sorted(row+rows[index+1],key=lambda s:s['bbox']['x1']);columns=heading_columns(candidate)
+            if columns and len({field for field,_ in columns})==len(columns):
+                boxes=[box for _,box in columns];height=min(b['y2']-b['y1'] for b in boxes)
+                overlap=min(b['y2'] for b in boxes)-max(b['y1'] for b in boxes)
+                separated=all(a['x2']<b['x1'] for a,b in zip(boxes,boxes[1:]))
+                points=[((b['x1']+b['x2'])/2,(b['y1']+b['y2'])/2) for b in boxes]
+                x,y=points[0];last_x,last_y=points[-1]
+                if separated and height>0 and overlap>=height*.4 and last_x>x:
+                    slope=(last_y-y)/(last_x-x)
+                    if all(abs(py-(y+slope*(px-x)))<=height*.25 for px,py in points):merged=candidate
+        if merged is not None:out.append(merged);index+=2
+        else:out.append(row);index+=1
+    return out
+
+
 def first_cluster(parts):
     """One contiguous value, never a separate far column on the same baseline."""
     for i,(a,b) in enumerate(zip(parts,parts[1:]),1):
@@ -106,7 +139,7 @@ def first_cluster(parts):
 
 def table_columns(details):
     """Independent printed schema, never row values supplied to a model."""
-    schemas=[tuple(field for field,_ in found) for row in groups(details) if (found:=heading_columns(row))]
+    schemas=[tuple(field for field,_ in found) for row in table_groups(details) if (found:=heading_columns(row))]
     if not schemas or any(len(set(s))!=len(s) or set(s)!=set(schemas[0]) for s in schemas):return None
     return schemas[0]
 
@@ -208,7 +241,7 @@ def table_retry_regions(details, maximum=3):
     cells, notes and isolated descriptions cannot request retries. Crop extents
     are routing metadata; only the new detector's measured box is evidence.
     """
-    rows=groups(details);columns=None;table_y=None;out=[]
+    rows=table_groups(details);columns=None;table_y=None;out=[]
     for row in rows:
         found=heading_columns(row)
         if found:
@@ -238,7 +271,7 @@ def table_retry_regions(details, maximum=3):
 
 def printed_layout(details, _split_panels=True):
     """Return header candidates, measured table rows and explicit diagnostics."""
-    rows = groups(details)
+    rows = table_groups(details)
     # A table printed wholly in a separate right panel must not use a nearby
     # left header as its row baseline. Split only on an independently measured
     # complete schema and a clear gap; crossing regions stay with the table and
