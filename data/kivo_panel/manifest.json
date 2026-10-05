@@ -1,0 +1,247 @@
+{
+  "version": "kivo-panel-truth-v1",
+  "freeze_commit": "d1ac0eb5a117dce0be31e21697b4098996b3dd5b",
+  "provenance": "Five newly authored fictional CC0 PDFs. Literal truth and original source hashes frozen before first intake.",
+  "limitations": "One presentation/development source; four reserved sources in two new invented families. Native/scanned pairs share truth and are correlated. First opening spends the reserved set. Not real-company accuracy. No tuning against reserved outputs.",
+  "cases": [
+    {
+      "id": "d01",
+      "split": "development",
+      "family": "presentation_clarification",
+      "scanned": false,
+      "path": "d01.pdf",
+      "sha256": "ee2723b8160da3e043c63a0ecf355f19505380d58e8a1991c678db92d71b4f75",
+      "headers": {
+        "vendor_name": "DEMO Fictional Widget Supplier",
+        "invoice_number": "PANEL-2026-D01",
+        "invoice_date": "10/02/2026",
+        "currency": "INR",
+        "subtotal_amount": "20000.00",
+        "tax_amount": "3600.00",
+        "total_amount": "23600.00"
+      },
+      "rows": [
+        {
+          "description": "Widgets",
+          "quantity": "20",
+          "unit_price": "1000.00",
+          "amount": "20000.00",
+          "page": 1
+        }
+      ],
+      "money_tokens": [],
+      "absent": [],
+      "must_be_unresolved": [
+        "invoice_date"
+      ]
+    },
+    {
+      "id": "h01",
+      "split": "reserved",
+      "family": "folio_sidebar",
+      "scanned": false,
+      "path": "h01.pdf",
+      "sha256": "8665c764dd4bbeb7e28f5e4711c1e79b2408f471cb29932c59b2496e869ab2f5",
+      "headers": {
+        "vendor_name": "Fictional Alder Paper Laboratory",
+        "invoice_number": "PANEL-2026-H01",
+        "invoice_date": "05/06/2026",
+        "currency": "$",
+        "subtotal_amount": "134.75",
+        "tax_amount": "0.00",
+        "total_amount": "134.75"
+      },
+      "rows": [
+        {
+          "description": "Amber archive sleeves",
+          "quantity": "5",
+          "unit_price": "19.25",
+          "amount": "96.25",
+          "page": 1
+        },
+        {
+          "description": "Ivory index stands",
+          "amount": "38.50",
+          "page": 1
+        }
+      ],
+      "money_tokens": [],
+      "absent": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "lines.1.quantity",
+        "lines.1.unit_price"
+      ],
+      "must_be_unresolved": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "lines.1.quantity",
+        "lines.1.unit_price",
+        "invoice_date",
+        "currency"
+      ]
+    },
+    {
+      "id": "h02",
+      "split": "reserved",
+      "family": "folio_sidebar",
+      "scanned": true,
+      "path": "h02.pdf",
+      "sha256": "0f4659956e09945659604162d367191520352a88834826825b1906cbcc2ee832",
+      "headers": {
+        "vendor_name": "Fictional Alder Paper Laboratory",
+        "invoice_number": "PANEL-2026-H02",
+        "invoice_date": "05/06/2026",
+        "currency": "$",
+        "subtotal_amount": "134.75",
+        "tax_amount": "0.00",
+        "total_amount": "134.75"
+      },
+      "rows": [
+        {
+          "description": "Amber archive sleeves",
+          "quantity": "5",
+          "unit_price": "19.25",
+          "amount": "96.25",
+          "page": 1
+        },
+        {
+          "description": "Ivory index stands",
+          "amount": "38.50",
+          "page": 1
+        }
+      ],
+      "money_tokens": [],
+      "absent": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "lines.1.quantity",
+        "lines.1.unit_price"
+      ],
+      "must_be_unresolved": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount",
+        "lines.1.quantity",
+        "lines.1.unit_price",
+        "invoice_date",
+        "currency"
+      ]
+    },
+    {
+      "id": "h03",
+      "split": "reserved",
+      "family": "dispatch_continuation",
+      "scanned": false,
+      "path": "h03.pdf",
+      "sha256": "fa9bf047141d79cb5ea24ddaa38ea21ce9d982f61a166f54e65e9fbdd51551f0",
+      "headers": {
+        "vendor_name": "Fictional Alder Paper Laboratory",
+        "invoice_number": "PANEL-2026-H03",
+        "invoice_date": "2026-10-05",
+        "currency": "INR",
+        "subtotal_amount": "134.75",
+        "tax_amount": "0.00",
+        "total_amount": "134.75"
+      },
+      "rows": [
+        {
+          "description": "Amber archive sleeves",
+          "quantity": "5",
+          "unit_price": "19.25",
+          "amount": "96.25",
+          "page": 1
+        },
+        {
+          "description": "Ivory index stands",
+          "quantity": "2",
+          "unit_price": "19.25",
+          "amount": "38.50",
+          "page": 2
+        }
+      ],
+      "money_tokens": [],
+      "absent": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount"
+      ],
+      "must_be_unresolved": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount"
+      ]
+    },
+    {
+      "id": "h04",
+      "split": "reserved",
+      "family": "dispatch_continuation",
+      "scanned": true,
+      "path": "h04.pdf",
+      "sha256": "f6fdc159e503cdb7f7c2ee14008864acdd18206c31a756f53735726e21ebfd1a",
+      "headers": {
+        "vendor_name": "Fictional Alder Paper Laboratory",
+        "invoice_number": "PANEL-2026-H04",
+        "invoice_date": "2026-10-05",
+        "currency": "INR",
+        "subtotal_amount": "134.75",
+        "tax_amount": "0.00",
+        "total_amount": "134.75"
+      },
+      "rows": [
+        {
+          "description": "Amber archive sleeves",
+          "quantity": "5",
+          "unit_price": "19.25",
+          "amount": "96.25",
+          "page": 1
+        },
+        {
+          "description": "Ivory index stands",
+          "quantity": "2",
+          "unit_price": "19.25",
+          "amount": "38.50",
+          "page": 2
+        }
+      ],
+      "money_tokens": [],
+      "absent": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount"
+      ],
+      "must_be_unresolved": [
+        "payment_account_token",
+        "po_reference",
+        "tax_basis",
+        "document_discount_amount",
+        "shipping_amount",
+        "other_charges_amount"
+      ]
+    }
+  ]
+}

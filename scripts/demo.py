@@ -160,13 +160,17 @@ def supervise(no_vlm):
         if STATE.exists() and json.loads(STATE.read_text()).get('pid')==os.getpid():STATE.unlink()
 
 
-def stop():
+def stop_cpu():
     state=owned()
     if state:
         os.kill(state['pid'],signal.SIGTERM)
         deadline=time.monotonic()+30
         while time.monotonic()<deadline and owned():time.sleep(.2)
         if owned():raise RuntimeError('Demo shutdown timed out')
+
+
+def stop():
+    stop_cpu()
     subprocess.run([str(PYTHON),str(INFERENCE),'stop'],cwd=ROOT,check=True)
     print('Owned demo application and inference stopped. Database/evidence/model caches preserved.')
 
@@ -190,9 +194,36 @@ def start(no_vlm):
             available=inference_health()['status']=='AVAILABLE'
         except Exception:pass
         if not available:print('VLM provider unavailable. Inspect runtime/demo/inference-start.log and runtime/inference/logs/local-server.log. Starting CPU application; visual documents cannot complete until inference is restored.',flush=True)
+    return launch_cpu(no_vlm or not available)
+
+
+def cpu_prerequisites():
+    prerequisite_database()
+    if not (ROOT/'apps/web/.next/BUILD_ID').is_file():
+        raise RuntimeError('Production frontend build missing; run npm --prefix apps/web run build first')
+
+
+def start_cpu():
+    """Use current configuration; never seed identities or control inference."""
+    if owned():
+        result,code=health();print(json.dumps(result,indent=2));return code
+    if fetch('http://127.0.0.1:8000/api/v1/health/ready') or fetch('http://127.0.0.1:3000/health'):
+        raise RuntimeError('An existing application is running outside this lifecycle; refusing to replace it')
+    cpu_prerequisites()
+    return launch_cpu(False)
+
+
+def restart_cpu():
+    # Validate the installed setup before taking down a working CPU application.
+    cpu_prerequisites()
+    stop_cpu()
+    return start_cpu()
+
+
+def launch_cpu(no_vlm):
     RUNTIME.mkdir(parents=True,exist_ok=True,mode=0o700)
     with (RUNTIME/'services.log').open('ab') as output:
-        child=subprocess.Popen([str(PYTHON),str(Path(__file__).resolve()),'supervise']+(['--no-vlm'] if no_vlm or not available else []),cwd=ROOT,stdout=output,stderr=output,start_new_session=True)
+        child=subprocess.Popen([str(PYTHON),str(Path(__file__).resolve()),'supervise']+(['--no-vlm'] if no_vlm else []),cwd=ROOT,stdout=output,stderr=output,start_new_session=True)
     deadline=time.monotonic()+60
     while time.monotonic()<deadline:
         if child.poll() is not None:raise RuntimeError('Demo supervisor exited; inspect runtime/demo/services.log')
@@ -206,7 +237,7 @@ def start(no_vlm):
 def main():
     os.umask(0o077)
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action',choices=['start','stop','restart','health','supervise'])
+    parser.add_argument('action',choices=['start','stop','restart','start-cpu','stop-cpu','restart-cpu','health','supervise'])
     parser.add_argument('--no-vlm',action='store_true',help='Start CPU services; visual extraction remains explicitly unavailable')
     parser.add_argument('--require-vlm',action='store_true',help='Health fails unless the pinned real VLM is available')
     args=parser.parse_args()
@@ -215,6 +246,9 @@ def main():
     RUNTIME.mkdir(parents=True,exist_ok=True,mode=0o700)
     with (RUNTIME/'control.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX)
+        if args.action=='stop-cpu':stop_cpu();return
+        if args.action=='start-cpu':raise SystemExit(start_cpu())
+        if args.action=='restart-cpu':raise SystemExit(restart_cpu())
         if args.action in ('stop','restart'):stop()
         if args.action in ('start','restart'):raise SystemExit(start(args.no_vlm))
 

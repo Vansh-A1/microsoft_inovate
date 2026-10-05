@@ -1,0 +1,1124 @@
+{
+  "label": "panel-first-reserved",
+  "code_sha256": {
+    "apps/api/app/extraction/layout.py": "a2d82e3a81326d196d68d3a02f410c0bbcf5964c5f3b717dc71fe605186a88f4",
+    "apps/api/app/extraction/native.py": "b56ef4eb5129326b2b51f2069ac2e2f40d079a2d54843d8de1c18a197697b86e",
+    "apps/api/app/extraction/typellm.py": "415b585c8cff6268db3c1225be050843f60332457881b52e67b9db05748389b0",
+    "apps/api/app/extraction/row_grounding.py": "32bcffa957825459f51d248058b982003d76fd88b4394062a5e601dc279f174e",
+    "apps/api/app/extraction/cpu_ocr.py": "ec0840f01b798acab69109eb8edc84a0bfcea6cf0660b9bd23161f4d59d5a1bd",
+    "apps/api/app/extraction/rapidocr_runtime.py": "e4b746a222b0611f3fd96a5c8f3f8c6f1dafe7c042312a640166e8bad85708da",
+    "apps/api/app/extraction/orientation.py": "43e33cd384daa4a1b6e23324bbdcff7500984e7231ee0910d76118528f5b2a46",
+    "apps/api/app/services/document_worker.py": "80c918545e236bdcfc91aea617ab9b28b3933afcf912c81271a7dca952f05824",
+    "apps/api/app/documents/normalizer.py": "763a8aeac267be66250a5ff6e1e8a6ed3a47345d35cad34dac4a29e86068396e"
+  },
+  "truth_sha256": "31713cecf866c21771f6342fedaa13c4b11e82daa8a357dc5ea48ba1676da32b",
+  "limitations": "One presentation/development source; four reserved sources in two new invented families. Native/scanned pairs share truth and are correlated. First opening spends the reserved set. Not real-company accuracy. No tuning against reserved outputs. Actual loopback upload/durable worker, 0.25s polling. Resident model, no cold weights or browser/human time. Zero exit is measurement completion only.",
+  "version": "kivo-panel-reserved-results-v1",
+  "reserved_status": "SPENT_ON_FIRST_OPENING",
+  "production_extraction_changed": false,
+  "cases": [
+    {
+      "id": "h01",
+      "seconds": 3.15,
+      "state": "NEEDS_INPUT",
+      "finance_decision": null,
+      "header_matches": 7,
+      "header_checked": 7,
+      "row_matches": 6,
+      "row_checked": 6,
+      "expected_rows": 2,
+      "actual_rows": 2,
+      "required_abstentions": {
+        "payment_account_token": true,
+        "po_reference": true,
+        "tax_basis": true,
+        "document_discount_amount": true,
+        "shipping_amount": true,
+        "other_charges_amount": true,
+        "lines.1.quantity": true,
+        "lines.1.unit_price": true,
+        "invoice_date": true,
+        "currency": true
+      },
+      "headers": {
+        "vendor_name": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "Fictional Alder Paper Laboratory",
+          "candidate": "Fictional Alder Paper Laboratory"
+        },
+        "invoice_number": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "PANEL-2026-H01",
+          "candidate": "PANEL-2026-H01"
+        },
+        "invoice_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "05/06/2026",
+          "candidate": null
+        },
+        "currency": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "$",
+          "candidate": null
+        },
+        "subtotal_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "134.75",
+          "candidate": null
+        },
+        "tax_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "0.00",
+          "candidate": null
+        },
+        "total_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "134.75",
+          "candidate": null
+        }
+      },
+      "rows": [
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Amber archive sleeves",
+            "candidate": "Amber archive sleeves"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "5",
+            "candidate": "5"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "19.25",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "96.25",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Ivory index stands",
+            "candidate": "Ivory index stands"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "38.50",
+            "candidate": null
+          }
+        }
+      ],
+      "absent": {
+        "payment_account_token": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "po_reference": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "tax_basis": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "document_discount_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "shipping_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "other_charges_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "lines.1.quantity": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "lines.1.unit_price": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        }
+      },
+      "providers": [
+        "NATIVE_TEXT"
+      ],
+      "vlm_calls": 0,
+      "routing_paths": [
+        [
+          "NATIVE_TEXT"
+        ]
+      ],
+      "source_sha256": "8665c764dd4bbeb7e28f5e4711c1e79b2408f471cb29932c59b2496e869ab2f5",
+      "blocked_before_finance": true,
+      "finance_evaluation_requested": false,
+      "segmentation_state": "UNCONFIRMED",
+      "normalization_findings": [
+        {
+          "field": "currency",
+          "code": "CURRENCY_UNSUPPORTED_OR_AMBIGUOUS"
+        },
+        {
+          "field": "invoice_date",
+          "code": "DATE_AMBIGUOUS"
+        },
+        {
+          "field": "lines.0.amount",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "lines.0.unit_price",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "lines.1.amount",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "subtotal_amount",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "tax_amount",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "total_amount",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "invoice_date",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "currency",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "subtotal_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "tax_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "total_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "document_discount_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "shipping_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "other_charges_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "tax_basis",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "document",
+          "code": "TABLE_CELL_UNREAD"
+        },
+        {
+          "field": "lines.0",
+          "code": "LINE_UNRESOLVED"
+        },
+        {
+          "field": "lines.1.quantity",
+          "code": "SOURCE_CELL_UNREAD"
+        },
+        {
+          "field": "lines.1.unit_price",
+          "code": "SOURCE_CELL_UNREAD"
+        },
+        {
+          "field": "lines.1",
+          "code": "LINE_UNRESOLVED"
+        }
+      ]
+    },
+    {
+      "id": "h02",
+      "seconds": 6.591,
+      "state": "NEEDS_INPUT",
+      "finance_decision": null,
+      "header_matches": 7,
+      "header_checked": 7,
+      "row_matches": 6,
+      "row_checked": 6,
+      "expected_rows": 2,
+      "actual_rows": 2,
+      "required_abstentions": {
+        "payment_account_token": true,
+        "po_reference": true,
+        "tax_basis": true,
+        "document_discount_amount": true,
+        "shipping_amount": true,
+        "other_charges_amount": true,
+        "lines.1.quantity": true,
+        "lines.1.unit_price": true,
+        "invoice_date": true,
+        "currency": true
+      },
+      "headers": {
+        "vendor_name": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "Fictional Alder Paper Laboratory",
+          "candidate": "Fictional Alder Paper Laboratory"
+        },
+        "invoice_number": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "PANEL-2026-H02",
+          "candidate": "PANEL-2026-H02"
+        },
+        "invoice_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "05/06/2026",
+          "candidate": null
+        },
+        "currency": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "$",
+          "candidate": null
+        },
+        "subtotal_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "134.75",
+          "candidate": null
+        },
+        "tax_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "0.00",
+          "candidate": null
+        },
+        "total_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "134.75",
+          "candidate": null
+        }
+      },
+      "rows": [
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Amber archive sleeves",
+            "candidate": "Amber archive sleeves"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "5",
+            "candidate": "5"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "19.25",
+            "candidate": null
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "96.25",
+            "candidate": null
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Ivory index stands",
+            "candidate": "Ivory index stands"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "38.50",
+            "candidate": null
+          }
+        }
+      ],
+      "absent": {
+        "payment_account_token": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "po_reference": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "tax_basis": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "document_discount_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "shipping_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "other_charges_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "lines.1.quantity": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "lines.1.unit_price": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        }
+      },
+      "providers": [
+        "LOCAL_OCR"
+      ],
+      "vlm_calls": 0,
+      "routing_paths": [
+        [
+          "LOCAL_OCR"
+        ]
+      ],
+      "source_sha256": "0f4659956e09945659604162d367191520352a88834826825b1906cbcc2ee832",
+      "blocked_before_finance": true,
+      "finance_evaluation_requested": false,
+      "segmentation_state": "UNCONFIRMED",
+      "normalization_findings": [
+        {
+          "field": "currency",
+          "code": "CURRENCY_UNSUPPORTED_OR_AMBIGUOUS"
+        },
+        {
+          "field": "invoice_date",
+          "code": "DATE_AMBIGUOUS"
+        },
+        {
+          "field": "lines.0.amount",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "lines.0.unit_price",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "lines.1.amount",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "subtotal_amount",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "tax_amount",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "total_amount",
+          "code": "CURRENCY_MISSING"
+        },
+        {
+          "field": "invoice_date",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "currency",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "subtotal_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "tax_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "total_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "document_discount_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "shipping_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "other_charges_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "tax_basis",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "document",
+          "code": "TABLE_CELL_UNREAD"
+        },
+        {
+          "field": "lines.0",
+          "code": "LINE_UNRESOLVED"
+        },
+        {
+          "field": "lines.1.quantity",
+          "code": "SOURCE_CELL_UNREAD"
+        },
+        {
+          "field": "lines.1.unit_price",
+          "code": "SOURCE_CELL_UNREAD"
+        },
+        {
+          "field": "lines.1",
+          "code": "LINE_UNRESOLVED"
+        }
+      ]
+    },
+    {
+      "id": "h03",
+      "seconds": 3.101,
+      "state": "NEEDS_INPUT",
+      "finance_decision": null,
+      "header_matches": 7,
+      "header_checked": 7,
+      "row_matches": 8,
+      "row_checked": 8,
+      "expected_rows": 2,
+      "actual_rows": 2,
+      "required_abstentions": {
+        "payment_account_token": true,
+        "po_reference": true,
+        "tax_basis": true,
+        "document_discount_amount": true,
+        "shipping_amount": true,
+        "other_charges_amount": true
+      },
+      "headers": {
+        "vendor_name": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "Fictional Alder Paper Laboratory",
+          "candidate": "Fictional Alder Paper Laboratory"
+        },
+        "invoice_number": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "PANEL-2026-H03",
+          "candidate": "PANEL-2026-H03"
+        },
+        "invoice_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "2026-10-05",
+          "candidate": "2026-10-05"
+        },
+        "currency": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "INR",
+          "candidate": "INR"
+        },
+        "subtotal_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "134.75",
+          "candidate": "134.75"
+        },
+        "tax_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "0.00",
+          "candidate": "0.00"
+        },
+        "total_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "134.75",
+          "candidate": "134.75"
+        }
+      },
+      "rows": [
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Amber archive sleeves",
+            "candidate": "Amber archive sleeves"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "5",
+            "candidate": "5"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "19.25",
+            "candidate": "19.25"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "96.25",
+            "candidate": "96.25"
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Ivory index stands",
+            "candidate": "Ivory index stands"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "2",
+            "candidate": "2"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "19.25",
+            "candidate": "19.25"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "38.50",
+            "candidate": "38.50"
+          }
+        }
+      ],
+      "absent": {
+        "payment_account_token": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "po_reference": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "tax_basis": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "document_discount_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "shipping_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "other_charges_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        }
+      },
+      "providers": [
+        "NATIVE_TEXT"
+      ],
+      "vlm_calls": 0,
+      "routing_paths": [
+        [
+          "NATIVE_TEXT"
+        ]
+      ],
+      "source_sha256": "fa9bf047141d79cb5ea24ddaa38ea21ce9d982f61a166f54e65e9fbdd51551f0",
+      "blocked_before_finance": true,
+      "finance_evaluation_requested": false,
+      "segmentation_state": "UNCONFIRMED",
+      "normalization_findings": [
+        {
+          "field": "document_discount_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "shipping_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "other_charges_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "tax_basis",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "lines.0",
+          "code": "LINE_UNRESOLVED"
+        },
+        {
+          "field": "lines.1",
+          "code": "LINE_UNRESOLVED"
+        }
+      ]
+    },
+    {
+      "id": "h04",
+      "seconds": 8.195,
+      "state": "NEEDS_INPUT",
+      "finance_decision": null,
+      "header_matches": 7,
+      "header_checked": 7,
+      "row_matches": 8,
+      "row_checked": 8,
+      "expected_rows": 2,
+      "actual_rows": 2,
+      "required_abstentions": {
+        "payment_account_token": true,
+        "po_reference": true,
+        "tax_basis": true,
+        "document_discount_amount": true,
+        "shipping_amount": true,
+        "other_charges_amount": true
+      },
+      "headers": {
+        "vendor_name": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "Fictional Alder Paper Laboratory",
+          "candidate": "Fictional Alder Paper Laboratory"
+        },
+        "invoice_number": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "PANEL-2026-H04",
+          "candidate": "PANEL-2026-H04"
+        },
+        "invoice_date": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "2026-10-05",
+          "candidate": "2026-10-05"
+        },
+        "currency": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "INR",
+          "candidate": "INR"
+        },
+        "subtotal_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "134.75",
+          "candidate": "134.75"
+        },
+        "tax_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "0.00",
+          "candidate": "0.00"
+        },
+        "total_amount": {
+          "read": true,
+          "page": true,
+          "state": "PRESENT",
+          "raw": "134.75",
+          "candidate": "134.75"
+        }
+      },
+      "rows": [
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Amber archive sleeves",
+            "candidate": "Amber archive sleeves"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "5",
+            "candidate": "5"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "19.25",
+            "candidate": "19.25"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "96.25",
+            "candidate": "96.25"
+          }
+        },
+        {
+          "description": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "Ivory index stands",
+            "candidate": "Ivory index stands"
+          },
+          "quantity": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "2",
+            "candidate": "2"
+          },
+          "unit_price": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "19.25",
+            "candidate": "19.25"
+          },
+          "amount": {
+            "read": true,
+            "page": true,
+            "state": "PRESENT",
+            "raw": "38.50",
+            "candidate": "38.50"
+          }
+        }
+      ],
+      "absent": {
+        "payment_account_token": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "po_reference": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "tax_basis": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "document_discount_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "shipping_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        },
+        "other_charges_amount": {
+          "missing": true,
+          "canonical_unresolved": true,
+          "state": "MISSING",
+          "raw": null
+        }
+      },
+      "providers": [
+        "LOCAL_OCR"
+      ],
+      "vlm_calls": 0,
+      "routing_paths": [
+        [
+          "LOCAL_OCR"
+        ]
+      ],
+      "source_sha256": "f6fdc159e503cdb7f7c2ee14008864acdd18206c31a756f53735726e21ebfd1a",
+      "blocked_before_finance": true,
+      "finance_evaluation_requested": false,
+      "segmentation_state": "UNCONFIRMED",
+      "normalization_findings": [
+        {
+          "field": "document_discount_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "shipping_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "other_charges_amount",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "tax_basis",
+          "code": "CRITICAL_UNRESOLVED"
+        },
+        {
+          "field": "lines.0",
+          "code": "LINE_UNRESOLVED"
+        },
+        {
+          "field": "lines.1",
+          "code": "LINE_UNRESOLVED"
+        }
+      ]
+    }
+  ],
+  "existing_spent_vlm_check": {
+    "id": "r02",
+    "source_sha256": "1913345d8d3b6d42785187d495213ee87a2b4f1c8e17ec22fbdd722b4cc7ffe1",
+    "end_to_end_seconds": 14.799,
+    "state": "NEEDS_INPUT",
+    "finance_decision": null,
+    "header_matches": 7,
+    "header_checked": 7,
+    "row_matches": 12,
+    "row_checked": 12,
+    "expected_rows": 3,
+    "actual_rows": 3,
+    "required_abstentions": {
+      "tax_basis": true,
+      "document_discount_amount": true,
+      "shipping_amount": true,
+      "other_charges_amount": true,
+      "po_reference": true,
+      "payment_account_token": true
+    },
+    "providers": [
+      "ENTERPRISE_VLM"
+    ],
+    "runtime_versions": [
+      [
+        {
+          "name": "bridge",
+          "version": "sglang-cu124-transport-v1"
+        },
+        {
+          "name": "cache_isolation",
+          "version": "SERIAL_FLUSH_PER_GENERATE"
+        },
+        {
+          "name": "cuda_runtime",
+          "version": "12.4"
+        },
+        {
+          "name": "model_revision",
+          "version": "66285546d2b821cf421d4f5eb2576359d3770cd3"
+        },
+        {
+          "name": "model_source",
+          "version": "Qwen/Qwen2.5-VL-3B-Instruct"
+        },
+        {
+          "name": "precision",
+          "version": "BF16"
+        },
+        {
+          "name": "python",
+          "version": "3.12.3"
+        },
+        {
+          "name": "served_model",
+          "version": "qwen25-vl3b-local"
+        },
+        {
+          "name": "sglang",
+          "version": "0.4.6.post5"
+        },
+        {
+          "name": "torch",
+          "version": "2.6.0+cu124"
+        },
+        {
+          "name": "transformers",
+          "version": "5.3.0"
+        },
+        {
+          "name": "typellm",
+          "version": "0.5.1"
+        },
+        {
+          "name": "prompt_sha256",
+          "version": "a8e283357f8c208ffc4cec7c35298619881dd1915f628516db67227aac39c2f1"
+        }
+      ]
+    ],
+    "resident_memory_sampling": {
+      "exit_status": 0,
+      "measurement_wall_seconds": 15.049,
+      "samples": 31,
+      "baseline_owned_resident_mib": 12948,
+      "peak_owned_resident_mib": 13766,
+      "other_gpu_processes_max": 0,
+      "limitations": "Read-only nvidia-smi sample at approximately 0.5s. Owned inference process tree only; allocator/resident serving footprint, not incremental attributable per-request peak. GPU model already warm. Existing spent fictional rotation source, not independent accuracy."
+    },
+    "scope": "Existing spent original fictional rotation r02; actual resident Qwen/TypeLLM route after CPU restart. Not new independent accuracy or cold GPU startup."
+  },
+  "cpu_recovery": {
+    "cpu_restart_seconds": 1.69,
+    "exit_status": 0,
+    "inference_process_identities_preserved": true,
+    "current_and_retained_eight_scenarios_preserved": true,
+    "model_cold_restart": false
+  },
+  "presentation_rehearsal": {
+    "intake_seconds": 6.745,
+    "state_before_confirmation": "NEEDS_INPUT",
+    "finance_decision": "HOLD",
+    "eligible": false,
+    "source_date_before": "10/02/2026",
+    "source_canonical_date_before": null,
+    "human_confirmed_date": "2026-10-02",
+    "correction_original_page": 2,
+    "field_box_available": false,
+    "business_submission_date": "2026-10-05",
+    "original_observations_preserved": true,
+    "original_draft_date_still_unresolved": true,
+    "limits": "Repeated spent presentation source; possible duplicate candidates and missing approvals remain. Submission date is explicit business context, not extracted."
+  },
+  "verification": {
+    "backend_tests": 840,
+    "backend_seconds": 5.33,
+    "backend_exit_status": 0,
+    "browser_tests": 55,
+    "browser_seconds": 400.314,
+    "browser_exit_status": 0,
+    "browser_skipped": 0,
+    "browser_flaky": 0,
+    "preservation": {
+      "comparison_commit": "d1ac0eb",
+      "preserved_files": 134,
+      "new_original_source_hashes_verified": 5
+    },
+    "migrated_tests": 25,
+    "migrated_seconds": 455.79,
+    "migrated_exit_status": 0
+  },
+  "measurement_readiness_distinction": "Scores check only printed header/table literals and page association. They do not establish complete normalized invoice facts. Missing/ambiguous source facts blocked these four sources before human confirmation or finance evaluation; business reference and approval controls were not executed by this benchmark."
+}

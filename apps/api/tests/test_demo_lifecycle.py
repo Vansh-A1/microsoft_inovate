@@ -117,3 +117,44 @@ def test_ready_http_without_owned_worker_is_not_ready(monkeypatch):
     monkeypatch.setattr(demo,'inference_health',lambda:{'status':'AVAILABLE'})
     result,code=demo.health()
     assert code==1 and result['worker_supervisor']=='UNAVAILABLE'
+
+
+def test_existing_cpu_start_never_seeds_or_controls_inference(monkeypatch):
+    monkeypatch.setattr(demo,'owned',lambda:{'pid':42})
+    monkeypatch.setattr(demo,'health',lambda *a:({'status':'DEGRADED'},0))
+    def forbidden(*a,**k):raise AssertionError('Existing CPU entry must not launch, seed or change inference')
+    monkeypatch.setattr(demo,'cpu_prerequisites',forbidden)
+    monkeypatch.setattr(demo.subprocess,'run',forbidden)
+    monkeypatch.setattr(demo.subprocess,'Popen',forbidden)
+    assert demo.start_cpu()==0
+
+
+def test_cpu_restart_checks_prerequisites_before_any_signal(monkeypatch):
+    def missing():raise RuntimeError('Production frontend build missing')
+    monkeypatch.setattr(demo,'cpu_prerequisites',missing)
+    monkeypatch.setattr(demo.os,'kill',lambda *a:pytest.fail('Do not stop working CPU services when preflight fails'))
+    with pytest.raises(RuntimeError,match='build missing'):demo.restart_cpu()
+
+
+def test_cpu_stop_signals_only_validated_cpu_supervisor(monkeypatch):
+    states=iter([{'pid':42},None,None]);signals=[]
+    monkeypatch.setattr(demo,'owned',lambda:next(states))
+    monkeypatch.setattr(demo.os,'kill',lambda pid,sig:signals.append((pid,sig)))
+    monkeypatch.setattr(demo.subprocess,'run',lambda *a,**k:pytest.fail('CPU stop must not control inference'))
+    demo.stop_cpu()
+    assert signals==[(42,demo.signal.SIGTERM)]
+
+
+def test_cpu_start_preserves_provider_outage_and_only_launches_supervisor(tmp_path,monkeypatch):
+    calls=[]
+    monkeypatch.setattr(demo,'RUNTIME',tmp_path/'private')
+    monkeypatch.setattr(demo,'owned',lambda:None)
+    monkeypatch.setattr(demo,'fetch',lambda *a:{})
+    monkeypatch.setattr(demo,'cpu_prerequisites',lambda:None)
+    monkeypatch.setattr(demo,'health',lambda *a:({'status':'DEGRADED','inference':{'status':'PROVIDER_UNAVAILABLE'}},0))
+    monkeypatch.setattr(demo.subprocess,'run',lambda *a,**k:pytest.fail('CPU launch must not seed or start/stop inference'))
+    class Child:
+        def poll(self):return None
+    monkeypatch.setattr(demo.subprocess,'Popen',lambda args,**k:calls.append(args) or Child())
+    assert demo.start_cpu()==0
+    assert calls==[[str(demo.PYTHON),str(Path(demo.__file__).resolve()),'supervise']]

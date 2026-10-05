@@ -29,7 +29,7 @@ test('policy business form creates a future hotel version and retains history an
  await identity(page,'Synthetic policy administrator');await expect(page.getByRole('heading',{name:'Business configuration'})).toBeVisible();
  await expect(page.getByRole('link',{name:'Review queue',exact:true})).toHaveCount(0);
  const records=(await (await page.request.get('/api/admin/catalog')).json()).items;
- const hotel=records.find((r:{kind:string;payload:{category:string}})=>r.kind==='expense_policies'&&r.payload.category==='HOTEL');
+ const hotel=records.find((r:{kind:string;payload:{category:string}})=>r.kind==='expense_policies'&&r.payload.category==='HOTEL'&&(r.payload as {policy_code?:string}).policy_code==='DEMO-EXP-HOTEL');
  await page.getByLabel('Configuration record').selectOption(hotel.id);
  await expect(page.getByText('Fictional sample configuration.',{exact:false})).toBeVisible();
  if(hotel.payload.allowance_amount==='9000.00'){

@@ -37,7 +37,7 @@ test('Kivo scoped policy editor teaches scope currency unit dates and retained v
  await page.goto('/login');await page.getByRole('button',{name:'Policy administrator Policies and allowance versions',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Business configuration'})).toBeVisible();
  await page.getByRole('button',{name:'Allowances & receipts',exact:true}).click();
- const data=await (await page.request.get('/api/admin/catalog')).json();const hotel=data.items.find((r:{kind:string;payload:{category:string}})=>r.kind==='expense_policies'&&r.payload.category==='HOTEL');
+ const data=await (await page.request.get('/api/admin/catalog')).json();const hotel=data.items.find((r:{kind:string;payload:{category:string}})=>r.kind==='expense_policies'&&r.payload.category==='HOTEL'&&(r.payload as {policy_code?:string}).policy_code==='DEMO-EXP-HOTEL');
  await page.getByLabel('Configuration record').selectOption(hotel.id);
  await expect(page.getByRole('heading',{name:'What this rule covers'})).toBeVisible();await expect(page.getByText('Allowance unit',{exact:true})).toBeVisible();
  await expect(page.locator('.policy-context')).toContainText('INR');await expect(page.locator('.policy-context')).toContainText('Eligible night');

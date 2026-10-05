@@ -98,7 +98,7 @@ test('duplicate allowance and delivery exceptions match actual pinned evidence a
 test('retained future allowance form and audit history load without policy activation',async({page})=>{
  await page.goto('/login');await page.getByRole('button',{name:'Policy administrator Policies and allowance versions',exact:true}).click();
  await expect(page).toHaveURL(/\/admin$/);await expect(page.getByRole('heading',{name:'Business configuration'})).toBeVisible();
- const catalog=await get(page,'admin/catalog');const hotel=catalog.items.find((r:{kind:string;payload:{category:string}})=>r.kind==='expense_policies'&&r.payload.category==='HOTEL');
+ const catalog=await get(page,'admin/catalog');const hotel=catalog.items.find((r:{kind:string;payload:{category:string}})=>r.kind==='expense_policies'&&r.payload.category==='HOTEL'&&(r.payload as {policy_code?:string}).policy_code==='DEMO-EXP-HOTEL');
  expect(hotel.payload.allowance_amount).toBe('9000.00');expect(hotel.payload.effective_from).toBe('2026-11-01');
  const versions=await get(page,'admin/records/'+hotel.id+'/versions');const latest=versions.items.at(-1);
  expect(versions.items.some((v:{payload:{allowance_amount:string}})=>v.payload.allowance_amount==='8000.00')).toBe(true);

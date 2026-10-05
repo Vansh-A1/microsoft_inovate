@@ -31,6 +31,8 @@ Phase 6 delivers the local application and release/handoff artifacts under an ex
 
 ## Hackathon quick start
 
+For the established panel checkout, use the [local panel walkthrough](docs/runbooks/kivo-panel-demo.md): `.venv/bin/python scripts/demo.py start-cpu`, health and read-only judge verification. Its `restart-cpu` preserves the resident model and existing identities. The [panel readiness record](docs/kivo_panel_readiness.md) separates measured local evidence from pending event and production inputs. The broader lifecycle below also controls inference.
+
 With the established local database, finance environment, production web build and isolated inference runtime installed:
 
 ```bash

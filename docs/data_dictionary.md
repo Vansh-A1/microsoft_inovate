@@ -570,3 +570,18 @@ Financial strings/Decimal, UNKNOWN versus missing/ambiguous/zero, source confirm
 No production/financial schema changed. `kivo-concurrency-evidence-v1` is a sanitized test evidence sidecar, never a policy, API authority, source correction, score or model input. `advisory_wait_ms` measures the actual PostgreSQL lock-query round trip; `transaction_ms` spans the complete sampled database-session operation and commit/rollback. `COMMITTED` means database effects committed, not finance PASS. `round` distinguishes initial receipt admission and admission after explicit duplicate disposition. All authoritative finance amounts/quantities remain Decimal.
 
 Actual existing `lock_timeout_ms=5000`, per-statement `statement_timeout_ms=10000`, `lease_seconds=60` and maximum attempts 3 are documented boundaries, not throughput promises. SQLSTATE55P03 denotes lock-not-available/timeout; current public API safely maps it to retryable DATABASE_UNAVAILABLE/503, and worker classification schedules bounded recovery. Test-only timings contain no SQL, parameters, credentials, private source/actor IDs or business values. Full private measurements stay ignored. [Evidence/conditions](kivo_concurrency_verification.md).
+
+## REL-05 local presentation support — 2026-10-05
+
+No schema, migration, finance rule, risk model or extraction contract change.
+
+| Object/field | Meaning and boundaries |
+|---|---|
+| CPU lifecycle actions | `start-cpu`, `stop-cpu`, `restart-cpu` control only validated owned application supervisor/current settings. Existing database role/migration preflight, no seed or inference controls; source/evaluation persistence unchanged. |
+| Business `submission_date` form field | Existing canonical ISO business date now accessible without JSON in intake/case forms. Explicit reviewer context; independent of source-observed invoice/expense date. Same ordered/nonfuture date rule remains authoritative. |
+| Policy selector business code | Existing `policy_code` identifies configured policies sharing category. Server-scoped record UUID remains the API identity; selector displays meaningful business code. |
+| Panel source truth/results | `data/kivo_panel/manifest.json` freezes original invented CC0 bytes/hashes/printed values/null obligations before inference; results use post-output scoring. Development clarification separate from spent reserved correlated variants; no customer accuracy claim. |
+| Operator policy journal | Ignored private `runtime/kivo-panel/operator-policy.json` retains isolated fictional policy payload/replay keys/activation completion through existing reference APIs. Repeat preserves current version; no existing policy reset, credential creation or finance clearance. |
+| Resident memory samples | Read-only approximately0.5s observations of owned serving process tree, aggregate MiB. Resident/allocator footprint, not isolated incremental request peak; no cold load implied. |
+
+Original observations, source page2 correction reason/citation, canonical version, policy8000/9000 history and retained evaluations remain distinct. No copied original observation or historical result is overwritten. [Readiness](kivo_panel_readiness.md).
