@@ -563,3 +563,10 @@ The separately frozen `data/kivo_fresh/manifest.json` is benchmark truth, not ex
 | Bounded snapshot members | Same scoped immutable manifest/digest/UUID/member relation and database constraints, inserted in 500-row batches. No database schema or evaluation-selection change. |
 
 Financial strings/Decimal, UNKNOWN versus missing/ambiguous/zero, source confirmation and historical version/audit meanings are preserved. Actual displayed fictional hotel version 52/INR 9,000 does not overwrite version 48. [Verification](kivo_reliability_verification.md) records current and historical context separately.
+
+
+## REL-04 test-only concurrency measurements
+
+No production/financial schema changed. `kivo-concurrency-evidence-v1` is a sanitized test evidence sidecar, never a policy, API authority, source correction, score or model input. `advisory_wait_ms` measures the actual PostgreSQL lock-query round trip; `transaction_ms` spans the complete sampled database-session operation and commit/rollback. `COMMITTED` means database effects committed, not finance PASS. `round` distinguishes initial receipt admission and admission after explicit duplicate disposition. All authoritative finance amounts/quantities remain Decimal.
+
+Actual existing `lock_timeout_ms=5000`, per-statement `statement_timeout_ms=10000`, `lease_seconds=60` and maximum attempts 3 are documented boundaries, not throughput promises. SQLSTATE55P03 denotes lock-not-available/timeout; current public API safely maps it to retryable DATABASE_UNAVAILABLE/503, and worker classification schedules bounded recovery. Test-only timings contain no SQL, parameters, credentials, private source/actor IDs or business values. Full private measurements stay ignored. [Evidence/conditions](kivo_concurrency_verification.md).

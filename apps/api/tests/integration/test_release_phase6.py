@@ -10,6 +10,13 @@ from app.core.errors import DomainError
 import pytest
 
 
+@pytest.fixture
+def capacity_measurement(environment,request):
+    from capacity_probe import CapacityProbe
+    with CapacityProbe(environment[0],request.node.callspec.params['kind']) as probe:
+        yield probe
+
+
 def policy_identity(ctx,client):
     p=replace(ctx,actor_id=uuid4(),roles=frozenset({'POLICY_ADMIN'}))
     client.app.state.settings.identities['policy-admin']={**{k:str(v) for k,v in p.scope().items()},'actor_id':str(p.actor_id),'roles':list(p.roles),'label':'Synthetic policy administrator'}
@@ -67,7 +74,7 @@ def test_business_draft_retry_and_audit_rollback(environment,monkeypatch):
     assert client.post(path,json=body,headers=headers).status_code==403
 
 @pytest.mark.parametrize('kind',['BUDGET','GRN','DUPLICATE','RECEIPT'])
-def test_eight_concurrent_finalizations_keep_capacity_and_retry_invariants(environment,kind):
+def test_eight_concurrent_finalizations_keep_capacity_and_retry_invariants(environment,kind,capacity_measurement):
     from concurrent.futures import ThreadPoolExecutor
     from threading import Barrier
     from decimal import Decimal
@@ -118,7 +125,8 @@ def test_eight_concurrent_finalizations_keep_capacity_and_retry_invariants(envir
     barrier=Barrier(8)
     def finish(lease):
         barrier.wait()
-        with db.session(ctx) as s:return finance.finalize(s,ctx,*lease)
+        with capacity_measurement.sample():
+            with db.session(ctx) as s:return finance.finalize(s,ctx,*lease)
     with ThreadPoolExecutor(8) as pool:list(pool.map(finish,leases))
     if kind=='RECEIPT':
         from app.db.finance_models import DuplicateComparison
@@ -139,6 +147,7 @@ def test_eight_concurrent_finalizations_keep_capacity_and_retry_invariants(envir
                 else:finance.finalize(s,ctx,jid,owner)
         assert len(leases)==8
         barrier=Barrier(8)
+        capacity_measurement.round=2
         with ThreadPoolExecutor(8) as pool:list(pool.map(finish,leases))
     decisions=[report(client,tid)['decision'] for tid in ids]
     if kind!='RECEIPT':assert decisions.count('PASS')<=1,decisions

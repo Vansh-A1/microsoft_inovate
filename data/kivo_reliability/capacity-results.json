@@ -1,0 +1,198 @@
+{
+  "version": "kivo-concurrency-evidence-v1",
+  "fictional": true,
+  "production_code_changed": false,
+  "starting_commit": "7c2edb2f02aa310789d4b40464e7dbc42ddf22fe",
+  "conditions": "Actual PostgreSQL non-superuser fresh disposable migrated schemas, eight simultaneous same-scope finalizers per scenario. One repository pytest runner, no overlapping browser/migration batch initiated; existing host/application/model services stayed running. No inference calls from selected checks. Small fictional reference catalogs, not the retained live database footprint or production throughput.",
+  "limits": {
+    "lock_timeout_ms": 5000,
+    "statement_timeout_ms": 10000,
+    "lease_seconds": 60,
+    "maximum_execution_attempts": 3
+  },
+  "database_isolation_probe": {
+    "both_acquired_same_arbitrary_probe_key": true,
+    "database_oids_distinct": true,
+    "business_records_changed": false,
+    "credentials_or_sql_parameters_logged": false
+  },
+  "runs": [
+    {
+      "label": "isolated-before",
+      "cases": [
+        {
+          "kind": "BUDGET",
+          "private_measurement_sha256": "1d7cb237c34e136ffdbef239450f574f454520999f77389a10ba7a58705c9f98",
+          "groups": [
+            {
+              "round": 1,
+              "count": 8,
+              "advisory_wait_median_ms": 469.717,
+              "advisory_wait_max_ms": 874.983,
+              "transaction_max_ms": 1021.929,
+              "rolled_back": 0
+            }
+          ]
+        },
+        {
+          "kind": "GRN",
+          "private_measurement_sha256": "315f1ccad9d55c5d8c05eecc71a49bfd4e93b9ec9122ce36d2ab61f4b28f597d",
+          "groups": [
+            {
+              "round": 1,
+              "count": 8,
+              "advisory_wait_median_ms": 442.087,
+              "advisory_wait_max_ms": 874.425,
+              "transaction_max_ms": 1045.062,
+              "rolled_back": 0
+            }
+          ]
+        },
+        {
+          "kind": "DUPLICATE",
+          "private_measurement_sha256": "4d353eaa4e22164ef112aa57631ad0ffdf6ad3215bf6cab506dc0eb8fa55e7bb",
+          "groups": [
+            {
+              "round": 1,
+              "count": 8,
+              "advisory_wait_median_ms": 467.941,
+              "advisory_wait_max_ms": 954.651,
+              "transaction_max_ms": 1135.233,
+              "rolled_back": 0
+            }
+          ]
+        },
+        {
+          "kind": "RECEIPT",
+          "private_measurement_sha256": "20dfe4fcca9864f8727f074d5e3721b699305970ebc90361c47b04d51020b50e",
+          "groups": [
+            {
+              "round": 1,
+              "count": 8,
+              "advisory_wait_median_ms": 488.628,
+              "advisory_wait_max_ms": 1046.504,
+              "transaction_max_ms": 1222.395,
+              "rolled_back": 0
+            },
+            {
+              "round": 2,
+              "count": 8,
+              "advisory_wait_median_ms": 509.247,
+              "advisory_wait_max_ms": 1084.579,
+              "transaction_max_ms": 1231.232,
+              "rolled_back": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "clean-aggregate",
+      "cases": [
+        {
+          "kind": "BUDGET",
+          "private_measurement_sha256": "5a420a4c2aa794c624ae9345114ddfa1803dae12de40c2603f7702b775119ddd",
+          "groups": [
+            {
+              "round": 1,
+              "count": 8,
+              "advisory_wait_median_ms": 441.914,
+              "advisory_wait_max_ms": 983.021,
+              "transaction_max_ms": 1141.381,
+              "rolled_back": 0
+            }
+          ]
+        },
+        {
+          "kind": "GRN",
+          "private_measurement_sha256": "ecba5efe0f4313400038d730a153bd9064bb772c9af765e72e4eb59a88c708d1",
+          "groups": [
+            {
+              "round": 1,
+              "count": 8,
+              "advisory_wait_median_ms": 484.51,
+              "advisory_wait_max_ms": 937.265,
+              "transaction_max_ms": 1155.0,
+              "rolled_back": 0
+            }
+          ]
+        },
+        {
+          "kind": "DUPLICATE",
+          "private_measurement_sha256": "4f8b3e14b0852f1c6ee503ee269b199144bde362dcb7b7c43f8119c5ca993ab9",
+          "groups": [
+            {
+              "round": 1,
+              "count": 8,
+              "advisory_wait_median_ms": 462.79,
+              "advisory_wait_max_ms": 948.76,
+              "transaction_max_ms": 1111.993,
+              "rolled_back": 0
+            }
+          ]
+        },
+        {
+          "kind": "RECEIPT",
+          "private_measurement_sha256": "a26e543a109ca8cf4b5afd0c8055df5a69b1d37435e684b48e5dbd2e0069ef56",
+          "groups": [
+            {
+              "round": 1,
+              "count": 8,
+              "advisory_wait_median_ms": 475.722,
+              "advisory_wait_max_ms": 950.964,
+              "transaction_max_ms": 1114.557,
+              "rolled_back": 0
+            },
+            {
+              "round": 2,
+              "count": 8,
+              "advisory_wait_median_ms": 588.082,
+              "advisory_wait_max_ms": 1058.782,
+              "transaction_max_ms": 1224.072,
+              "rolled_back": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "controlled_recovery": {
+    "api-timeout": {
+      "lock_timeout_ms": 5000,
+      "actual_failed_request_ms": 5013.66,
+      "status": 503,
+      "retryable": true,
+      "failed_transaction_unchanged": true,
+      "same_key_replay_one_case": true
+    },
+    "finalization-timeout": {
+      "lock_timeout_ms": 5000,
+      "actual_failed_finalization_ms": 5009.696,
+      "sqlstate": "55P03",
+      "failed_effects_and_lease_unchanged": true,
+      "same_lease_one_evaluation_report_allocation_set": true,
+      "canonical_version_unchanged": true,
+      "replay_no_additional_effects": true
+    },
+    "worker-timeout": {
+      "sqlstate": "55P03",
+      "failed_finalization_ms": 5008.498,
+      "retry_state": "RETRYABLE",
+      "attempts_after_recovery": 2,
+      "actual_wait_and_reclaim_ms": 2816.866,
+      "one_failure_audit": true,
+      "one_evaluation_report_allocation_set": true,
+      "canonical_version_unchanged": true,
+      "real_scheduler_backoff": true,
+      "harness": "Actual committed lease fed at claim/finalization boundary; real DB timeout and worker retry/reclaim."
+    }
+  },
+  "final_aggregate": {
+    "passed": 25,
+    "failed": 0,
+    "seconds": 411.94,
+    "exit_status": 0,
+    "private_log_sha256": "8a86deace8c01430976a6fb5e78e62fc915350ac0d902ce6eb5aaa7a9165c09e"
+  },
+  "limitations": "Original overloaded21pass/1fail retained; no original lock-holder trace, so host-load attribution is plausible, not proved. Single bounded burst per kind per run, not sustained-load capacity, live-catalog replay or a guarantee against5s overload. Worker test feeds an actual committed lease only at the claim/finalization stage boundary; actual SQL timeout, audit, backoff and later reclaim are real."
+}
